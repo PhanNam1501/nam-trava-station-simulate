@@ -4,7 +4,7 @@ import AaveOracle from "../abis/AaveOracle.json";
 import dotenv from "dotenv";
 dotenv.config();
 
-export default class OracleContract {
+export default class OraclePrice {
   contractAddress: EthAddress;
 
   constructor(contractAddress: EthAddress) {
