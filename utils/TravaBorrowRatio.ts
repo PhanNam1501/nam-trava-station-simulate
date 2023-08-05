@@ -17,6 +17,7 @@ export const TRAVA_TVL_BSC = {
     DOT: "70", // %
     XVS: "60", // %
     FTM: "75", // %
+    TRAVA: "75", // %
   },
 };
 
@@ -37,7 +38,7 @@ export const TOKEN_NAME_TO_ADDRESS = {
     DOT: "0x7083609fce4d1d8dc0c979aab8c869ea2c873402", // fake address
     XVS: "0xcf6bb5389c92bdda8a3747ddb454cb7a64626c63", // fake address
     FTM: "0x21be370d5312f44cb42ce377bc9b8a0cef1a4c83", // fake address
-    TRAVA: "0x4ABEf176F22B9a71B45ddc6c4A115095d8761b37", // address in bsc testnet
+    TRAVA: "0xE1F005623934D3D8C724EC68Cc9bFD95498D4435", // address in bsc testnet
   },
 };
 
@@ -68,10 +69,10 @@ export const getTravaTVL = (
   return travaTVL[name as keyof typeof travaTVL]!;
 };
 
-export const getTokensAddress = (
+export async function getTokensAddress(
   name: string,
   chainId: number = CONFIG.chainId
-): string => {
+): Promise<string> {
   const _chainId: number =
     typeof chainId === "undefined" ? CONFIG.chainId : chainId;
 
@@ -88,7 +89,7 @@ export const getTokensAddress = (
   }
 
   return tokensAddress[name as keyof typeof tokensAddress]!;
-};
+}
 
 export async function getAddressToName(
   address: string,
@@ -97,21 +98,14 @@ export async function getAddressToName(
   const _chainId: number =
     typeof chainId === "undefined" ? CONFIG.chainId : chainId;
 
-  const tokensAddress = TOKEN_NAME_TO_ADDRESS[_chainId];
+  const TokenNameToAddressObj = TOKEN_NAME_TO_ADDRESS[_chainId];
 
-  // skip this check if we're in testing mode
-  if (!CONFIG.testingMode) {
-    if (!tokensAddress)
-      throw new Error(`Cannot find address for chainId: ${_chainId}.`);
-    if (!tokensAddress[address as keyof typeof tokensAddress])
-      throw new Error(
-        `Cannot find address for name: ${address} (chainId: ${_chainId}).`
-      );
+  // find name of token
+  for (const [key, value] of Object.entries(TokenNameToAddressObj)) {
+    if (value === address) {
+      return key;
+    }
   }
 
-  const tokenName = Object.keys(tokensAddress).find(
-    (key) => tokensAddress[key as keyof typeof tokensAddress] === address
-  );
-
-  return tokenName!;
+  throw new Error(`Cannot find name for address: ${address}.`);
 }
