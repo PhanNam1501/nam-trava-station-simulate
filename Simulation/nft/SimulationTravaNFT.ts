@@ -23,17 +23,11 @@ export async function simulateTravaNFTBuy(
     }
     const travaAddress = "0x4ABEf176F22B9a71B45ddc6c4A115095d8761b37";
     if(from == appState.walletState.address) {
-      let travaBalance = appState.walletState.tokenBalances.get(travaAddress);
-      if(!travaBalance) {
-        travaBalance = "0";
-      }
+      let travaBalance = appState.walletState.tokenBalances.get(travaAddress) ?? "0";
       appState.walletState.tokenBalances.set(travaAddress, (BigInt(travaBalance) - BigInt(currentNFT.data.price)).toString());
     }
     if(from == appState.smartWalletState.address){
-      let travaBalance = appState.smartWalletState.tokenBalances.get(travaAddress);
-      if(!travaBalance) {
-        travaBalance = "0";
-      }
+      let travaBalance = appState.smartWalletState.tokenBalances.get(travaAddress) ?? 0;
       appState.smartWalletState.tokenBalances.set(travaAddress, (BigInt(travaBalance) - BigInt(currentNFT.data.price)).toString());
     }
     if(to == appState.walletState.address){
