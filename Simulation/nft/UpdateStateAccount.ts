@@ -11,10 +11,11 @@ import BEP20ABI from "../../abis/BEP20.json";
 import NFTCollectionABI from "../../abis/NFTCollection.json";
 import dotenv from "dotenv";
 import { Interface } from "@ethersproject/abi";
+import { CONTRACT_NETWORK } from "../../utils/config";
 
 const multiCall = async (abi: any, calls: any) => {
   let _provider = ethers.provider;
-  const multi = new ethers.Contract(process.env.MULTI_CALL_ADDRESS, MultiCallABI, _provider);
+  const multi = new ethers.Contract(CONTRACT_NETWORK.bsc.MULTI_CALL_ADDRESS, MultiCallABI, _provider);
   const itf = new Interface(abi);
 
   const callData = calls.map((call: any) => [call.address.toLowerCase(), itf.encodeFunctionData(call.name as string, call.params)]);
@@ -29,7 +30,7 @@ export async function updateTravaBalance(
 ) {
   try {
     // K lấy state của smartwallet
-    const TravaTokenAddress = "0x4ABEf176F22B9a71B45ddc6c4A115095d8761b37"; // Trava Token Address
+    const TravaTokenAddress = CONTRACT_NETWORK.bsc.TRAVA_TOKEN; // Trava Token Address
     const TravaToken = await ethers.getContractAt(
       ERC20Mock,
       TravaTokenAddress
@@ -48,14 +49,14 @@ export async function updateNFTBalance(
     // Update mảnh NFT wallet
     const travacore = await ethers.getContractAt(
       TravaNFTCoreABI,
-      process.env.NFT_CORE_ADDRESS
+      CONTRACT_NETWORK.bsc.NFT_CORE_ADDRESS
     );
     const nftCount = await travacore.balanceOf(appState.walletState.address);
     const [nftIds] = await Promise.all([
       multiCall(
         TravaNFTCoreABI,
         new Array(parseInt(nftCount.toString())).fill(1).map((_, index) => ({
-          address: process.env.NFT_CORE_ADDRESS,
+          address: CONTRACT_NETWORK.bsc.NFT_CORE_ADDRESS,
           name: "tokenOfOwnerByIndex",
           params: [appState.walletState.address, index],
         }))
@@ -66,7 +67,7 @@ export async function updateNFTBalance(
       multiCall(
         NFTManagerABI,
         tokenIdsFlattened.map((tokenId: any) => ({
-          address: process.env.NFT_MANAGER_ADDRESS,
+          address: CONTRACT_NETWORK.bsc.NFT_MANAGER,
           name: "checkIfChestOpenedAndSet",
           params: [tokenId],
         }))
@@ -89,7 +90,7 @@ export async function updateNFTBalance(
     // Update NFT Collection 
     // const travacollection = await ethers.getContractAt(
     //   NFTCollectionABI,
-    //   process.env.NFT_COLLECTION_ADDRESS
+    //   CONTRACT_NETWORK.bsc.NFT_COLLECTION
     // );
     // const nftCount2 = await travacollection.balanceOf(appState.walletState.address);
     appState.walletState.collection.v1.push({id: "0001"}); // => Fake state cho nhanh
@@ -105,7 +106,7 @@ async function _fetchNormal(appState: ApplicationState, tokenIds: any) {
     multiCall(
       TravaNFTSellABI,
       tokenIds.map((tokenId: any) => ({
-        address: process.env.NFT_SELL_ADDRESS,
+        address: CONTRACT_NETWORK.bsc.NFT_MARKETPLACE,
         name: "getTokenOrder",
         params: [tokenId],
       }))
@@ -113,7 +114,7 @@ async function _fetchNormal(appState: ApplicationState, tokenIds: any) {
     multiCall(
       TravaNFTCoreABI,
       tokenIds.map((tokenId: any) => ({
-        address: process.env.NFT_CORE_ADDRESS,
+        address: CONTRACT_NETWORK.bsc.NFT_CORE_ADDRESS,
         name: "getTokenMetadata",
         params: [tokenId],
       }))
@@ -150,14 +151,14 @@ export async function updateNFTState(
   try {
     const nftsell = await ethers.getContractAt(
       TravaNFTSellABI,
-      process.env.NFT_SELL_ADDRESS
+      CONTRACT_NETWORK.bsc.NFT_MARKETPLACE
     );
     const nftCount = await nftsell.getTokenOnSaleCount();
     const [nftIds] = await Promise.all([
       multiCall(
         TravaNFTSellABI,
         new Array(parseInt(nftCount.toString())).fill(1).map((_, index) => ({
-          address: process.env.NFT_SELL_ADDRESS,
+          address: CONTRACT_NETWORK.bsc.NFT_MARKETPLACE,
           name: "getTokenOnSaleAtIndex",
           params: [index],
         }))

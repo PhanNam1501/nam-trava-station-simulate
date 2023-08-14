@@ -4,6 +4,7 @@ import { ApplicationState } from "../../State/ApplicationState";
 import { abi as ABITravaLP } from "../../abis/TravaLendingPool.json";
 import BEP20ABI from "../../abis/BEP20.json";
 import dotenv from "dotenv";
+import { CONTRACT_NETWORK } from "../../utils/config";
 dotenv.config();
 
 // call this before all actions
@@ -15,7 +16,7 @@ export async function updateTravaLPInfo(
     // first update token in pool balances
     const TravaLendingPool = await ethers.getContractAt(
       ABITravaLP,
-      process.env.TRAVA_LENDING_POOL_MARKET!
+      CONTRACT_NETWORK.bsc.TRAVA_LENDING_POOL_MARKET[0]
     );
 
     const reserveAddressList = await TravaLendingPool.getReservesList();
