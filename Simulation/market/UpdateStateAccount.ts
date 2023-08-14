@@ -28,17 +28,18 @@ export async function updateTravaLPInfo(
       const reserveAddress = reserveAddressList[i];
       const reserve = await ethers.getContractAt(BEP20ABI, reserveAddress);
       const balance = await reserve.balanceOf(userAddress);
-      const tmpMap = new Map<string, string>();
-      tmpMap.set(reserveAddress, balance);
-      appState.walletState.tokenBalances.push(tmpMap);
+
+      appState.walletState.tokenBalances.set(reserveAddress, balance);
 
       // update token balance for smart wallet
       const smartWalletBalance = await reserve.balanceOf(
         appState.smartWalletState.address
       );
-      const tmpMap2 = new Map<string, string>();
-      tmpMap2.set(reserveAddress, smartWalletBalance);
-      appState.smartWalletState.tokenBalances.push(tmpMap2);
+
+      appState.smartWalletState.tokenBalances.set(
+        reserveAddress,
+        smartWalletBalance
+      );
     }
 
     // second update TravaLP state for wallet
