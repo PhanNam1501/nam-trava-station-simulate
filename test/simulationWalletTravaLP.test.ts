@@ -7,15 +7,16 @@ import {
 } from "../Simulation/market/SimulationWalletTravaLP";
 import { ApplicationState } from "../State/ApplicationState";
 import { expect } from "chai";
+import {JsonRpcProvider} from "ethers";
 
 // start test
 
-describe("Test SimulationWalletTravaLP", () => {
-  it("Test Simulation Supply", async () => {
+const test = async () => {
     console.log("================= PHASE 1 Supply ========================");
     const appState = new ApplicationState(
       "0x0d7a757EECAbfe8daa06E9ab8F106911d846D8a1",
-      "0x957d84Da98c5Db9e0d3d7FE667D3FA00339f3372"
+      "0x957d84Da98c5Db9e0d3d7FE667D3FA00339f3372",
+      new JsonRpcProvider("https://bsc-testnet.publicnode.com"),
     );
     await updateTravaLPInfo(
       appState,
@@ -97,5 +98,5 @@ describe("Test SimulationWalletTravaLP", () => {
       "smartWalletState tokens after phase4 : ",
       appState.smartWalletState.tokenBalances
     );
-  });
-});
+    }
+    test()

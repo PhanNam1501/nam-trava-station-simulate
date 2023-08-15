@@ -1,11 +1,12 @@
 import { updateUserTokenBalance } from "../Simulation/basic/UpdateStateAccount";
 import { simulateSwap } from "../Simulation/swap/SimulationSwap";
 import { ApplicationState } from "../State/ApplicationState";
-describe("Test Swap", () => {
-    it("Test Swap", async () => {
+import {JsonRpcProvider} from "ethers"
+async function test(){
       const appState = new ApplicationState(
         "0x595622cBd0Fc4727DF476a1172AdA30A9dDf8F43",
-        "0x826D824BE55A403859A6Db67D5EeC5aC386307fE"
+        "0x826D824BE55A403859A6Db67D5EeC5aC386307fE",
+        new JsonRpcProvider("https://bsc-testnet.publicnode.com"),
       );
       await Promise.all([updateUserTokenBalance(appState,"0x4ABEf176F22B9a71B45ddc6c4A115095d8761b37"),updateUserTokenBalance(appState,"0x910CB19698Eac48a6AB7Ccc9542B756f2Bdd67C6")])
       console.log("===Before swap===")
@@ -16,5 +17,5 @@ describe("Test Swap", () => {
       console.log("===After swap===")
       console.log("TRAVA Balance",appState.walletState.tokenBalances.get("0x4ABEf176F22B9a71B45ddc6c4A115095d8761b37"))
       console.log("WBNB Balance",appState.walletState.tokenBalances.get("0x910CB19698Eac48a6AB7Ccc9542B756f2Bdd67C6"))
-    }); 
-  });
+}
+test();

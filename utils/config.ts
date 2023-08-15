@@ -1,13 +1,6 @@
-import Dec from "decimal.js";
 import { set as dfsTokensSetConfig } from "@zennomi/tokens";
 import { Config, Network, Networks } from "./types";
 
-Dec.set({
-  rounding: Dec.ROUND_DOWN,
-  toExpPos: 9e15,
-  toExpNeg: -9e15,
-  precision: 100,
-});
 
 /**
  *

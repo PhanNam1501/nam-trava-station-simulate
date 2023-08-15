@@ -1,9 +1,9 @@
-import { ethers } from "hardhat";
+
 import { EthAddress, uint256 } from "../../utils/types";
 import { ApplicationState } from "../../State/ApplicationState";
 import TravaNFTSellABI from "../../abis/TravaNFTSell.json";
-import dotenv from "dotenv";
-dotenv.config();
+import { getAddr } from "../../utils/address";
+
 
 export async function simulateTravaNFTBuy(
   appState: ApplicationState,
@@ -82,7 +82,7 @@ export async function simulateTravaNFTTransfer(
 ) {
   try {
     let prefix: string = "collection";
-    if(contract == process.env.NFT_CORE_ADDRESS) {
+    if(contract == getAddr("NFT_CORE_ADDRESS")) {
       prefix = "nfts";
     }
     let currentVersion = "v1";

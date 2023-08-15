@@ -1,13 +1,15 @@
 import { updateTravaBalance, updateNFTBalance, updateNFTState } from "../Simulation/nft/UpdateStateAccount";
 import { simulateTravaNFTBuy, simulateTravaNFTSell, simulateTravaNFTTransfer } from "../Simulation/nft/SimulationTravaNFT";
 import { ApplicationState } from "../State/ApplicationState";
+import {JsonRpcProvider} from "ethers";
 
-describe("Test TravaNFT", () => {
-  it("Test TravaNFT Buy", async () => {
+ const testBuy =async () => {
     console.log("=================BEFORE==========================");
     const appState = new ApplicationState(
       "0x595622cBd0Fc4727DF476a1172AdA30A9dDf8F43",
-      "0x826D824BE55A403859A6Db67D5EeC5aC386307fE"
+      "0x826D824BE55A403859A6Db67D5EeC5aC386307fE",
+      new JsonRpcProvider("https://bsc-testnet.publicnode.com"),
+      
     );
     await updateTravaBalance(appState);
     await updateNFTBalance(appState);
@@ -23,13 +25,13 @@ describe("Test TravaNFT", () => {
 
     console.log("=================AFTER==========================");
     console.log(JSON.stringify(newState));
-  });
-
-  it("Test TravaNFT Sell", async () => {
+  };
+const testSell =async () => {
     console.log("=================BEFORE==========================");
     const appState = new ApplicationState(
       "0x595622cBd0Fc4727DF476a1172AdA30A9dDf8F43",
-      "0x826D824BE55A403859A6Db67D5EeC5aC386307fE"
+      "0x826D824BE55A403859A6Db67D5EeC5aC386307fE",
+      new JsonRpcProvider("https://bsc-testnet.publicnode.com"),
     );
     await updateTravaBalance(appState);
     await updateNFTBalance(appState);
@@ -45,13 +47,14 @@ describe("Test TravaNFT", () => {
 
     console.log("=================AFTER==========================");
     console.log(JSON.stringify(newState));
-  });
+  };
   
-  it("Test TravaNFT Transfer", async () => {
+  const testTransfer = async () => {
     console.log("=================BEFORE==========================");
     const appState = new ApplicationState(
       "0x595622cBd0Fc4727DF476a1172AdA30A9dDf8F43",
-      "0x826D824BE55A403859A6Db67D5EeC5aC386307fE"
+      "0x826D824BE55A403859A6Db67D5EeC5aC386307fE",
+      new JsonRpcProvider("https://bsc-testnet.publicnode.com"),
     );
     await updateTravaBalance(appState);
     await updateNFTBalance(appState);
@@ -68,5 +71,7 @@ describe("Test TravaNFT", () => {
 
     console.log("=================AFTER==========================");
     console.log(JSON.stringify(newState));
-  });
-});
+  };
+testBuy()
+testSell()
+testTransfer()

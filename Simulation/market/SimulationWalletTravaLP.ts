@@ -1,11 +1,10 @@
-import { ethers } from "hardhat";
 import { EthAddress } from "../../utils/types";
 import { ApplicationState } from "../../State/ApplicationState";
 import OraclePrice from "../../utils/oraclePrice";
-import { abi as ABITravaLP } from "../../abis/TravaLendingPool.json";
+import ABITravaLP  from "../../abis/TravaLendingPool.json";
 import BEP20ABI from "../../abis/BEP20.json";
-import dotenv from "dotenv";
-dotenv.config();
+import { getAddr } from "../../utils/address";
+import {Contract} from "ethers"
 
 export async function SimulationSupply(
   appState: ApplicationState,
@@ -13,12 +12,8 @@ export async function SimulationSupply(
   amount: string
 ) {
   try {
-    const oraclePrice = new OraclePrice(process.env.ORACLE_ADDRESS!);
-    const travaLP = await ethers.getContractAt(
-      ABITravaLP,
-      process.env.TRAVA_LENDING_POOL_MARKET!
-    );
-
+    const oraclePrice = new OraclePrice(getAddr("ORACLE_ADDRESS"),appState.web3!);
+    const travaLP = new Contract(getAddr("TRAVA_LENDING_POOL_MARKET"),ABITravaLP,appState.web3!);
     let reverseList = await travaLP.getReservesList();
     // check tokenAddress is exist on reverseList
     if (
@@ -121,12 +116,8 @@ export async function SimulationBorrow(
   amount: string
 ) {
   try {
-    const oraclePrice = new OraclePrice(process.env.ORACLE_ADDRESS!);
-    const travaLP = await ethers.getContractAt(
-      ABITravaLP,
-      process.env.TRAVA_LENDING_POOL_MARKET!
-    );
-
+    const oraclePrice = new OraclePrice(getAddr("ORACLE_ADDRESS"),appState.web3!);
+    const travaLP = new Contract(getAddr("TRAVA_LENDING_POOL_MARKET"),ABITravaLP,appState.web3!);
     let reverseList = await travaLP.getReservesList();
 
     // check tokenAddress is exist on reverseList
@@ -220,13 +211,8 @@ export async function SimulationRepay(
   amount: string
 ) {
   try {
-    const oraclePrice = new OraclePrice(process.env.ORACLE_ADDRESS!);
-
-    const travaLP = await ethers.getContractAt(
-      ABITravaLP,
-      process.env.TRAVA_LENDING_POOL_MARKET!
-    );
-
+    const oraclePrice = new OraclePrice(getAddr("ORACLE_ADDRESS"),appState.web3!);
+    const travaLP = new Contract(getAddr("TRAVA_LENDING_POOL_MARKET"),ABITravaLP,appState.web3!);
     let reverseList = await travaLP.getReservesList();
     // check tokenAddress is exist on reverseList
     if (
@@ -241,10 +227,8 @@ export async function SimulationRepay(
       const variableDebtTokenAddress = reserveData[7];
 
       // check balance debt token on smart wallet
-      const debtTokenBalance = await ethers.getContractAt(
-        BEP20ABI,
-        variableDebtTokenAddress
-      );
+     
+      const debtTokenBalance = new Contract(variableDebtTokenAddress,BEP20ABI,appState.web3);
 
       // const debtTokenBalanceOfSmartWallet = await debtTokenBalance.balanceOf(
       //   appState.smartWalletState.address
@@ -356,13 +340,8 @@ export async function SimulationWithdraw(
   amount: string
 ) {
   try {
-    const oraclePrice = new OraclePrice(process.env.ORACLE_ADDRESS!);
-
-    const travaLP = await ethers.getContractAt(
-      ABITravaLP,
-      process.env.TRAVA_LENDING_POOL_MARKET!
-    );
-
+    const oraclePrice = new OraclePrice(getAddr("ORACLE_ADDRESS"),appState.web3!);
+    const travaLP = new Contract(getAddr("TRAVA_LENDING_POOL_MARKET"),ABITravaLP,appState.web3!);
     let reverseList = await travaLP.getReservesList();
     // check tokenAddress is exist on reverseList
     if (
@@ -377,7 +356,7 @@ export async function SimulationWithdraw(
       const variableDebtTokenAddress = reserveData[7];
 
       // check balance tToken on smart wallet
-      const tTokenBalance = await ethers.getContractAt(BEP20ABI, tTokenAddress);
+      const tTokenBalance = new Contract(tTokenAddress,BEP20ABI,appState.web3);
 
       const tTokenBalanceOfSmartWallet = String(
         appState.smartWalletState.tokenBalances.get(tTokenAddress)!
