@@ -1,10 +1,9 @@
-import { ethers } from "hardhat";
+
 import { EthAddress, uint256 } from "../../utils/types";
 import { ApplicationState } from "../../State/ApplicationState";
 import TravaNFTSellABI from "../../abis/TravaNFTSell.json";
-import dotenv from "dotenv";
-import { CONTRACT_NETWORK } from "../../utils/config";
-dotenv.config();
+import { getAddr } from "../../utils/address";
+
 
 export async function simulateTravaNFTBuy(
   appState: ApplicationState,
@@ -22,7 +21,7 @@ export async function simulateTravaNFTBuy(
     if(!currentNFT){
       throw new Error("NFT is not being sold");
     }
-    const travaAddress = CONTRACT_NETWORK.bsc.TRAVA_TOKEN;
+    const travaAddress = getAddr("TRAVA_TOKEN");
     if(from == appState.walletState.address) {
       let travaBalance = appState.walletState.tokenBalances.get(travaAddress) ?? "0";
       appState.walletState.tokenBalances.set(travaAddress, (BigInt(travaBalance) - BigInt(currentNFT.data.price)).toString());
@@ -83,7 +82,7 @@ export async function simulateTravaNFTTransfer(
 ) {
   try {
     let prefix: string = "collection";
-    if(contract == CONTRACT_NETWORK.bsc.NFT_CORE_ADDRESS) {
+    if(contract == getAddr("NFT_CORE_ADDRESS")) {
       prefix = "nfts";
     }
     let currentVersion = "v1";

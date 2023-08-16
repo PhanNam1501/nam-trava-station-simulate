@@ -1,22 +1,21 @@
-import hre from "hardhat";
 import { EthAddress } from "./types";
 import AaveOracle from "../abis/AaveOracle.json";
-import dotenv from "dotenv";
-dotenv.config();
+import {JsonRpcApiProvider,InterfaceAbi} from "ethers";
+import BaseReadContract from "./contract";
+import { getAddr } from "./address";
 
-export default class OraclePrice {
-  contractAddress: EthAddress;
+export default class OraclePrice extends BaseReadContract {
 
-  constructor(contractAddress: EthAddress) {
-    this.contractAddress = contractAddress;
-  }
+  constructor(
+    address : EthAddress,
+    web3Reader : JsonRpcApiProvider,
+  )
+    {
+      super(address,AaveOracle,web3Reader)
+    }
 
   async getAssetPrice(assetAddress: EthAddress) {
-    const OracleContract = await hre.ethers.getContractAt(
-      AaveOracle,
-      this.contractAddress
-    );
-    return await OracleContract.getAssetPrice(assetAddress);
+    return await this.contractUtil.getAssetPrice(assetAddress);
   }
 }
 

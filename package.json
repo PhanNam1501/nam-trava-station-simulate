@@ -1,20 +1,36 @@
 {
-  "name": "trava-simulation-route",
-  "version": "1.0.1",
-  "devDependencies": {
-    "@nomicfoundation/hardhat-toolbox": "^3.0.0",
-    "hardhat": "^2.17.1"
+  "name": "trava-station-simulation",
+  "version": "1.0.3",
+  "description": "",
+  "main": "./umd/index.js",
+  "module": "./esm/index.js",
+  "types": "./esm/index.d.ts",
+  "scripts": {
+    "build:esm": "tsc -b",
+    "build:umd": "webpack --config=webpack.umd.js",
+    "build": " npm run build:umd && npm run build:esm"
   },
+  "author": "Trava Station",
+  "repository": "https://github.com/TravaStation/trava-simulation-route",
+  "license": "ISC",
   "dependencies": {
-    "@ethersproject/abi": "^5.7.0",
-    "@nomiclabs/hardhat-ethers": "^2.2.3",
-    "@nomiclabs/hardhat-waffle": "^2.0.6",
     "@zennomi/tokens": "^1.0.1",
-    "chai": "^4.3.7",
     "decimal.js": "^10.4.3",
-    "dotenv": "^16.3.1",
-    "ethers": "^6.7.0",
-    "hardhat-deploy": "^0.11.34",
-    "orchai-recipe-sdk": "^1.0.44"
+    "ethers": "^6.7.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.12.10",
+    "@babel/preset-env": "^7.12.11",
+    "@babel/preset-typescript": "^7.12.7",
+    "@types/chai": "^4.3.5",
+    "@types/mocha": "^10.0.1",
+    "@types/node": "^18.11.8",
+    "babel-loader": "^8.2.2",
+    "chai": "^4.3.7",
+    "mocha": "^10.2.0",
+    "ts-node": "^10.9.1",
+    "typescript": "5.0.4",
+    "webpack": "^5.13.0",
+    "webpack-cli": "^5.1.4"
   }
 }

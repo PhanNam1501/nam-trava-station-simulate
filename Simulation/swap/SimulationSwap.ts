@@ -1,8 +1,6 @@
 import { EthAddress, uint256 } from "../../utils/types";
 import { ApplicationState } from "../../State/ApplicationState";
-import dotenv from "dotenv";
 import { updateUserTokenBalance } from "../basic/UpdateStateAccount";
-dotenv.config();
 export async function simulateSwap(
     appState :ApplicationState,
     fromToken :EthAddress,

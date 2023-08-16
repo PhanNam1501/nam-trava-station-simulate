@@ -1,15 +1,16 @@
-import { ethers } from "hardhat";
-import { abi as AbiTravaLP } from "../abis/TravaLendingPool.json";
+import AbiTravaLP from "../abis/TravaLendingPool.json";
 import BEP20ABI from "../abis/BEP20.json";
 import { EthAddress } from "./types";
-import dotenv from "dotenv";
-dotenv.config();
+import {JsonRpcProvider , InterfaceAbi} from "ethers"
+import BaseReadContract from "./contract";
+import { getAddr } from "./address";
 
-export default class PoolFetcher {
+const abi : InterfaceAbi = AbiTravaLP;
+export default class PoolFetcher extends BaseReadContract{
   // get
-  poolAddress: EthAddress;
-  constructor(poolAddress: EthAddress) {
-    this.poolAddress = poolAddress;
+  constructor(web3 : JsonRpcProvider){
+    super(getAddr("TRAVA_LENDING_POOL_MARKET"),abi,web3);
+
   }
 
   async getPoolsAddressData() {}
@@ -25,11 +26,8 @@ export default class PoolFetcher {
   _mergeFinalResult() {}
 
   async getPoolTokenData() {
-    const travaLP = await ethers.getContractAt(
-      AbiTravaLP,
-      process.env.TRAVA_LENDING_POOL_MARKET!
-    );
-    const reserveAddressList = await travaLP.getReservesList();
+   
+    const reserveAddressList = await this.contractUtil.getReservesList();
     if (reserveAddressList.length == 0) {
       return undefined;
     }
@@ -38,7 +36,3 @@ export default class PoolFetcher {
   async getPoolsData() {}
 }
 
-const poolFetcher = new PoolFetcher(process.env.TRAVA_LENDING_POOL_MARKET!);
-poolFetcher.getPoolTokenData().then((res) => {
-  console.log(res);
-});
