@@ -9,6 +9,7 @@ import TravaNFTSellABI from "../../abis/TravaNFTSell.json";
 import NFTManagerABI from "../../abis/NFTManager.json";
 import {Contract,Interface} from "ethers";
 import { getAddr } from "../../utils/address";
+import _ from "lodash";
 
 const multiCall = async (abi: any, calls: any,provider:any) => {
   let _provider = provider;
@@ -22,8 +23,9 @@ const multiCall = async (abi: any, calls: any,provider:any) => {
 
 
 export async function updateTravaBalance(
-  appState: ApplicationState
-) {
+  appState1: ApplicationState
+): Promise<ApplicationState> {
+  const appState = _.cloneDeep(appState1);
   try {
     // K lấy state của smartwallet
     const TravaTokenAddress = getAddr("TRAVA_TOKEN"); // Trava Token Address
@@ -37,11 +39,13 @@ export async function updateTravaBalance(
   } catch (e) {
     console.log(e);
   }
+  return appState;
 }
 
 export async function updateNFTBalance(
-  appState: ApplicationState
-) {
+  appState1: ApplicationState
+): Promise<ApplicationState> {
+  const appState = _.cloneDeep(appState1);
   try {
     // Update mảnh NFT wallet
     const travacore = new Contract(
@@ -95,13 +99,15 @@ export async function updateNFTBalance(
     // const nftCount2 = await travacollection.balanceOf(appState.walletState.address);
     appState.walletState.collection.v1.push({id: "0001"}); // => Fake state cho nhanh
     appState.walletState.collection.v2.push({id: "0002"});
-
   } catch (e) {
     console.log(e);
   }
+  return appState;
 }
 
-async function _fetchNormal(appState: ApplicationState, tokenIds: any) {
+async function _fetchNormal(appState1: ApplicationState, tokenIds: any): Promise<ApplicationState> {
+  const appState = _.cloneDeep(appState1);
+
   const [tokenOrders, tokenMetadata] = await Promise.all([
     multiCall(
       TravaNFTSellABI,
@@ -145,11 +151,13 @@ async function _fetchNormal(appState: ApplicationState, tokenIds: any) {
     }
     counter++;
   }
+  return appState;
 }
 
 export async function updateNFTState(
-  appState: ApplicationState
-) {
+  appState1: ApplicationState
+): Promise<ApplicationState> {
+  const appState = _.cloneDeep(appState1);
   try {
     const nftsell = new Contract(
       getAddr("NFT_SELL_ADDRESS"),
@@ -179,4 +187,5 @@ export async function updateNFTState(
   } catch (e) {
     console.log(e);
   }
+  return appState
 }

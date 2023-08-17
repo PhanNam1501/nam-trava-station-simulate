@@ -5,13 +5,14 @@ import {Contract} from "ethers";
 import ABITravaLP  from "../../abis/TravaLendingPool.json";
 import BEP20ABI from "../../abis/BEP20.json";
 import { getAddr } from "../../utils/address";
-
+import _ from "lodash";
 // call this before all actions
 export async function updateTravaLPInfo(
-  appState: ApplicationState,
+  appState1: ApplicationState,
   userAddress: EthAddress
-) {
+): Promise<ApplicationState> {
   try {
+    const appState = _.cloneDeep(appState1);
     // first update token in pool balances
     const TravaLendingPool = new Contract(getAddr("TRAVA_LENDING_POOL_MARKET"),ABITravaLP,appState.web3!);
 
@@ -73,6 +74,7 @@ export async function updateTravaLPInfo(
   } catch (e) {
     console.log(e);
   }
+  return appState1;
 }
 
 // const appState = new ApplicationState(

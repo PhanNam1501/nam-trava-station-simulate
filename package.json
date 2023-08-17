@@ -16,13 +16,15 @@
   "dependencies": {
     "@zennomi/tokens": "^1.0.1",
     "decimal.js": "^10.4.3",
-    "ethers": "^6.7.0"
+    "ethers": "^6.7.0",
+    "lodash": "^4.17.21"
   },
   "devDependencies": {
     "@babel/core": "^7.12.10",
     "@babel/preset-env": "^7.12.11",
     "@babel/preset-typescript": "^7.12.7",
     "@types/chai": "^4.3.5",
+    "@types/lodash": "^4.14.197",
     "@types/mocha": "^10.0.1",
     "@types/node": "^18.11.8",
     "babel-loader": "^8.2.2",

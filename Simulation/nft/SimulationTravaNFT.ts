@@ -3,15 +3,16 @@ import { EthAddress, uint256 } from "../../utils/types";
 import { ApplicationState } from "../../State/ApplicationState";
 import TravaNFTSellABI from "../../abis/TravaNFTSell.json";
 import { getAddr } from "../../utils/address";
-
+import _ from "lodash";
 
 export async function simulateTravaNFTBuy(
-  appState: ApplicationState,
+  appState1: ApplicationState,
   tokenId: number | string,
   from: EthAddress,
   to: EthAddress,
-) {
+): Promise<ApplicationState> {
   try {
+    const appState = _.cloneDeep(appState1);
     let currentVersion = "v1";
     let currentNFT = appState.NFTState.nfts.v1.find(n => n.id == tokenId);
     if(!currentNFT){
@@ -44,12 +45,14 @@ export async function simulateTravaNFTBuy(
 }
 
 export async function simulateTravaNFTSell(
-  appState: ApplicationState,
+  appState1: ApplicationState,
   tokenId: number | string,
   price: number | string,
   from: EthAddress
-) {
+): Promise<ApplicationState> {
   try {
+    const appState = _.cloneDeep(appState1);
+
     let currentVersion = "v1";
     if(from == appState.walletState.address) {
       let currentNFT = appState.walletState.nfts.v1.find(n => n.id == tokenId);
@@ -74,13 +77,14 @@ export async function simulateTravaNFTSell(
 }
 
 export async function simulateTravaNFTTransfer(
-  appState: ApplicationState,
+  appState1: ApplicationState,
   from: EthAddress,
   to: EthAddress,
   tokenId: number | string,
   contract: EthAddress
-) {
+): Promise<ApplicationState> {
   try {
+    const appState = _.cloneDeep(appState1);
     let prefix: string = "collection";
     if(contract == getAddr("NFT_CORE_ADDRESS")) {
       prefix = "nfts";
