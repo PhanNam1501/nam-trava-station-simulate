@@ -13,7 +13,7 @@ export async function SimulationSupply(
   amount: string
 ): Promise<ApplicationState> {
   try {
-    const appState = _.cloneDeep(appState1);
+    const appState = {...appState1};
     const oraclePrice = new OraclePrice(getAddr("ORACLE_ADDRESS"),appState.web3!);
     const travaLP = new Contract(getAddr("TRAVA_LENDING_POOL_MARKET"),ABITravaLP,appState.web3!);
     let reverseList = await travaLP.getReservesList();
@@ -119,7 +119,7 @@ export async function SimulationBorrow(
   amount: string
 ): Promise<ApplicationState> {
   try {
-    const appState = _.cloneDeep(appState1);
+    const appState = {...appState1};
     const oraclePrice = new OraclePrice(getAddr("ORACLE_ADDRESS"),appState.web3!);
     const travaLP = new Contract(getAddr("TRAVA_LENDING_POOL_MARKET"),ABITravaLP,appState.web3!);
     let reverseList = await travaLP.getReservesList();
@@ -216,7 +216,7 @@ export async function SimulationRepay(
   amount: string
 ): Promise<ApplicationState> {
   try {
-    const appState = _.cloneDeep(appState1);
+    const appState = {...appState1};
     const oraclePrice = new OraclePrice(getAddr("ORACLE_ADDRESS"),appState.web3!);
     const travaLP = new Contract(getAddr("TRAVA_LENDING_POOL_MARKET"),ABITravaLP,appState.web3!);
     let reverseList = await travaLP.getReservesList();
@@ -347,7 +347,7 @@ export async function SimulationWithdraw(
   amount: string
 ): Promise<ApplicationState> {
   try {
-    const appState = _.cloneDeep(appState1);
+    const appState = {...appState1};
     const oraclePrice = new OraclePrice(getAddr("ORACLE_ADDRESS"),appState.web3!);
     const travaLP = new Contract(getAddr("TRAVA_LENDING_POOL_MARKET"),ABITravaLP,appState.web3!);
     let reverseList = await travaLP.getReservesList();

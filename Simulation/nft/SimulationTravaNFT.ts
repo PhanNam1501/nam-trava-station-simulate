@@ -12,7 +12,7 @@ export async function simulateTravaNFTBuy(
   to: EthAddress,
 ): Promise<ApplicationState> {
   try {
-    const appState = _.cloneDeep(appState1);
+    const appState = {...appState1};
     let currentVersion = "v1";
     let currentNFT = appState.NFTState.nfts.v1.find(n => n.id == tokenId);
     if(!currentNFT){
@@ -51,7 +51,7 @@ export async function simulateTravaNFTSell(
   from: EthAddress
 ): Promise<ApplicationState> {
   try {
-    const appState = _.cloneDeep(appState1);
+    const appState = {...appState1};
 
     let currentVersion = "v1";
     if(from == appState.walletState.address) {
@@ -84,7 +84,7 @@ export async function simulateTravaNFTTransfer(
   contract: EthAddress
 ): Promise<ApplicationState> {
   try {
-    const appState = _.cloneDeep(appState1);
+    const appState = {...appState1};
     let prefix: string = "collection";
     if(contract == getAddr("NFT_CORE_ADDRESS")) {
       prefix = "nfts";

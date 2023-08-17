@@ -1,4 +1,7 @@
-export class NFTData {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.NFTState = exports.NFT = exports.NFTData = void 0;
+class NFTData {
     constructor() {
         this.id = '0';
         this.data = {
@@ -7,14 +10,17 @@ export class NFTData {
         };
     }
 }
-export class NFT {
+exports.NFTData = NFTData;
+class NFT {
     constructor() {
         this.v1 = new Array();
         this.v2 = new Array();
     }
 }
-export class NFTState {
+exports.NFT = NFT;
+class NFTState {
     constructor() {
         this.nfts = new NFT();
     }
 }
+exports.NFTState = NFTState;

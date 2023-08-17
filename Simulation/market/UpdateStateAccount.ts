@@ -12,7 +12,7 @@ export async function updateTravaLPInfo(
   userAddress: EthAddress
 ): Promise<ApplicationState> {
   try {
-    const appState = _.cloneDeep(appState1);
+    const appState = {...appState1};
     // first update token in pool balances
     const TravaLendingPool = new Contract(getAddr("TRAVA_LENDING_POOL_MARKET"),ABITravaLP,appState.web3!);
 

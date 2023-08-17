@@ -1,3 +1,4 @@
+"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -7,13 +8,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-import { getAddr } from "../../utils/address";
-import _ from "lodash";
-export function simulateTravaNFTBuy(appState1, tokenId, from, to) {
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.simulateTravaNFTTransfer = exports.simulateTravaNFTSell = exports.simulateTravaNFTBuy = void 0;
+const address_1 = require("../../utils/address");
+function simulateTravaNFTBuy(appState1, tokenId, from, to) {
     var _a, _b;
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const appState = _.cloneDeep(appState1);
+            const appState = Object.assign({}, appState1);
             let currentVersion = "v1";
             let currentNFT = appState.NFTState.nfts.v1.find(n => n.id == tokenId);
             if (!currentNFT) {
@@ -23,7 +25,7 @@ export function simulateTravaNFTBuy(appState1, tokenId, from, to) {
             if (!currentNFT) {
                 throw new Error("NFT is not being sold");
             }
-            const travaAddress = getAddr("TRAVA_TOKEN");
+            const travaAddress = (0, address_1.getAddr)("TRAVA_TOKEN");
             if (from == appState.walletState.address) {
                 let travaBalance = (_a = appState.walletState.tokenBalances.get(travaAddress)) !== null && _a !== void 0 ? _a : "0";
                 appState.walletState.tokenBalances.set(travaAddress, (BigInt(travaBalance) - BigInt(currentNFT.data.price)).toString());
@@ -46,10 +48,11 @@ export function simulateTravaNFTBuy(appState1, tokenId, from, to) {
         }
     });
 }
-export function simulateTravaNFTSell(appState1, tokenId, price, from) {
+exports.simulateTravaNFTBuy = simulateTravaNFTBuy;
+function simulateTravaNFTSell(appState1, tokenId, price, from) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const appState = _.cloneDeep(appState1);
+            const appState = Object.assign({}, appState1);
             let currentVersion = "v1";
             if (from == appState.walletState.address) {
                 let currentNFT = appState.walletState.nfts.v1.find(n => n.id == tokenId);
@@ -75,12 +78,13 @@ export function simulateTravaNFTSell(appState1, tokenId, price, from) {
         }
     });
 }
-export function simulateTravaNFTTransfer(appState1, from, to, tokenId, contract) {
+exports.simulateTravaNFTSell = simulateTravaNFTSell;
+function simulateTravaNFTTransfer(appState1, from, to, tokenId, contract) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const appState = _.cloneDeep(appState1);
+            const appState = Object.assign({}, appState1);
             let prefix = "collection";
-            if (contract == getAddr("NFT_CORE_ADDRESS")) {
+            if (contract == (0, address_1.getAddr)("NFT_CORE_ADDRESS")) {
                 prefix = "nfts";
             }
             let currentVersion = "v1";
@@ -110,3 +114,4 @@ export function simulateTravaNFTTransfer(appState1, from, to, tokenId, contract)
         }
     });
 }
+exports.simulateTravaNFTTransfer = simulateTravaNFTTransfer;

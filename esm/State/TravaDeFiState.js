@@ -1,9 +1,12 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.TravaLPState = exports.WalletTravaLPState = void 0;
 /**
  *
  * @param
  * @param
  */
-export class WalletTravaLPState {
+class WalletTravaLPState {
     constructor() {
         this.totalCollateralUSD = "";
         this.totalDebtUSD = "";
@@ -13,5 +16,7 @@ export class WalletTravaLPState {
         this.healthFactor = "";
     }
 }
-export class TravaLPState {
+exports.WalletTravaLPState = WalletTravaLPState;
+class TravaLPState {
 }
+exports.TravaLPState = TravaLPState;

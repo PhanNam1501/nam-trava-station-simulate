@@ -10,7 +10,7 @@ export async function simulateSwap(
     fromAmount: EthAddress,
     toAmount: EthAddress
 ): Promise<ApplicationState> {
-    const appState = _.cloneDeep(appState1);
+    const appState = {...appState1};
 
     if (!appState.walletState.tokenBalances.has(fromToken)) {
         await updateUserTokenBalance(appState, fromToken)

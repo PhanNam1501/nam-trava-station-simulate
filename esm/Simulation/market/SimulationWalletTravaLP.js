@@ -1,3 +1,4 @@
+"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -7,18 +8,22 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-import OraclePrice from "../../utils/oraclePrice";
-import ABITravaLP from "../../abis/TravaLendingPool.json";
-import BEP20ABI from "../../abis/BEP20.json";
-import { getAddr } from "../../utils/address";
-import { Contract } from "ethers";
-import _ from "lodash";
-export function SimulationSupply(appState1, tokenAddress, amount) {
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.SimulationWithdraw = exports.SimulationRepay = exports.SimulationBorrow = exports.SimulationSupply = void 0;
+const oraclePrice_1 = __importDefault(require("../../utils/oraclePrice"));
+const TravaLendingPool_json_1 = __importDefault(require("../../abis/TravaLendingPool.json"));
+const BEP20_json_1 = __importDefault(require("../../abis/BEP20.json"));
+const address_1 = require("../../utils/address");
+const ethers_1 = require("ethers");
+function SimulationSupply(appState1, tokenAddress, amount) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const appState = _.cloneDeep(appState1);
-            const oraclePrice = new OraclePrice(getAddr("ORACLE_ADDRESS"), appState.web3);
-            const travaLP = new Contract(getAddr("TRAVA_LENDING_POOL_MARKET"), ABITravaLP, appState.web3);
+            const appState = Object.assign({}, appState1);
+            const oraclePrice = new oraclePrice_1.default((0, address_1.getAddr)("ORACLE_ADDRESS"), appState.web3);
+            const travaLP = new ethers_1.Contract((0, address_1.getAddr)("TRAVA_LENDING_POOL_MARKET"), TravaLendingPool_json_1.default, appState.web3);
             let reverseList = yield travaLP.getReservesList();
             // check tokenAddress is exist on reverseList
             if (reverseList.includes(tokenAddress) &&
@@ -90,13 +95,14 @@ export function SimulationSupply(appState1, tokenAddress, amount) {
         }
     });
 }
+exports.SimulationSupply = SimulationSupply;
 // need add debt token to smart wallet state
-export function SimulationBorrow(appState1, tokenAddress, amount) {
+function SimulationBorrow(appState1, tokenAddress, amount) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const appState = _.cloneDeep(appState1);
-            const oraclePrice = new OraclePrice(getAddr("ORACLE_ADDRESS"), appState.web3);
-            const travaLP = new Contract(getAddr("TRAVA_LENDING_POOL_MARKET"), ABITravaLP, appState.web3);
+            const appState = Object.assign({}, appState1);
+            const oraclePrice = new oraclePrice_1.default((0, address_1.getAddr)("ORACLE_ADDRESS"), appState.web3);
+            const travaLP = new ethers_1.Contract((0, address_1.getAddr)("TRAVA_LENDING_POOL_MARKET"), TravaLendingPool_json_1.default, appState.web3);
             let reverseList = yield travaLP.getReservesList();
             // check tokenAddress is exist on reverseList
             if (reverseList.includes(tokenAddress) &&
@@ -155,13 +161,14 @@ export function SimulationBorrow(appState1, tokenAddress, amount) {
         }
     });
 }
+exports.SimulationBorrow = SimulationBorrow;
 // need remove debt token from smart wallet state
-export function SimulationRepay(appState1, tokenAddress, amount) {
+function SimulationRepay(appState1, tokenAddress, amount) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const appState = _.cloneDeep(appState1);
-            const oraclePrice = new OraclePrice(getAddr("ORACLE_ADDRESS"), appState.web3);
-            const travaLP = new Contract(getAddr("TRAVA_LENDING_POOL_MARKET"), ABITravaLP, appState.web3);
+            const appState = Object.assign({}, appState1);
+            const oraclePrice = new oraclePrice_1.default((0, address_1.getAddr)("ORACLE_ADDRESS"), appState.web3);
+            const travaLP = new ethers_1.Contract((0, address_1.getAddr)("TRAVA_LENDING_POOL_MARKET"), TravaLendingPool_json_1.default, appState.web3);
             let reverseList = yield travaLP.getReservesList();
             // check tokenAddress is exist on reverseList
             if (reverseList.includes(tokenAddress) &&
@@ -172,7 +179,7 @@ export function SimulationRepay(appState1, tokenAddress, amount) {
                 const tTokenAddress = reserveData[6];
                 const variableDebtTokenAddress = reserveData[7];
                 // check balance debt token on smart wallet
-                const debtTokenBalance = new Contract(variableDebtTokenAddress, BEP20ABI, appState.web3);
+                const debtTokenBalance = new ethers_1.Contract(variableDebtTokenAddress, BEP20_json_1.default, appState.web3);
                 // const debtTokenBalanceOfSmartWallet = await debtTokenBalance.balanceOf(
                 //   appState.smartWalletState.address
                 // );
@@ -241,13 +248,14 @@ export function SimulationRepay(appState1, tokenAddress, amount) {
         }
     });
 }
+exports.SimulationRepay = SimulationRepay;
 // need remove tToken from smart wallet state
-export function SimulationWithdraw(appState1, tokenAddress, amount) {
+function SimulationWithdraw(appState1, tokenAddress, amount) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const appState = _.cloneDeep(appState1);
-            const oraclePrice = new OraclePrice(getAddr("ORACLE_ADDRESS"), appState.web3);
-            const travaLP = new Contract(getAddr("TRAVA_LENDING_POOL_MARKET"), ABITravaLP, appState.web3);
+            const appState = Object.assign({}, appState1);
+            const oraclePrice = new oraclePrice_1.default((0, address_1.getAddr)("ORACLE_ADDRESS"), appState.web3);
+            const travaLP = new ethers_1.Contract((0, address_1.getAddr)("TRAVA_LENDING_POOL_MARKET"), TravaLendingPool_json_1.default, appState.web3);
             let reverseList = yield travaLP.getReservesList();
             // check tokenAddress is exist on reverseList
             if (reverseList.includes(tokenAddress) &&
@@ -258,7 +266,7 @@ export function SimulationWithdraw(appState1, tokenAddress, amount) {
                 const tTokenAddress = reserveData[6];
                 const variableDebtTokenAddress = reserveData[7];
                 // check balance tToken on smart wallet
-                const tTokenBalance = new Contract(tTokenAddress, BEP20ABI, appState.web3);
+                const tTokenBalance = new ethers_1.Contract(tTokenAddress, BEP20_json_1.default, appState.web3);
                 const tTokenBalanceOfSmartWallet = String(appState.smartWalletState.tokenBalances.get(tTokenAddress));
                 if (tTokenBalanceOfSmartWallet == "0") {
                     throw new Error(`Smart wallet does not supply ${tokenAddress} token.`);
@@ -350,3 +358,4 @@ export function SimulationWithdraw(appState1, tokenAddress, amount) {
         }
     });
 }
+exports.SimulationWithdraw = SimulationWithdraw;

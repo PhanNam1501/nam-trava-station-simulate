@@ -25,7 +25,7 @@ const multiCall = async (abi: any, calls: any,provider:any) => {
 export async function updateTravaBalance(
   appState1: ApplicationState
 ): Promise<ApplicationState> {
-  const appState = _.cloneDeep(appState1);
+  const appState = {...appState1};
   try {
     // K lấy state của smartwallet
     const TravaTokenAddress = getAddr("TRAVA_TOKEN"); // Trava Token Address
@@ -45,7 +45,7 @@ export async function updateTravaBalance(
 export async function updateNFTBalance(
   appState1: ApplicationState
 ): Promise<ApplicationState> {
-  const appState = _.cloneDeep(appState1);
+  const appState = {...appState1};
   try {
     // Update mảnh NFT wallet
     const travacore = new Contract(
@@ -106,7 +106,7 @@ export async function updateNFTBalance(
 }
 
 async function _fetchNormal(appState1: ApplicationState, tokenIds: any): Promise<ApplicationState> {
-  const appState = _.cloneDeep(appState1);
+  const appState = {...appState1};
 
   const [tokenOrders, tokenMetadata] = await Promise.all([
     multiCall(
@@ -157,7 +157,7 @@ async function _fetchNormal(appState1: ApplicationState, tokenIds: any): Promise
 export async function updateNFTState(
   appState1: ApplicationState
 ): Promise<ApplicationState> {
-  const appState = _.cloneDeep(appState1);
+  const appState = {...appState1};
   try {
     const nftsell = new Contract(
       getAddr("NFT_SELL_ADDRESS"),

@@ -1,3 +1,4 @@
+"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -7,16 +8,17 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-import { updateUserTokenBalance } from "../basic/UpdateStateAccount";
-import _ from "lodash";
-export function simulateSwap(appState1, fromToken, toToken, fromAmount, toAmount) {
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.simulateSwap = void 0;
+const UpdateStateAccount_1 = require("../basic/UpdateStateAccount");
+function simulateSwap(appState1, fromToken, toToken, fromAmount, toAmount) {
     return __awaiter(this, void 0, void 0, function* () {
-        const appState = _.cloneDeep(appState1);
+        const appState = Object.assign({}, appState1);
         if (!appState.walletState.tokenBalances.has(fromToken)) {
-            yield updateUserTokenBalance(appState, fromToken);
+            yield (0, UpdateStateAccount_1.updateUserTokenBalance)(appState, fromToken);
         }
         if (!appState.walletState.tokenBalances.has(toToken)) {
-            yield updateUserTokenBalance(appState, toToken);
+            yield (0, UpdateStateAccount_1.updateUserTokenBalance)(appState, toToken);
         }
         if (BigInt(appState.walletState.tokenBalances.get(fromToken)) < BigInt(fromAmount)) {
             throw new Error("Insufficient balance");
@@ -28,3 +30,4 @@ export function simulateSwap(appState1, fromToken, toToken, fromAmount, toAmount
         return appState;
     });
 }
+exports.simulateSwap = simulateSwap;

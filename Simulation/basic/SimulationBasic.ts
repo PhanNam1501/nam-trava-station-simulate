@@ -5,7 +5,7 @@ import { getAddr } from "../../utils/address";
 import _ from "lodash";
 
 export async function simulateWrap(appState1: ApplicationState, amount: number | string): Promise<ApplicationState> {
-    const appState = _.cloneDeep(appState1);
+    const appState = {...appState1};
     if (!appState.smartWalletState.tokenBalances.has(getAddr("WBNB_ADDRESS"))) {
         await updateSmartWalletTokenBalance(appState, getAddr("WBNB_ADDRESS"))
     }
@@ -19,7 +19,7 @@ export async function simulateWrap(appState1: ApplicationState, amount: number |
     return appState;
 }
 export async function simulateUnwrap(appState1: ApplicationState, amount: number | string): Promise<ApplicationState> {
-    const appState = _.cloneDeep(appState1);
+    const appState = {...appState1};
     if (!appState.walletState.tokenBalances.has(getAddr("WBNB_ADDRESS"))) {
         await updateUserTokenBalance(appState, getAddr("WBNB_ADDRESS"))
     }
@@ -33,7 +33,7 @@ export async function simulateUnwrap(appState1: ApplicationState, amount: number
     return appState;
 }
 export async function simulateSendToken(appState1: ApplicationState, tokenAddress: EthAddress, to: EthAddress, amount: number | string): Promise<ApplicationState> {
-    const appState = _.cloneDeep(appState1);
+    const appState = {...appState1};
     if (!appState.walletState.tokenBalances.has(getAddr("WBNB_ADDRESS"))) {
         await updateUserTokenBalance(appState, getAddr("WBNB_ADDRESS"))
     }
