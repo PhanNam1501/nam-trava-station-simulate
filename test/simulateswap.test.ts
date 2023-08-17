@@ -8,6 +8,7 @@ async function test(){
         "0x826D824BE55A403859A6Db67D5EeC5aC386307fE",
         new JsonRpcProvider("https://bsc-testnet.publicnode.com"),
       );
+      console.log("Web3 is",appState.web3)
       await Promise.all([updateUserTokenBalance(appState,"0x4ABEf176F22B9a71B45ddc6c4A115095d8761b37"),updateUserTokenBalance(appState,"0x910CB19698Eac48a6AB7Ccc9542B756f2Bdd67C6")])
       console.log("===Before swap===")
       console.log("TRAVA Balance",appState.walletState.tokenBalances.get("0x4ABEf176F22B9a71B45ddc6c4A115095d8761b37"))
