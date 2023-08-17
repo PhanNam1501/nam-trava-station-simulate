@@ -9,27 +9,36 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 import ERC20Mock from "../../abis/ERC20Mock.json";
 import { Contract } from "ethers";
-export function updateUserEthBalance(appState) {
+import _ from "lodash";
+export function updateUserEthBalance(appState1) {
     return __awaiter(this, void 0, void 0, function* () {
+        const appState = _.cloneDeep(appState1);
         appState.walletState.ethBalances = String(yield appState.web3.getBalance(appState.walletState.address));
+        return appState;
     });
 }
-export function updateSmartWalletEthBalance(appState) {
+export function updateSmartWalletEthBalance(appState1) {
     return __awaiter(this, void 0, void 0, function* () {
+        const appState = _.cloneDeep(appState1);
         appState.smartWalletState.ethBalances = String(yield appState.web3.getBalance(appState.smartWalletState.address));
+        return appState;
     });
 }
-export function updateUserTokenBalance(appState, address) {
+export function updateUserTokenBalance(appState1, address) {
     return __awaiter(this, void 0, void 0, function* () {
+        const appState = _.cloneDeep(appState1);
         const TokenContract = new Contract(address, ERC20Mock, appState.web3);
         const balance = String(yield TokenContract.balanceOf(appState.walletState.address));
         appState.walletState.tokenBalances.set(address, balance);
+        return appState;
     });
 }
-export function updateSmartWalletTokenBalance(appState, address) {
+export function updateSmartWalletTokenBalance(appState1, address) {
     return __awaiter(this, void 0, void 0, function* () {
+        const appState = _.cloneDeep(appState1);
         const TokenContract = new Contract(address, ERC20Mock, appState.web3);
         const balance = String(yield TokenContract.balanceOf(appState.walletState.address));
         appState.smartWalletState.tokenBalances.set(address, balance);
+        return appState;
     });
 }

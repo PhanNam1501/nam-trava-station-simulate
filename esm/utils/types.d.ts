@@ -3,6 +3,21 @@ type Config = {
     testingMode: boolean;
     [key: string]: any;
 };
+type ContractNetwork = {
+    bsc: Contract;
+};
+type Contract = {
+    WBNB: EthAddress;
+    TRAVA_LENDING_POOL_MARKET: Array<EthAddress>;
+    ORACLE_ADDRESS: EthAddress;
+    TRAVA_TOKEN_IN_MARKET: EthAddress;
+    MULTI_CALL_ADDRESS: EthAddress;
+    NFT_CORE_ADDRESS: EthAddress;
+    NFT_MARKETPLACE: EthAddress;
+    NFT_MANAGER: EthAddress;
+    NFT_COLLECTION: EthAddress;
+    TRAVA_TOKEN: EthAddress;
+};
 type Network = {
     chainId: number;
     chainName: string;
@@ -32,4 +47,4 @@ type uint16 = string;
 type uint8 = string;
 type int256 = string;
 type int24 = string;
-export { Config, Network, Networks, EthAddress, bytes32, bytes, uint256, uint160, uint32, uint128, uint80, uint64, uint24, uint16, uint8, int256, int24, };
+export { Config, ContractNetwork, Contract, Network, Networks, EthAddress, bytes32, bytes, uint256, uint160, uint32, uint128, uint80, uint64, uint24, uint16, uint8, int256, int24, };

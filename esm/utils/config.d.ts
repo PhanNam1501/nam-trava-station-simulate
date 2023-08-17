@@ -1,4 +1,4 @@
-import { Config, Network, Networks } from "./types";
+import { Config, ContractNetwork, Network, Networks } from "./types";
 /**
  *
  * @type {Networks}
@@ -18,3 +18,4 @@ export declare const getNetworkData: (chainId: number) => Network;
  * @param config
  */
 export declare const configure: (config: Config) => void;
+export declare const CONTRACT_NETWORK: ContractNetwork;

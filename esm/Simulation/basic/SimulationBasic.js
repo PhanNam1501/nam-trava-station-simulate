@@ -9,8 +9,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 import { updateSmartWalletTokenBalance, updateUserTokenBalance } from "./UpdateStateAccount";
 import { getAddr } from "../../utils/address";
-export function simulateWrap(appState, amount) {
+import _ from "lodash";
+export function simulateWrap(appState1, amount) {
     return __awaiter(this, void 0, void 0, function* () {
+        const appState = _.cloneDeep(appState1);
         if (!appState.smartWalletState.tokenBalances.has(getAddr("WBNB_ADDRESS"))) {
             yield updateSmartWalletTokenBalance(appState, getAddr("WBNB_ADDRESS"));
         }
@@ -21,10 +23,12 @@ export function simulateWrap(appState, amount) {
         let newWBNBBalance = BigInt(appState.smartWalletState.tokenBalances.get(getAddr("WBNB_ADDRESS"))) + BigInt(amount);
         appState.walletState.ethBalances = String(newEthBalance);
         appState.smartWalletState.tokenBalances.set(getAddr("WBNB_ADDRESS"), String(BigInt(newWBNBBalance)));
+        return appState;
     });
 }
-export function simulateUnwrap(appState, amount) {
+export function simulateUnwrap(appState1, amount) {
     return __awaiter(this, void 0, void 0, function* () {
+        const appState = _.cloneDeep(appState1);
         if (!appState.walletState.tokenBalances.has(getAddr("WBNB_ADDRESS"))) {
             yield updateUserTokenBalance(appState, getAddr("WBNB_ADDRESS"));
         }
@@ -35,10 +39,12 @@ export function simulateUnwrap(appState, amount) {
         let newBNBBalance = BigInt(appState.walletState.ethBalances) + BigInt(amount);
         appState.walletState.tokenBalances.set(getAddr("WBNB_ADDRESS"), String(newWBNBBalance));
         appState.walletState.ethBalances = String(newBNBBalance);
+        return appState;
     });
 }
-export function simulateSendToken(appState, tokenAddress, to, amount) {
+export function simulateSendToken(appState1, tokenAddress, to, amount) {
     return __awaiter(this, void 0, void 0, function* () {
+        const appState = _.cloneDeep(appState1);
         if (!appState.walletState.tokenBalances.has(getAddr("WBNB_ADDRESS"))) {
             yield updateUserTokenBalance(appState, getAddr("WBNB_ADDRESS"));
         }
@@ -54,5 +60,6 @@ export function simulateSendToken(appState, tokenAddress, to, amount) {
             let newUserTokenBalance = BigInt(appState.walletState.tokenBalances.get(tokenAddress)) + BigInt(amount);
             appState.walletState.tokenBalances.set(tokenAddress, String(newUserTokenBalance));
         }
+        return appState;
     });
 }

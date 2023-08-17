@@ -14,6 +14,7 @@ import TravaNFTSellABI from "../../abis/TravaNFTSell.json";
 import NFTManagerABI from "../../abis/NFTManager.json";
 import { Contract, Interface } from "ethers";
 import { getAddr } from "../../utils/address";
+import _ from "lodash";
 const multiCall = (abi, calls, provider) => __awaiter(void 0, void 0, void 0, function* () {
     let _provider = provider;
     const multi = new Contract(getAddr("MULTI_CALL_ADDRESS"), MultiCallABI, _provider);
@@ -22,11 +23,12 @@ const multiCall = (abi, calls, provider) => __awaiter(void 0, void 0, void 0, fu
     const { returnData } = yield multi.aggregate(callData);
     return returnData.map((call, i) => itf.decodeFunctionResult(calls[i].name, call));
 });
-export function updateTravaBalance(appState) {
+export function updateTravaBalance(appState1) {
     return __awaiter(this, void 0, void 0, function* () {
+        const appState = _.cloneDeep(appState1);
         try {
             // K lấy state của smartwallet
-            const TravaTokenAddress = "0x4ABEf176F22B9a71B45ddc6c4A115095d8761b37"; // Trava Token Address
+            const TravaTokenAddress = getAddr("TRAVA_TOKEN"); // Trava Token Address
             const TravaToken = new Contract(TravaTokenAddress, ERC20Mock, appState.web3);
             const travaBalance = yield TravaToken.balanceOf(appState.walletState.address);
             appState.walletState.tokenBalances.set(TravaTokenAddress, travaBalance);
@@ -34,10 +36,12 @@ export function updateTravaBalance(appState) {
         catch (e) {
             console.log(e);
         }
+        return appState;
     });
 }
-export function updateNFTBalance(appState) {
+export function updateNFTBalance(appState1) {
     return __awaiter(this, void 0, void 0, function* () {
+        const appState = _.cloneDeep(appState1);
         try {
             // Update mảnh NFT wallet
             const travacore = new Contract(getAddr("NFT_CORE_ADDRESS"), TravaNFTCoreABI, appState.web3);
@@ -74,7 +78,7 @@ export function updateNFTBalance(appState) {
             // Update NFT Collection 
             // const travacollection = await ethers.getContractAt(
             //   NFTCollectionABI,
-            //   process.env.NFT_COLLECTION_ADDRESS
+            //   CONTRACT_NETWORK.bsc.NFT_COLLECTION
             // );
             // const nftCount2 = await travacollection.balanceOf(appState.walletState.address);
             appState.walletState.collection.v1.push({ id: "0001" }); // => Fake state cho nhanh
@@ -83,10 +87,12 @@ export function updateNFTBalance(appState) {
         catch (e) {
             console.log(e);
         }
+        return appState;
     });
 }
-function _fetchNormal(appState, tokenIds) {
+function _fetchNormal(appState1, tokenIds) {
     return __awaiter(this, void 0, void 0, function* () {
+        const appState = _.cloneDeep(appState1);
         const [tokenOrders, tokenMetadata] = yield Promise.all([
             multiCall(TravaNFTSellABI, tokenIds.map((tokenId) => ({
                 address: getAddr("NFT_SELL_ADDRESS"),
@@ -122,10 +128,12 @@ function _fetchNormal(appState, tokenIds) {
             }
             counter++;
         }
+        return appState;
     });
 }
-export function updateNFTState(appState) {
+export function updateNFTState(appState1) {
     return __awaiter(this, void 0, void 0, function* () {
+        const appState = _.cloneDeep(appState1);
         try {
             const nftsell = new Contract(getAddr("NFT_SELL_ADDRESS"), TravaNFTSellABI, appState.web3);
             const nftCount = yield nftsell.getTokenOnSaleCount();
@@ -147,5 +155,6 @@ export function updateNFTState(appState) {
         catch (e) {
             console.log(e);
         }
+        return appState;
     });
 }

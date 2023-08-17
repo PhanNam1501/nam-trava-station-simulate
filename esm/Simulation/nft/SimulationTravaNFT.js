@@ -8,10 +8,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 import { getAddr } from "../../utils/address";
-export function simulateTravaNFTBuy(appState, tokenId, from, to) {
+import _ from "lodash";
+export function simulateTravaNFTBuy(appState1, tokenId, from, to) {
     var _a, _b;
     return __awaiter(this, void 0, void 0, function* () {
         try {
+            const appState = _.cloneDeep(appState1);
             let currentVersion = "v1";
             let currentNFT = appState.NFTState.nfts.v1.find(n => n.id == tokenId);
             if (!currentNFT) {
@@ -21,7 +23,7 @@ export function simulateTravaNFTBuy(appState, tokenId, from, to) {
             if (!currentNFT) {
                 throw new Error("NFT is not being sold");
             }
-            const travaAddress = "0x4ABEf176F22B9a71B45ddc6c4A115095d8761b37";
+            const travaAddress = getAddr("TRAVA_TOKEN");
             if (from == appState.walletState.address) {
                 let travaBalance = (_a = appState.walletState.tokenBalances.get(travaAddress)) !== null && _a !== void 0 ? _a : "0";
                 appState.walletState.tokenBalances.set(travaAddress, (BigInt(travaBalance) - BigInt(currentNFT.data.price)).toString());
@@ -44,9 +46,10 @@ export function simulateTravaNFTBuy(appState, tokenId, from, to) {
         }
     });
 }
-export function simulateTravaNFTSell(appState, tokenId, price, from) {
+export function simulateTravaNFTSell(appState1, tokenId, price, from) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
+            const appState = _.cloneDeep(appState1);
             let currentVersion = "v1";
             if (from == appState.walletState.address) {
                 let currentNFT = appState.walletState.nfts.v1.find(n => n.id == tokenId);
@@ -72,9 +75,10 @@ export function simulateTravaNFTSell(appState, tokenId, price, from) {
         }
     });
 }
-export function simulateTravaNFTTransfer(appState, from, to, tokenId, contract) {
+export function simulateTravaNFTTransfer(appState1, from, to, tokenId, contract) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
+            const appState = _.cloneDeep(appState1);
             let prefix = "collection";
             if (contract == getAddr("NFT_CORE_ADDRESS")) {
                 prefix = "nfts";

@@ -12,9 +12,11 @@ import ABITravaLP from "../../abis/TravaLendingPool.json";
 import BEP20ABI from "../../abis/BEP20.json";
 import { getAddr } from "../../utils/address";
 import { Contract } from "ethers";
-export function SimulationSupply(appState, tokenAddress, amount) {
+import _ from "lodash";
+export function SimulationSupply(appState1, tokenAddress, amount) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
+            const appState = _.cloneDeep(appState1);
             const oraclePrice = new OraclePrice(getAddr("ORACLE_ADDRESS"), appState.web3);
             const travaLP = new Contract(getAddr("TRAVA_LENDING_POOL_MARKET"), ABITravaLP, appState.web3);
             let reverseList = yield travaLP.getReservesList();
@@ -77,6 +79,7 @@ export function SimulationSupply(appState, tokenAddress, amount) {
                     appState.smartWalletState.tokenBalances.set(tToken, String(BigInt(appState.smartWalletState.tokenBalances.get(tToken)) +
                         BigInt(amount)));
                 }
+                return appState;
             }
             else {
                 throw new Error(`Account or LP does not have ${tokenAddress} token.`);
@@ -88,9 +91,10 @@ export function SimulationSupply(appState, tokenAddress, amount) {
     });
 }
 // need add debt token to smart wallet state
-export function SimulationBorrow(appState, tokenAddress, amount) {
+export function SimulationBorrow(appState1, tokenAddress, amount) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
+            const appState = _.cloneDeep(appState1);
             const oraclePrice = new OraclePrice(getAddr("ORACLE_ADDRESS"), appState.web3);
             const travaLP = new Contract(getAddr("TRAVA_LENDING_POOL_MARKET"), ABITravaLP, appState.web3);
             let reverseList = yield travaLP.getReservesList();
@@ -140,6 +144,7 @@ export function SimulationBorrow(appState, tokenAddress, amount) {
                     appState.smartWalletState.tokenBalances.set(debToken, String(BigInt(appState.smartWalletState.tokenBalances.get(debToken)) +
                         BigInt(amount)));
                 }
+                return appState;
             }
             else {
                 throw new Error(`Account or LP does not have ${tokenAddress} token or token is not exist in reverseList.`);
@@ -151,9 +156,10 @@ export function SimulationBorrow(appState, tokenAddress, amount) {
     });
 }
 // need remove debt token from smart wallet state
-export function SimulationRepay(appState, tokenAddress, amount) {
+export function SimulationRepay(appState1, tokenAddress, amount) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
+            const appState = _.cloneDeep(appState1);
             const oraclePrice = new OraclePrice(getAddr("ORACLE_ADDRESS"), appState.web3);
             const travaLP = new Contract(getAddr("TRAVA_LENDING_POOL_MARKET"), ABITravaLP, appState.web3);
             let reverseList = yield travaLP.getReservesList();
@@ -224,6 +230,7 @@ export function SimulationRepay(appState, tokenAddress, amount) {
                         appState.smartWalletState.tokenBalances.set(variableDebtTokenAddress, "0");
                     }
                 }
+                return appState;
             }
             else {
                 throw new Error(`Token ${tokenAddress} is not exist in reverseList or smart wallet does not have ${tokenAddress} token.`);
@@ -235,9 +242,10 @@ export function SimulationRepay(appState, tokenAddress, amount) {
     });
 }
 // need remove tToken from smart wallet state
-export function SimulationWithdraw(appState, tokenAddress, amount) {
+export function SimulationWithdraw(appState1, tokenAddress, amount) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
+            const appState = _.cloneDeep(appState1);
             const oraclePrice = new OraclePrice(getAddr("ORACLE_ADDRESS"), appState.web3);
             const travaLP = new Contract(getAddr("TRAVA_LENDING_POOL_MARKET"), ABITravaLP, appState.web3);
             let reverseList = yield travaLP.getReservesList();
@@ -331,6 +339,7 @@ export function SimulationWithdraw(appState, tokenAddress, amount) {
                         appState.smartWalletState.tokenBalances.set(tTokenAddress, "0");
                     }
                 }
+                return appState;
             }
             else {
                 throw new Error(`Token ${tokenAddress} is not exist in reverseList or smart wallet does not have ${tokenAddress} token.`);

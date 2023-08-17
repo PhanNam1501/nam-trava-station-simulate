@@ -10,6 +10,7 @@ export declare const listAddr: {
         NFT_MANAGER_ADDRESS: string;
         NFT_COLLECTION_ADDRESS: string;
         WBNB_ADDRESS: string;
+        TRAVA_TOKEN: string;
     };
 };
 export declare const getAddr: (name: string, chainId?: number) => EthAddress;

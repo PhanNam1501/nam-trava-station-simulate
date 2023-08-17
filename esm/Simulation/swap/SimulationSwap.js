@@ -8,8 +8,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 import { updateUserTokenBalance } from "../basic/UpdateStateAccount";
-export function simulateSwap(appState, fromToken, toToken, fromAmount, toAmount) {
+import _ from "lodash";
+export function simulateSwap(appState1, fromToken, toToken, fromAmount, toAmount) {
     return __awaiter(this, void 0, void 0, function* () {
+        const appState = _.cloneDeep(appState1);
         if (!appState.walletState.tokenBalances.has(fromToken)) {
             yield updateUserTokenBalance(appState, fromToken);
         }
@@ -23,5 +25,6 @@ export function simulateSwap(appState, fromToken, toToken, fromAmount, toAmount)
         let newToBalance = BigInt(appState.walletState.tokenBalances.get(toToken)) + BigInt(toAmount);
         appState.walletState.tokenBalances.set(fromToken, String(BigInt(newFromBalance)));
         appState.walletState.tokenBalances.set(toToken, String(BigInt(newToBalance)));
+        return appState;
     });
 }
