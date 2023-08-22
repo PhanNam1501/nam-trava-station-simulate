@@ -2,7 +2,7 @@ const path = require("path");
 
 module.exports = {
   mode: "none",
-  entry: "./index.ts",
+  entry: "./src/index.ts",
   target: "node",
   output: {
     library: "trava-station-simulation",
@@ -37,6 +37,6 @@ module.exports = {
   },
   externals: ["decimal.js", "@zennomi/tokens", "ethers"],
   resolve: {
-    extensions: [".ts", ".js"],
+    extensions: [".ts", ".js", ".json"],
   },
 };
