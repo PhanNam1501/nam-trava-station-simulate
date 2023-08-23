@@ -1,8 +1,7 @@
-
 import { EthAddress } from "../../utils/types";
 import { ApplicationState } from "../../State/ApplicationState";
-import {Contract} from "ethers";
-import ABITravaLP  from "../../abis/TravaLendingPool.json";
+import { Contract } from "ethers";
+import ABITravaLP from "../../abis/TravaLendingPool.json";
 import BEP20ABI from "../../abis/BEP20.json";
 import { getAddr } from "../../utils/address";
 import _ from "lodash";
@@ -12,9 +11,13 @@ export async function updateTravaLPInfo(
   userAddress: EthAddress
 ): Promise<ApplicationState> {
   try {
-    const appState = {...appState1};
+    const appState = { ...appState1 };
     // first update token in pool balances
-    const TravaLendingPool = new Contract(getAddr("TRAVA_LENDING_POOL_MARKET"),ABITravaLP,appState.web3!);
+    const TravaLendingPool = new Contract(
+      getAddr("TRAVA_LENDING_POOL_MARKET", appState.chainId),
+      ABITravaLP,
+      appState.web3!
+    );
 
     const reserveAddressList = await TravaLendingPool.getReservesList();
     if (reserveAddressList.length == 0) {
@@ -24,7 +27,7 @@ export async function updateTravaLPInfo(
     for (let i = 0; i < reserveAddressList.length; i++) {
       // update token balance for wallet
       const reserveAddress = reserveAddressList[i];
-      const reserve = new Contract (reserveAddress,BEP20ABI,appState.web3);
+      const reserve = new Contract(reserveAddress, BEP20ABI, appState.web3);
       const balance = await reserve.balanceOf(userAddress);
 
       appState.walletState.tokenBalances.set(reserveAddress, balance);

@@ -8,12 +8,18 @@ export class ApplicationState {
   walletState: WalletState;
   smartWalletState: SmartWalletState;
   NFTState: NFTState;
-  web3 : JsonRpcProvider | null
-
-  constructor(userAddress: EthAddress, smartWalletAddress: EthAddress,web3 : JsonRpcProvider | null) {
+  web3: JsonRpcProvider | null;
+  chainId: number | undefined;
+  constructor(
+    userAddress: EthAddress,
+    smartWalletAddress: EthAddress,
+    web3: JsonRpcProvider | null,
+    chainId: number | undefined
+  ) {
     this.walletState = new WalletState(userAddress);
     this.smartWalletState = new SmartWalletState(smartWalletAddress);
     this.NFTState = new NFTState();
-    this.web3 = web3
+    this.web3 = web3;
+    this.chainId = chainId;
   }
 }
