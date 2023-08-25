@@ -32,6 +32,7 @@ type Network = {
 };
 type Networks = {
     bsc: Network;
+    bscMainnet: Network;
 };
 type EthAddress = string;
 type bytes32 = string;

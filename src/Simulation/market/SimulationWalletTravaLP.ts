@@ -14,11 +14,18 @@ export async function SimulationSupply(
 ): Promise<ApplicationState> {
   try {
     const appState = { ...appState1 };
-    const oraclePrice = new OraclePrice(getAddr("ORACLE_ADDRESS"), appState.web3!);
-    const travaLP = new Contract(getAddr("TRAVA_LENDING_POOL_MARKET"), ABITravaLP, appState.web3!);
+    const oraclePrice = new OraclePrice(
+      getAddr("ORACLE_ADDRESS", appState.chainId),
+      appState.web3!
+    );
+    const travaLP = new Contract(
+      getAddr("TRAVA_LENDING_POOL_MARKET", appState.chainId),
+      ABITravaLP,
+      appState.web3!
+    );
     const tokenAddress = convertHexStringToAddress(_tokenAddress);
     _tokenAddress = _tokenAddress.toLowerCase();
-
+    
     let reverseList = await travaLP.getReservesList();
     // check tokenAddress is exist on reverseList
     if (
@@ -124,8 +131,15 @@ export async function SimulationBorrow(
 ): Promise<ApplicationState> {
   try {
     const appState = { ...appState1 };
-    const oraclePrice = new OraclePrice(getAddr("ORACLE_ADDRESS"), appState.web3!);
-    const travaLP = new Contract(getAddr("TRAVA_LENDING_POOL_MARKET"), ABITravaLP, appState.web3!);
+    const oraclePrice = new OraclePrice(
+      getAddr("ORACLE_ADDRESS", appState.chainId),
+      appState.web3!
+    );
+    const travaLP = new Contract(
+      getAddr("TRAVA_LENDING_POOL_MARKET", appState.chainId),
+      ABITravaLP,
+      appState.web3!
+    );
     const tokenAddress = convertHexStringToAddress(_tokenAddress);
     _tokenAddress = _tokenAddress.toLowerCase();
 
@@ -224,10 +238,18 @@ export async function SimulationRepay(
 ): Promise<ApplicationState> {
   try {
     const appState = { ...appState1 };
-    const oraclePrice = new OraclePrice(getAddr("ORACLE_ADDRESS"), appState.web3!);
-    const travaLP = new Contract(getAddr("TRAVA_LENDING_POOL_MARKET"), ABITravaLP, appState.web3!);
+    const oraclePrice = new OraclePrice(
+      getAddr("ORACLE_ADDRESS", appState.chainId),
+      appState.web3!
+    );
+    const travaLP = new Contract(
+      getAddr("TRAVA_LENDING_POOL_MARKET", appState.chainId),
+      ABITravaLP,
+      appState.web3!
+    );
     const tokenAddress = convertHexStringToAddress(_tokenAddress);
     _tokenAddress = _tokenAddress.toLowerCase()
+
     let reverseList = await travaLP.getReservesList();
     // check tokenAddress is exist on reverseList
     if (
@@ -243,7 +265,11 @@ export async function SimulationRepay(
 
       // check balance debt token on smart wallet
 
-      // const debtTokenBalance = new Contract(variableDebtTokenAddress,BEP20ABI,appState.web3);
+      const debtTokenBalance = new Contract(
+        variableDebtTokenAddress,
+        BEP20ABI,
+        appState.web3
+      );
 
       // const debtTokenBalanceOfSmartWallet = await debtTokenBalance.balanceOf(
       //   appState.smartWalletState.address
@@ -357,11 +383,17 @@ export async function SimulationWithdraw(
 ): Promise<ApplicationState> {
   try {
     const appState = { ...appState1 };
-    const oraclePrice = new OraclePrice(getAddr("ORACLE_ADDRESS"), appState.web3!);
-    const travaLP = new Contract(getAddr("TRAVA_LENDING_POOL_MARKET"), ABITravaLP, appState.web3!);
+    const oraclePrice = new OraclePrice(
+      getAddr("ORACLE_ADDRESS", appState.chainId),
+      appState.web3!
+    );
+    const travaLP = new Contract(
+      getAddr("TRAVA_LENDING_POOL_MARKET", appState.chainId),
+      ABITravaLP,
+      appState.web3!
+    );
     const tokenAddress = convertHexStringToAddress(_tokenAddress);
     _tokenAddress = _tokenAddress.toLowerCase();
-
     let reverseList = await travaLP.getReservesList();
     // check tokenAddress is exist on reverseList
     if (

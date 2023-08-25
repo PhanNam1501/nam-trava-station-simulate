@@ -17,7 +17,7 @@ export function updateTravaLPInfo(appState1, userAddress) {
         try {
             const appState = Object.assign({}, appState1);
             // first update token in pool balances
-            const TravaLendingPool = new Contract(getAddr("TRAVA_LENDING_POOL_MARKET"), ABITravaLP, appState.web3);
+            const TravaLendingPool = new Contract(getAddr("TRAVA_LENDING_POOL_MARKET", appState.chainId), ABITravaLP, appState.web3);
             const reserveAddressList = yield TravaLendingPool.getReservesList();
             if (reserveAddressList.length == 0) {
                 throw new Error("No reserve in TravaLP");

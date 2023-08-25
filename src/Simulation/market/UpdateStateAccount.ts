@@ -1,8 +1,7 @@
-
 import { EthAddress } from "../../utils/types";
 import { ApplicationState } from "../../State/ApplicationState";
-import {Contract} from "ethers";
-import ABITravaLP  from "../../abis/TravaLendingPool.json";
+import { Contract } from "ethers";
+import ABITravaLP from "../../abis/TravaLendingPool.json";
 import BEP20ABI from "../../abis/BEP20.json";
 import { convertHexStringToAddress, getAddr } from "../../utils/address";
 import _ from "lodash";
@@ -12,10 +11,14 @@ export async function updateTravaLPInfo(
   userAddress: EthAddress
 ): Promise<ApplicationState> {
   try {
-    const appState = {...appState1};
+    const appState = { ...appState1 };
     // first update token in pool balances
-    const TravaLendingPool = new Contract(getAddr("TRAVA_LENDING_POOL_MARKET"),ABITravaLP,appState.web3!);
-    
+    const TravaLendingPool = new Contract(
+      getAddr("TRAVA_LENDING_POOL_MARKET", appState.chainId),
+      ABITravaLP,
+      appState.web3!
+    );
+
     const reserveAddressList = await TravaLendingPool.getReservesList();
     if (reserveAddressList.length == 0) {
       throw new Error("No reserve in TravaLP");

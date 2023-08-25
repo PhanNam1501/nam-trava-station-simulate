@@ -16,8 +16,8 @@ export function SimulationSupply(appState1, _tokenAddress, amount) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const appState = Object.assign({}, appState1);
-            const oraclePrice = new OraclePrice(getAddr("ORACLE_ADDRESS"), appState.web3);
-            const travaLP = new Contract(getAddr("TRAVA_LENDING_POOL_MARKET"), ABITravaLP, appState.web3);
+            const oraclePrice = new OraclePrice(getAddr("ORACLE_ADDRESS", appState.chainId), appState.web3);
+            const travaLP = new Contract(getAddr("TRAVA_LENDING_POOL_MARKET", appState.chainId), ABITravaLP, appState.web3);
             const tokenAddress = convertHexStringToAddress(_tokenAddress);
             _tokenAddress = _tokenAddress.toLowerCase();
             let reverseList = yield travaLP.getReservesList();
@@ -96,8 +96,8 @@ export function SimulationBorrow(appState1, _tokenAddress, amount) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const appState = Object.assign({}, appState1);
-            const oraclePrice = new OraclePrice(getAddr("ORACLE_ADDRESS"), appState.web3);
-            const travaLP = new Contract(getAddr("TRAVA_LENDING_POOL_MARKET"), ABITravaLP, appState.web3);
+            const oraclePrice = new OraclePrice(getAddr("ORACLE_ADDRESS", appState.chainId), appState.web3);
+            const travaLP = new Contract(getAddr("TRAVA_LENDING_POOL_MARKET", appState.chainId), ABITravaLP, appState.web3);
             const tokenAddress = convertHexStringToAddress(_tokenAddress);
             _tokenAddress = _tokenAddress.toLowerCase();
             let reverseList = yield travaLP.getReservesList();
@@ -163,8 +163,8 @@ export function SimulationRepay(appState1, _tokenAddress, amount) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const appState = Object.assign({}, appState1);
-            const oraclePrice = new OraclePrice(getAddr("ORACLE_ADDRESS"), appState.web3);
-            const travaLP = new Contract(getAddr("TRAVA_LENDING_POOL_MARKET"), ABITravaLP, appState.web3);
+            const oraclePrice = new OraclePrice(getAddr("ORACLE_ADDRESS", appState.chainId), appState.web3);
+            const travaLP = new Contract(getAddr("TRAVA_LENDING_POOL_MARKET", appState.chainId), ABITravaLP, appState.web3);
             const tokenAddress = convertHexStringToAddress(_tokenAddress);
             _tokenAddress = _tokenAddress.toLowerCase();
             let reverseList = yield travaLP.getReservesList();
@@ -177,7 +177,7 @@ export function SimulationRepay(appState1, _tokenAddress, amount) {
                 const tTokenAddress = reserveData[6];
                 const variableDebtTokenAddress = String(reserveData[7]).toLowerCase();
                 // check balance debt token on smart wallet
-                // const debtTokenBalance = new Contract(variableDebtTokenAddress,BEP20ABI,appState.web3);
+                const debtTokenBalance = new Contract(variableDebtTokenAddress, BEP20ABI, appState.web3);
                 // const debtTokenBalanceOfSmartWallet = await debtTokenBalance.balanceOf(
                 //   appState.smartWalletState.address
                 // );
@@ -251,8 +251,8 @@ export function SimulationWithdraw(appState1, _tokenAddress, amount) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const appState = Object.assign({}, appState1);
-            const oraclePrice = new OraclePrice(getAddr("ORACLE_ADDRESS"), appState.web3);
-            const travaLP = new Contract(getAddr("TRAVA_LENDING_POOL_MARKET"), ABITravaLP, appState.web3);
+            const oraclePrice = new OraclePrice(getAddr("ORACLE_ADDRESS", appState.chainId), appState.web3);
+            const travaLP = new Contract(getAddr("TRAVA_LENDING_POOL_MARKET", appState.chainId), ABITravaLP, appState.web3);
             const tokenAddress = convertHexStringToAddress(_tokenAddress);
             _tokenAddress = _tokenAddress.toLowerCase();
             let reverseList = yield travaLP.getReservesList();

@@ -12,6 +12,14 @@ export const NETWORKS = {
         rpcUrls: [],
         nativeCurrency: { name: "BNB", decimals: 18, symbol: "BNB" },
     },
+    bscMainnet: {
+        chainId: 56,
+        chainName: "Binance Smart Chain Mainnet",
+        blockExplorerUrls: ["https://bscscan.com/"],
+        iconUrls: [],
+        rpcUrls: [],
+        nativeCurrency: { name: "BNB", decimals: 18, symbol: "BNB" },
+    },
 };
 /**
  *
@@ -55,6 +63,6 @@ export const CONTRACT_NETWORK = {
         NFT_MARKETPLACE: "0xf5804062c93b0C725e277F772b5DA06749005cd5",
         NFT_MANAGER: "0xA91A365D2e3D280553E96D5afA157e6A3e50890A",
         NFT_COLLECTION: "0x5D996eC57756cEB127a4eD3302d7F28F52FDEbb1",
-        TRAVA_TOKEN: "0x4ABEf176F22B9a71B45ddc6c4A115095d8761b37"
-    }
+        TRAVA_TOKEN: "0x4ABEf176F22B9a71B45ddc6c4A115095d8761b37",
+    },
 };

@@ -17,8 +17,7 @@ return /******/ (() => { // webpackBootstrap
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   ApplicationState: () => (/* reexport safe */ _ApplicationState__WEBPACK_IMPORTED_MODULE_0__.ApplicationState),
-/* harmony export */   initializeState: () => (/* reexport safe */ _ApplicationState__WEBPACK_IMPORTED_MODULE_0__.initializeState)
+/* harmony export */   ApplicationState: () => (/* reexport safe */ _ApplicationState__WEBPACK_IMPORTED_MODULE_0__.ApplicationState)
 /* harmony export */ });
 /* harmony import */ var _ApplicationState__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2);
 
@@ -30,14 +29,11 @@ __webpack_require__.r(__webpack_exports__);
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   ApplicationState: () => (/* binding */ ApplicationState),
-/* harmony export */   initializeState: () => (/* binding */ initializeState)
+/* harmony export */   ApplicationState: () => (/* binding */ ApplicationState)
 /* harmony export */ });
 /* harmony import */ var _WalletState__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(3);
 /* harmony import */ var _SmartWalletState__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(5);
 /* harmony import */ var _NFTState__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(6);
-function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
-function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
 function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return typeof key === "symbol" ? key : String(key); }
 function _toPrimitive(input, hint) { if (typeof input !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (typeof res !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
@@ -45,30 +41,29 @@ function _toPrimitive(input, hint) { if (typeof input !== "object" || input === 
 
 
 class ApplicationState {
-  constructor(userAddress, smartWalletAddress, web3) {
+  constructor(userAddress, smartWalletAddress, web3, chainId) {
     _defineProperty(this, "walletState", void 0);
     _defineProperty(this, "smartWalletState", void 0);
     _defineProperty(this, "NFTState", void 0);
     _defineProperty(this, "web3", void 0);
+    _defineProperty(this, "chainId", void 0);
     this.walletState = new _WalletState__WEBPACK_IMPORTED_MODULE_0__.WalletState(userAddress);
     this.smartWalletState = new _SmartWalletState__WEBPACK_IMPORTED_MODULE_1__.SmartWalletState(smartWalletAddress);
     this.NFTState = new _NFTState__WEBPACK_IMPORTED_MODULE_2__.NFTState();
     this.web3 = web3;
+    this.chainId = chainId;
   }
 }
-function initializeState(_x, _x2, _x3) {
-  return _initializeState.apply(this, arguments);
-}
-function _initializeState() {
-  _initializeState = _asyncToGenerator(function* (userAddress, smartWalletAddress, web3) {
-    var _appState$web;
-    var appState = new ApplicationState(userAddress, smartWalletAddress, web3);
-    appState.walletState.ethBalances = String(yield (_appState$web = appState.web3) === null || _appState$web === void 0 ? void 0 : _appState$web.getBalance(appState.walletState.address));
-    appState.smartWalletState.ethBalances = String(yield appState.web3.getBalance(appState.smartWalletState.address));
-    return appState;
-  });
-  return _initializeState.apply(this, arguments);
-}
+
+// export async function initializeState(userAddress: EthAddress, smartWalletAddress: EthAddress, web3: JsonRpcProvider | null): Promise<ApplicationState> {
+//   const appState = new ApplicationState(
+//     userAddress, smartWalletAddress, web3
+//   )
+//   appState.walletState.ethBalances = String(await appState.web3?.getBalance(appState.walletState.address))
+//   appState.smartWalletState.ethBalances = String(await appState.web3!.getBalance(appState.smartWalletState.address))
+//   return appState;
+
+// }
 
 /***/ }),
 /* 3 */
@@ -539,11 +534,33 @@ var listAddr = {
     NFT_COLLECTION_ADDRESS: "0x5D996eC57756cEB127a4eD3302d7F28F52FDEbb1",
     WBNB_ADDRESS: "0x910CB19698Eac48a6AB7Ccc9542B756f2Bdd67C6",
     TRAVA_TOKEN: "0x4ABEf176F22B9a71B45ddc6c4A115095d8761b37"
+  },
+  // MUST BE FILL MAINNET ADDRESS HERE. NOW IS TESTNET
+  [_config__WEBPACK_IMPORTED_MODULE_0__.NETWORKS.bscMainnet.chainId]: {
+    TRAVA_LENDING_POOL_MARKET: "0x75de5f7c91a89c16714017c7443eca20c7a8c295",
+    // mainnet
+    ORACLE_ADDRESS: "0x3e2320C81FdB8919bC5771CBA897B9C683506140",
+    // testnet
+    TRAVA_TOKEN_IN_MARKET: "0xE1F005623934D3D8C724EC68Cc9bFD95498D4435",
+    // testnet
+    NFT_CORE_ADDRESS: "0xd2Eca5a421db7c2e2aC88Da684214B52915A66b3",
+    // testnet
+    MULTI_CALL_ADDRESS: "0xd808400FbF312ACA5C7487cd30B0D1386e04BC78",
+    // testnet
+    NFT_SELL_ADDRESS: "0xf5804062c93b0C725e277F772b5DA06749005cd5",
+    // testnet
+    NFT_MANAGER_ADDRESS: "0xA91A365D2e3D280553E96D5afA157e6A3e50890A",
+    // testnet
+    NFT_COLLECTION_ADDRESS: "0x5D996eC57756cEB127a4eD3302d7F28F52FDEbb1",
+    // testnet
+    WBNB_ADDRESS: "0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c",
+    // mainnet
+    TRAVA_TOKEN: "0x0391bE54E72F7e001f6BBc331777710b4f2999Ef" // mainnet
   }
 };
-var getAddr = function getAddr(name) {
-  var chainId = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : _config__WEBPACK_IMPORTED_MODULE_0__.CONFIG.chainId;
-  var _chainId = typeof chainId === 'undefined' ? _config__WEBPACK_IMPORTED_MODULE_0__.CONFIG.chainId : chainId;
+
+var getAddr = (name, chainId) => {
+  var _chainId = typeof chainId === "undefined" ? _config__WEBPACK_IMPORTED_MODULE_0__.CONFIG.chainId : chainId;
   var addr = listAddr[_chainId];
 
   // skip this check if we're in testing mode
@@ -584,6 +601,18 @@ var NETWORKS = {
     chainId: 97,
     chainName: "Binance Smart Chain Testnet",
     blockExplorerUrls: ["https://testnet.bscscan.com/"],
+    iconUrls: [],
+    rpcUrls: [],
+    nativeCurrency: {
+      name: "BNB",
+      decimals: 18,
+      symbol: "BNB"
+    }
+  },
+  bscMainnet: {
+    chainId: 56,
+    chainName: "Binance Smart Chain Mainnet",
+    blockExplorerUrls: ["https://bscscan.com/"],
     iconUrls: [],
     rpcUrls: [],
     nativeCurrency: {
@@ -20223,8 +20252,8 @@ function _SimulationSupply() {
   _SimulationSupply = _asyncToGenerator(function* (appState1, _tokenAddress, amount) {
     try {
       var appState = _objectSpread({}, appState1);
-      var oraclePrice = new _utils_oraclePrice__WEBPACK_IMPORTED_MODULE_0__["default"]((0,_utils_address__WEBPACK_IMPORTED_MODULE_3__.getAddr)("ORACLE_ADDRESS"), appState.web3);
-      var travaLP = new ethers__WEBPACK_IMPORTED_MODULE_4__.Contract((0,_utils_address__WEBPACK_IMPORTED_MODULE_3__.getAddr)("TRAVA_LENDING_POOL_MARKET"), _abis_TravaLendingPool_json__WEBPACK_IMPORTED_MODULE_1__, appState.web3);
+      var oraclePrice = new _utils_oraclePrice__WEBPACK_IMPORTED_MODULE_0__["default"]((0,_utils_address__WEBPACK_IMPORTED_MODULE_3__.getAddr)("ORACLE_ADDRESS", appState.chainId), appState.web3);
+      var travaLP = new ethers__WEBPACK_IMPORTED_MODULE_4__.Contract((0,_utils_address__WEBPACK_IMPORTED_MODULE_3__.getAddr)("TRAVA_LENDING_POOL_MARKET", appState.chainId), _abis_TravaLendingPool_json__WEBPACK_IMPORTED_MODULE_1__, appState.web3);
       var tokenAddress = (0,_utils_address__WEBPACK_IMPORTED_MODULE_3__.convertHexStringToAddress)(_tokenAddress);
       _tokenAddress = _tokenAddress.toLowerCase();
       var reverseList = yield travaLP.getReservesList();
@@ -20293,8 +20322,8 @@ function _SimulationBorrow() {
   _SimulationBorrow = _asyncToGenerator(function* (appState1, _tokenAddress, amount) {
     try {
       var appState = _objectSpread({}, appState1);
-      var oraclePrice = new _utils_oraclePrice__WEBPACK_IMPORTED_MODULE_0__["default"]((0,_utils_address__WEBPACK_IMPORTED_MODULE_3__.getAddr)("ORACLE_ADDRESS"), appState.web3);
-      var travaLP = new ethers__WEBPACK_IMPORTED_MODULE_4__.Contract((0,_utils_address__WEBPACK_IMPORTED_MODULE_3__.getAddr)("TRAVA_LENDING_POOL_MARKET"), _abis_TravaLendingPool_json__WEBPACK_IMPORTED_MODULE_1__, appState.web3);
+      var oraclePrice = new _utils_oraclePrice__WEBPACK_IMPORTED_MODULE_0__["default"]((0,_utils_address__WEBPACK_IMPORTED_MODULE_3__.getAddr)("ORACLE_ADDRESS", appState.chainId), appState.web3);
+      var travaLP = new ethers__WEBPACK_IMPORTED_MODULE_4__.Contract((0,_utils_address__WEBPACK_IMPORTED_MODULE_3__.getAddr)("TRAVA_LENDING_POOL_MARKET", appState.chainId), _abis_TravaLendingPool_json__WEBPACK_IMPORTED_MODULE_1__, appState.web3);
       var tokenAddress = (0,_utils_address__WEBPACK_IMPORTED_MODULE_3__.convertHexStringToAddress)(_tokenAddress);
       _tokenAddress = _tokenAddress.toLowerCase();
       var reverseList = yield travaLP.getReservesList();
@@ -20354,8 +20383,8 @@ function _SimulationRepay() {
   _SimulationRepay = _asyncToGenerator(function* (appState1, _tokenAddress, amount) {
     try {
       var appState = _objectSpread({}, appState1);
-      var oraclePrice = new _utils_oraclePrice__WEBPACK_IMPORTED_MODULE_0__["default"]((0,_utils_address__WEBPACK_IMPORTED_MODULE_3__.getAddr)("ORACLE_ADDRESS"), appState.web3);
-      var travaLP = new ethers__WEBPACK_IMPORTED_MODULE_4__.Contract((0,_utils_address__WEBPACK_IMPORTED_MODULE_3__.getAddr)("TRAVA_LENDING_POOL_MARKET"), _abis_TravaLendingPool_json__WEBPACK_IMPORTED_MODULE_1__, appState.web3);
+      var oraclePrice = new _utils_oraclePrice__WEBPACK_IMPORTED_MODULE_0__["default"]((0,_utils_address__WEBPACK_IMPORTED_MODULE_3__.getAddr)("ORACLE_ADDRESS", appState.chainId), appState.web3);
+      var travaLP = new ethers__WEBPACK_IMPORTED_MODULE_4__.Contract((0,_utils_address__WEBPACK_IMPORTED_MODULE_3__.getAddr)("TRAVA_LENDING_POOL_MARKET", appState.chainId), _abis_TravaLendingPool_json__WEBPACK_IMPORTED_MODULE_1__, appState.web3);
       var tokenAddress = (0,_utils_address__WEBPACK_IMPORTED_MODULE_3__.convertHexStringToAddress)(_tokenAddress);
       _tokenAddress = _tokenAddress.toLowerCase();
       var reverseList = yield travaLP.getReservesList();
@@ -20370,7 +20399,7 @@ function _SimulationRepay() {
 
         // check balance debt token on smart wallet
 
-        // const debtTokenBalance = new Contract(variableDebtTokenAddress,BEP20ABI,appState.web3);
+        var debtTokenBalance = new ethers__WEBPACK_IMPORTED_MODULE_4__.Contract(variableDebtTokenAddress, _abis_BEP20_json__WEBPACK_IMPORTED_MODULE_2__, appState.web3);
 
         // const debtTokenBalanceOfSmartWallet = await debtTokenBalance.balanceOf(
         //   appState.smartWalletState.address
@@ -20433,8 +20462,8 @@ function _SimulationWithdraw() {
   _SimulationWithdraw = _asyncToGenerator(function* (appState1, _tokenAddress, amount) {
     try {
       var appState = _objectSpread({}, appState1);
-      var oraclePrice = new _utils_oraclePrice__WEBPACK_IMPORTED_MODULE_0__["default"]((0,_utils_address__WEBPACK_IMPORTED_MODULE_3__.getAddr)("ORACLE_ADDRESS"), appState.web3);
-      var travaLP = new ethers__WEBPACK_IMPORTED_MODULE_4__.Contract((0,_utils_address__WEBPACK_IMPORTED_MODULE_3__.getAddr)("TRAVA_LENDING_POOL_MARKET"), _abis_TravaLendingPool_json__WEBPACK_IMPORTED_MODULE_1__, appState.web3);
+      var oraclePrice = new _utils_oraclePrice__WEBPACK_IMPORTED_MODULE_0__["default"]((0,_utils_address__WEBPACK_IMPORTED_MODULE_3__.getAddr)("ORACLE_ADDRESS", appState.chainId), appState.web3);
+      var travaLP = new ethers__WEBPACK_IMPORTED_MODULE_4__.Contract((0,_utils_address__WEBPACK_IMPORTED_MODULE_3__.getAddr)("TRAVA_LENDING_POOL_MARKET", appState.chainId), _abis_TravaLendingPool_json__WEBPACK_IMPORTED_MODULE_1__, appState.web3);
       var tokenAddress = (0,_utils_address__WEBPACK_IMPORTED_MODULE_3__.convertHexStringToAddress)(_tokenAddress);
       _tokenAddress = _tokenAddress.toLowerCase();
       var reverseList = yield travaLP.getReservesList();
@@ -20649,7 +20678,7 @@ function _updateTravaLPInfo() {
     try {
       var appState = _objectSpread({}, appState1);
       // first update token in pool balances
-      var TravaLendingPool = new ethers__WEBPACK_IMPORTED_MODULE_0__.Contract((0,_utils_address__WEBPACK_IMPORTED_MODULE_3__.getAddr)("TRAVA_LENDING_POOL_MARKET"), _abis_TravaLendingPool_json__WEBPACK_IMPORTED_MODULE_1__, appState.web3);
+      var TravaLendingPool = new ethers__WEBPACK_IMPORTED_MODULE_0__.Contract((0,_utils_address__WEBPACK_IMPORTED_MODULE_3__.getAddr)("TRAVA_LENDING_POOL_MARKET", appState.chainId), _abis_TravaLendingPool_json__WEBPACK_IMPORTED_MODULE_1__, appState.web3);
       var reserveAddressList = yield TravaLendingPool.getReservesList();
       if (reserveAddressList.length == 0) {
         throw new Error("No reserve in TravaLP");
@@ -20733,7 +20762,7 @@ function _simulateTravaNFTBuy() {
       if (!currentNFT) {
         throw new Error("NFT is not being sold");
       }
-      var travaAddress = (0,_utils_address__WEBPACK_IMPORTED_MODULE_0__.getAddr)("TRAVA_TOKEN").toLowerCase();
+      var travaAddress = (0,_utils_address__WEBPACK_IMPORTED_MODULE_0__.getAddr)("TRAVA_TOKEN", appState1.chainId);
       if (from == appState.walletState.address) {
         var _appState$walletState;
         var travaBalance = (_appState$walletState = appState.walletState.tokenBalances.get(travaAddress)) !== null && _appState$walletState !== void 0 ? _appState$walletState : "0";
@@ -20807,7 +20836,7 @@ function _simulateTravaNFTTransfer() {
     try {
       var appState = _objectSpread({}, appState1);
       var prefix = "collection";
-      if (contract.toLowerCase() == (0,_utils_address__WEBPACK_IMPORTED_MODULE_0__.getAddr)("NFT_CORE_ADDRESS").toLowerCase()) {
+      if (contract == (0,_utils_address__WEBPACK_IMPORTED_MODULE_0__.getAddr)("NFT_CORE_ADDRESS", appState1.chainId)) {
         prefix = "nfts";
       }
       var currentVersion = "v1";
@@ -20875,9 +20904,9 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
 
 var multiCall = /*#__PURE__*/function () {
-  var _ref = _asyncToGenerator(function* (abi, calls, provider) {
+  var _ref = _asyncToGenerator(function* (abi, calls, provider, chainId) {
     var _provider = provider;
-    var multi = new ethers__WEBPACK_IMPORTED_MODULE_5__.Contract((0,_utils_address__WEBPACK_IMPORTED_MODULE_6__.getAddr)("MULTI_CALL_ADDRESS"), _abis_Multicall_json__WEBPACK_IMPORTED_MODULE_1__, _provider);
+    var multi = new ethers__WEBPACK_IMPORTED_MODULE_5__.Contract((0,_utils_address__WEBPACK_IMPORTED_MODULE_6__.getAddr)("MULTI_CALL_ADDRESS", chainId), _abis_Multicall_json__WEBPACK_IMPORTED_MODULE_1__, _provider);
     var itf = new ethers__WEBPACK_IMPORTED_MODULE_5__.Interface(abi);
     var callData = calls.map(call => [call.address.toLowerCase(), itf.encodeFunctionData(call.name, call.params)]);
     var {
@@ -20885,11 +20914,11 @@ var multiCall = /*#__PURE__*/function () {
     } = yield multi.aggregate(callData);
     return returnData.map((call, i) => itf.decodeFunctionResult(calls[i].name, call));
   });
-  return function multiCall(_x, _x2, _x3) {
+  return function multiCall(_x, _x2, _x3, _x4) {
     return _ref.apply(this, arguments);
   };
 }();
-function updateTravaBalance(_x4) {
+function updateTravaBalance(_x5) {
   return _updateTravaBalance.apply(this, arguments);
 }
 function _updateTravaBalance() {
@@ -20897,10 +20926,10 @@ function _updateTravaBalance() {
     var appState = _objectSpread({}, appState1);
     try {
       // K lấy state của smartwallet
-      var TravaTokenAddress = (0,_utils_address__WEBPACK_IMPORTED_MODULE_6__.getAddr)("TRAVA_TOKEN"); // Trava Token Address
+      var TravaTokenAddress = (0,_utils_address__WEBPACK_IMPORTED_MODULE_6__.getAddr)("TRAVA_TOKEN", appState1.chainId); // Trava Token Address
       var TravaToken = new ethers__WEBPACK_IMPORTED_MODULE_5__.Contract(TravaTokenAddress, _abis_ERC20Mock_json__WEBPACK_IMPORTED_MODULE_0__, appState.web3);
       var travaBalance = yield TravaToken.balanceOf(appState.walletState.address);
-      appState.walletState.tokenBalances.set(TravaTokenAddress.toLowerCase(), travaBalance);
+      appState.walletState.tokenBalances.set(TravaTokenAddress, travaBalance);
     } catch (e) {
       console.log(e);
     }
@@ -20908,7 +20937,7 @@ function _updateTravaBalance() {
   });
   return _updateTravaBalance.apply(this, arguments);
 }
-function updateNFTBalance(_x5) {
+function updateNFTBalance(_x6) {
   return _updateNFTBalance.apply(this, arguments);
 }
 function _updateNFTBalance() {
@@ -20916,19 +20945,19 @@ function _updateNFTBalance() {
     var appState = _objectSpread({}, appState1);
     try {
       // Update mảnh NFT wallet
-      var travacore = new ethers__WEBPACK_IMPORTED_MODULE_5__.Contract((0,_utils_address__WEBPACK_IMPORTED_MODULE_6__.getAddr)("NFT_CORE_ADDRESS"), _abis_TravaNFTCore_json__WEBPACK_IMPORTED_MODULE_2__, appState.web3);
+      var travacore = new ethers__WEBPACK_IMPORTED_MODULE_5__.Contract((0,_utils_address__WEBPACK_IMPORTED_MODULE_6__.getAddr)("NFT_CORE_ADDRESS", appState1.chainId), _abis_TravaNFTCore_json__WEBPACK_IMPORTED_MODULE_2__, appState.web3);
       var nftCount = yield travacore.balanceOf(appState.walletState.address);
       var [nftIds] = yield Promise.all([multiCall(_abis_TravaNFTCore_json__WEBPACK_IMPORTED_MODULE_2__, new Array(parseInt(nftCount.toString())).fill(1).map((_, index) => ({
-        address: (0,_utils_address__WEBPACK_IMPORTED_MODULE_6__.getAddr)("NFT_CORE_ADDRESS"),
+        address: (0,_utils_address__WEBPACK_IMPORTED_MODULE_6__.getAddr)("NFT_CORE_ADDRESS", appState1.chainId),
         name: "tokenOfOwnerByIndex",
         params: [appState.walletState.address, index]
-      })), appState.web3)]);
+      })), appState.web3, appState1.chainId)]);
       var tokenIdsFlattened = nftIds.flat();
       var [data] = yield Promise.all([multiCall(_abis_NFTManager_json__WEBPACK_IMPORTED_MODULE_4__, tokenIdsFlattened.map(tokenId => ({
-        address: (0,_utils_address__WEBPACK_IMPORTED_MODULE_6__.getAddr)("NFT_MANAGER_ADDRESS"),
+        address: (0,_utils_address__WEBPACK_IMPORTED_MODULE_6__.getAddr)("NFT_MANAGER_ADDRESS", appState1.chainId),
         name: "checkIfChestOpenedAndSet",
         params: [tokenId]
-      })), appState.web3)]);
+      })), appState.web3, appState1.chainId)]);
       var openedTokens = [];
       tokenIdsFlattened.forEach((tokenId, index) => {
         var version = parseInt(data[index][0]);
@@ -20950,7 +20979,7 @@ function _updateNFTBalance() {
         }
       });
 
-      // Update NFT Collection 
+      // Update NFT Collection
       // const travacollection = await ethers.getContractAt(
       //   NFTCollectionABI,
       //   CONTRACT_NETWORK.bsc.NFT_COLLECTION
@@ -20969,21 +20998,21 @@ function _updateNFTBalance() {
   });
   return _updateNFTBalance.apply(this, arguments);
 }
-function _fetchNormal(_x6, _x7) {
+function _fetchNormal(_x7, _x8) {
   return _fetchNormal2.apply(this, arguments);
 }
 function _fetchNormal2() {
   _fetchNormal2 = _asyncToGenerator(function* (appState1, tokenIds) {
     var appState = _objectSpread({}, appState1);
     var [tokenOrders, tokenMetadata] = yield Promise.all([multiCall(_abis_TravaNFTSell_json__WEBPACK_IMPORTED_MODULE_3__, tokenIds.map(tokenId => ({
-      address: (0,_utils_address__WEBPACK_IMPORTED_MODULE_6__.getAddr)("NFT_SELL_ADDRESS"),
+      address: (0,_utils_address__WEBPACK_IMPORTED_MODULE_6__.getAddr)("NFT_SELL_ADDRESS", appState1.chainId),
       name: "getTokenOrder",
       params: [tokenId]
-    })), appState.web3), multiCall(_abis_TravaNFTCore_json__WEBPACK_IMPORTED_MODULE_2__, tokenIds.map(tokenId => ({
-      address: (0,_utils_address__WEBPACK_IMPORTED_MODULE_6__.getAddr)("NFT_CORE_ADDRESS"),
+    })), appState.web3, appState1.chainId), multiCall(_abis_TravaNFTCore_json__WEBPACK_IMPORTED_MODULE_2__, tokenIds.map(tokenId => ({
+      address: (0,_utils_address__WEBPACK_IMPORTED_MODULE_6__.getAddr)("NFT_CORE_ADDRESS", appState1.chainId),
       name: "getTokenMetadata",
       params: [tokenId]
-    })), appState.web3)]);
+    })), appState.web3, appState1.chainId)]);
     var tokenOrdersFlattened = tokenOrders.flat();
     var tokensMetadataFlattened = tokenMetadata.flat();
     var v1 = [];
@@ -21022,20 +21051,20 @@ function _fetchNormal2() {
   });
   return _fetchNormal2.apply(this, arguments);
 }
-function updateNFTState(_x8) {
+function updateNFTState(_x9) {
   return _updateNFTState.apply(this, arguments);
 }
 function _updateNFTState() {
   _updateNFTState = _asyncToGenerator(function* (appState1) {
     var appState = _objectSpread({}, appState1);
     try {
-      var nftsell = new ethers__WEBPACK_IMPORTED_MODULE_5__.Contract((0,_utils_address__WEBPACK_IMPORTED_MODULE_6__.getAddr)("NFT_SELL_ADDRESS"), _abis_TravaNFTSell_json__WEBPACK_IMPORTED_MODULE_3__, appState.web3);
+      var nftsell = new ethers__WEBPACK_IMPORTED_MODULE_5__.Contract((0,_utils_address__WEBPACK_IMPORTED_MODULE_6__.getAddr)("NFT_SELL_ADDRESS", appState1.chainId), _abis_TravaNFTSell_json__WEBPACK_IMPORTED_MODULE_3__, appState.web3);
       var nftCount = yield nftsell.getTokenOnSaleCount();
       var [nftIds] = yield Promise.all([multiCall(_abis_TravaNFTSell_json__WEBPACK_IMPORTED_MODULE_3__, new Array(parseInt(nftCount.toString())).fill(1).map((_, index) => ({
-        address: (0,_utils_address__WEBPACK_IMPORTED_MODULE_6__.getAddr)("NFT_SELL_ADDRESS"),
+        address: (0,_utils_address__WEBPACK_IMPORTED_MODULE_6__.getAddr)("NFT_SELL_ADDRESS", appState1.chainId),
         name: "getTokenOnSaleAtIndex",
         params: [index]
-      })), appState.web3)]);
+      })), appState.web3, appState1.chainId)]);
       var tokenIdsFlattened = nftIds.flat();
       var promises = [];
       for (var i = 0; i < tokenIdsFlattened.length; i += 500) {
@@ -21215,7 +21244,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   SimulationRepay: () => (/* reexport safe */ _Simulation__WEBPACK_IMPORTED_MODULE_1__.SimulationRepay),
 /* harmony export */   SimulationSupply: () => (/* reexport safe */ _Simulation__WEBPACK_IMPORTED_MODULE_1__.SimulationSupply),
 /* harmony export */   SimulationWithdraw: () => (/* reexport safe */ _Simulation__WEBPACK_IMPORTED_MODULE_1__.SimulationWithdraw),
-/* harmony export */   initializeState: () => (/* reexport safe */ _State__WEBPACK_IMPORTED_MODULE_0__.initializeState),
 /* harmony export */   simulateSendToken: () => (/* reexport safe */ _Simulation__WEBPACK_IMPORTED_MODULE_1__.simulateSendToken),
 /* harmony export */   simulateSwap: () => (/* reexport safe */ _Simulation__WEBPACK_IMPORTED_MODULE_1__.simulateSwap),
 /* harmony export */   simulateTravaNFTBuy: () => (/* reexport safe */ _Simulation__WEBPACK_IMPORTED_MODULE_1__.simulateTravaNFTBuy),
