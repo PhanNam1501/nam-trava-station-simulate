@@ -2,7 +2,7 @@ import { EthAddress } from "./types";
 import AaveOracle from "../abis/AaveOracle.json";
 import {JsonRpcApiProvider,InterfaceAbi} from "ethers";
 import BaseReadContract from "./contract";
-import { getAddr } from "./address";
+import { convertHexStringToAddress, getAddr } from "./address";
 
 export default class OraclePrice extends BaseReadContract {
 
@@ -14,7 +14,8 @@ export default class OraclePrice extends BaseReadContract {
       super(address,AaveOracle,web3Reader)
     }
 
-  async getAssetPrice(assetAddress: EthAddress) {
+  async getAssetPrice(_assetAddress: EthAddress) {
+    const assetAddress = convertHexStringToAddress(_assetAddress);
     return await this.contractUtil.getAssetPrice(assetAddress);
   }
 }

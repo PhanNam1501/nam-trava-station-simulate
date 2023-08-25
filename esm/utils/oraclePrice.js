@@ -1,4 +1,3 @@
-"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -8,23 +7,20 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const AaveOracle_json_1 = __importDefault(require("../abis/AaveOracle.json"));
-const contract_1 = __importDefault(require("./contract"));
-class OraclePrice extends contract_1.default {
+import AaveOracle from "../abis/AaveOracle.json";
+import BaseReadContract from "./contract";
+import { convertHexStringToAddress } from "./address";
+export default class OraclePrice extends BaseReadContract {
     constructor(address, web3Reader) {
-        super(address, AaveOracle_json_1.default, web3Reader);
+        super(address, AaveOracle, web3Reader);
     }
-    getAssetPrice(assetAddress) {
+    getAssetPrice(_assetAddress) {
         return __awaiter(this, void 0, void 0, function* () {
+            const assetAddress = convertHexStringToAddress(_assetAddress);
             return yield this.contractUtil.getAssetPrice(assetAddress);
         });
     }
 }
-exports.default = OraclePrice;
 // const oracleContract = new OracleContract(process.env.ORACLE_ADDRESS!);
 // oracleContract.getAssetPrice(process.env.TRAVA_TOKEN_IN_MARKET!).then((res) => {
 //   console.log(res.toString());

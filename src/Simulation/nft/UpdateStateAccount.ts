@@ -35,7 +35,7 @@ export async function updateTravaBalance(
       appState.web3
     );
     const travaBalance = await TravaToken.balanceOf(appState.walletState.address);
-    appState.walletState.tokenBalances.set(TravaTokenAddress, travaBalance);
+    appState.walletState.tokenBalances.set(TravaTokenAddress.toLowerCase(), travaBalance);
   } catch (e) {
     console.log(e);
   }

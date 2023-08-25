@@ -35,6 +35,7 @@ export class WalletState {
     this.travaLPState = new WalletTravaLPState();
     this.collection = new NFT();
     this.ethBalances = "0";
+    
   }
 
   // async getTokenAmount(tokenAddress: string): Promise<string> {

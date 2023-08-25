@@ -14,3 +14,4 @@ export declare const listAddr: {
     };
 };
 export declare const getAddr: (name: string, chainId?: number) => EthAddress;
+export declare const convertHexStringToAddress: (hexString: EthAddress) => EthAddress;

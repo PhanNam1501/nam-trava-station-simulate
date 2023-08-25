@@ -1,6 +1,6 @@
 {
   "name": "trava-simulation-route",
-  "version": "1.0.9",
+  "version": "1.0.18",
   "description": "",
   "main": "./umd/index.js",
   "module": "./esm/index.js",
@@ -16,6 +16,7 @@
   "dependencies": {
     "@zennomi/tokens": "^1.0.1",
     "decimal.js": "^10.4.3",
+    "ethereumjs-util": "^7.1.5",
     "ethers": "^6.7.0",
     "lodash": "^4.17.21"
   },

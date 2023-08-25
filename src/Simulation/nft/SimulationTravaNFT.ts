@@ -22,7 +22,7 @@ export async function simulateTravaNFTBuy(
     if(!currentNFT){
       throw new Error("NFT is not being sold");
     }
-    const travaAddress = getAddr("TRAVA_TOKEN");
+    const travaAddress = getAddr("TRAVA_TOKEN").toLowerCase();
     if(from == appState.walletState.address) {
       let travaBalance = appState.walletState.tokenBalances.get(travaAddress) ?? "0";
       appState.walletState.tokenBalances.set(travaAddress, (BigInt(travaBalance) - BigInt(currentNFT.data.price)).toString());
@@ -86,7 +86,7 @@ export async function simulateTravaNFTTransfer(
   try {
     const appState = {...appState1};
     let prefix: string = "collection";
-    if(contract == getAddr("NFT_CORE_ADDRESS")) {
+    if(contract.toLowerCase() == getAddr("NFT_CORE_ADDRESS").toLowerCase()) {
       prefix = "nfts";
     }
     let currentVersion = "v1";

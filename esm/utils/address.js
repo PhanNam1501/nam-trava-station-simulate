@@ -1,10 +1,8 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.getAddr = exports.listAddr = void 0;
-const config_1 = require("./config");
-exports.listAddr = {
-    [config_1.NETWORKS.bsc.chainId]: {
-        TRAVA_LENDING_POOL_MARKET: "0x6df52f798740504c24ccd374cf7ce81b28ce8330",
+import { NETWORKS, CONFIG } from "./config";
+import { toChecksumAddress } from 'ethereumjs-util';
+export const listAddr = {
+    [NETWORKS.bsc.chainId]: {
+        TRAVA_LENDING_POOL_MARKET: "0x50794d89dbdb2d3aba83820bc3557ff076ca481b",
         ORACLE_ADDRESS: "0x3e2320C81FdB8919bC5771CBA897B9C683506140",
         TRAVA_TOKEN_IN_MARKET: "0xE1F005623934D3D8C724EC68Cc9bFD95498D4435",
         NFT_CORE_ADDRESS: "0xd2Eca5a421db7c2e2aC88Da684214B52915A66b3",
@@ -16,11 +14,11 @@ exports.listAddr = {
         TRAVA_TOKEN: "0x4ABEf176F22B9a71B45ddc6c4A115095d8761b37"
     }
 };
-const getAddr = (name, chainId = config_1.CONFIG.chainId) => {
-    const _chainId = typeof chainId === 'undefined' ? config_1.CONFIG.chainId : chainId;
-    const addr = exports.listAddr[_chainId];
+export const getAddr = (name, chainId = CONFIG.chainId) => {
+    const _chainId = typeof chainId === 'undefined' ? CONFIG.chainId : chainId;
+    const addr = listAddr[_chainId];
     // skip this check if we're in testing mode
-    if (!config_1.CONFIG.testingMode) {
+    if (!CONFIG.testingMode) {
         if (!addr)
             throw new Error(`Cannot find address for chainId: ${_chainId}.`);
         if (!addr[name])
@@ -31,4 +29,8 @@ const getAddr = (name, chainId = config_1.CONFIG.chainId) => {
     else
         throw new Error(`Invalid addr`);
 };
-exports.getAddr = getAddr;
+export const convertHexStringToAddress = (hexString) => {
+    String(hexString).toLowerCase();
+    const strippedHex = hexString.replace(/^0x/, '');
+    return toChecksumAddress(`0x${strippedHex}`);
+};

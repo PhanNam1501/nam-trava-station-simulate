@@ -4,7 +4,7 @@ import { ApplicationState } from "../../State/ApplicationState";
 import {Contract} from "ethers";
 import ABITravaLP  from "../../abis/TravaLendingPool.json";
 import BEP20ABI from "../../abis/BEP20.json";
-import { getAddr } from "../../utils/address";
+import { convertHexStringToAddress, getAddr } from "../../utils/address";
 import _ from "lodash";
 // call this before all actions
 export async function updateTravaLPInfo(
@@ -15,7 +15,7 @@ export async function updateTravaLPInfo(
     const appState = {...appState1};
     // first update token in pool balances
     const TravaLendingPool = new Contract(getAddr("TRAVA_LENDING_POOL_MARKET"),ABITravaLP,appState.web3!);
-
+    
     const reserveAddressList = await TravaLendingPool.getReservesList();
     if (reserveAddressList.length == 0) {
       throw new Error("No reserve in TravaLP");
@@ -23,10 +23,11 @@ export async function updateTravaLPInfo(
     // update balance for wallet
     for (let i = 0; i < reserveAddressList.length; i++) {
       // update token balance for wallet
-      const reserveAddress = reserveAddressList[i];
+      let reserveAddress = reserveAddressList[i];
       const reserve = new Contract (reserveAddress,BEP20ABI,appState.web3);
       const balance = await reserve.balanceOf(userAddress);
 
+      reserveAddress = String(reserveAddress).toLowerCase();
       appState.walletState.tokenBalances.set(reserveAddress, balance);
 
       // update token balance for smart wallet

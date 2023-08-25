@@ -10,3 +10,4 @@ export declare class ApplicationState {
     web3: JsonRpcProvider | null;
     constructor(userAddress: EthAddress, smartWalletAddress: EthAddress, web3: JsonRpcProvider | null);
 }
+export declare function initializeState(userAddress: EthAddress, smartWalletAddress: EthAddress, web3: JsonRpcProvider | null): Promise<ApplicationState>;

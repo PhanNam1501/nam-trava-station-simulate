@@ -1,11 +1,11 @@
-import { updateTravaLPInfo } from "../Simulation/market/UpdateStateAccount";
+import { updateTravaLPInfo } from "../src/Simulation/market/UpdateStateAccount";
 import {
   SimulationSupply,
   SimulationBorrow,
   SimulationRepay,
   SimulationWithdraw,
-} from "../Simulation/market/SimulationWalletTravaLP";
-import { ApplicationState } from "../State/ApplicationState";
+} from "../src/Simulation/market/SimulationWalletTravaLP";
+import { ApplicationState } from "../src/State/ApplicationState";
 import { expect } from "chai";
 import {JsonRpcProvider} from "ethers";
 
@@ -32,61 +32,61 @@ const test = async () => {
     //   appState.smartWalletState.travaLPState
     // );
 
-    const simulationSupply = await SimulationSupply(
-      appState,
-      "0xE1F005623934D3D8C724EC68Cc9bFD95498D4435",
-      "10000000000000000000"
-    );
-
-    // console.log(
-    //   "banlances after phase1 : ",
-    //   appState.walletState.tokenBalances
+    // const simulationSupply = await SimulationSupply(
+    //   appState,
+    //   "0xE1F005623934D3D8C724EC68Cc9bFD95498D4435",
+    //   "10000000000000000000"
     // );
-    console.log(
-      "smartWalletState TravaLP after phase1 : ",
-      appState.smartWalletState.travaLPState
-    );
+
+    // // console.log(
+    // //   "banlances after phase1 : ",
+    // //   appState.walletState.tokenBalances
+    // // );
     // console.log(
-    //   "smartWalletState tokens after phase1 : ",
+    //   "smartWalletState TravaLP after phase1 : ",
+    //   appState.smartWalletState.travaLPState
+    // );
+    // // console.log(
+    // //   "smartWalletState tokens after phase1 : ",
+    // //   appState.smartWalletState.tokenBalances
+    // // );
+
+    // console.log("================= PHASE 2 Borrow ==========================");
+    // const simulationBorrow = await SimulationBorrow(
+    //   appState,
+    //   "0xE1F005623934D3D8C724EC68Cc9bFD95498D4435",
+    //   "100000000000000000"
+    // );
+    // console.log(
+    //   "smartWalletState TravaLP after phase2 : ",
+    //   appState.smartWalletState.travaLPState
+    // );
+    // console.log(
+    //   "smartWalletState tokens after phase2 : ",
     //   appState.smartWalletState.tokenBalances
     // );
 
-    console.log("================= PHASE 2 Borrow ==========================");
-    const simulationBorrow = await SimulationBorrow(
-      appState,
-      "0xE1F005623934D3D8C724EC68Cc9bFD95498D4435",
-      "100000000000000000"
-    );
-    console.log(
-      "smartWalletState TravaLP after phase2 : ",
-      appState.smartWalletState.travaLPState
-    );
-    console.log(
-      "smartWalletState tokens after phase2 : ",
-      appState.smartWalletState.tokenBalances
-    );
-
-    console.log("================= PHASE 3 Repay ==========================");
-    const simulationRepay = await SimulationRepay(
-      appState,
-      "0xE1F005623934D3D8C724EC68Cc9bFD95498D4435",
-      "100000000000000000"
-    );
-    console.log(
-      "smartWalletState TravaLP after phase3 : ",
-      appState.smartWalletState.travaLPState
-    );
-    console.log(
-      "smartWalletState tokens after phase3 : ",
-      appState.smartWalletState.tokenBalances
-    );
+    // console.log("================= PHASE 3 Repay ==========================");
+    // const simulationRepay = await SimulationRepay(
+    //   appState,
+    //   "0xE1F005623934D3D8C724EC68Cc9bFD95498D4435",
+    //   "100000000000000000"
+    // );
+    // console.log(
+    //   "smartWalletState TravaLP after phase3 : ",
+    //   appState.smartWalletState.travaLPState
+    // );
+    // console.log(
+    //   "smartWalletState tokens after phase3 : ",
+    //   appState.smartWalletState.tokenBalances
+    // );
 
     console.log(
       "================= PHASE 4 Withdraw =========================="
     );
     const simulationWithdraw = await SimulationWithdraw(
       appState,
-      "0xE1F005623934D3D8C724EC68Cc9bFD95498D4435",
+      "0x910CB19698Eac48a6AB7Ccc9542B756f2Bdd67C6",
       "1000000000000000000"
     );
     console.log(
