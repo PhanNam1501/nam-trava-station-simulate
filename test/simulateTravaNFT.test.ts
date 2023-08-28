@@ -1,6 +1,6 @@
-import { updateTravaBalance, updateNFTBalance, updateNFTState } from "../Simulation/nft/UpdateStateAccount";
-import { simulateTravaNFTBuy, simulateTravaNFTSell, simulateTravaNFTTransfer } from "../Simulation/nft/SimulationTravaNFT";
-import { ApplicationState } from "../State/ApplicationState";
+import { updateTravaBalance, updateNFTBalance, updateNFTState } from "../src/Simulation/nft/UpdateStateAccount";
+import { simulateTravaNFTBuy, simulateTravaNFTSell, simulateTravaNFTTransfer } from "../src/Simulation/nft/SimulationTravaNFT";
+import { ApplicationState } from "../src/State/ApplicationState";
 import {JsonRpcProvider} from "ethers";
 
  const testBuy =async () => {

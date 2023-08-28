@@ -9,5 +9,5 @@ export declare class ApplicationState {
     NFTState: NFTState;
     web3: JsonRpcProvider | null;
     chainId: number | undefined;
-    constructor(userAddress: EthAddress, smartWalletAddress: EthAddress, web3: JsonRpcProvider | null, chainId: number | undefined);
+    constructor(userAddress: EthAddress, smartWalletAddress: EthAddress, web3: JsonRpcProvider | null);
 }

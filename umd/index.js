@@ -41,7 +41,7 @@ function _toPrimitive(input, hint) { if (typeof input !== "object" || input === 
 
 
 class ApplicationState {
-  constructor(userAddress, smartWalletAddress, web3, chainId) {
+  constructor(userAddress, smartWalletAddress, web3) {
     _defineProperty(this, "walletState", void 0);
     _defineProperty(this, "smartWalletState", void 0);
     _defineProperty(this, "NFTState", void 0);
@@ -51,7 +51,7 @@ class ApplicationState {
     this.smartWalletState = new _SmartWalletState__WEBPACK_IMPORTED_MODULE_1__.SmartWalletState(smartWalletAddress);
     this.NFTState = new _NFTState__WEBPACK_IMPORTED_MODULE_2__.NFTState();
     this.web3 = web3;
-    this.chainId = chainId;
+    this.chainId = Number(web3 === null || web3 === void 0 ? void 0 : web3._network.chainId);
   }
 }
 
@@ -349,7 +349,7 @@ function simulateWrap(_x, _x2) {
 function _simulateWrap() {
   _simulateWrap = _asyncToGenerator(function* (appState1, amount) {
     var appState = _objectSpread({}, appState1);
-    var bnb_address = (0,_utils_address__WEBPACK_IMPORTED_MODULE_1__.getAddr)("WBNB_ADDRESS").toLowerCase();
+    var bnb_address = (0,_utils_address__WEBPACK_IMPORTED_MODULE_1__.getAddr)("WBNB_ADDRESS", appState.chainId).toLowerCase();
     if (!appState.smartWalletState.tokenBalances.has(bnb_address)) {
       yield (0,_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_0__.updateSmartWalletTokenBalance)(appState, bnb_address);
     }
@@ -370,7 +370,7 @@ function simulateUnwrap(_x3, _x4) {
 function _simulateUnwrap() {
   _simulateUnwrap = _asyncToGenerator(function* (appState1, amount) {
     var appState = _objectSpread({}, appState1);
-    var bnb_address = (0,_utils_address__WEBPACK_IMPORTED_MODULE_1__.getAddr)("WBNB_ADDRESS").toLowerCase();
+    var bnb_address = (0,_utils_address__WEBPACK_IMPORTED_MODULE_1__.getAddr)("WBNB_ADDRESS", appState.chainId).toLowerCase();
     if (!appState.walletState.tokenBalances.has(bnb_address)) {
       yield (0,_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_0__.updateUserTokenBalance)(appState, bnb_address);
     }
@@ -391,7 +391,7 @@ function simulateSendToken(_x5, _x6, _x7, _x8) {
 function _simulateSendToken() {
   _simulateSendToken = _asyncToGenerator(function* (appState1, _tokenAddress, to, amount) {
     var appState = _objectSpread({}, appState1);
-    var bnb_address = (0,_utils_address__WEBPACK_IMPORTED_MODULE_1__.getAddr)("WBNB_ADDRESS").toLowerCase();
+    var bnb_address = (0,_utils_address__WEBPACK_IMPORTED_MODULE_1__.getAddr)("WBNB_ADDRESS", appState.chainId).toLowerCase();
     var tokenAddress = _tokenAddress.toLowerCase();
     if (!appState.walletState.tokenBalances.has(bnb_address)) {
       yield (0,_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_0__.updateUserTokenBalance)(appState, bnb_address);
@@ -20675,8 +20675,8 @@ function updateTravaLPInfo(_x, _x2) {
 // );
 function _updateTravaLPInfo() {
   _updateTravaLPInfo = _asyncToGenerator(function* (appState1, userAddress) {
+    var appState = _objectSpread({}, appState1);
     try {
-      var appState = _objectSpread({}, appState1);
       // first update token in pool balances
       var TravaLendingPool = new ethers__WEBPACK_IMPORTED_MODULE_0__.Contract((0,_utils_address__WEBPACK_IMPORTED_MODULE_3__.getAddr)("TRAVA_LENDING_POOL_MARKET", appState.chainId), _abis_TravaLendingPool_json__WEBPACK_IMPORTED_MODULE_1__, appState.web3);
       var reserveAddressList = yield TravaLendingPool.getReservesList();
@@ -20721,7 +20721,7 @@ function _updateTravaLPInfo() {
     } catch (e) {
       console.log(e);
     }
-    return appState1;
+    return appState;
   });
   return _updateTravaLPInfo.apply(this, arguments);
 }

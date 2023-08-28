@@ -12,7 +12,7 @@ import { getAddr } from "../../utils/address";
 export function simulateWrap(appState1, amount) {
     return __awaiter(this, void 0, void 0, function* () {
         const appState = Object.assign({}, appState1);
-        const bnb_address = getAddr("WBNB_ADDRESS").toLowerCase();
+        const bnb_address = getAddr("WBNB_ADDRESS", appState.chainId).toLowerCase();
         if (!appState.smartWalletState.tokenBalances.has(bnb_address)) {
             yield updateSmartWalletTokenBalance(appState, bnb_address);
         }
@@ -29,7 +29,7 @@ export function simulateWrap(appState1, amount) {
 export function simulateUnwrap(appState1, amount) {
     return __awaiter(this, void 0, void 0, function* () {
         const appState = Object.assign({}, appState1);
-        const bnb_address = getAddr("WBNB_ADDRESS").toLowerCase();
+        const bnb_address = getAddr("WBNB_ADDRESS", appState.chainId).toLowerCase();
         if (!appState.walletState.tokenBalances.has(bnb_address)) {
             yield updateUserTokenBalance(appState, bnb_address);
         }
@@ -46,7 +46,7 @@ export function simulateUnwrap(appState1, amount) {
 export function simulateSendToken(appState1, _tokenAddress, to, amount) {
     return __awaiter(this, void 0, void 0, function* () {
         const appState = Object.assign({}, appState1);
-        const bnb_address = getAddr("WBNB_ADDRESS").toLowerCase();
+        const bnb_address = getAddr("WBNB_ADDRESS", appState.chainId).toLowerCase();
         const tokenAddress = _tokenAddress.toLowerCase();
         if (!appState.walletState.tokenBalances.has(bnb_address)) {
             yield updateUserTokenBalance(appState, bnb_address);
