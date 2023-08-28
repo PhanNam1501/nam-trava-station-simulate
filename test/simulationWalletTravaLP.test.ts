@@ -13,10 +13,13 @@ import {JsonRpcProvider} from "ethers";
 
 const test = async () => {
     console.log("================= PHASE 1 Supply ========================");
+    const provider = new JsonRpcProvider("https://bsc-testnet.publicnode.com")
+    const chainId = Number((await provider.getNetwork()).chainId)
     const appState = new ApplicationState(
       "0x0d7a757EECAbfe8daa06E9ab8F106911d846D8a1",
       "0x957d84Da98c5Db9e0d3d7FE667D3FA00339f3372",
-      new JsonRpcProvider("https://bsc-testnet.publicnode.com"),
+      provider,
+      chainId
     );
     await updateTravaLPInfo(
       appState,

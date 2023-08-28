@@ -1,13 +1,13 @@
 import { WalletState } from "./WalletState";
 import { SmartWalletState } from "./SmartWalletState";
-import { NFTState } from "./NFTState";
+import { NFTSellingState } from "./NFTSellingState";
 export class ApplicationState {
-    constructor(userAddress, smartWalletAddress, web3) {
+    constructor(userAddress, smartWalletAddress, web3, chainId) {
         this.walletState = new WalletState(userAddress);
         this.smartWalletState = new SmartWalletState(smartWalletAddress);
-        this.NFTState = new NFTState();
+        this.NFTSellingState = new NFTSellingState();
         this.web3 = web3;
-        this.chainId = Number(web3 === null || web3 === void 0 ? void 0 : web3._network.chainId);
+        this.chainId = chainId;
     }
 }
 // export async function initializeState(userAddress: EthAddress, smartWalletAddress: EthAddress, web3: JsonRpcProvider | null): Promise<ApplicationState> {

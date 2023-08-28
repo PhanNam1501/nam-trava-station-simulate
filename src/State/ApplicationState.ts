@@ -14,12 +14,13 @@ export class ApplicationState {
     userAddress: EthAddress,
     smartWalletAddress: EthAddress,
     web3: JsonRpcProvider | null,
+    chainId: number | undefined
   ) {
     this.walletState = new WalletState(userAddress);
     this.smartWalletState = new SmartWalletState(smartWalletAddress);
     this.NFTSellingState = new NFTSellingState();
     this.web3 = web3;
-    this.chainId = Number(web3?._network.chainId);
+    this.chainId = chainId;
   }
 }
 

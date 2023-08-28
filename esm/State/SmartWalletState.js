@@ -1,12 +1,12 @@
 import { WalletTravaLPState } from "./TravaDeFiState";
-import { NFT } from "./WalletState";
+import { CollectionOwned, NFTOwned } from "./WalletState";
 export class SmartWalletState {
     constructor(address) {
         this.address = address;
         this.tokenBalances = new Map();
-        this.nfts = new NFT();
+        this.nfts = new NFTOwned();
         this.travaLPState = new WalletTravaLPState();
-        this.collection = new NFT();
+        this.collection = new CollectionOwned();
         this.ethBalances = "0";
     }
 }

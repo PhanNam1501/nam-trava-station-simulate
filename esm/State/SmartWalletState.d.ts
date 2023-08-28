@@ -1,11 +1,11 @@
 import { EthAddress } from "../utils/types";
 import { WalletTravaLPState } from "./TravaDeFiState";
-import { NFT } from "./WalletState";
+import { CollectionOwned, NFTOwned } from "./WalletState";
 export declare class SmartWalletState {
     address: EthAddress;
     tokenBalances: Map<string, string>;
-    nfts: NFT;
-    collection: NFT;
+    nfts: NFTOwned;
+    collection: CollectionOwned;
     travaLPState: WalletTravaLPState;
     ethBalances: string;
     constructor(address: EthAddress);

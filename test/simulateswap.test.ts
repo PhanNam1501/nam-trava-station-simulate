@@ -3,10 +3,13 @@ import { simulateSwap } from "../src/Simulation/swap/SimulationSwap";
 import { ApplicationState } from "../src/State/ApplicationState";
 import { JsonRpcProvider } from "ethers"
 async function test() {
+  const provider = new JsonRpcProvider("https://bsc-testnet.publicnode.com")
+  const chainId = Number((await provider.getNetwork()).chainId)
   const appState = new ApplicationState(
     "0x595622cBd0Fc4727DF476a1172AdA30A9dDf8F43",
     "0x826D824BE55A403859A6Db67D5EeC5aC386307fE",
-    new JsonRpcProvider("https://bsc-testnet.publicnode.com"),
+    provider,
+    chainId
   );
   console.log("Web3 is", appState.web3)
   await Promise.all([updateUserTokenBalance(appState, "0x4ABEf176F22B9a71B45ddc6c4A115095d8761b37"), updateUserTokenBalance(appState, "0x910CB19698Eac48a6AB7Ccc9542B756f2Bdd67C6")])

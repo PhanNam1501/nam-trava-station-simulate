@@ -4,10 +4,13 @@ import { ApplicationState } from "../src/State/ApplicationState";
 import { JsonRpcProvider } from "ethers"
 const test = async () => {
   console.log("=================BEFORE==========================");
+  const provider = new JsonRpcProvider("https://bsc-testnet.publicnode.com")
+  const chainId = Number((await provider.getNetwork()).chainId)
   let appState = await new ApplicationState(
     "0x595622cBd0Fc4727DF476a1172AdA30A9dDf8F43",
     "0x826D824BE55A403859A6Db67D5EeC5aC386307fE",
-    new JsonRpcProvider("https://bsc-testnet.publicnode.com")
+    provider,
+    chainId
   );
   console.log("Web3 is", appState.web3)
   console.log(await appState.web3?.getBalance("0x595622cBd0Fc4727DF476a1172AdA30A9dDf8F43"));
