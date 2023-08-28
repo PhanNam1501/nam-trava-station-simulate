@@ -3,6 +3,8 @@ import { ApplicationState } from "../../State/ApplicationState";
 import TravaNFTSellABI from "../../abis/TravaNFTSell.json";
 import { getAddr } from "../../utils/address";
 import _ from "lodash";
+import { ArmouryType, NormalKnight, SellingArmouryType, SpecialKnight } from "../../global";
+import { CollectionName } from "./KnightConfig";
 
 export async function simulateTravaNFTBuy(
   appState1: ApplicationState,
@@ -12,10 +14,10 @@ export async function simulateTravaNFTBuy(
 ): Promise<ApplicationState> {
   try {
     const appState = { ...appState1 };
-    let currentVersion = "v1";
-    let currentNFT = appState.NFTState.nfts.v1.find((n) => n.id == tokenId);
+    let currentVersion: "v1" | "v2" = "v1";
+    let currentNFT = appState.NFTSellingState.v1.find((n) => n.id == tokenId);
     if (!currentNFT) {
-      currentNFT = appState.NFTState.nfts.v2.find((n) => n.id == tokenId);
+      currentNFT = appState.NFTSellingState.v2.find((n) => n.id == tokenId);
       currentVersion = "v2";
     }
     if (!currentNFT) {
@@ -23,11 +25,10 @@ export async function simulateTravaNFTBuy(
     }
     const travaAddress = getAddr("TRAVA_TOKEN", appState1.chainId);
     if (from == appState.walletState.address) {
-      let travaBalance =
-        appState.walletState.tokenBalances.get(travaAddress) ?? "0";
+      let travaBalance = appState.walletState.tokenBalances.get(travaAddress) ?? "0";
       appState.walletState.tokenBalances.set(
         travaAddress,
-        (BigInt(travaBalance) - BigInt(currentNFT.data.price)).toString()
+        (BigInt(travaBalance) - BigInt(currentNFT.price)).toString()
       );
     }
     if (from == appState.smartWalletState.address) {
@@ -35,20 +36,24 @@ export async function simulateTravaNFTBuy(
         appState.smartWalletState.tokenBalances.get(travaAddress) ?? 0;
       appState.smartWalletState.tokenBalances.set(
         travaAddress,
-        (BigInt(travaBalance) - BigInt(currentNFT.data.price)).toString()
+        (BigInt(travaBalance) - BigInt(currentNFT.price)).toString()
       );
     }
+    const data: ArmouryType = {
+      tokenId: currentNFT.id,
+      version: currentNFT.collectionId.toString(),
+      set: currentNFT.collectionId,
+      rarity: currentNFT.nRarity,
+      type: currentNFT.nType,
+      exp: currentNFT.exp,
+    };
     if (to == appState.walletState.address) {
-      (appState.walletState.nfts as any)[currentVersion].push({ id: tokenId });
+      appState.walletState.nfts[currentVersion][tokenId] = data;
     }
     if (to == appState.smartWalletState.address) {
-      (appState.smartWalletState.nfts as any)[currentVersion].push({
-        id: tokenId,
-      });
+      appState.smartWalletState.nfts[currentVersion][tokenId] = data;
     }
-    appState.NFTState.nfts.v1 = (appState.NFTState.nfts as any)[
-      currentVersion
-    ].filter((obj: any) => obj.id != tokenId);
+    appState.NFTSellingState[currentVersion] = appState.NFTSellingState[currentVersion].filter((obj) => obj.id != tokenId);
     return appState;
   } catch (err) {
     throw err;
@@ -64,36 +69,39 @@ export async function simulateTravaNFTSell(
   try {
     const appState = { ...appState1 };
 
-    let currentVersion = "v1";
+    let currentVersion: "v1" | "v2" = "v1";
+    let currentNFT: ArmouryType | undefined = undefined;
     if (from == appState.walletState.address) {
-      let currentNFT = appState.walletState.nfts.v1.find(
-        (n) => n.id == tokenId
-      );
+      currentNFT = appState.walletState.nfts.v1[tokenId];
       if (!currentNFT) {
-        currentNFT = appState.walletState.nfts.v2.find((n) => n.id == tokenId);
+        currentNFT = appState.walletState.nfts.v2[tokenId];
         currentVersion = "v2";
       }
-      (appState.walletState.nfts as any)[currentVersion] = (
-        appState.walletState.nfts as any
-      )[currentVersion].filter((obj: any) => obj.id != tokenId);
+      delete appState.walletState.nfts[currentVersion][tokenId];
     } else {
-      let currentNFT = appState.smartWalletState.nfts.v1.find(
-        (n) => n.id == tokenId
-      );
+      currentNFT = appState.smartWalletState.nfts.v1[tokenId];
       if (!currentNFT) {
-        currentNFT = appState.smartWalletState.nfts.v2.find(
-          (n) => n.id == tokenId
-        );
+        currentNFT = appState.smartWalletState.nfts.v2[tokenId];
         currentVersion = "v2";
       }
-      (appState.smartWalletState.nfts as any)[currentVersion] = (
-        appState.smartWalletState.nfts as any
-      )[currentVersion].filter((obj: any) => obj.id != tokenId);
+      delete appState.smartWalletState.nfts[currentVersion][tokenId];
     }
-    (appState.NFTState.nfts as any)[currentVersion].push({
-      id: tokenId,
-      data: { price, seller: appState.smartWalletState.address },
-    });
+    
+    const collectionId = parseInt(currentNFT.version);
+    const collectionName = CollectionName[collectionId - 1];
+    const data: SellingArmouryType = {
+      id: currentNFT.tokenId,
+      collectionName,
+      collectionId,
+      nRarity: currentNFT.rarity,
+      nType: currentNFT.type,
+      rarity: currentNFT.rarity.toString(),
+      type: currentNFT.type.toString(),
+      exp: currentNFT.exp,
+      price: price as number,
+      seller: appState.smartWalletState.address,
+    };
+    appState.NFTSellingState[currentVersion].push(data);
     return appState;
   } catch (err) {
     throw err;
@@ -109,40 +117,70 @@ export async function simulateTravaNFTTransfer(
 ): Promise<ApplicationState> {
   try {
     const appState = { ...appState1 };
-    let prefix: string = "collection";
     if (contract == getAddr("NFT_CORE_ADDRESS", appState1.chainId)) {
-      prefix = "nfts";
+      let currentVersion: "v1" | "v2" = "v1";
+      let currentNFT = appState.walletState.nfts.v1[tokenId];
+      if (!currentNFT) {
+        currentNFT = appState.walletState.nfts.v2[tokenId];
+        currentVersion = "v2";
+      }
+      // Giảm NFT
+      if (from == appState.walletState.address) {
+        delete appState.walletState.nfts[currentVersion][tokenId];
+      } else if (from == appState.smartWalletState.address) {
+        delete appState.smartWalletState.nfts[currentVersion][tokenId];
+      }
+      // Tăng NFT
+      if (to == appState.walletState.address) {
+        appState.walletState.nfts[currentVersion][tokenId] = currentNFT;
+      } else {
+        appState.smartWalletState.nfts[currentVersion][tokenId] = currentNFT;
+      }
     }
-    let currentVersion = "v1";
-    let currentNFT = (appState.walletState as any)[prefix].v1.find(
-      (n: any) => n.id == tokenId
-    );
-    if (!currentNFT) {
-      currentNFT = (appState.walletState as any)[prefix].v2.find(
+    else {
+      let currentVersion: "v1" | "v2" | "specials" = "v1";
+      let currentNFT = appState.walletState.collection.v1.find(
         (n: any) => n.id == tokenId
       );
-      currentVersion = "v2";
-    }
-    // Giảm NFT
-    if (from == appState.walletState.address) {
-      (appState.walletState as any)[prefix][currentVersion] = (
-        appState.walletState as any
-      )[prefix][currentVersion].filter((obj: any) => obj.id != tokenId);
-    } else if (from == appState.smartWalletState.address) {
-      (appState.smartWalletState as any)[prefix][currentVersion] = (
-        appState.smartWalletState as any
-      )[prefix][currentVersion].filter((obj: any) => obj.id != tokenId);
-    }
-
-    // Tăng NFT
-    if (to == appState.walletState.address) {
-      (appState.walletState as any)[prefix][currentVersion].push({
-        id: tokenId,
-      });
-    } else {
-      (appState.smartWalletState as any)[prefix][currentVersion].push({
-        id: tokenId,
-      });
+      if (!currentNFT) {
+        currentNFT = appState.walletState.collection.v2.find(
+          (n: any) => n.id == tokenId
+        );
+        currentVersion = "v2";
+      }
+      if(!currentNFT) {
+        let currentNFTSpecial = appState.walletState.collection.specials.find(
+          (n: any) => n.id == tokenId
+        );
+        currentVersion = "specials";
+        // Giảm NFT
+        if (from == appState.walletState.address) {
+          appState.walletState.collection[currentVersion] = (appState.walletState.collection[currentVersion]).filter((obj: any) => obj.id != tokenId);
+        } else if (from == appState.smartWalletState.address) {
+          appState.smartWalletState.collection[currentVersion] = appState.smartWalletState.collection[currentVersion].filter((obj: any) => obj.id != tokenId);
+        }
+        if(currentNFTSpecial){
+          // Tăng NFT
+          if (to == appState.walletState.address) {
+            appState.walletState.collection[currentVersion].push(currentNFTSpecial);
+          } else {
+            appState.smartWalletState.collection[currentVersion].push(currentNFTSpecial);
+          }
+        }
+      } else {
+        // Giảm NFT
+        if (from == appState.walletState.address) {
+          appState.walletState.collection[currentVersion] = (appState.walletState.collection[currentVersion]).filter((obj: any) => obj.id != tokenId);
+        } else if (from == appState.smartWalletState.address) {
+          appState.smartWalletState.collection[currentVersion] = appState.smartWalletState.collection[currentVersion].filter((obj: any) => obj.id != tokenId);
+        }
+        // Tăng NFT
+        if (to == appState.walletState.address) {
+          appState.walletState.collection[currentVersion].push(currentNFT);
+        } else {
+          appState.smartWalletState.collection[currentVersion].push(currentNFT);
+        }
+      }
     }
     return appState;
   } catch (err) {

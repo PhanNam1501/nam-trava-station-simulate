@@ -1,0 +1,166 @@
+{
+  "data": {
+    "nftcollections": [
+      {
+        "id": "1737",
+        "setId": null,
+        "exp": "10704018",
+        "rarity": "COPPER",
+        "armor": { "exp": null, "id": "6365", "rarity": "COPPER" },
+        "helmet": { "exp": null, "id": "6351", "rarity": "COPPER" },
+        "shield": { "exp": null, "id": "6377", "rarity": "COPPER" },
+        "sword": { "exp": null, "id": "6378", "rarity": "COPPER" }
+      },
+      {
+        "id": "1951",
+        "setId": null,
+        "exp": "15020259",
+        "rarity": "SILVER",
+        "armor": { "exp": null, "id": "8512", "rarity": "SILVER" },
+        "helmet": { "exp": "453890", "id": "499", "rarity": "SILVER" },
+        "shield": { "exp": null, "id": "8518", "rarity": "SILVER" },
+        "sword": { "exp": null, "id": "8697", "rarity": "COPPER" }
+      },
+      {
+        "id": "2139",
+        "setId": null,
+        "exp": "10312116",
+        "rarity": "SILVER",
+        "armor": { "exp": null, "id": "6369", "rarity": "SILVER" },
+        "helmet": { "exp": null, "id": "6805", "rarity": "SILVER" },
+        "shield": { "exp": null, "id": "7818", "rarity": "SILVER" },
+        "sword": { "exp": null, "id": "8250", "rarity": "COPPER" }
+      },
+      {
+        "id": "2165",
+        "setId": null,
+        "exp": "11688723",
+        "rarity": "COPPER",
+        "armor": { "exp": null, "id": "9143", "rarity": "COPPER" },
+        "helmet": { "exp": "0", "id": "8182", "rarity": "COPPER" },
+        "shield": { "exp": null, "id": "872", "rarity": "COPPER" },
+        "sword": { "exp": "0", "id": "8921", "rarity": "COPPER" }
+      },
+      {
+        "id": "222406",
+        "setId": "1",
+        "exp": null,
+        "rarity": "UNIQUE",
+        "armor": null,
+        "helmet": null,
+        "shield": null,
+        "sword": null
+      },
+      {
+        "id": "222607",
+        "setId": "1",
+        "exp": null,
+        "rarity": "UNIQUE",
+        "armor": null,
+        "helmet": null,
+        "shield": null,
+        "sword": null
+      },
+      {
+        "id": "2296",
+        "setId": null,
+        "exp": "11544559",
+        "rarity": "COPPER",
+        "armor": { "exp": "0", "id": "8898", "rarity": "COPPER" },
+        "helmet": { "exp": null, "id": "5473", "rarity": "COPPER" },
+        "shield": { "exp": null, "id": "2760", "rarity": "COPPER" },
+        "sword": { "exp": null, "id": "8247", "rarity": "COPPER" }
+      },
+      {
+        "id": "2595",
+        "setId": null,
+        "exp": "10276764",
+        "rarity": "COPPER",
+        "armor": { "exp": null, "id": "10317", "rarity": "COPPER" },
+        "helmet": { "exp": null, "id": "10310", "rarity": "COPPER" },
+        "shield": { "exp": null, "id": "10314", "rarity": "COPPER" },
+        "sword": { "exp": null, "id": "10309", "rarity": "COPPER" }
+      },
+      {
+        "id": "2995",
+        "setId": null,
+        "exp": "17805077",
+        "rarity": "GOLD",
+        "armor": { "exp": null, "id": "10363", "rarity": "SILVER" },
+        "helmet": { "exp": "366772", "id": "7598", "rarity": "GOLD" },
+        "shield": { "exp": "366772", "id": "4579", "rarity": "GOLD" },
+        "sword": { "exp": "366772", "id": "8499", "rarity": "GOLD" }
+      },
+      {
+        "id": "3037",
+        "setId": null,
+        "exp": "10514627",
+        "rarity": "SILVER",
+        "armor": { "exp": "284707", "id": "7851", "rarity": "SILVER" },
+        "helmet": { "exp": "284707", "id": "1006", "rarity": "COPPER" },
+        "shield": { "exp": null, "id": "12014", "rarity": "SILVER" },
+        "sword": { "exp": "284707", "id": "7596", "rarity": "GOLD" }
+      },
+      {
+        "id": "3265",
+        "setId": null,
+        "exp": null,
+        "rarity": "COPPER",
+        "armor": { "exp": null, "id": "12910", "rarity": "COPPER" },
+        "helmet": { "exp": null, "id": "12887", "rarity": "COPPER" },
+        "shield": { "exp": null, "id": "12879", "rarity": "COPPER" },
+        "sword": { "exp": null, "id": "12913", "rarity": "COPPER" }
+      },
+      {
+        "id": "3416",
+        "setId": null,
+        "exp": null,
+        "rarity": "COPPER",
+        "armor": { "exp": null, "id": "13039", "rarity": "COPPER" },
+        "helmet": { "exp": null, "id": "13034", "rarity": "COPPER" },
+        "shield": { "exp": null, "id": "13584", "rarity": "COPPER" },
+        "sword": { "exp": null, "id": "13045", "rarity": "COPPER" }
+      },
+      {
+        "id": "3469",
+        "setId": null,
+        "exp": null,
+        "rarity": "COPPER",
+        "armor": { "exp": null, "id": "13819", "rarity": "COPPER" },
+        "helmet": { "exp": null, "id": "13791", "rarity": "COPPER" },
+        "shield": { "exp": null, "id": "13805", "rarity": "COPPER" },
+        "sword": { "exp": null, "id": "13817", "rarity": "COPPER" }
+      },
+      {
+        "id": "4002",
+        "setId": null,
+        "exp": null,
+        "rarity": "COPPER",
+        "armor": { "exp": null, "id": "1441", "rarity": "COPPER" },
+        "helmet": { "exp": null, "id": "1446", "rarity": "COPPER" },
+        "shield": { "exp": null, "id": "9114", "rarity": "COPPER" },
+        "sword": { "exp": null, "id": "829", "rarity": "COPPER" }
+      },
+      {
+        "id": "4137",
+        "setId": null,
+        "exp": "6582050",
+        "rarity": "SILVER",
+        "armor": { "exp": null, "id": "7072", "rarity": "SILVER" },
+        "helmet": { "exp": null, "id": "7703", "rarity": "SILVER" },
+        "shield": { "exp": "0", "id": "11505", "rarity": "SILVER" },
+        "sword": { "exp": "706093", "id": "13567", "rarity": "SILVER" }
+      },
+      {
+        "id": "5164",
+        "setId": "2",
+        "exp": null,
+        "rarity": "DIAMOND",
+        "armor": { "exp": null, "id": "18356", "rarity": "DIAMOND" },
+        "helmet": { "exp": null, "id": "18639", "rarity": "DIAMOND" },
+        "shield": { "exp": null, "id": "18637", "rarity": "DIAMOND" },
+        "sword": { "exp": null, "id": "18746", "rarity": "DIAMOND" }
+      }
+    ]
+  }
+}

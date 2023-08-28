@@ -1,41 +1,61 @@
+import { ArmouryObject, NormalKnight, SpecialKnight } from "../global";
 import { EthAddress } from "../utils/types";
 import { WalletTravaLPState } from "./TravaDeFiState";
 
-export class NFTData {
-  id: string | number;
-  data?: any;
+// export class NFTData {
+//   id: string | number;
+//   data?: any;
+//   constructor() {
+//     this.id = '0';
+//     this.data = {};
+//   }
+// }
+
+// export class NFT {
+//   v1: Array<NFTData>;
+//   v2: Array<NFTData>;
+
+//   constructor() {
+//     this.v1 = new Array<NFTData>();
+//     this.v2 = new Array<NFTData>();
+//   }
+// }
+
+export class NFTOwned {
+  v1: ArmouryObject;
+  v2: ArmouryObject;
   constructor() {
-    this.id = '0';
-    this.data = {};
+    this.v1 = {};
+    this.v2 = {};
   }
 }
 
-export class NFT {
-  v1: Array<NFTData>;
-  v2: Array<NFTData>;
-
+export class CollectionOwned {
+  v1: Array<NormalKnight>;
+  v2: Array<NormalKnight>;
+  specials: Array<SpecialKnight>;
   constructor() {
-    this.v1 = new Array<NFTData>();
-    this.v2 = new Array<NFTData>();
+    this.v1 = [];
+    this.v2 = [];
+    this.specials = [];
   }
 }
 
 export class WalletState {
   address: EthAddress;
   tokenBalances: Map<string, string>;
-  nfts: NFT;
-  collection: NFT;
+  nfts: NFTOwned;
+  collection: CollectionOwned;
   travaLPState: WalletTravaLPState;
   ethBalances : string;
 
   constructor(address: string) {
     this.address = address;
     this.tokenBalances = new Map<string, string>();
-    this.nfts = new NFT();
+    this.nfts = new NFTOwned();
+    this.collection = new CollectionOwned();
     this.travaLPState = new WalletTravaLPState();
-    this.collection = new NFT();
-    this.ethBalances = "0";
-    
+    this.ethBalances = "0"; 
   }
 
   // async getTokenAmount(tokenAddress: string): Promise<string> {

@@ -8,14 +8,17 @@
   "scripts": {
     "build:esm": "tsc -b",
     "build:umd": "webpack --config=webpack.umd.js",
-    "build": " npm run build:umd && npm run build:esm"
+    "build": " npm run build:umd && npm run build:esm",
+    "testnft": "ts-node ./test/simulateTravaNFT2.test.ts"
   },
   "author": "Trava Station",
   "repository": "https://github.com/TravaStation/trava-simulation-route",
   "license": "ISC",
   "dependencies": {
     "@zennomi/tokens": "^1.0.1",
+    "bignumber.js": "^9.1.1",
     "decimal.js": "^10.4.3",
+    "eth-graph-query": "^2.0.0",
     "ethereumjs-util": "^7.1.5",
     "ethers": "^6.7.0",
     "lodash": "^4.17.21"
