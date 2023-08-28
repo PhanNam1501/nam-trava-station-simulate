@@ -10,8 +10,8 @@ export async function updateTravaLPInfo(
   appState1: ApplicationState,
   userAddress: EthAddress
 ): Promise<ApplicationState> {
+  const appState = { ...appState1 };
   try {
-    const appState = { ...appState1 };
     // first update token in pool balances
     const TravaLendingPool = new Contract(
       getAddr("TRAVA_LENDING_POOL_MARKET", appState.chainId),
@@ -78,7 +78,7 @@ export async function updateTravaLPInfo(
   } catch (e) {
     console.log(e);
   }
-  return appState1;
+  return appState;
 }
 
 // const appState = new ApplicationState(

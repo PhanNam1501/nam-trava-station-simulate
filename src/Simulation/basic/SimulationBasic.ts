@@ -6,7 +6,7 @@ import _ from "lodash";
 
 export async function simulateWrap(appState1: ApplicationState, amount: number | string): Promise<ApplicationState> {
     const appState = {...appState1};
-    const bnb_address = getAddr("WBNB_ADDRESS").toLowerCase();
+    const bnb_address = getAddr("WBNB_ADDRESS", appState.chainId).toLowerCase();
     if (!appState.smartWalletState.tokenBalances.has(bnb_address)) {
         await updateSmartWalletTokenBalance(appState, bnb_address)
     }
@@ -21,7 +21,7 @@ export async function simulateWrap(appState1: ApplicationState, amount: number |
 }
 export async function simulateUnwrap(appState1: ApplicationState, amount: number | string): Promise<ApplicationState> {
     const appState = {...appState1};
-    const bnb_address = getAddr("WBNB_ADDRESS").toLowerCase();
+    const bnb_address = getAddr("WBNB_ADDRESS", appState.chainId).toLowerCase();
     if (!appState.walletState.tokenBalances.has(bnb_address)) {
         await updateUserTokenBalance(appState, bnb_address)
     }
@@ -36,7 +36,7 @@ export async function simulateUnwrap(appState1: ApplicationState, amount: number
 }
 export async function simulateSendToken(appState1: ApplicationState, _tokenAddress: EthAddress, to: EthAddress, amount: number | string): Promise<ApplicationState> {
     const appState = {...appState1};
-    const bnb_address = getAddr("WBNB_ADDRESS").toLowerCase();
+    const bnb_address = getAddr("WBNB_ADDRESS", appState.chainId).toLowerCase();
     const tokenAddress = _tokenAddress.toLowerCase();
 
     if (!appState.walletState.tokenBalances.has(bnb_address)) {

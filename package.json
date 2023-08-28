@@ -1,6 +1,6 @@
 {
   "name": "trava-simulation-route",
-  "version": "1.0.19",
+  "version": "1.0.20",
   "description": "",
   "main": "./umd/index.js",
   "module": "./esm/index.js",

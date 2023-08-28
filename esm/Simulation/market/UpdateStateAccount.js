@@ -14,8 +14,8 @@ import { getAddr } from "../../utils/address";
 // call this before all actions
 export function updateTravaLPInfo(appState1, userAddress) {
     return __awaiter(this, void 0, void 0, function* () {
+        const appState = Object.assign({}, appState1);
         try {
-            const appState = Object.assign({}, appState1);
             // first update token in pool balances
             const TravaLendingPool = new Contract(getAddr("TRAVA_LENDING_POOL_MARKET", appState.chainId), ABITravaLP, appState.web3);
             const reserveAddressList = yield TravaLendingPool.getReservesList();
@@ -64,7 +64,7 @@ export function updateTravaLPInfo(appState1, userAddress) {
         catch (e) {
             console.log(e);
         }
-        return appState1;
+        return appState;
     });
 }
 // const appState = new ApplicationState(
