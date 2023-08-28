@@ -10,7 +10,6 @@ const testBuy =async () => {
     "0x595622cBd0Fc4727DF476a1172AdA30A9dDf8F43",
     "0x826D824BE55A403859A6Db67D5EeC5aC386307fE",
     new JsonRpcProvider("https://bsc-testnet.publicnode.com"),
-    97
   );
   let oldState = await updateTravaBalance(appState);
   oldState = await updateNFTBalanceFromContract(oldState, "walletState");

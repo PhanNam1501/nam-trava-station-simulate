@@ -512,16 +512,16 @@ export async function updateSellingNFTFromGraph(
   return appState;
 }
 
-// export async function updateCollectionBalanceFromGraph(
-//   appState1: ApplicationState,
-//   mode: "walletState" | "smartWalletState"
-// ): Promise<ApplicationState> {
-//   const appState = { ...appState1 };
-//   try {
-//     const a = await CollectionOwnedGraphQuery.fetchData("0xc715bbe707d39524173c0635611cd69c250c59cb");
-//     console.log(a);
-//   } catch (e) {
-//     console.log(e);
-//   }
-//   return appState;
-// }
+export async function updateCollectionBalanceFromGraph(
+  appState1: ApplicationState,
+  mode: "walletState" | "smartWalletState"
+): Promise<ApplicationState> {
+  const appState = { ...appState1 };
+  try {
+    const a = await CollectionOwnedGraphQuery.fetchData("0xc715bbe707d39524173c0635611cd69c250c59cb");
+    console.log(a);
+  } catch (e) {
+    console.log(e);
+  }
+  return appState;
+}
