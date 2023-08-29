@@ -19,3 +19,4 @@ export declare const getNetworkData: (chainId: number) => Network;
  */
 export declare const configure: (config: Config) => void;
 export declare const CONTRACT_NETWORK: ContractNetwork;
+export declare const MAX_UINT256: string;

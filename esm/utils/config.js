@@ -1,9 +1,12 @@
-import { set as dfsTokensSetConfig } from "@zennomi/tokens";
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.MAX_UINT256 = exports.CONTRACT_NETWORK = exports.configure = exports.getNetworkData = exports.CONFIG = exports.NETWORKS = void 0;
+const tokens_1 = require("@zennomi/tokens");
 /**
  *
  * @type {Networks}
  */
-export const NETWORKS = {
+exports.NETWORKS = {
     bsc: {
         chainId: 97,
         chainName: "Binance Smart Chain Testnet",
@@ -24,35 +27,37 @@ export const NETWORKS = {
 /**
  *
  */
-export const CONFIG = {
-    chainId: NETWORKS.bsc.chainId,
+exports.CONFIG = {
+    chainId: exports.NETWORKS.bsc.chainId,
     testingMode: false,
 };
 /**
  *
  * @param chainId
  */
-export const getNetworkData = (chainId) => {
-    const networkData = Object.values(NETWORKS).find((network) => network.chainId === +chainId);
+const getNetworkData = (chainId) => {
+    const networkData = Object.values(exports.NETWORKS).find((network) => network.chainId === +chainId);
     if (!networkData)
         throw new Error(`Cannot find network data for chainId: ${chainId}`);
     return networkData;
 };
+exports.getNetworkData = getNetworkData;
 /**
  *
  * @param config
  */
-export const configure = (config) => {
+const configure = (config) => {
     if (!config || typeof config !== "object")
         throw new Error("Object expected");
     const newKeys = Object.keys(config);
     newKeys.forEach((key) => {
-        CONFIG[key] = config[key];
+        exports.CONFIG[key] = config[key];
         if (key === "chainId")
-            dfsTokensSetConfig("network", config[key]);
+            (0, tokens_1.set)("network", config[key]);
     });
 };
-export const CONTRACT_NETWORK = {
+exports.configure = configure;
+exports.CONTRACT_NETWORK = {
     bsc: {
         WBNB: "0x910CB19698Eac48a6AB7Ccc9542B756f2Bdd67C6",
         TRAVA_LENDING_POOL_MARKET: ["0x6df52f798740504c24ccd374cf7ce81b28ce8330"],
@@ -66,3 +71,4 @@ export const CONTRACT_NETWORK = {
         TRAVA_TOKEN: "0x4ABEf176F22B9a71B45ddc6c4A115095d8761b37",
     },
 };
+exports.MAX_UINT256 = "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff";

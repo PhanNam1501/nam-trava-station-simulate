@@ -1,4 +1,7 @@
-import { WalletTravaLPState } from "./TravaDeFiState";
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.WalletState = exports.CollectionOwned = exports.NFTOwned = void 0;
+const TravaDeFiState_1 = require("./TravaDeFiState");
 // export class NFTData {
 //   id: string | number;
 //   data?: any;
@@ -15,26 +18,29 @@ import { WalletTravaLPState } from "./TravaDeFiState";
 //     this.v2 = new Array<NFTData>();
 //   }
 // }
-export class NFTOwned {
+class NFTOwned {
     constructor() {
         this.v1 = {};
         this.v2 = {};
     }
 }
-export class CollectionOwned {
+exports.NFTOwned = NFTOwned;
+class CollectionOwned {
     constructor() {
         this.v1 = [];
         this.v2 = [];
         this.specials = [];
     }
 }
-export class WalletState {
+exports.CollectionOwned = CollectionOwned;
+class WalletState {
     constructor(address) {
         this.address = address;
         this.tokenBalances = new Map();
         this.nfts = new NFTOwned();
         this.collection = new CollectionOwned();
-        this.travaLPState = new WalletTravaLPState();
+        this.travaLPState = new TravaDeFiState_1.WalletTravaLPState();
         this.ethBalances = "0";
     }
 }
+exports.WalletState = WalletState;

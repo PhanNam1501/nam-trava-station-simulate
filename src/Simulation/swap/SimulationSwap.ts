@@ -2,14 +2,18 @@ import { EthAddress, uint256 } from "../../utils/types";
 import { ApplicationState } from "../../State/ApplicationState";
 import { updateUserTokenBalance } from "../basic/UpdateStateAccount";
 import _ from "lodash";
+import { MAX_UINT256 } from "../../utils/config";
 
 export async function simulateSwap(
     appState1: ApplicationState,
     _fromToken: EthAddress,
     _toToken: EthAddress,
-    fromAmount: EthAddress,
-    toAmount: EthAddress
+    _fromAmount: EthAddress,
+    _toAmount: EthAddress
 ): Promise<ApplicationState> {
+    let fromAmount = _fromAmount;
+    let toAmount = _toAmount;
+
     const appState = {...appState1};
     _fromToken = _fromToken.toLowerCase();
     _toToken = _toToken.toLowerCase();
@@ -22,6 +26,11 @@ export async function simulateSwap(
     // if (BigInt(appState.walletState.tokenBalances.get(fromToken)!) < BigInt(fromAmount)) {
     //     throw new Error("Insufficient balance")
     // }
+
+    if(fromAmount.toString() == MAX_UINT256 || BigInt(fromAmount) == BigInt(MAX_UINT256)) {
+        fromAmount = appState.walletState.tokenBalances.get(_fromToken)!;
+    }
+    
     let newFromBalance = BigInt(appState.walletState.tokenBalances.get(_fromToken)!) - BigInt(fromAmount)
     let newToBalance = BigInt(appState.walletState.tokenBalances.get(_toToken)!) + BigInt(toAmount)
 

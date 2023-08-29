@@ -1,6 +1,6 @@
 import { set as dfsTokensSetConfig } from "@zennomi/tokens";
 import { Config, ContractNetwork, Network, Networks } from "./types";
-import { Contract } from "ethers";
+import { Contract, ethers } from "ethers";
 
 /**
  *
@@ -77,3 +77,5 @@ export const CONTRACT_NETWORK: ContractNetwork = {
     TRAVA_TOKEN: "0x4ABEf176F22B9a71B45ddc6c4A115095d8761b37",
   },
 };
+
+export const MAX_UINT256: string = "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"

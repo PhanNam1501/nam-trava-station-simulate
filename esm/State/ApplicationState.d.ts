@@ -7,7 +7,7 @@ export declare class ApplicationState {
     walletState: WalletState;
     smartWalletState: SmartWalletState;
     NFTSellingState: NFTSellingState;
-    web3: JsonRpcProvider | null;
-    chainId: number | undefined;
-    constructor(userAddress: EthAddress, smartWalletAddress: EthAddress, web3: JsonRpcProvider | null, chainId: number | undefined);
+    web3: JsonRpcProvider;
+    chainId: number;
+    constructor(userAddress: EthAddress, smartWalletAddress: EthAddress, web3: JsonRpcProvider, chainId: number);
 }
