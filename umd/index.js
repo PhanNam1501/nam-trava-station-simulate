@@ -365,14 +365,16 @@ function _simulateWrap() {
     // if (BigInt(appState.walletState.ethBalances) < BigInt(amount)) {
     //     throw new Error("Not enough BNB")
     // }
-
+    console.log("amount.toString() == MAX_UINT256", amount.toString(), _utils_config__WEBPACK_IMPORTED_MODULE_2__.MAX_UINT256);
     if (amount.toString() == _utils_config__WEBPACK_IMPORTED_MODULE_2__.MAX_UINT256 || BigInt(amount) == BigInt(_utils_config__WEBPACK_IMPORTED_MODULE_2__.MAX_UINT256)) {
+      console.log("????");
       amount = appState.walletState.ethBalances;
     }
+    console.log("amount", amount);
     var newEthBalance = BigInt(appState.walletState.ethBalances) - BigInt(amount);
     var newWBNBBalance = BigInt(appState.smartWalletState.tokenBalances.get(bnb_address)) + BigInt(amount);
     appState.walletState.ethBalances = String(newEthBalance);
-    appState.smartWalletState.tokenBalances.set(bnb_address.toLowerCase(), String(BigInt(newWBNBBalance)));
+    appState.smartWalletState.tokenBalances.set(bnb_address, String(BigInt(newWBNBBalance)));
     return appState;
   });
   return _simulateWrap.apply(this, arguments);
@@ -33696,10 +33698,16 @@ var __webpack_exports__ = {};
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   ApplicationState: () => (/* reexport safe */ _State__WEBPACK_IMPORTED_MODULE_0__.ApplicationState),
+/* harmony export */   CONFIG: () => (/* reexport safe */ _utils_config__WEBPACK_IMPORTED_MODULE_3__.CONFIG),
+/* harmony export */   CONTRACT_NETWORK: () => (/* reexport safe */ _utils_config__WEBPACK_IMPORTED_MODULE_3__.CONTRACT_NETWORK),
+/* harmony export */   MAX_UINT256: () => (/* reexport safe */ _utils_config__WEBPACK_IMPORTED_MODULE_3__.MAX_UINT256),
+/* harmony export */   NETWORKS: () => (/* reexport safe */ _utils_config__WEBPACK_IMPORTED_MODULE_3__.NETWORKS),
 /* harmony export */   SimulationBorrow: () => (/* reexport safe */ _Simulation__WEBPACK_IMPORTED_MODULE_1__.SimulationBorrow),
 /* harmony export */   SimulationRepay: () => (/* reexport safe */ _Simulation__WEBPACK_IMPORTED_MODULE_1__.SimulationRepay),
 /* harmony export */   SimulationSupply: () => (/* reexport safe */ _Simulation__WEBPACK_IMPORTED_MODULE_1__.SimulationSupply),
 /* harmony export */   SimulationWithdraw: () => (/* reexport safe */ _Simulation__WEBPACK_IMPORTED_MODULE_1__.SimulationWithdraw),
+/* harmony export */   configure: () => (/* reexport safe */ _utils_config__WEBPACK_IMPORTED_MODULE_3__.configure),
+/* harmony export */   getNetworkData: () => (/* reexport safe */ _utils_config__WEBPACK_IMPORTED_MODULE_3__.getNetworkData),
 /* harmony export */   simulateSendToken: () => (/* reexport safe */ _Simulation__WEBPACK_IMPORTED_MODULE_1__.simulateSendToken),
 /* harmony export */   simulateSwap: () => (/* reexport safe */ _Simulation__WEBPACK_IMPORTED_MODULE_1__.simulateSwap),
 /* harmony export */   simulateTravaNFTBuy: () => (/* reexport safe */ _Simulation__WEBPACK_IMPORTED_MODULE_1__.simulateTravaNFTBuy),
@@ -33722,6 +33730,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _State__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(1);
 /* harmony import */ var _Simulation__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(7);
 /* harmony import */ var _utils_oraclePrice__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(113);
+/* harmony import */ var _utils_config__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(13);
+
 
 
 

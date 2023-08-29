@@ -15,15 +15,16 @@ export async function simulateWrap(appState1: ApplicationState, _amount: number 
     // if (BigInt(appState.walletState.ethBalances) < BigInt(amount)) {
     //     throw new Error("Not enough BNB")
     // }
-
+    console.log("amount.toString() == MAX_UINT256", amount.toString(), MAX_UINT256)
     if(amount.toString() == MAX_UINT256 || BigInt(amount) == BigInt(MAX_UINT256)) {
+        console.log("????")
         amount = appState.walletState.ethBalances;
     }
-
+    console.log("amount", amount)
     let newEthBalance = BigInt(appState.walletState.ethBalances) - BigInt(amount);
     let newWBNBBalance = BigInt(appState.smartWalletState.tokenBalances.get(bnb_address)!) + BigInt(amount)
     appState.walletState.ethBalances = String(newEthBalance);
-    appState.smartWalletState.tokenBalances.set(bnb_address.toLowerCase(), String(BigInt(newWBNBBalance)))
+    appState.smartWalletState.tokenBalances.set(bnb_address, String(BigInt(newWBNBBalance)))
     return appState;
 }
 export async function simulateUnwrap(appState1: ApplicationState, _amount: number | string): Promise<ApplicationState> {

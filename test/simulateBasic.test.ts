@@ -22,10 +22,10 @@ const test = async () => {
   console.log("Smart Wallet WBNB is ", appState.smartWalletState.tokenBalances.get("0x910CB19698Eac48a6AB7Ccc9542B756f2Bdd67C6"));
 
   //Wrap 0.02 BNB
-  // await simulateWrap(appState,"20000000000000000");
+  await simulateWrap(appState,"57896044618658097711785492504343953926634992332820282019728792003956564819967");
 
-  // console.log("User Balance after wrap 0.02 BNB",appState.walletState.ethBalances);
-  // console.log("Smart wallet WBNB after wrap",appState.smartWalletState.tokenBalances.get("0x910CB19698Eac48a6AB7Ccc9542B756f2Bdd67C6"))
+  console.log("User Balance after wrap 0.02 BNB",appState.walletState.ethBalances);
+  console.log("Smart wallet WBNB after wrap",appState.smartWalletState.tokenBalances.get("0x910CB19698Eac48a6AB7Ccc9542B756f2Bdd67C6"))
 
   // await simulateSendToken(appState,"0x910CB19698Eac48a6AB7Ccc9542B756f2Bdd67C6","0x595622cBd0Fc4727DF476a1172AdA30A9dDf8F43","20000000000000000")
   // console.log("Smart wallet WBNB after send 0.02 WBNB",appState.smartWalletState.tokenBalances.get("0x910CB19698Eac48a6AB7Ccc9542B756f2Bdd67C6"))
