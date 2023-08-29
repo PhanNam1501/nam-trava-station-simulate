@@ -612,6 +612,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _zennomi_tokens__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(14);
 /* harmony import */ var _zennomi_tokens__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_zennomi_tokens__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var ethers__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(11);
+/* harmony import */ var ethers__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(ethers__WEBPACK_IMPORTED_MODULE_1__);
+
+
 
 /**
  *
@@ -688,7 +692,7 @@ var CONTRACT_NETWORK = {
     TRAVA_TOKEN: "0x4ABEf176F22B9a71B45ddc6c4A115095d8761b37"
   }
 };
-var MAX_UINT256 = "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff";
+var MAX_UINT256 = ethers__WEBPACK_IMPORTED_MODULE_1__.ethers.MaxUint256.toString();
 
 /***/ }),
 /* 14 */

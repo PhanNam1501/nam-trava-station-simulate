@@ -1,4 +1,5 @@
 import { set as dfsTokensSetConfig } from "@zennomi/tokens";
+import { ethers } from "ethers";
 /**
  *
  * @type {Networks}
@@ -66,4 +67,4 @@ export const CONTRACT_NETWORK = {
         TRAVA_TOKEN: "0x4ABEf176F22B9a71B45ddc6c4A115095d8761b37",
     },
 };
-export const MAX_UINT256 = "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff";
+export const MAX_UINT256 = ethers.MaxUint256.toString();

@@ -78,4 +78,4 @@ export const CONTRACT_NETWORK: ContractNetwork = {
   },
 };
 
-export const MAX_UINT256: string = "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+export const MAX_UINT256: string = ethers.MaxUint256.toString()
