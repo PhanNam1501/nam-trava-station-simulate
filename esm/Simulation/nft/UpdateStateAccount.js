@@ -1,4 +1,3 @@
-"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -8,28 +7,23 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateCollectionBalanceFromGraph = exports.updateSellingNFTFromGraph = exports.updateSellingNFTFromContract = exports.updateCollectionBalanceFromContract = exports.updateNFTBalanceFromContract = exports.updateTravaBalance = void 0;
-const ERC20Mock_json_1 = __importDefault(require("../../abis/ERC20Mock.json"));
-const Multicall_json_1 = __importDefault(require("../../abis/Multicall.json"));
-const TravaNFTCore_json_1 = __importDefault(require("../../abis/TravaNFTCore.json"));
-const NFTCollection_json_1 = __importDefault(require("../../abis/NFTCollection.json"));
-const TravaNFTSell_json_1 = __importDefault(require("../../abis/TravaNFTSell.json"));
-const NFTManager_json_1 = __importDefault(require("../../abis/NFTManager.json"));
-const ethers_1 = require("ethers");
-const address_1 = require("../../utils/address");
-const KnightConfig_1 = require("./KnightConfig");
-const bignumber_js_1 = __importDefault(require("bignumber.js"));
-const SellGraphQuery_1 = __importDefault(require("./SellGraphQuery"));
-const CollectionOwnedGraphQuery_1 = __importDefault(require("./CollectionOwnedGraphQuery"));
-const BASE18 = (0, bignumber_js_1.default)('1000000000000000000');
+import ERC20Mock from "../../abis/ERC20Mock.json";
+import MultiCallABI from "../../abis/Multicall.json";
+import TravaNFTCoreABI from "../../abis/TravaNFTCore.json";
+import NFTCollectionABI from "../../abis/NFTCollection.json";
+import TravaNFTSellABI from "../../abis/TravaNFTSell.json";
+import NFTManagerABI from "../../abis/NFTManager.json";
+import { Contract, Interface } from "ethers";
+import { getAddr } from "../../utils/address";
+import { CollectionName, RarityMapping, TypeMapping } from "./KnightConfig";
+import BigNumber from "bignumber.js";
+import SellGraphQuery from "./SellGraphQuery";
+import CollectionOwnedGraphQuery from "./CollectionOwnedGraphQuery";
+const BASE18 = BigNumber('1000000000000000000');
 const multiCall = (abi, calls, provider, chainId) => __awaiter(void 0, void 0, void 0, function* () {
     let _provider = provider;
-    const multi = new ethers_1.Contract((0, address_1.getAddr)("MULTI_CALL_ADDRESS", chainId), Multicall_json_1.default, _provider);
-    const itf = new ethers_1.Interface(abi);
+    const multi = new Contract(getAddr("MULTI_CALL_ADDRESS", chainId), MultiCallABI, _provider);
+    const itf = new Interface(abi);
     const callData = calls.map((call) => [
         call.address.toLowerCase(),
         itf.encodeFunctionData(call.name, call.params),
@@ -38,12 +32,12 @@ const multiCall = (abi, calls, provider, chainId) => __awaiter(void 0, void 0, v
     return returnData.map((call, i) => itf.decodeFunctionResult(calls[i].name, call));
 });
 // Update balance of trava
-function updateTravaBalance(appState1) {
+export function updateTravaBalance(appState1) {
     return __awaiter(this, void 0, void 0, function* () {
         const appState = Object.assign({}, appState1);
         try {
-            let TravaTokenAddress = (0, address_1.getAddr)("TRAVA_TOKEN", appState1.chainId); // Trava Token Address
-            const TravaToken = new ethers_1.Contract(TravaTokenAddress, ERC20Mock_json_1.default, appState.web3);
+            let TravaTokenAddress = getAddr("TRAVA_TOKEN", appState1.chainId); // Trava Token Address
+            const TravaToken = new Contract(TravaTokenAddress, ERC20Mock, appState.web3);
             TravaTokenAddress = TravaTokenAddress.toLowerCase();
             const travaBalance = yield TravaToken.balanceOf(appState.walletState.address);
             const travaBalance2 = yield TravaToken.balanceOf(appState.smartWalletState.address);
@@ -56,25 +50,24 @@ function updateTravaBalance(appState1) {
         return appState;
     });
 }
-exports.updateTravaBalance = updateTravaBalance;
 // Update mảnh NFT owned cho wallet
-function updateNFTBalanceFromContract(appState1, mode) {
+export function updateNFTBalanceFromContract(appState1, mode) {
     return __awaiter(this, void 0, void 0, function* () {
         const appState = Object.assign({}, appState1);
         try {
-            const travacore = new ethers_1.Contract((0, address_1.getAddr)("NFT_CORE_ADDRESS", appState.chainId), TravaNFTCore_json_1.default, appState.web3);
+            const travacore = new Contract(getAddr("NFT_CORE_ADDRESS", appState.chainId), TravaNFTCoreABI, appState.web3);
             const nftCount = yield travacore.balanceOf(appState[mode].address);
             const [nftIds] = yield Promise.all([
-                multiCall(TravaNFTCore_json_1.default, new Array(parseInt(nftCount.toString())).fill(1).map((_, index) => ({
-                    address: (0, address_1.getAddr)("NFT_CORE_ADDRESS", appState.chainId),
+                multiCall(TravaNFTCoreABI, new Array(parseInt(nftCount.toString())).fill(1).map((_, index) => ({
+                    address: getAddr("NFT_CORE_ADDRESS", appState.chainId),
                     name: "tokenOfOwnerByIndex",
                     params: [appState[mode].address, index],
                 })), appState.web3, appState.chainId),
             ]);
             const tokenIdsFlattened = nftIds.flat();
             const [data] = yield Promise.all([
-                multiCall(NFTManager_json_1.default, tokenIdsFlattened.map((tokenId) => ({
-                    address: (0, address_1.getAddr)("NFT_MANAGER_ADDRESS", appState.chainId),
+                multiCall(NFTManagerABI, tokenIdsFlattened.map((tokenId) => ({
+                    address: getAddr("NFT_MANAGER_ADDRESS", appState.chainId),
                     name: "checkIfChestOpenedAndSet",
                     params: [tokenId],
                 })), appState.web3, appState.chainId),
@@ -87,8 +80,8 @@ function updateNFTBalanceFromContract(appState1, mode) {
                     openedTokens.push({ tokenId, version });
             });
             let [tokensMetadata] = yield Promise.all([
-                multiCall(TravaNFTCore_json_1.default, openedTokens.map((item, _) => ({
-                    address: (0, address_1.getAddr)("NFT_CORE_ADDRESS", appState.chainId),
+                multiCall(TravaNFTCoreABI, openedTokens.map((item, _) => ({
+                    address: getAddr("NFT_CORE_ADDRESS", appState.chainId),
                     name: 'getTokenMetadata',
                     params: [item.tokenId],
                 })), appState.web3, appState.chainId),
@@ -118,17 +111,16 @@ function updateNFTBalanceFromContract(appState1, mode) {
         return appState;
     });
 }
-exports.updateNFTBalanceFromContract = updateNFTBalanceFromContract;
 // Update collection owned cho wallet
-function updateCollectionBalanceFromContract(appState1, mode) {
+export function updateCollectionBalanceFromContract(appState1, mode) {
     return __awaiter(this, void 0, void 0, function* () {
         const appState = Object.assign({}, appState1);
         try {
-            const travaCollection = new ethers_1.Contract((0, address_1.getAddr)("NFT_COLLECTION_ADDRESS", appState.chainId), NFTCollection_json_1.default, appState.web3);
+            const travaCollection = new Contract(getAddr("NFT_COLLECTION_ADDRESS", appState.chainId), NFTCollectionABI, appState.web3);
             const collectionLen = parseInt(yield travaCollection.balanceOf(appState[mode].address));
             const [collectionIds] = yield Promise.all([
-                multiCall(NFTCollection_json_1.default, new Array(collectionLen).fill(1).map((_, index) => ({
-                    address: (0, address_1.getAddr)("NFT_COLLECTION_ADDRESS", appState.chainId),
+                multiCall(NFTCollectionABI, new Array(collectionLen).fill(1).map((_, index) => ({
+                    address: getAddr("NFT_COLLECTION_ADDRESS", appState.chainId),
                     name: 'tokenOfOwnerByIndex',
                     params: [appState[mode].address, index],
                 })), appState.web3, appState.chainId),
@@ -166,7 +158,6 @@ function updateCollectionBalanceFromContract(appState1, mode) {
         return appState;
     });
 }
-exports.updateCollectionBalanceFromContract = updateCollectionBalanceFromContract;
 function collectionSort(item1, item2) {
     if (item1.rarity < item2.rarity)
         return 1;
@@ -175,23 +166,23 @@ function collectionSort(item1, item2) {
 }
 const fetchNormalItems = (armorTokenIds, helmetTokenIds, shieldTokenIds, weaponTokenIds, appState) => __awaiter(void 0, void 0, void 0, function* () {
     let [armorTokensMetadata, helmetTokensMetadata, shieldTokensMetadata, weaponTokensMetadata] = yield Promise.all([
-        multiCall(TravaNFTCore_json_1.default, armorTokenIds.map((tokenId) => ({
-            address: (0, address_1.getAddr)("NFT_CORE_ADDRESS", appState.chainId),
+        multiCall(TravaNFTCoreABI, armorTokenIds.map((tokenId) => ({
+            address: getAddr("NFT_CORE_ADDRESS", appState.chainId),
             name: 'getTokenMetadata',
             params: [tokenId],
         })), appState.web3, appState.chainId),
-        multiCall(TravaNFTCore_json_1.default, helmetTokenIds.map((tokenId) => ({
-            address: (0, address_1.getAddr)("NFT_CORE_ADDRESS", appState.chainId),
+        multiCall(TravaNFTCoreABI, helmetTokenIds.map((tokenId) => ({
+            address: getAddr("NFT_CORE_ADDRESS", appState.chainId),
             name: 'getTokenMetadata',
             params: [tokenId],
         })), appState.web3, appState.chainId),
-        multiCall(TravaNFTCore_json_1.default, shieldTokenIds.map((tokenId) => ({
-            address: (0, address_1.getAddr)("NFT_CORE_ADDRESS", appState.chainId),
+        multiCall(TravaNFTCoreABI, shieldTokenIds.map((tokenId) => ({
+            address: getAddr("NFT_CORE_ADDRESS", appState.chainId),
             name: 'getTokenMetadata',
             params: [tokenId],
         })), appState.web3, appState.chainId),
-        multiCall(TravaNFTCore_json_1.default, weaponTokenIds.map((tokenId) => ({
-            address: (0, address_1.getAddr)("NFT_CORE_ADDRESS", appState.chainId),
+        multiCall(TravaNFTCoreABI, weaponTokenIds.map((tokenId) => ({
+            address: getAddr("NFT_CORE_ADDRESS", appState.chainId),
             name: 'getTokenMetadata',
             params: [tokenId],
         })), appState.web3, appState.chainId),
@@ -229,18 +220,18 @@ const fetchNormalItems = (armorTokenIds, helmetTokenIds, shieldTokenIds, weaponT
 });
 const fetchBasicCollections = (collectionIds, appState) => __awaiter(void 0, void 0, void 0, function* () {
     const [collectionSetIds, collectionsMetadata, collectionsExp] = yield Promise.all([
-        multiCall(NFTCollection_json_1.default, collectionIds.map((collectionId) => ({
-            address: (0, address_1.getAddr)("NFT_COLLECTION_ADDRESS", appState.chainId),
+        multiCall(NFTCollectionABI, collectionIds.map((collectionId) => ({
+            address: getAddr("NFT_COLLECTION_ADDRESS", appState.chainId),
             name: 'getCollectionSetId',
             params: [collectionId],
         })), appState.web3, appState.chainId),
-        multiCall(NFTCollection_json_1.default, collectionIds.map((collectionId) => ({
-            address: (0, address_1.getAddr)("NFT_COLLECTION_ADDRESS", appState.chainId),
+        multiCall(NFTCollectionABI, collectionIds.map((collectionId) => ({
+            address: getAddr("NFT_COLLECTION_ADDRESS", appState.chainId),
             name: 'getCollectionMetadata',
             params: [collectionId],
         })), appState.web3, appState.chainId),
-        multiCall(NFTCollection_json_1.default, collectionIds.map((collectionId) => ({
-            address: (0, address_1.getAddr)("NFT_COLLECTION_ADDRESS", appState.chainId),
+        multiCall(NFTCollectionABI, collectionIds.map((collectionId) => ({
+            address: getAddr("NFT_COLLECTION_ADDRESS", appState.chainId),
             name: 'getCollectionExperience',
             params: [collectionId],
         })), appState.web3, appState.chainId),
@@ -262,8 +253,8 @@ const fetchBasicCollections = (collectionIds, appState) => __awaiter(void 0, voi
     let specialCollections = _collectionsMetadata.filter((item) => item.rarity > 5);
     // fetch special collections metadata
     let [tokenURIList] = yield Promise.all([
-        multiCall(NFTCollection_json_1.default, specialCollections.map((item) => ({
-            address: (0, address_1.getAddr)("NFT_COLLECTION_ADDRESS", appState.chainId),
+        multiCall(NFTCollectionABI, specialCollections.map((item) => ({
+            address: getAddr("NFT_COLLECTION_ADDRESS", appState.chainId),
             name: 'tokenURI',
             params: [item.id],
         })), appState.web3, appState.chainId),
@@ -276,13 +267,13 @@ const fetchBasicCollections = (collectionIds, appState) => __awaiter(void 0, voi
 function _fetchNormal(appState, tokenIds) {
     return __awaiter(this, void 0, void 0, function* () {
         let [tokenOrders, tokenMetadata] = yield Promise.all([
-            multiCall(TravaNFTSell_json_1.default, tokenIds.map((tokenId) => ({
-                address: (0, address_1.getAddr)("NFT_SELL_ADDRESS", appState.chainId),
+            multiCall(TravaNFTSellABI, tokenIds.map((tokenId) => ({
+                address: getAddr("NFT_SELL_ADDRESS", appState.chainId),
                 name: "getTokenOrder",
                 params: [tokenId],
             })), appState.web3, appState.chainId),
-            multiCall(TravaNFTCore_json_1.default, tokenIds.map((tokenId) => ({
-                address: (0, address_1.getAddr)("NFT_CORE_ADDRESS", appState.chainId),
+            multiCall(TravaNFTCoreABI, tokenIds.map((tokenId) => ({
+                address: getAddr("NFT_CORE_ADDRESS", appState.chainId),
                 name: "getTokenMetadata",
                 params: [tokenId],
             })), appState.web3, appState.chainId),
@@ -294,15 +285,15 @@ function _fetchNormal(appState, tokenIds) {
         let counter = 0;
         for (const tokenData of tokenMetadata) {
             const collectionId = parseInt(tokenData.collectionId);
-            const collectionName = KnightConfig_1.CollectionName[collectionId - 1];
+            const collectionName = CollectionName[collectionId - 1];
             const rarity = parseInt(tokenData.tokenRarity);
             if (rarity >= 1 && collectionName) {
                 const type = parseInt(tokenData.tokenType);
-                const tType = KnightConfig_1.TypeMapping[type - 1];
-                const tRarity = KnightConfig_1.RarityMapping[rarity - 1];
+                const tType = TypeMapping[type - 1];
+                const tRarity = RarityMapping[rarity - 1];
                 const id = parseInt(tokenIds[counter]);
                 const exp = parseInt(tokenData.experiencePoint);
-                const price = (0, bignumber_js_1.default)(tokenOrders[counter].price).dividedBy(BASE18).toNumber();
+                const price = BigNumber(tokenOrders[counter].price).dividedBy(BASE18).toNumber();
                 const seller = tokenOrders[counter].nftSeller;
                 const data = {
                     id,
@@ -331,15 +322,15 @@ function _fetchNormal(appState, tokenIds) {
 function armourySort(item1, item2) {
     return item2.nRarity - item1.nRarity || item2.exp - item1.exp || item1.nType - item2.nType;
 }
-function updateSellingNFTFromContract(appState1) {
+export function updateSellingNFTFromContract(appState1) {
     return __awaiter(this, void 0, void 0, function* () {
         const appState = Object.assign({}, appState1);
         try {
-            const nftsell = new ethers_1.Contract((0, address_1.getAddr)("NFT_SELL_ADDRESS", appState.chainId), TravaNFTSell_json_1.default, appState.web3);
+            const nftsell = new Contract(getAddr("NFT_SELL_ADDRESS", appState.chainId), TravaNFTSellABI, appState.web3);
             const nftCount = yield nftsell.getTokenOnSaleCount();
             const [nftIds] = yield Promise.all([
-                multiCall(TravaNFTSell_json_1.default, new Array(parseInt(nftCount.toString())).fill(1).map((_, index) => ({
-                    address: (0, address_1.getAddr)("NFT_SELL_ADDRESS", appState.chainId),
+                multiCall(TravaNFTSellABI, new Array(parseInt(nftCount.toString())).fill(1).map((_, index) => ({
+                    address: getAddr("NFT_SELL_ADDRESS", appState.chainId),
                     name: "getTokenOnSaleAtIndex",
                     params: [index],
                 })), appState.web3, appState.chainId),
@@ -369,13 +360,12 @@ function updateSellingNFTFromContract(appState1) {
         return appState;
     });
 }
-exports.updateSellingNFTFromContract = updateSellingNFTFromContract;
 // Graph
-function updateSellingNFTFromGraph(appState1) {
+export function updateSellingNFTFromGraph(appState1) {
     return __awaiter(this, void 0, void 0, function* () {
         const appState = Object.assign({}, appState1);
         try {
-            const a = yield SellGraphQuery_1.default.fetchData();
+            const a = yield SellGraphQuery.fetchData();
             appState.NFTSellingState.v1 = a.v1;
             appState.NFTSellingState.v2 = a.v2;
         }
@@ -385,12 +375,11 @@ function updateSellingNFTFromGraph(appState1) {
         return appState;
     });
 }
-exports.updateSellingNFTFromGraph = updateSellingNFTFromGraph;
-function updateCollectionBalanceFromGraph(appState1, mode) {
+export function updateCollectionBalanceFromGraph(appState1, mode) {
     return __awaiter(this, void 0, void 0, function* () {
         const appState = Object.assign({}, appState1);
         try {
-            const a = yield CollectionOwnedGraphQuery_1.default.fetchData("0xc715bbe707d39524173c0635611cd69c250c59cb");
+            const a = yield CollectionOwnedGraphQuery.fetchData("0xc715bbe707d39524173c0635611cd69c250c59cb");
             console.log(a);
         }
         catch (e) {
@@ -399,4 +388,3 @@ function updateCollectionBalanceFromGraph(appState1, mode) {
         return appState;
     });
 }
-exports.updateCollectionBalanceFromGraph = updateCollectionBalanceFromGraph;

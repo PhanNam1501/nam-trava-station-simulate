@@ -40,7 +40,7 @@ export async function simulateUnwrap(appState1: ApplicationState, _amount: numbe
         amount = appState.walletState.tokenBalances.get(bnb_address)!;
     }
 
-    let newWBNBBalance = BigInt(appState.walletState.tokenBalances.get(bnb_address)!) - BigInt(amount);
+    let newWBNBBalance = BigInt(appState.smartWalletState.tokenBalances.get(bnb_address)!) - BigInt(amount);
     let newBNBBalance = BigInt(appState.walletState.ethBalances) + BigInt(amount)
     appState.smartWalletState.tokenBalances.set(bnb_address, String(newWBNBBalance));
     appState.walletState.ethBalances = String(newBNBBalance);

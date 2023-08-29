@@ -1,4 +1,3 @@
-"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -8,11 +7,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.simulateTravaNFTTransfer = exports.simulateTravaNFTSell = exports.simulateTravaNFTBuy = void 0;
-const address_1 = require("../../utils/address");
-const KnightConfig_1 = require("./KnightConfig");
-function simulateTravaNFTBuy(appState1, tokenId, from, to) {
+import { getAddr } from "../../utils/address";
+import { CollectionName } from "./KnightConfig";
+export function simulateTravaNFTBuy(appState1, tokenId, from, to) {
     var _a, _b;
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -26,7 +23,7 @@ function simulateTravaNFTBuy(appState1, tokenId, from, to) {
             if (!currentNFT) {
                 throw new Error("NFT is not being sold");
             }
-            const travaAddress = (0, address_1.getAddr)("TRAVA_TOKEN", appState1.chainId).toLowerCase();
+            const travaAddress = getAddr("TRAVA_TOKEN", appState1.chainId).toLowerCase();
             if (from == appState.walletState.address) {
                 let travaBalance = (_a = appState.walletState.tokenBalances.get(travaAddress)) !== null && _a !== void 0 ? _a : "0";
                 appState.walletState.tokenBalances.set(travaAddress, (BigInt(travaBalance) - BigInt(currentNFT.price)).toString());
@@ -57,8 +54,7 @@ function simulateTravaNFTBuy(appState1, tokenId, from, to) {
         }
     });
 }
-exports.simulateTravaNFTBuy = simulateTravaNFTBuy;
-function simulateTravaNFTSell(appState1, tokenId, price, from) {
+export function simulateTravaNFTSell(appState1, tokenId, price, from) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const appState = Object.assign({}, appState1);
@@ -81,7 +77,7 @@ function simulateTravaNFTSell(appState1, tokenId, price, from) {
                 delete appState.smartWalletState.nfts[currentVersion][tokenId];
             }
             const collectionId = parseInt(currentNFT.version);
-            const collectionName = KnightConfig_1.CollectionName[collectionId - 1];
+            const collectionName = CollectionName[collectionId - 1];
             const data = {
                 id: currentNFT.tokenId,
                 collectionName,
@@ -102,12 +98,11 @@ function simulateTravaNFTSell(appState1, tokenId, price, from) {
         }
     });
 }
-exports.simulateTravaNFTSell = simulateTravaNFTSell;
-function simulateTravaNFTTransfer(appState1, from, to, tokenId, contract) {
+export function simulateTravaNFTTransfer(appState1, from, to, tokenId, contract) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const appState = Object.assign({}, appState1);
-            if (contract == (0, address_1.getAddr)("NFT_CORE_ADDRESS", appState1.chainId)) {
+            if (contract == getAddr("NFT_CORE_ADDRESS", appState1.chainId)) {
                 let currentVersion = "v1";
                 let currentNFT = appState.walletState.nfts.v1[tokenId];
                 if (!currentNFT) {
@@ -180,4 +175,3 @@ function simulateTravaNFTTransfer(appState1, from, to, tokenId, contract) {
         }
     });
 }
-exports.simulateTravaNFTTransfer = simulateTravaNFTTransfer;
