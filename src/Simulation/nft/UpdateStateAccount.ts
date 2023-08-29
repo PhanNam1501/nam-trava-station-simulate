@@ -44,12 +44,13 @@ export async function updateTravaBalance(
 ): Promise<ApplicationState> {
   const appState = { ...appState1 };
   try {
-    const TravaTokenAddress = getAddr("TRAVA_TOKEN", appState1.chainId); // Trava Token Address
+    let TravaTokenAddress = getAddr("TRAVA_TOKEN", appState1.chainId); // Trava Token Address
     const TravaToken = new Contract(
       TravaTokenAddress,
       ERC20Mock,
       appState.web3
     );
+    TravaTokenAddress = TravaTokenAddress.toLowerCase();
     const travaBalance = await TravaToken.balanceOf(
       appState.walletState.address
     );

@@ -20770,7 +20770,7 @@ function _simulateTravaNFTBuy() {
       if (!currentNFT) {
         throw new Error("NFT is not being sold");
       }
-      var travaAddress = (0,_utils_address__WEBPACK_IMPORTED_MODULE_0__.getAddr)("TRAVA_TOKEN", appState1.chainId);
+      var travaAddress = (0,_utils_address__WEBPACK_IMPORTED_MODULE_0__.getAddr)("TRAVA_TOKEN", appState1.chainId).toLowerCase();
       if (from == appState.walletState.address) {
         var _appState$walletState;
         var travaBalance = (_appState$walletState = appState.walletState.tokenBalances.get(travaAddress)) !== null && _appState$walletState !== void 0 ? _appState$walletState : "0";
@@ -21012,6 +21012,7 @@ function _updateTravaBalance() {
     try {
       var TravaTokenAddress = (0,_utils_address__WEBPACK_IMPORTED_MODULE_7__.getAddr)("TRAVA_TOKEN", appState1.chainId); // Trava Token Address
       var TravaToken = new ethers__WEBPACK_IMPORTED_MODULE_6__.Contract(TravaTokenAddress, _abis_ERC20Mock_json__WEBPACK_IMPORTED_MODULE_0__, appState.web3);
+      TravaTokenAddress = TravaTokenAddress.toLowerCase();
       var travaBalance = yield TravaToken.balanceOf(appState.walletState.address);
       var travaBalance2 = yield TravaToken.balanceOf(appState.smartWalletState.address);
       appState.walletState.tokenBalances.set(TravaTokenAddress, travaBalance);

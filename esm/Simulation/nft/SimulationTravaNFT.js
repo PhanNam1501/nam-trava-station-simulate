@@ -23,7 +23,7 @@ export function simulateTravaNFTBuy(appState1, tokenId, from, to) {
             if (!currentNFT) {
                 throw new Error("NFT is not being sold");
             }
-            const travaAddress = getAddr("TRAVA_TOKEN", appState1.chainId);
+            const travaAddress = getAddr("TRAVA_TOKEN", appState1.chainId).toLowerCase();
             if (from == appState.walletState.address) {
                 let travaBalance = (_a = appState.walletState.tokenBalances.get(travaAddress)) !== null && _a !== void 0 ? _a : "0";
                 appState.walletState.tokenBalances.set(travaAddress, (BigInt(travaBalance) - BigInt(currentNFT.price)).toString());

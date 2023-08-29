@@ -36,8 +36,9 @@ export function updateTravaBalance(appState1) {
     return __awaiter(this, void 0, void 0, function* () {
         const appState = Object.assign({}, appState1);
         try {
-            const TravaTokenAddress = getAddr("TRAVA_TOKEN", appState1.chainId); // Trava Token Address
+            let TravaTokenAddress = getAddr("TRAVA_TOKEN", appState1.chainId); // Trava Token Address
             const TravaToken = new Contract(TravaTokenAddress, ERC20Mock, appState.web3);
+            TravaTokenAddress = TravaTokenAddress.toLowerCase();
             const travaBalance = yield TravaToken.balanceOf(appState.walletState.address);
             const travaBalance2 = yield TravaToken.balanceOf(appState.smartWalletState.address);
             appState.walletState.tokenBalances.set(TravaTokenAddress, travaBalance);
