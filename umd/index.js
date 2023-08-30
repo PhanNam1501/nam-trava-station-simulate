@@ -394,7 +394,7 @@ function _simulateUnwrap() {
     //     throw new Error("Not enough WBNB");
     // }
     if (amount.toString() == _utils_config__WEBPACK_IMPORTED_MODULE_2__.MAX_UINT256 || BigInt(amount) == BigInt(_utils_config__WEBPACK_IMPORTED_MODULE_2__.MAX_UINT256)) {
-      amount = appState.walletState.tokenBalances.get(bnb_address);
+      amount = appState.smartWalletState.tokenBalances.get(bnb_address);
     }
     var newWBNBBalance = BigInt(appState.smartWalletState.tokenBalances.get(bnb_address)) - BigInt(amount);
     var newBNBBalance = BigInt(appState.walletState.ethBalances) + BigInt(amount);

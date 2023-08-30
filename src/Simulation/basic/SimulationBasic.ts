@@ -38,7 +38,7 @@ export async function simulateUnwrap(appState1: ApplicationState, _amount: numbe
     //     throw new Error("Not enough WBNB");
     // }
     if(amount.toString() == MAX_UINT256 || BigInt(amount) == BigInt(MAX_UINT256)) {
-        amount = appState.walletState.tokenBalances.get(bnb_address)!;
+        amount = appState.smartWalletState.tokenBalances.get(bnb_address)!;
     }
 
     let newWBNBBalance = BigInt(appState.smartWalletState.tokenBalances.get(bnb_address)!) - BigInt(amount);
