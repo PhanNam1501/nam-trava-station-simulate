@@ -27,9 +27,9 @@ export function updateTravaLPInfo(appState1, userAddress) {
                 // update token balance for wallet
                 let reserveAddress = reserveAddressList[i];
                 const reserve = new Contract(reserveAddress, BEP20ABI, appState.web3);
+                reserveAddress = String(reserveAddress).toLowerCase();
                 if (String(appState.walletState.tokenBalances.get(reserveAddress)) == "undefined") {
                     const balance = yield reserve.balanceOf(userAddress);
-                    reserveAddress = String(reserveAddress).toLowerCase();
                     appState.walletState.tokenBalances.set(reserveAddress, balance);
                 }
                 if (String(appState.smartWalletState.tokenBalances.get(reserveAddress)) == "undefined") {

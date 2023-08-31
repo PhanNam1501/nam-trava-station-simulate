@@ -7,6 +7,6 @@ export class SmartWalletState {
         this.nfts = new NFTOwned();
         this.travaLPState = new WalletTravaLPState();
         this.collection = new CollectionOwned();
-        this.ethBalances = "0";
+        this.ethBalances = "";
     }
 }

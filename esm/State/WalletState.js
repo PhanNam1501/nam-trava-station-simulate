@@ -35,6 +35,6 @@ export class WalletState {
         this.nfts = new NFTOwned();
         this.collection = new CollectionOwned();
         this.travaLPState = new WalletTravaLPState();
-        this.ethBalances = "0";
+        this.ethBalances = "";
     }
 }

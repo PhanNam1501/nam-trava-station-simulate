@@ -132,7 +132,7 @@ class WalletState {
     this.nfts = new NFTOwned();
     this.collection = new CollectionOwned();
     this.travaLPState = new _TravaDeFiState__WEBPACK_IMPORTED_MODULE_0__.WalletTravaLPState();
-    this.ethBalances = "0";
+    this.ethBalances = "";
   }
 
   // async getTokenAmount(tokenAddress: string): Promise<string> {
@@ -233,7 +233,7 @@ class SmartWalletState {
     this.nfts = new _WalletState__WEBPACK_IMPORTED_MODULE_1__.NFTOwned();
     this.travaLPState = new _TravaDeFiState__WEBPACK_IMPORTED_MODULE_0__.WalletTravaLPState();
     this.collection = new _WalletState__WEBPACK_IMPORTED_MODULE_1__.CollectionOwned();
-    this.ethBalances = "0";
+    this.ethBalances = "";
   }
 
   // async getTokenAmount(tokenAddress: string): Promise<string> {
@@ -20741,9 +20741,9 @@ function _updateTravaLPInfo() {
         // update token balance for wallet
         var reserveAddress = reserveAddressList[i];
         var reserve = new ethers__WEBPACK_IMPORTED_MODULE_0__.Contract(reserveAddress, _abis_BEP20_json__WEBPACK_IMPORTED_MODULE_2__, appState.web3);
+        reserveAddress = String(reserveAddress).toLowerCase();
         if (String(appState.walletState.tokenBalances.get(reserveAddress)) == "undefined") {
           var balance = yield reserve.balanceOf(userAddress);
-          reserveAddress = String(reserveAddress).toLowerCase();
           appState.walletState.tokenBalances.set(reserveAddress, balance);
         }
         if (String(appState.smartWalletState.tokenBalances.get(reserveAddress)) == "undefined") {
