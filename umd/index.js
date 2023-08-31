@@ -20741,13 +20741,16 @@ function _updateTravaLPInfo() {
         // update token balance for wallet
         var reserveAddress = reserveAddressList[i];
         var reserve = new ethers__WEBPACK_IMPORTED_MODULE_0__.Contract(reserveAddress, _abis_BEP20_json__WEBPACK_IMPORTED_MODULE_2__, appState.web3);
-        var balance = yield reserve.balanceOf(userAddress);
-        reserveAddress = String(reserveAddress).toLowerCase();
-        appState.walletState.tokenBalances.set(reserveAddress, balance);
-
-        // update token balance for smart wallet
-        var smartWalletBalance = yield reserve.balanceOf(appState.smartWalletState.address);
-        appState.smartWalletState.tokenBalances.set(reserveAddress, smartWalletBalance);
+        if (String(appState.walletState.tokenBalances.get(reserveAddress)) == "undefined") {
+          var balance = yield reserve.balanceOf(userAddress);
+          reserveAddress = String(reserveAddress).toLowerCase();
+          appState.walletState.tokenBalances.set(reserveAddress, balance);
+        }
+        if (String(appState.smartWalletState.tokenBalances.get(reserveAddress)) == "undefined") {
+          // update token balance for smart wallet
+          var smartWalletBalance = yield reserve.balanceOf(appState.smartWalletState.address);
+          appState.smartWalletState.tokenBalances.set(reserveAddress, smartWalletBalance);
+        }
       }
 
       // second update TravaLP state for wallet

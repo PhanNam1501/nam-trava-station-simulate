@@ -27,21 +27,25 @@ export async function updateTravaLPInfo(
     for (let i = 0; i < reserveAddressList.length; i++) {
       // update token balance for wallet
       let reserveAddress = reserveAddressList[i];
-      const reserve = new Contract (reserveAddress,BEP20ABI,appState.web3);
-      const balance = await reserve.balanceOf(userAddress);
+      const reserve = new Contract(reserveAddress, BEP20ABI, appState.web3);
+      if (String(appState.walletState.tokenBalances.get(reserveAddress)!) == "undefined") {
+        const balance = await reserve.balanceOf(userAddress);
 
-      reserveAddress = String(reserveAddress).toLowerCase();
-      appState.walletState.tokenBalances.set(reserveAddress, balance);
+        reserveAddress = String(reserveAddress).toLowerCase();
+        appState.walletState.tokenBalances.set(reserveAddress, balance);
+      }
 
-      // update token balance for smart wallet
-      const smartWalletBalance = await reserve.balanceOf(
-        appState.smartWalletState.address
-      );
+      if (String(appState.smartWalletState.tokenBalances.get(reserveAddress)!) == "undefined") {
+        // update token balance for smart wallet
+        const smartWalletBalance = await reserve.balanceOf(
+          appState.smartWalletState.address
+        );
 
-      appState.smartWalletState.tokenBalances.set(
-        reserveAddress,
-        smartWalletBalance
-      );
+        appState.smartWalletState.tokenBalances.set(
+          reserveAddress,
+          smartWalletBalance
+        );
+      }
     }
 
     // second update TravaLP state for wallet
