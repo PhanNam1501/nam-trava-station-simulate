@@ -1,6 +1,7 @@
 import {
   updateTravaLPInfo,
   updateLPDebtTokenInfo,
+  updateLPtTokenInfo,
 } from "../src/Simulation/market/UpdateStateAccount";
 import {
   SimulationSupply,
@@ -13,7 +14,7 @@ import { expect } from "chai";
 import { Contract, JsonRpcProvider } from "ethers";
 import { getAddr } from "../src/utils/address";
 import ABITravaLP from "../src/abis/TravaLendingPool.json";
-
+import { MAX_UINT256 } from "../src/utils/config";
 // start test
 
 const test = async () => {
@@ -42,10 +43,28 @@ const test = async () => {
     "0x0d7a757EECAbfe8daa06E9ab8F106911d846D8a1"
   );
 
-  const appState2 = await updateLPDebtTokenInfo(
+  const appState2 = await updateLPtTokenInfo(
     appState1,
     "0xE1F005623934D3D8C724EC68Cc9bFD95498D4435"
   );
+
+  const appState3 = await updateLPDebtTokenInfo(
+    appState2,
+    "0xE1F005623934D3D8C724EC68Cc9bFD95498D4435"
+  );
+
+  console.log("ahuhu", appState3.smartWalletState.detailTokenInPool);
+
+  // const appState2 = await updateLPDebtTokenInfo(
+  //   appState1,
+  //   "0xE1F005623934D3D8C724EC68Cc9bFD95498D4435"
+  // );
+
+  // const appState3 = await SimulationRepay(
+  //   appState2,
+  //   "0xE1F005623934D3D8C724EC68Cc9bFD95498D4435",
+  //   MAX_UINT256
+  // );
 
   // console.log(
   //   "huhu ",
@@ -63,8 +82,8 @@ const test = async () => {
   //   appState.smartWalletState.travaLPState
   // );
 
-  // const simulationSupply = await SimulationSupply(
-  //   appState,
+  // const appState3 = await SimulationSupply(
+  //   appState2,
   //   "0xE1F005623934D3D8C724EC68Cc9bFD95498D4435",
   //   "10000000000000000000"
   // );
@@ -83,8 +102,8 @@ const test = async () => {
   // // );
 
   // console.log("================= PHASE 2 Borrow ==========================");
-  // const simulationBorrow = await SimulationBorrow(
-  //   appState,
+  // const appState4 = await SimulationBorrow(
+  //   appState3,
   //   "0xE1F005623934D3D8C724EC68Cc9bFD95498D4435",
   //   "100000000000000000"
   // );
@@ -98,6 +117,12 @@ const test = async () => {
   // );
 
   // console.log("================= PHASE 3 Repay ==========================");
+
+  // const appState5 = await SimulationRepay(
+  //   appState4,
+  //   "0xE1F005623934D3D8C724EC68Cc9bFD95498D4435",
+  //   MAX_UINT256
+  // );
   // const simulationRepay = await SimulationRepay(
   //   appState,
   //   "0xE1F005623934D3D8C724EC68Cc9bFD95498D4435",
