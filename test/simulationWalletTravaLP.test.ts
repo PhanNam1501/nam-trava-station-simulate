@@ -1,4 +1,7 @@
-import { updateTravaLPInfo } from "../src/Simulation/market/UpdateStateAccount";
+import {
+  updateTravaLPInfo,
+  updateLPDebtTokenInfo,
+} from "../src/Simulation/market/UpdateStateAccount";
 import {
   SimulationSupply,
   SimulationBorrow,
@@ -14,29 +17,41 @@ import ABITravaLP from "../src/abis/TravaLendingPool.json";
 // start test
 
 const test = async () => {
-  const provider = new JsonRpcProvider("https://bsc-testnet.publicnode.com")
+  const provider = new JsonRpcProvider("https://bsc-testnet.publicnode.com");
   console.log("================= Test User Address ========================");
-  const chainId = Number((await provider.getNetwork()).chainId)
+  const chainId = Number((await provider.getNetwork()).chainId);
   // first update token in pool balances
   const TravaLendingPool = new Contract(
     getAddr("TRAVA_LENDING_POOL_MARKET", chainId),
     ABITravaLP,
     provider
   );
-  const userAddress = "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+  const userAddress = "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266";
   // second update TravaLP state for wallet
   const userData = await TravaLendingPool.getUserAccountData(userAddress);
-  console.log("userData", userData.totalCollateralUSD, userData.healthFactor)
+  console.log("userData", userData.totalCollateralUSD, userData.healthFactor);
   console.log("================= PHASE 1 Supply ========================");
-  // const appState = new ApplicationState(
-  //   "0x0d7a757EECAbfe8daa06E9ab8F106911d846D8a1",
-  //   "0x957d84Da98c5Db9e0d3d7FE667D3FA00339f3372",
-  //   provider,
-  //   chainId
-  // );
-  // await updateTravaLPInfo(
-  //   appState,
-  //   "0x0d7a757EECAbfe8daa06E9ab8F106911d846D8a1"
+  const appState = new ApplicationState(
+    "0x0d7a757EECAbfe8daa06E9ab8F106911d846D8a1",
+    "0x957d84Da98c5Db9e0d3d7FE667D3FA00339f3372",
+    provider,
+    chainId
+  );
+  const appState1 = await updateTravaLPInfo(
+    appState,
+    "0x0d7a757EECAbfe8daa06E9ab8F106911d846D8a1"
+  );
+
+  const appState2 = await updateLPDebtTokenInfo(
+    appState1,
+    "0xE1F005623934D3D8C724EC68Cc9bFD95498D4435"
+  );
+
+  // console.log(
+  //   "huhu ",
+  //   appState2.smartWalletState.detailTokenInPool.get(
+  //     "0xE1F005623934D3D8C724EC68Cc9bFD95498D4435"
+  //   )
   // );
 
   // // console.log(
@@ -114,5 +129,5 @@ const test = async () => {
   //   "smartWalletState tokens after phase4 : ",
   //   appState.smartWalletState.tokenBalances
   // );
-}
-test()
+};
+test();

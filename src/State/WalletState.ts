@@ -47,7 +47,7 @@ export class WalletState {
   nfts: NFTOwned;
   collection: CollectionOwned;
   travaLPState: WalletTravaLPState;
-  ethBalances : string;
+  ethBalances: string;
 
   constructor(address: string) {
     this.address = address;
@@ -55,7 +55,7 @@ export class WalletState {
     this.nfts = new NFTOwned();
     this.collection = new CollectionOwned();
     this.travaLPState = new WalletTravaLPState();
-    this.ethBalances = ""; 
+    this.ethBalances = "";
   }
 
   // async getTokenAmount(tokenAddress: string): Promise<string> {

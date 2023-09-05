@@ -5,6 +5,62 @@ import ABITravaLP from "../../abis/TravaLendingPool.json";
 import BEP20ABI from "../../abis/BEP20.json";
 import { convertHexStringToAddress, getAddr } from "../../utils/address";
 import _ from "lodash";
+
+export async function updateLPDebtTokenInfo(
+  appState1: ApplicationState,
+  _tokenAddress: EthAddress
+) {
+  try {
+    const appState = { ...appState1 };
+
+    const travaLP = new Contract(
+      getAddr("TRAVA_LENDING_POOL_MARKET", appState.chainId),
+      ABITravaLP,
+      appState.web3!
+    );
+
+    let reverseList = await travaLP.getReservesList();
+
+    const tokenAddress = convertHexStringToAddress(_tokenAddress);
+
+    if (
+      reverseList.includes(tokenAddress) &&
+      !appState.smartWalletState.detailTokenInPool.has(_tokenAddress)
+    ) {
+      // get reserve data
+      const reserveData = await travaLP.getReserveData(tokenAddress);
+
+      // token address
+      const variableDebtTokenAddress = String(reserveData[7]).toLowerCase();
+
+      // get amount
+      const debtTokenContract = new Contract(
+        variableDebtTokenAddress,
+        BEP20ABI,
+        appState.web3
+      );
+
+      const debtTokenBalance = await debtTokenContract.balanceOf(
+        appState.smartWalletState.address
+      );
+
+      appState.smartWalletState.detailTokenInPool =
+        appState.smartWalletState.detailTokenInPool.set(_tokenAddress, {
+          dToken: {
+            address: variableDebtTokenAddress,
+            balances: debtTokenBalance,
+          },
+        });
+    } else {
+      throw new Error("Token Address already existed !");
+    }
+
+    return appState;
+  } catch (error) {
+    throw new Error("Can't update LP Debt Token info !");
+  }
+}
+
 // call this before all actions
 export async function updateTravaLPInfo(
   appState1: ApplicationState,
@@ -29,13 +85,19 @@ export async function updateTravaLPInfo(
       let reserveAddress = reserveAddressList[i];
       const reserve = new Contract(reserveAddress, BEP20ABI, appState.web3);
       reserveAddress = String(reserveAddress).toLowerCase();
-      if (String(appState.walletState.tokenBalances.get(reserveAddress)!) == "undefined") {
+      if (
+        String(appState.walletState.tokenBalances.get(reserveAddress)!) ==
+        "undefined"
+      ) {
         const balance = await reserve.balanceOf(userAddress);
 
         appState.walletState.tokenBalances.set(reserveAddress, balance);
       }
 
-      if (String(appState.smartWalletState.tokenBalances.get(reserveAddress)!) == "undefined") {
+      if (
+        String(appState.smartWalletState.tokenBalances.get(reserveAddress)!) ==
+        "undefined"
+      ) {
         // update token balance for smart wallet
         const smartWalletBalance = await reserve.balanceOf(
           appState.smartWalletState.address
@@ -79,20 +141,9 @@ export async function updateTravaLPInfo(
     appState.smartWalletState.travaLPState.healthFactor =
       smartWalletData.healthFactor;
     appState.smartWalletState.travaLPState.ltv = smartWalletData.ltv;
+    return appState;
   } catch (e) {
     console.log(e);
+    return appState1;
   }
-  return appState;
 }
-
-// const appState = new ApplicationState(
-//   "0x0d7a757EECAbfe8daa06E9ab8F106911d846D8a1",
-//   "0x957d84Da98c5Db9e0d3d7FE667D3FA00339f3372"
-// );
-
-// updateTravaLPInfo(appState, "0x0d7a757EECAbfe8daa06E9ab8F106911d846D8a1").then(
-//   () => {
-//     console.log(appState.walletState.travaLPState);
-//     console.log(appState.walletState.tokenBalances);
-//   }
-// );

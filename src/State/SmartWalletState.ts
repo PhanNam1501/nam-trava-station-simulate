@@ -8,7 +8,8 @@ export class SmartWalletState {
   nfts: NFTOwned;
   collection: CollectionOwned;
   travaLPState: WalletTravaLPState;
-  ethBalances : string;
+  ethBalances: string;
+  detailTokenInPool: Map<any, any>;
 
   constructor(address: EthAddress) {
     this.address = address;
@@ -16,7 +17,8 @@ export class SmartWalletState {
     this.nfts = new NFTOwned();
     this.travaLPState = new WalletTravaLPState();
     this.collection = new CollectionOwned();
-    this.ethBalances = ""
+    this.ethBalances = "";
+    this.detailTokenInPool = new Map();
   }
 
   // async getTokenAmount(tokenAddress: string): Promise<string> {
