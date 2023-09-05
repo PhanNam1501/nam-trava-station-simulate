@@ -53,8 +53,6 @@ const test = async () => {
     "0xE1F005623934D3D8C724EC68Cc9bFD95498D4435"
   );
 
-  console.log("ahuhu", appState3.smartWalletState.detailTokenInPool);
-
   // const appState2 = await updateLPDebtTokenInfo(
   //   appState1,
   //   "0xE1F005623934D3D8C724EC68Cc9bFD95498D4435"
@@ -82,11 +80,11 @@ const test = async () => {
   //   appState.smartWalletState.travaLPState
   // );
 
-  // const appState3 = await SimulationSupply(
-  //   appState2,
-  //   "0xE1F005623934D3D8C724EC68Cc9bFD95498D4435",
-  //   "10000000000000000000"
-  // );
+  const appState4 = await SimulationSupply(
+    appState3,
+    "0xE1F005623934D3D8C724EC68Cc9bFD95498D4435",
+    "10000000000000000000"
+  );
 
   // // console.log(
   // //   "banlances after phase1 : ",
@@ -102,11 +100,12 @@ const test = async () => {
   // // );
 
   // console.log("================= PHASE 2 Borrow ==========================");
-  // const appState4 = await SimulationBorrow(
-  //   appState3,
-  //   "0xE1F005623934D3D8C724EC68Cc9bFD95498D4435",
-  //   "100000000000000000"
-  // );
+  const appState5 = await SimulationBorrow(
+    appState4,
+    "0xE1F005623934D3D8C724EC68Cc9bFD95498D4435",
+    "100000000000000000"
+  );
+  console.log("ahuhu", appState5.smartWalletState.detailTokenInPool);
   // console.log(
   //   "smartWalletState TravaLP after phase2 : ",
   //   appState.smartWalletState.travaLPState

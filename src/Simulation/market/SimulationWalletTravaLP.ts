@@ -211,18 +211,24 @@ export async function SimulationBorrow(
       }
 
       // add debToken to smart wallet state if not exist
-      if (!appState.smartWalletState.tokenBalances.has(debToken)) {
-        appState.smartWalletState.tokenBalances.set(debToken, String(amount));
-      } else {
-        // update tToken balance of smart wallet
-        appState.smartWalletState.tokenBalances.set(
-          debToken,
-          String(
-            BigInt(appState.smartWalletState.tokenBalances.get(debToken)!) +
-              BigInt(amount)
-          )
-        );
-      }
+      appState.smartWalletState.tokenBalances.set(
+        _tokenAddress,
+        String(
+          BigInt(appState.smartWalletState.tokenBalances.get(_tokenAddress)!) +
+            BigInt(amount)
+        )
+      );
+
+      let tokenInfo =
+        appState.smartWalletState.detailTokenInPool.get(_tokenAddress);
+
+      tokenInfo.dToken = {
+        ...tokenInfo.dToken,
+        balances: String(BigInt(tokenInfo.dToken.balances) + BigInt(amount)),
+      };
+
+      appState.smartWalletState.detailTokenInPool.set(_tokenAddress, tokenInfo);
+
       return appState;
     } else {
       throw new Error(
@@ -354,6 +360,15 @@ export async function SimulationRepay(
           );
 
           // set debt token balance to 0
+          appState.smartWalletState.tokenBalances.set(
+            _tokenAddress,
+            String(
+              BigInt(
+                appState.smartWalletState.tokenBalances.get(_tokenAddress)!
+              ) - BigInt(amount)
+            )
+          );
+
           let tokenInfo =
             appState.smartWalletState.detailTokenInPool.get(_tokenAddress);
 
