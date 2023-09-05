@@ -117,11 +117,13 @@ const test = async () => {
 
   // console.log("================= PHASE 3 Repay ==========================");
 
-  // const appState5 = await SimulationRepay(
-  //   appState4,
-  //   "0xE1F005623934D3D8C724EC68Cc9bFD95498D4435",
-  //   MAX_UINT256
-  // );
+  const appState6 = await SimulationRepay(
+    appState5,
+    "0xE1F005623934D3D8C724EC68Cc9bFD95498D4435",
+    MAX_UINT256
+  );
+
+  console.log("ahuhu", appState6.smartWalletState.detailTokenInPool);
   // const simulationRepay = await SimulationRepay(
   //   appState,
   //   "0xE1F005623934D3D8C724EC68Cc9bFD95498D4435",
@@ -139,11 +141,13 @@ const test = async () => {
   // console.log(
   //   "================= PHASE 4 Withdraw =========================="
   // );
-  // const simulationWithdraw = await SimulationWithdraw(
-  //   appState,
-  //   "0x910CB19698Eac48a6AB7Ccc9542B756f2Bdd67C6",
-  //   "1000000000000000000"
-  // );
+  const appState7 = await SimulationWithdraw(
+    appState6,
+    "0xE1F005623934D3D8C724EC68Cc9bFD95498D4435",
+    "1000000000000000000"
+  );
+
+  console.log("ahuhu", appState7.smartWalletState.detailTokenInPool);
   // console.log(
   //   "smartWalletState TravaLP after phase4 : ",
   //   appState.smartWalletState.travaLPState
