@@ -5,6 +5,7 @@ import ABITravaLP from "../../abis/TravaLendingPool.json";
 import BEP20ABI from "../../abis/BEP20.json";
 import { convertHexStringToAddress, getAddr } from "../../utils/address";
 import _ from "lodash";
+import { DetailTokenInPool } from "../../State/SmartWalletState";
 
 export async function updateLPtTokenInfo(
   appState1: ApplicationState,
@@ -51,6 +52,10 @@ export async function updateLPtTokenInfo(
             address: tTokenAddress.toLowerCase(),
             balances: tTokenBalance.toString(),
           },
+          dToken: {
+            address: "",
+            balances: "",
+          },
         });
     } else if (
       reverseList.includes(tokenAddress) &&
@@ -73,7 +78,7 @@ export async function updateLPtTokenInfo(
       );
 
       let tokenInfo =
-        appState.smartWalletState.detailTokenInPool.get(tokenAddressState);
+        appState.smartWalletState.detailTokenInPool.get(tokenAddressState)!;
 
       tokenInfo.tToken = {
         address: tTokenAddress.toLowerCase(),
@@ -139,6 +144,10 @@ export async function updateLPDebtTokenInfo(
             address: variableDebtTokenAddress.toLowerCase(),
             balances: debtTokenBalance.toString(),
           },
+          tToken: {
+            address: "",
+            balances: "",
+          },
         });
     } else if (
       reverseList.includes(tokenAddress) &&
@@ -161,7 +170,7 @@ export async function updateLPDebtTokenInfo(
       );
 
       let tokenInfo =
-        appState.smartWalletState.detailTokenInPool.get(tokenAddressState);
+        appState.smartWalletState.detailTokenInPool.get(tokenAddressState)!;
       tokenInfo.dToken = {
         address: variableDebtTokenAddress.toLowerCase(),
         balances: debtTokenBalance.toString(),

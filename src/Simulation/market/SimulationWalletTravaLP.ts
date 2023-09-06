@@ -95,7 +95,7 @@ export async function SimulationSupply(
 
       // add tToken to smart wallet state if not exist
       const tokenInfo =
-        appState.smartWalletState.detailTokenInPool.get(_tokenAddress);
+        appState.smartWalletState.detailTokenInPool.get(_tokenAddress)!;
 
       tokenInfo.tToken = {
         ...tokenInfo.tToken,
@@ -203,7 +203,7 @@ export async function SimulationBorrow(
       );
 
       let tokenInfo =
-        appState.smartWalletState.detailTokenInPool.get(_tokenAddress);
+        appState.smartWalletState.detailTokenInPool.get(_tokenAddress)!;
 
       tokenInfo.dToken = {
         ...tokenInfo.dToken,
@@ -250,12 +250,12 @@ export async function SimulationRepay(
         BigInt(amount) == BigInt(MAX_UINT256)
       ) {
         amount =
-          appState.smartWalletState.detailTokenInPool.get(_tokenAddress).dToken
+          appState.smartWalletState.detailTokenInPool.get(_tokenAddress)!.dToken
             .balances;
       }
 
       const debtTokenSmartWalletBalance =
-        appState.smartWalletState.detailTokenInPool.get(_tokenAddress).dToken
+        appState.smartWalletState.detailTokenInPool.get(_tokenAddress)!.dToken
           .balances;
 
       if (debtTokenSmartWalletBalance == "0") {
@@ -311,7 +311,7 @@ export async function SimulationRepay(
           );
 
           let tokenInfo =
-            appState.smartWalletState.detailTokenInPool.get(_tokenAddress);
+            appState.smartWalletState.detailTokenInPool.get(_tokenAddress)!;
 
           tokenInfo.dToken.balances = String(
             BigInt(tokenInfo.dToken.balances) - BigInt(amount)
@@ -362,7 +362,7 @@ export async function SimulationRepay(
           );
 
           let tokenInfo =
-            appState.smartWalletState.detailTokenInPool.get(_tokenAddress);
+            appState.smartWalletState.detailTokenInPool.get(_tokenAddress)!;
 
           tokenInfo.dToken = {
             ...tokenInfo.dToken,
@@ -413,19 +413,19 @@ export async function SimulationWithdraw(
         BigInt(amount) == BigInt(MAX_UINT256)
       ) {
         amount =
-          appState.smartWalletState.detailTokenInPool.get(_tokenAddress).tToken
+          appState.smartWalletState.detailTokenInPool.get(_tokenAddress)!.tToken
             .balances;
       }
 
       if (
-        appState.smartWalletState.detailTokenInPool.get(_tokenAddress).tToken
+        appState.smartWalletState.detailTokenInPool.get(_tokenAddress)!.tToken
           .balances == "0"
       ) {
         throw new Error(`Smart wallet does not supply ${tokenAddress} token.`);
       } else {
         if (
           BigInt(
-            appState.smartWalletState.detailTokenInPool.get(_tokenAddress)
+            appState.smartWalletState.detailTokenInPool.get(_tokenAddress)!
               .tToken.balances
           ) > BigInt(amount)
         ) {
@@ -490,7 +490,7 @@ export async function SimulationWithdraw(
           );
 
           let tokenInfo =
-            appState.smartWalletState.detailTokenInPool.get(_tokenAddress);
+            appState.smartWalletState.detailTokenInPool.get(_tokenAddress)!;
 
           tokenInfo.tToken = {
             ...tokenInfo.tToken,
@@ -506,7 +506,7 @@ export async function SimulationWithdraw(
         } else if (
           BigInt(amount) >=
           BigInt(
-            appState.smartWalletState.detailTokenInPool.get(_tokenAddress)
+            appState.smartWalletState.detailTokenInPool.get(_tokenAddress)!
               .tToken.balances
           )
         ) {
@@ -571,7 +571,7 @@ export async function SimulationWithdraw(
           );
 
           let tokenInfo =
-            appState.smartWalletState.detailTokenInPool.get(_tokenAddress);
+            appState.smartWalletState.detailTokenInPool.get(_tokenAddress)!;
 
           tokenInfo.tToken = {
             ...tokenInfo.tToken,
