@@ -635,4 +635,3 @@ export async function updateOwnedSellingNFT(
   }
   return appState;
 }
-

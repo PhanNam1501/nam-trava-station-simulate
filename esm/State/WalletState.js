@@ -1,3 +1,4 @@
+import { NFTSellingState } from "./NFTSellingState";
 import { WalletTravaLPState } from "./TravaDeFiState";
 // export class NFTData {
 //   id: string | number;
@@ -36,5 +37,6 @@ export class WalletState {
         this.collection = new CollectionOwned();
         this.travaLPState = new WalletTravaLPState();
         this.ethBalances = "";
+        this.sellingNFT = new NFTSellingState();
     }
 }
