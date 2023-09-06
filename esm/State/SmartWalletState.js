@@ -8,5 +8,6 @@ export class SmartWalletState {
         this.travaLPState = new WalletTravaLPState();
         this.collection = new CollectionOwned();
         this.ethBalances = "";
+        this.detailTokenInPool = new Map();
     }
 }
