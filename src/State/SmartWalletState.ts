@@ -1,4 +1,5 @@
 import { EthAddress } from "../utils/types";
+import { NFTSellingState } from "./NFTSellingState";
 import { WalletTravaLPState } from "./TravaDeFiState";
 import { CollectionOwned, NFTOwned } from "./WalletState";
 
@@ -19,7 +20,7 @@ export class SmartWalletState {
   collection: CollectionOwned;
   travaLPState: WalletTravaLPState;
   ethBalances: string;
-  detailTokenInPool: Map<string, DetailTokenInPool>;
+  detailTokenInPool: Map<any, any>;
 
   constructor(address: EthAddress) {
     this.address = address;
@@ -28,7 +29,7 @@ export class SmartWalletState {
     this.travaLPState = new WalletTravaLPState();
     this.collection = new CollectionOwned();
     this.ethBalances = "";
-    this.detailTokenInPool = new Map<string, DetailTokenInPool>();
+    this.detailTokenInPool = new Map();
   }
 
   // async getTokenAmount(tokenAddress: string): Promise<string> {
