@@ -1,5 +1,3 @@
-import { EthAddress } from "../utils/types";
-
 // Selling
 export type SellingArmouryType = {
   id: number;
