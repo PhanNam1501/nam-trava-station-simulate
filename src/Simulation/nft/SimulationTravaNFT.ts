@@ -3,8 +3,9 @@ import { ApplicationState } from "../../State/ApplicationState";
 import TravaNFTSellABI from "../../abis/TravaNFTSell.json";
 import { getAddr } from "../../utils/address";
 import _ from "lodash";
-import { ArmouryType, NormalKnight, SellingArmouryType, SpecialKnight } from "../../global";
+import { ArmouryObject, ArmouryType, NormalKnight, SellingArmouryType, SpecialKnight } from "../../global";
 import { CollectionName } from "./KnightConfig";
+import { NFTOwned } from "../../State/WalletState";
 
 export async function simulateTravaNFTBuy(
   appState1: ApplicationState,
@@ -181,6 +182,40 @@ export async function simulateTravaNFTTransfer(
           appState.smartWalletState.collection[currentVersion].push(currentNFT);
         }
       }
+    }
+    return appState;
+  } catch (err) {
+    throw err;
+  }
+}
+
+export async function simulateTravaNFTCancelSale(
+  appState1: ApplicationState,
+  to: EthAddress,
+  tokenId: number | string
+): Promise<ApplicationState> {
+  try {
+    const appState = { ...appState1 };
+    let currentVersion: "v1" | "v2" = "v1";
+    let currentNFT = appState.smartWalletState.sellingNFT.v1.find((n) => n.id == tokenId);
+    if(!currentNFT) {
+      currentNFT = appState.smartWalletState.sellingNFT.v2.find((n) => n.id == tokenId);
+      currentVersion = "v2";
+    }
+    appState.NFTSellingState[currentVersion] = appState.NFTSellingState[currentVersion].filter(x => x.id != tokenId);
+    appState.smartWalletState.sellingNFT[currentVersion] = appState.smartWalletState.sellingNFT[currentVersion].filter(x => x.id != tokenId);
+    let data: ArmouryType = {
+      tokenId: tokenId as number,
+      version: currentVersion,
+      set: (currentNFT as SellingArmouryType).collectionId,
+      rarity: (currentNFT as SellingArmouryType).nRarity,
+      type: (currentNFT as SellingArmouryType).nType,
+      exp: (currentNFT as SellingArmouryType).exp
+    }
+    if(to == appState.smartWalletState.address) {
+      appState.smartWalletState.nfts[currentVersion][tokenId] = data;
+    } else if(to == appState.walletState.address) {
+      appState.walletState.nfts[currentVersion][tokenId] = data;
     }
     return appState;
   } catch (err) {

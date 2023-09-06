@@ -526,3 +526,113 @@ export async function updateCollectionBalanceFromGraph(
   }
   return appState;
 }
+
+export async function updateOwnedSellingNFTFromContract(
+  appState1: ApplicationState,
+  mode: "walletState" | "smartWalletState"
+){
+  const appState = { ...appState1 };
+  try{
+    const nftsell = new Contract(
+      getAddr("NFT_SELL_ADDRESS", appState.chainId),
+      TravaNFTSellABI,
+      appState.web3
+    );
+    const tokenLength = await nftsell.getTokenOfOwnerBalance(appState[mode].address);
+    const [tokenIds] = await Promise.all([
+      multiCall(
+        TravaNFTSellABI,
+        new Array(parseInt(tokenLength)).fill(1).map((_, idx) => ({
+          address: getAddr("NFT_SELL_ADDRESS", appState.chainId),
+          name: "getTokenOfOwnerAtIndex",
+          params: [appState[mode].address, idx],
+        })),
+        appState.web3,
+        appState.chainId
+      ),
+    ]);
+    const tokenIdsFlattened = tokenIds.flat();
+    const [tokensMetadata, ordersMetadata] = await Promise.all([
+      multiCall(
+        TravaNFTCoreABI,
+        tokenIdsFlattened.map((tokenId: string) => ({
+          address: getAddr("NFT_CORE_ADDRESS", appState.chainId),
+          name: "getTokenMetadata",
+          params: [tokenId],
+        })),
+        appState.web3,
+        appState.chainId
+      ),
+      multiCall(
+        TravaNFTSellABI,
+        tokenIdsFlattened.map((tokenId: string) => ({
+          address: getAddr("NFT_SELL_ADDRESS", appState.chainId),
+          name: "getTokenOrder",
+          params: [tokenId],
+        })),
+        appState.web3,
+        appState.chainId
+      ),
+    ]);
+    const tokensMetadataFlattened = tokensMetadata.flat();
+    const ordersMetadataFlattened = ordersMetadata.flat();
+    let v1 = [] as Array<SellingArmouryType>;
+    let v2 = [] as Array<SellingArmouryType>;
+    let counter = 0;
+    for (const tokenData of tokensMetadataFlattened) {
+      const collectionId = parseInt(tokenData[3]);
+      const collectionName = CollectionName[collectionId - 1];
+      if (collectionName) {
+        const id = parseInt(tokenIdsFlattened[counter]);
+        const rarity = parseInt(tokenData[1]);
+        const type = parseInt(tokenData[2]);
+        const exp = parseInt(tokenData[4]);
+        const tRarity = RarityMapping[rarity - 1];
+        const tType = TypeMapping[type - 1];
+        const price = BigNumber(ordersMetadataFlattened[counter][1]).dividedBy(BASE18).toNumber();
+        const data: SellingArmouryType = {
+          id,
+          collectionName,
+          collectionId,
+          nRarity: rarity,
+          nType: type,
+          rarity: tRarity,
+          type: tType,
+          exp,
+          price,
+          seller: ordersMetadataFlattened[counter][0],
+        };
+        if (collectionId == 1) v1.push(data);
+        else if (collectionId == 2) v2.push(data);
+      }
+      counter++;
+    }
+    v1 = v1.sort((item1, item2) => item2.nRarity - item1.nRarity || item2.exp - item1.exp);
+    v2 = v2.sort((item1, item2) => item2.nRarity - item1.nRarity || item2.exp - item1.exp);
+    
+    appState[mode].sellingNFT.v1 = v1;
+    appState[mode].sellingNFT.v2 = v2;
+  } catch (e) {
+    console.log(e);
+  }
+  return appState;
+}
+
+export async function updateOwnedSellingNFT(
+  appState1: ApplicationState
+){
+  const appState = { ...appState1 };
+  try{
+    if(!appState?.NFTSellingState?.v1 && !appState?.NFTSellingState?.v2){
+      updateSellingNFTFromContract(appState1);
+    }
+    appState.smartWalletState.sellingNFT.v1 = appState.NFTSellingState.v1.filter(x => x.seller == appState.smartWalletState.address);
+    appState.smartWalletState.sellingNFT.v2 = appState.NFTSellingState.v2.filter(x => x.seller == appState.smartWalletState.address);
+    appState.walletState.sellingNFT.v1 = appState.NFTSellingState.v1.filter(x => x.seller == appState.walletState.address);
+    appState.walletState.sellingNFT.v2 = appState.NFTSellingState.v2.filter(x => x.seller == appState.walletState.address);
+  } catch (e) {
+    console.log(e);
+  }
+  return appState;
+}
+
