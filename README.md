@@ -45,7 +45,20 @@ appState3 = await updateTravaLPInfo(
     market
 )
 ```
-
+Khi gọi action supply và withdraw
+```
+appState31 = await updateLPtTokenInfo(
+    appState3,
+    tokenAddress
+)
+```
+Khi gọi action borrow và repay
+```
+appState32 = await updateLPDebtTokenInfo(
+    appState3,
+    tokenAddress
+)
+```
 ## Các action liên qua đến nft
 ### Tương tác với các mảnh armouries
 Update các armouries của main wallet
@@ -154,6 +167,10 @@ appState12 = await SimulationBorrow(
 )
 ```
 ## Repay
+get max amount:
+```
+maxAmount = appState.smartWalletState.detailTokenInPool[tokenAddress].tToken.balances
+```
 ```
 appState13 = await SimulationRepay(
     appState12,

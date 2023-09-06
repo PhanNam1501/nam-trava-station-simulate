@@ -228,12 +228,14 @@ class SmartWalletState {
     _defineProperty(this, "collection", void 0);
     _defineProperty(this, "travaLPState", void 0);
     _defineProperty(this, "ethBalances", void 0);
+    _defineProperty(this, "detailTokenInPool", void 0);
     this.address = address;
     this.tokenBalances = new Map();
     this.nfts = new _WalletState__WEBPACK_IMPORTED_MODULE_1__.NFTOwned();
     this.travaLPState = new _TravaDeFiState__WEBPACK_IMPORTED_MODULE_0__.WalletTravaLPState();
     this.collection = new _WalletState__WEBPACK_IMPORTED_MODULE_1__.CollectionOwned();
     this.ethBalances = "";
+    this.detailTokenInPool = new Map();
   }
 
   // async getTokenAmount(tokenAddress: string): Promise<string> {
@@ -302,6 +304,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   simulateWrap: () => (/* reexport safe */ _basic_SimulationBasic__WEBPACK_IMPORTED_MODULE_0__.simulateWrap),
 /* harmony export */   updateCollectionBalanceFromContract: () => (/* reexport safe */ _nft_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_5__.updateCollectionBalanceFromContract),
 /* harmony export */   updateCollectionBalanceFromGraph: () => (/* reexport safe */ _nft_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_5__.updateCollectionBalanceFromGraph),
+/* harmony export */   updateLPDebtTokenInfo: () => (/* reexport safe */ _market_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_3__.updateLPDebtTokenInfo),
+/* harmony export */   updateLPtTokenInfo: () => (/* reexport safe */ _market_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_3__.updateLPtTokenInfo),
 /* harmony export */   updateNFTBalanceFromContract: () => (/* reexport safe */ _nft_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_5__.updateNFTBalanceFromContract),
 /* harmony export */   updateSellingNFTFromContract: () => (/* reexport safe */ _nft_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_5__.updateSellingNFTFromContract),
 /* harmony export */   updateSellingNFTFromGraph: () => (/* reexport safe */ _nft_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_5__.updateSellingNFTFromGraph),
@@ -315,7 +319,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _basic_SimulationBasic__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(8);
 /* harmony import */ var _basic_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(9);
 /* harmony import */ var _market_SimulationWalletTravaLP__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(112);
-/* harmony import */ var _market_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(118);
+/* harmony import */ var _market_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(116);
 /* harmony import */ var _nft_SimulationTravaNFT__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(119);
 /* harmony import */ var _nft_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(121);
 /* harmony import */ var _swap_SimulationSwap__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(215);
@@ -551,7 +555,7 @@ var listAddr = {
     TRAVA_TOKEN_IN_MARKET: "0xE1F005623934D3D8C724EC68Cc9bFD95498D4435",
     NFT_CORE_ADDRESS: "0xd2Eca5a421db7c2e2aC88Da684214B52915A66b3",
     MULTI_CALL_ADDRESS: "0xd808400FbF312ACA5C7487cd30B0D1386e04BC78",
-    NFT_SELL_ADDRESS: "0x3DA1eA25cAdA055F1337E0d11AC5A4FacffFBB26",
+    NFT_SELL_ADDRESS: "0xf5804062c93b0C725e277F772b5DA06749005cd5",
     NFT_MANAGER_ADDRESS: "0xA91A365D2e3D280553E96D5afA157e6A3e50890A",
     NFT_COLLECTION_ADDRESS: "0x5D996eC57756cEB127a4eD3302d7F28F52FDEbb1",
     WBNB_ADDRESS: "0x910CB19698Eac48a6AB7Ccc9542B756f2Bdd67C6",
@@ -20254,12 +20258,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   SimulationWithdraw: () => (/* binding */ SimulationWithdraw)
 /* harmony export */ });
 /* harmony import */ var _utils_oraclePrice__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(113);
-/* harmony import */ var _abis_TravaLendingPool_json__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(116);
-/* harmony import */ var _abis_BEP20_json__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(117);
-/* harmony import */ var _utils_address__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(12);
-/* harmony import */ var ethers__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(11);
-/* harmony import */ var ethers__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(ethers__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var _utils_config__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(13);
+/* harmony import */ var _utils_address__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(12);
+/* harmony import */ var _utils_config__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(13);
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
 function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
@@ -20267,9 +20267,6 @@ function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return typ
 function _toPrimitive(input, hint) { if (typeof input !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (typeof res !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
-
-
-
 
 
 
@@ -20283,26 +20280,22 @@ function _SimulationSupply() {
     try {
       var amount = _amount;
       var appState = _objectSpread({}, appState1);
-      var oraclePrice = new _utils_oraclePrice__WEBPACK_IMPORTED_MODULE_0__["default"]((0,_utils_address__WEBPACK_IMPORTED_MODULE_3__.getAddr)("ORACLE_ADDRESS", appState.chainId), appState.web3);
-      var travaLP = new ethers__WEBPACK_IMPORTED_MODULE_4__.Contract((0,_utils_address__WEBPACK_IMPORTED_MODULE_3__.getAddr)("TRAVA_LENDING_POOL_MARKET", appState.chainId), _abis_TravaLendingPool_json__WEBPACK_IMPORTED_MODULE_1__, appState.web3);
-      var tokenAddress = (0,_utils_address__WEBPACK_IMPORTED_MODULE_3__.convertHexStringToAddress)(_tokenAddress);
+      var oraclePrice = new _utils_oraclePrice__WEBPACK_IMPORTED_MODULE_0__["default"]((0,_utils_address__WEBPACK_IMPORTED_MODULE_1__.getAddr)("ORACLE_ADDRESS", appState.chainId), appState.web3);
+      var tokenAddress = (0,_utils_address__WEBPACK_IMPORTED_MODULE_1__.convertHexStringToAddress)(_tokenAddress);
       _tokenAddress = _tokenAddress.toLowerCase();
-      var reverseList = yield travaLP.getReservesList();
-      // check tokenAddress is exist on reverseList
-      if (reverseList.includes(tokenAddress) && appState.walletState.tokenBalances.has(_tokenAddress)) {
-        // check tokenAddress:string is exist on appState.walletState.tokenBalances : Array<Map<string, string>>
 
-        // get tToken address
-        var reserveData = yield travaLP.getReserveData(tokenAddress);
-        var tToken = String(reserveData[6]).toLowerCase();
+      // check tokenAddress is exist on reverseList
+      if (appState.smartWalletState.detailTokenInPool.has(_tokenAddress) && appState.walletState.tokenBalances.has(_tokenAddress)) {
+        // check tokenAddress:string is exist on appState.walletState.tokenBalances : Array<Map<string, string>>
 
         // get token amount
         var tokenAmount = BigInt(appState.walletState.tokenBalances.get(_tokenAddress));
-        if (amount.toString() == _utils_config__WEBPACK_IMPORTED_MODULE_5__.MAX_UINT256 || BigInt(amount) == BigInt(_utils_config__WEBPACK_IMPORTED_MODULE_5__.MAX_UINT256)) {
+        if (amount.toString() == _utils_config__WEBPACK_IMPORTED_MODULE_2__.MAX_UINT256 || BigInt(amount) == BigInt(_utils_config__WEBPACK_IMPORTED_MODULE_2__.MAX_UINT256)) {
           amount = appState.walletState.tokenBalances.get(_tokenAddress);
         }
+
         // check amount tokenName on appState is enough .Before check convert string to number
-        if (BigInt(tokenAmount) >= BigInt(amount)) {
+        if (tokenAmount >= BigInt(amount)) {
           // update appState amount tokenName
           var newAmount = String(tokenAmount - BigInt(amount));
           appState.walletState.tokenBalances.set(_tokenAddress, newAmount);
@@ -20318,24 +20311,19 @@ function _SimulationSupply() {
             appState.smartWalletState.travaLPState.healthFactor = String((BigInt(appState.smartWalletState.travaLPState.totalCollateralUSD) * BigInt(10 ** 18) + BigInt(amount) * BigInt(yield oraclePrice.getAssetPrice(tokenAddress))) * BigInt(appState.smartWalletState.travaLPState.currentLiquidationThreshold) / BigInt(appState.smartWalletState.travaLPState.totalDebtUSD));
           } else {
             // healthFactor = MaxUint256
-            appState.smartWalletState.travaLPState.healthFactor = _utils_config__WEBPACK_IMPORTED_MODULE_5__.MAX_UINT256;
+            appState.smartWalletState.travaLPState.healthFactor = _utils_config__WEBPACK_IMPORTED_MODULE_2__.MAX_UINT256;
           }
 
           // update totalCollateralUSD. deposited + amount * asset.price
           appState.smartWalletState.travaLPState.totalCollateralUSD = String(BigInt(appState.smartWalletState.travaLPState.totalCollateralUSD) + BigInt(amount) * BigInt(yield oraclePrice.getAssetPrice(tokenAddress)) / BigInt(10 ** 18));
         }
-        // else {
-        //   throw new Error(`Amount ${tokenAddress} on appState is not enough.`);
-        // }
 
         // add tToken to smart wallet state if not exist
-        if (!appState.smartWalletState.tokenBalances.has(tToken)) {
-          appState.smartWalletState.tokenBalances.set(tToken, String(amount));
-          console.log("added tToken to smart wallet state", appState.smartWalletState.tokenBalances.get(tToken));
-        } else {
-          // update tToken balance of smart wallet
-          appState.smartWalletState.tokenBalances.set(tToken, String(BigInt(appState.smartWalletState.tokenBalances.get(tToken)) + BigInt(amount)));
-        }
+        var tokenInfo = appState.smartWalletState.detailTokenInPool.get(_tokenAddress);
+        tokenInfo.tToken = _objectSpread(_objectSpread({}, tokenInfo.tToken), {}, {
+          balances: String(BigInt(tokenInfo.tToken.balances) + BigInt(amount))
+        });
+        appState.smartWalletState.detailTokenInPool.set(_tokenAddress, tokenInfo);
         return appState;
       } else {
         throw new Error("Account or LP does not have ".concat(tokenAddress, " token."));
@@ -20356,25 +20344,18 @@ function _SimulationBorrow() {
     try {
       var amount = _amount;
       var appState = _objectSpread({}, appState1);
-      var oraclePrice = new _utils_oraclePrice__WEBPACK_IMPORTED_MODULE_0__["default"]((0,_utils_address__WEBPACK_IMPORTED_MODULE_3__.getAddr)("ORACLE_ADDRESS", appState.chainId), appState.web3);
-      var travaLP = new ethers__WEBPACK_IMPORTED_MODULE_4__.Contract((0,_utils_address__WEBPACK_IMPORTED_MODULE_3__.getAddr)("TRAVA_LENDING_POOL_MARKET", appState.chainId), _abis_TravaLendingPool_json__WEBPACK_IMPORTED_MODULE_1__, appState.web3);
-      var tokenAddress = (0,_utils_address__WEBPACK_IMPORTED_MODULE_3__.convertHexStringToAddress)(_tokenAddress);
+      var oraclePrice = new _utils_oraclePrice__WEBPACK_IMPORTED_MODULE_0__["default"]((0,_utils_address__WEBPACK_IMPORTED_MODULE_1__.getAddr)("ORACLE_ADDRESS", appState.chainId), appState.web3);
+      var tokenAddress = (0,_utils_address__WEBPACK_IMPORTED_MODULE_1__.convertHexStringToAddress)(_tokenAddress);
       _tokenAddress = _tokenAddress.toLowerCase();
-      var reverseList = yield travaLP.getReservesList();
 
       // check tokenAddress is exist on reverseList
-      if (reverseList.includes(tokenAddress) && appState.walletState.tokenBalances.has(_tokenAddress)) {
+      if (appState.smartWalletState.tokenBalances.has(_tokenAddress) && appState.smartWalletState.detailTokenInPool.has(_tokenAddress)) {
         // get tToken address
-        var reserveData = yield travaLP.getReserveData(tokenAddress);
-        var debToken = String(reserveData[7]).toLowerCase();
-
-        // get token amount
-        var tokenAmount = BigInt(appState.walletState.tokenBalances.get(_tokenAddress));
 
         // get token price
         var tokenPrice = BigInt(yield oraclePrice.getAssetPrice(tokenAddress));
         var borrowUSD;
-        if (amount.toString() == _utils_config__WEBPACK_IMPORTED_MODULE_5__.MAX_UINT256 || BigInt(amount) == BigInt(_utils_config__WEBPACK_IMPORTED_MODULE_5__.MAX_UINT256)) {
+        if (amount.toString() == _utils_config__WEBPACK_IMPORTED_MODULE_2__.MAX_UINT256 || BigInt(amount) == BigInt(_utils_config__WEBPACK_IMPORTED_MODULE_2__.MAX_UINT256)) {
           borrowUSD = BigInt(appState.smartWalletState.travaLPState.availableBorrowsUSD);
           amount = (borrowUSD * BigInt(10 ** 18) / BigInt(tokenPrice)).toString();
         } else {
@@ -20393,19 +20374,14 @@ function _SimulationBorrow() {
           // update totalDebtUSD : borrowed + amount * asset.price
           appState.smartWalletState.travaLPState.totalDebtUSD = String(BigInt(appState.smartWalletState.travaLPState.totalDebtUSD) + borrowUSD);
         }
-        // else {
-        //   throw new Error(
-        //     `Amount borrow USD volume for token ${tokenAddress} is too much.`
-        //   );
-        // }
 
         // add debToken to smart wallet state if not exist
-        if (!appState.smartWalletState.tokenBalances.has(debToken)) {
-          appState.smartWalletState.tokenBalances.set(debToken, String(amount));
-        } else {
-          // update tToken balance of smart wallet
-          appState.smartWalletState.tokenBalances.set(debToken, String(BigInt(appState.smartWalletState.tokenBalances.get(debToken)) + BigInt(amount)));
-        }
+        appState.smartWalletState.tokenBalances.set(_tokenAddress, String(BigInt(appState.smartWalletState.tokenBalances.get(_tokenAddress)) + BigInt(amount)));
+        var tokenInfo = appState.smartWalletState.detailTokenInPool.get(_tokenAddress);
+        tokenInfo.dToken = _objectSpread(_objectSpread({}, tokenInfo.dToken), {}, {
+          balances: String(BigInt(tokenInfo.dToken.balances) + BigInt(amount))
+        });
+        appState.smartWalletState.detailTokenInPool.set(_tokenAddress, tokenInfo);
         return appState;
       } else {
         throw new Error("Account or LP does not have ".concat(tokenAddress, " token or token is not exist in reverseList."));
@@ -20426,36 +20402,16 @@ function _SimulationRepay() {
     try {
       var amount = _amount;
       var appState = _objectSpread({}, appState1);
-      var oraclePrice = new _utils_oraclePrice__WEBPACK_IMPORTED_MODULE_0__["default"]((0,_utils_address__WEBPACK_IMPORTED_MODULE_3__.getAddr)("ORACLE_ADDRESS", appState.chainId), appState.web3);
-      var travaLP = new ethers__WEBPACK_IMPORTED_MODULE_4__.Contract((0,_utils_address__WEBPACK_IMPORTED_MODULE_3__.getAddr)("TRAVA_LENDING_POOL_MARKET", appState.chainId), _abis_TravaLendingPool_json__WEBPACK_IMPORTED_MODULE_1__, appState.web3);
-      var tokenAddress = (0,_utils_address__WEBPACK_IMPORTED_MODULE_3__.convertHexStringToAddress)(_tokenAddress);
+      var oraclePrice = new _utils_oraclePrice__WEBPACK_IMPORTED_MODULE_0__["default"]((0,_utils_address__WEBPACK_IMPORTED_MODULE_1__.getAddr)("ORACLE_ADDRESS", appState.chainId), appState.web3);
+      var tokenAddress = (0,_utils_address__WEBPACK_IMPORTED_MODULE_1__.convertHexStringToAddress)(_tokenAddress);
       _tokenAddress = _tokenAddress.toLowerCase();
-      var reverseList = yield travaLP.getReservesList();
+
       // check tokenAddress is exist on reverseList
-      if (reverseList.includes(tokenAddress) && appState.smartWalletState.tokenBalances.has(_tokenAddress)) {
-        // get reserve data
-        var reserveData = yield travaLP.getReserveData(tokenAddress);
-
-        // token address
-        // const tTokenAddress = reserveData[6];
-        var variableDebtTokenAddress = String(reserveData[7]).toLowerCase();
-
-        // check balance debt token on smart wallet
-
-        var debtTokenBalance = new ethers__WEBPACK_IMPORTED_MODULE_4__.Contract(variableDebtTokenAddress, _abis_BEP20_json__WEBPACK_IMPORTED_MODULE_2__, appState.web3);
-        var debtTokenBalanceOfSmartWallet = yield debtTokenBalance.balanceOf(appState.smartWalletState.address);
-        var debtTokenBalanceOfWallet = yield debtTokenBalance.balanceOf(appState.walletState.address);
-
-        // get balance debt token of smart wallet in state
-        var debtTokenSmartWalletBalance = appState.smartWalletState.tokenBalances.get(variableDebtTokenAddress);
-        if (debtTokenSmartWalletBalance == "undefined") {
-          appState.smartWalletState.tokenBalances.set(variableDebtTokenAddress, debtTokenBalanceOfSmartWallet);
-          appState.walletState.tokenBalances.set(variableDebtTokenAddress, debtTokenBalanceOfWallet);
-          debtTokenSmartWalletBalance = debtTokenBalanceOfSmartWallet;
+      if (appState.smartWalletState.tokenBalances.has(_tokenAddress) && appState.smartWalletState.detailTokenInPool.has(_tokenAddress)) {
+        if (amount.toString() == _utils_config__WEBPACK_IMPORTED_MODULE_2__.MAX_UINT256 || BigInt(amount) == BigInt(_utils_config__WEBPACK_IMPORTED_MODULE_2__.MAX_UINT256)) {
+          amount = appState.smartWalletState.detailTokenInPool.get(_tokenAddress).dToken.balances;
         }
-        if (amount.toString() == _utils_config__WEBPACK_IMPORTED_MODULE_5__.MAX_UINT256 || BigInt(amount) == BigInt(_utils_config__WEBPACK_IMPORTED_MODULE_5__.MAX_UINT256)) {
-          amount = debtTokenSmartWalletBalance;
-        }
+        var debtTokenSmartWalletBalance = appState.smartWalletState.detailTokenInPool.get(_tokenAddress).dToken.balances;
         if (debtTokenSmartWalletBalance == "0") {
           throw new Error("Smart wallet does not borrow ".concat(tokenAddress, " token."));
         } else {
@@ -20474,7 +20430,10 @@ function _SimulationRepay() {
             appState.smartWalletState.travaLPState.totalDebtUSD = String((BigInt(appState.smartWalletState.travaLPState.totalDebtUSD) * BigInt(10 ** 18) - BigInt(amount) * BigInt(yield oraclePrice.getAssetPrice(tokenAddress))) / BigInt(10 ** 18));
 
             // set debt token balance to debtTokenSmartWalletBalance - amount
-            appState.smartWalletState.tokenBalances.set(variableDebtTokenAddress, String(BigInt(debtTokenSmartWalletBalance) - BigInt(amount)));
+            appState.smartWalletState.tokenBalances.set(_tokenAddress, String(BigInt(appState.smartWalletState.tokenBalances.get(_tokenAddress)) - BigInt(amount)));
+            var tokenInfo = appState.smartWalletState.detailTokenInPool.get(_tokenAddress);
+            tokenInfo.dToken.balances = String(BigInt(tokenInfo.dToken.balances) - BigInt(amount));
+            appState.smartWalletState.detailTokenInPool.set(_tokenAddress, tokenInfo);
           } else if (BigInt(amount) >= BigInt(debtTokenSmartWalletBalance)) {
             // repay all borrowed token
 
@@ -20485,13 +20444,18 @@ function _SimulationRepay() {
 
             // update healthFactor :(deposited * currentLiquidationThreshold) / (borrowed - debtTokenBalance * asset.price)
 
-            appState.smartWalletState.travaLPState.healthFactor = String(_utils_config__WEBPACK_IMPORTED_MODULE_5__.MAX_UINT256);
+            appState.smartWalletState.travaLPState.healthFactor = String(_utils_config__WEBPACK_IMPORTED_MODULE_2__.MAX_UINT256);
 
             // update totalDebtUSD : borrowed - debtTokenBalance * asset.price
             appState.smartWalletState.travaLPState.totalDebtUSD = String((BigInt(appState.smartWalletState.travaLPState.totalDebtUSD) * BigInt(10 ** 18) - BigInt(debtTokenSmartWalletBalance) * BigInt(yield oraclePrice.getAssetPrice(tokenAddress))) / BigInt(10 ** 18));
 
             // set debt token balance to 0
-            appState.smartWalletState.tokenBalances.set(variableDebtTokenAddress, "0");
+            appState.smartWalletState.tokenBalances.set(_tokenAddress, String(BigInt(appState.smartWalletState.tokenBalances.get(_tokenAddress)) - BigInt(amount)));
+            var _tokenInfo = appState.smartWalletState.detailTokenInPool.get(_tokenAddress);
+            _tokenInfo.dToken = _objectSpread(_objectSpread({}, _tokenInfo.dToken), {}, {
+              balances: "0"
+            });
+            appState.smartWalletState.detailTokenInPool.set(_tokenAddress, _tokenInfo);
           }
         }
         return appState;
@@ -20512,40 +20476,19 @@ function _SimulationWithdraw() {
     try {
       var amount = _amount;
       var appState = _objectSpread({}, appState1);
-      var oraclePrice = new _utils_oraclePrice__WEBPACK_IMPORTED_MODULE_0__["default"]((0,_utils_address__WEBPACK_IMPORTED_MODULE_3__.getAddr)("ORACLE_ADDRESS", appState.chainId), appState.web3);
-      var travaLP = new ethers__WEBPACK_IMPORTED_MODULE_4__.Contract((0,_utils_address__WEBPACK_IMPORTED_MODULE_3__.getAddr)("TRAVA_LENDING_POOL_MARKET", appState.chainId), _abis_TravaLendingPool_json__WEBPACK_IMPORTED_MODULE_1__, appState.web3);
-      var tokenAddress = (0,_utils_address__WEBPACK_IMPORTED_MODULE_3__.convertHexStringToAddress)(_tokenAddress);
+      var oraclePrice = new _utils_oraclePrice__WEBPACK_IMPORTED_MODULE_0__["default"]((0,_utils_address__WEBPACK_IMPORTED_MODULE_1__.getAddr)("ORACLE_ADDRESS", appState.chainId), appState.web3);
+      var tokenAddress = (0,_utils_address__WEBPACK_IMPORTED_MODULE_1__.convertHexStringToAddress)(_tokenAddress);
       _tokenAddress = _tokenAddress.toLowerCase();
-      var reverseList = yield travaLP.getReservesList();
+
       // check tokenAddress is exist on reverseList
-      if (true
-      // reverseList.includes(tokenAddress) &&
-      // appState.smartWalletState.tokenBalances.has(_tokenAddress)
-      ) {
-        // get reserve data
-        var reserveData = yield travaLP.getReserveData(tokenAddress);
-
-        // token address
-        var tTokenAddress = String(reserveData[6]).toLowerCase();
-        // const variableDebtTokenAddress = reserveData[7];
-
-        // check balance tToken on smart wallet
-        var tTokenContract = new ethers__WEBPACK_IMPORTED_MODULE_4__.Contract(reserveData[6], _abis_BEP20_json__WEBPACK_IMPORTED_MODULE_2__, appState.web3);
-        var tTokenWalletBalance = yield tTokenContract.balanceOf(appState.walletState.address);
-        var tTokenSmartWalletBalance = yield tTokenContract.balanceOf(appState.smartWalletState.address);
-        var tTokenBalanceOfSmartWallet = String(appState.smartWalletState.tokenBalances.get(tTokenAddress));
-        if (tTokenBalanceOfSmartWallet == "undefined") {
-          appState.smartWalletState.tokenBalances.set(tTokenAddress, tTokenSmartWalletBalance);
-          appState.walletState.tokenBalances.set(tTokenAddress, tTokenWalletBalance);
-          tTokenBalanceOfSmartWallet = tTokenSmartWalletBalance;
+      if (appState.smartWalletState.detailTokenInPool.has(_tokenAddress) && appState.smartWalletState.tokenBalances.has(_tokenAddress)) {
+        if (amount.toString() == _utils_config__WEBPACK_IMPORTED_MODULE_2__.MAX_UINT256 || BigInt(amount) == BigInt(_utils_config__WEBPACK_IMPORTED_MODULE_2__.MAX_UINT256)) {
+          amount = appState.smartWalletState.detailTokenInPool.get(_tokenAddress).tToken.balances;
         }
-        if (amount.toString() == _utils_config__WEBPACK_IMPORTED_MODULE_5__.MAX_UINT256 || BigInt(amount) == BigInt(_utils_config__WEBPACK_IMPORTED_MODULE_5__.MAX_UINT256)) {
-          amount = tTokenBalanceOfSmartWallet;
-        }
-        if (tTokenBalanceOfSmartWallet == "0") {
+        if (appState.smartWalletState.detailTokenInPool.get(_tokenAddress).tToken.balances == "0") {
           throw new Error("Smart wallet does not supply ".concat(tokenAddress, " token."));
         } else {
-          if (BigInt(tTokenBalanceOfSmartWallet) > BigInt(amount)) {
+          if (BigInt(appState.smartWalletState.detailTokenInPool.get(_tokenAddress).tToken.balances) > BigInt(amount)) {
             console.log("Withdraw piece of supplied token");
             // withdraw piece of supplied token
 
@@ -20556,19 +20499,24 @@ function _SimulationWithdraw() {
 
             // update healthFactor :((deposited - amount * asset.price) * currentLiquidationThreshold) / borrowed
             if (appState.smartWalletState.travaLPState.totalDebtUSD != "0") {
-              appState.smartWalletState.travaLPState.healthFactor = String(appState.smartWalletState.travaLPState.healthFactor = String((BigInt(appState.smartWalletState.travaLPState.totalCollateralUSD) * BigInt(10 ** 18) - BigInt(tTokenBalanceOfSmartWallet) * BigInt(yield oraclePrice.getAssetPrice(tokenAddress))) * BigInt(appState.smartWalletState.travaLPState.currentLiquidationThreshold) / BigInt(appState.smartWalletState.travaLPState.totalDebtUSD)));
+              appState.smartWalletState.travaLPState.healthFactor = String(appState.smartWalletState.travaLPState.healthFactor = String((BigInt(appState.smartWalletState.travaLPState.totalCollateralUSD) * BigInt(10 ** 18) - BigInt(amount) * BigInt(yield oraclePrice.getAssetPrice(tokenAddress))) * BigInt(appState.smartWalletState.travaLPState.currentLiquidationThreshold) / BigInt(appState.smartWalletState.travaLPState.totalDebtUSD)));
             } else {
               // healthFactor = MaxUint256
               // need check this
-              appState.smartWalletState.travaLPState.healthFactor = _utils_config__WEBPACK_IMPORTED_MODULE_5__.MAX_UINT256;
+              appState.smartWalletState.travaLPState.healthFactor = _utils_config__WEBPACK_IMPORTED_MODULE_2__.MAX_UINT256;
             }
 
             // update totalCollateralUSD. deposited - amount * asset.price
             appState.smartWalletState.travaLPState.totalCollateralUSD = String(BigInt(appState.smartWalletState.travaLPState.totalCollateralUSD) - BigInt(amount) * BigInt(yield oraclePrice.getAssetPrice(tokenAddress)) / BigInt(10 ** 18));
 
-            // set tToken balance to tTokenBalanceOfSmartWallet - amount
-            appState.smartWalletState.tokenBalances.set(tTokenAddress, String(BigInt(tTokenBalanceOfSmartWallet) - BigInt(amount)));
-          } else if (BigInt(amount) >= BigInt(tTokenBalanceOfSmartWallet)) {
+            // update token balances
+            appState.smartWalletState.tokenBalances.set(_tokenAddress, String(BigInt(appState.smartWalletState.tokenBalances.get(_tokenAddress)) + BigInt(amount)));
+            var tokenInfo = appState.smartWalletState.detailTokenInPool.get(_tokenAddress);
+            tokenInfo.tToken = _objectSpread(_objectSpread({}, tokenInfo.tToken), {}, {
+              balances: String(BigInt(tokenInfo.tToken.balances) - BigInt(amount))
+            });
+            appState.smartWalletState.detailTokenInPool.set(_tokenAddress, tokenInfo);
+          } else if (BigInt(amount) >= BigInt(appState.smartWalletState.detailTokenInPool.get(_tokenAddress).tToken.balances)) {
             console.log("withdraw all supplied token");
             // withdraw all supplied token
 
@@ -20579,21 +20527,29 @@ function _SimulationWithdraw() {
 
             // update healthFactor :((deposited - amount * asset.price) * currentLiquidationThreshold) / borrowed
             if (appState.smartWalletState.travaLPState.totalDebtUSD != "0") {
-              appState.smartWalletState.travaLPState.healthFactor = String(appState.smartWalletState.travaLPState.healthFactor = String((BigInt(appState.smartWalletState.travaLPState.totalCollateralUSD) * BigInt(10 ** 18) - BigInt(tTokenBalanceOfSmartWallet) * BigInt(yield oraclePrice.getAssetPrice(tokenAddress))) * BigInt(appState.smartWalletState.travaLPState.currentLiquidationThreshold) / BigInt(appState.smartWalletState.travaLPState.totalDebtUSD)));
+              appState.smartWalletState.travaLPState.healthFactor = String(appState.smartWalletState.travaLPState.healthFactor = String((BigInt(appState.smartWalletState.travaLPState.totalCollateralUSD) * BigInt(10 ** 18) - BigInt(amount) * BigInt(yield oraclePrice.getAssetPrice(tokenAddress))) * BigInt(appState.smartWalletState.travaLPState.currentLiquidationThreshold) / BigInt(appState.smartWalletState.travaLPState.totalDebtUSD)));
             } else {
               // healthFactor = MaxUint256
               // need check this
-              appState.smartWalletState.travaLPState.healthFactor = _utils_config__WEBPACK_IMPORTED_MODULE_5__.MAX_UINT256;
+              appState.smartWalletState.travaLPState.healthFactor = _utils_config__WEBPACK_IMPORTED_MODULE_2__.MAX_UINT256;
             }
 
             // update totalCollateralUSD. deposited - amount * asset.price
-            appState.smartWalletState.travaLPState.totalCollateralUSD = String(BigInt(appState.smartWalletState.travaLPState.totalCollateralUSD) - BigInt(tTokenBalanceOfSmartWallet) * BigInt(yield oraclePrice.getAssetPrice(tokenAddress)) / BigInt(10 ** 18));
+            appState.smartWalletState.travaLPState.totalCollateralUSD = String(BigInt(appState.smartWalletState.travaLPState.totalCollateralUSD) - BigInt(amount) * BigInt(yield oraclePrice.getAssetPrice(tokenAddress)) / BigInt(10 ** 18));
+
             // set tToken balance to 0
-            appState.smartWalletState.tokenBalances.set(tTokenAddress, "0");
+            appState.smartWalletState.tokenBalances.set(_tokenAddress, String(BigInt(appState.smartWalletState.tokenBalances.get(_tokenAddress)) + BigInt(amount)));
+            var _tokenInfo2 = appState.smartWalletState.detailTokenInPool.get(_tokenAddress);
+            _tokenInfo2.tToken = _objectSpread(_objectSpread({}, _tokenInfo2.tToken), {}, {
+              balances: "0"
+            });
+            appState.smartWalletState.detailTokenInPool.set(_tokenAddress, _tokenInfo2);
           }
         }
         return appState;
-      } else {}
+      } else {
+        throw new Error("Token ".concat(tokenAddress, " is not exist in reverseList or smart wallet does not have ").concat(tokenAddress, " token."));
+      }
     } catch (err) {
       throw err;
     }
@@ -20673,31 +20629,19 @@ class BaseReadContract {
 
 /***/ }),
 /* 116 */
-/***/ ((module) => {
-
-"use strict";
-module.exports = JSON.parse('[{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"reserve","type":"address"},{"indexed":false,"internalType":"address","name":"user","type":"address"},{"indexed":true,"internalType":"address","name":"onBehalfOf","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"borrowRate","type":"uint256"},{"indexed":true,"internalType":"uint16","name":"referral","type":"uint16"}],"name":"Borrow","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"reserve","type":"address"},{"indexed":false,"internalType":"address","name":"user","type":"address"},{"indexed":true,"internalType":"address","name":"onBehalfOf","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"},{"indexed":true,"internalType":"uint16","name":"referral","type":"uint16"}],"name":"Deposit","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"collateralAsset","type":"address"},{"indexed":true,"internalType":"address","name":"debtAsset","type":"address"},{"indexed":true,"internalType":"address","name":"user","type":"address"},{"indexed":false,"internalType":"uint256","name":"debtToCover","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"liquidatedCollateralAmount","type":"uint256"},{"indexed":false,"internalType":"address","name":"liquidator","type":"address"},{"indexed":false,"internalType":"bool","name":"receiveTToken","type":"bool"}],"name":"LiquidationCall","type":"event"},{"anonymous":false,"inputs":[],"name":"Paused","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"reserve","type":"address"},{"indexed":true,"internalType":"address","name":"user","type":"address"},{"indexed":true,"internalType":"address","name":"repayer","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"}],"name":"Repay","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"reserve","type":"address"},{"indexed":false,"internalType":"uint256","name":"liquidityRate","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"stableBorrowRate","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"variableBorrowRate","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"liquidityIndex","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"variableBorrowIndex","type":"uint256"}],"name":"ReserveDataUpdated","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"reserve","type":"address"},{"indexed":true,"internalType":"address","name":"user","type":"address"}],"name":"ReserveUsedAsCollateralDisabled","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"reserve","type":"address"},{"indexed":true,"internalType":"address","name":"user","type":"address"}],"name":"ReserveUsedAsCollateralEnabled","type":"event"},{"anonymous":false,"inputs":[],"name":"Unpaused","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"reserve","type":"address"},{"indexed":true,"internalType":"address","name":"user","type":"address"},{"indexed":true,"internalType":"address","name":"to","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"}],"name":"Withdraw","type":"event"},{"inputs":[{"internalType":"address","name":"asset","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"},{"internalType":"uint16","name":"referralCode","type":"uint16"},{"internalType":"address","name":"onBehalfOf","type":"address"}],"name":"borrow","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"asset","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"},{"internalType":"address","name":"onBehalfOf","type":"address"},{"internalType":"uint16","name":"referralCode","type":"uint16"}],"name":"deposit","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"asset","type":"address"},{"internalType":"address","name":"from","type":"address"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"},{"internalType":"uint256","name":"balanceFromBefore","type":"uint256"},{"internalType":"uint256","name":"balanceToBefore","type":"uint256"}],"name":"finalizeTransfer","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"getAddressesProvider","outputs":[{"internalType":"contract IAddressesProviderFactory","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"asset","type":"address"}],"name":"getConfiguration","outputs":[{"components":[{"internalType":"uint256","name":"data","type":"uint256"}],"internalType":"struct DataTypes.ReserveConfigurationMap","name":"","type":"tuple"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"asset","type":"address"}],"name":"getReserveData","outputs":[{"components":[{"components":[{"internalType":"uint256","name":"data","type":"uint256"}],"internalType":"struct DataTypes.ReserveConfigurationMap","name":"configuration","type":"tuple"},{"internalType":"uint128","name":"liquidityIndex","type":"uint128"},{"internalType":"uint128","name":"variableBorrowIndex","type":"uint128"},{"internalType":"uint128","name":"currentLiquidityRate","type":"uint128"},{"internalType":"uint128","name":"currentVariableBorrowRate","type":"uint128"},{"internalType":"uint40","name":"lastUpdateTimestamp","type":"uint40"},{"internalType":"address","name":"tTokenAddress","type":"address"},{"internalType":"address","name":"variableDebtTokenAddress","type":"address"},{"internalType":"address","name":"interestRateStrategyAddress","type":"address"},{"internalType":"uint8","name":"id","type":"uint8"}],"internalType":"struct DataTypes.ReserveData","name":"","type":"tuple"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"asset","type":"address"}],"name":"getReserveNormalizedIncome","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"asset","type":"address"}],"name":"getReserveNormalizedVariableDebt","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"getReservesList","outputs":[{"internalType":"address[]","name":"","type":"address[]"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"user","type":"address"}],"name":"getUserAccountData","outputs":[{"internalType":"uint256","name":"totalCollateralUSD","type":"uint256"},{"internalType":"uint256","name":"totalDebtUSD","type":"uint256"},{"internalType":"uint256","name":"availableBorrowsUSD","type":"uint256"},{"internalType":"uint256","name":"currentLiquidationThreshold","type":"uint256"},{"internalType":"uint256","name":"ltv","type":"uint256"},{"internalType":"uint256","name":"healthFactor","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"asset","type":"address"},{"internalType":"address","name":"tTokenAddress","type":"address"},{"internalType":"address","name":"variableDebtTokenAddress","type":"address"},{"internalType":"address","name":"reserveInterestRateStrategyAddress","type":"address"}],"name":"initReserve","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"contract IAddressesProviderFactory","name":"provider","type":"address"},{"internalType":"uint256","name":"providerId","type":"uint256"}],"name":"initialize","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"collateralAsset","type":"address"},{"internalType":"address","name":"debtAsset","type":"address"},{"internalType":"address","name":"user","type":"address"},{"internalType":"uint256","name":"debtToCover","type":"uint256"},{"internalType":"bool","name":"receiveTToken","type":"bool"}],"name":"liquidationCall","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"paused","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"asset","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"},{"internalType":"address","name":"onBehalfOf","type":"address"}],"name":"repay","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"asset","type":"address"},{"internalType":"uint256","name":"configuration","type":"uint256"}],"name":"setConfiguration","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"bool","name":"val","type":"bool"}],"name":"setPause","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"asset","type":"address"},{"internalType":"address","name":"rateStrategyAddress","type":"address"}],"name":"setReserveInterestRateStrategyAddress","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"asset","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"},{"internalType":"address","name":"to","type":"address"}],"name":"withdraw","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"nonpayable","type":"function"}]');
-
-/***/ }),
-/* 117 */
-/***/ ((module) => {
-
-"use strict";
-module.exports = JSON.parse('[{"inputs":[{"internalType":"string","name":"name","type":"string"},{"internalType":"string","name":"symbol","type":"string"}],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":true,"internalType":"address","name":"spender","type":"address"},{"indexed":false,"internalType":"uint256","name":"value","type":"uint256"}],"name":"Approval","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"previousOwner","type":"address"},{"indexed":true,"internalType":"address","name":"newOwner","type":"address"}],"name":"OwnershipTransferred","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"from","type":"address"},{"indexed":true,"internalType":"address","name":"to","type":"address"},{"indexed":false,"internalType":"uint256","name":"value","type":"uint256"}],"name":"Transfer","type":"event"},{"inputs":[{"internalType":"address","name":"owner","type":"address"},{"internalType":"address","name":"spender","type":"address"}],"name":"allowance","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"spender","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"approve","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"account","type":"address"}],"name":"balanceOf","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"decimals","outputs":[{"internalType":"uint8","name":"","type":"uint8"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"spender","type":"address"},{"internalType":"uint256","name":"subtractedValue","type":"uint256"}],"name":"decreaseAllowance","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"getOwner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"spender","type":"address"},{"internalType":"uint256","name":"addedValue","type":"uint256"}],"name":"increaseAllowance","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"mint","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"name","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"owner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"renounceOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"symbol","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"totalSupply","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"recipient","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"transfer","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"sender","type":"address"},{"internalType":"address","name":"recipient","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"transferFrom","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"}]');
-
-/***/ }),
-/* 118 */
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   updateLPDebtTokenInfo: () => (/* binding */ updateLPDebtTokenInfo),
+/* harmony export */   updateLPtTokenInfo: () => (/* binding */ updateLPtTokenInfo),
 /* harmony export */   updateTravaLPInfo: () => (/* binding */ updateTravaLPInfo)
 /* harmony export */ });
 /* harmony import */ var ethers__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(11);
 /* harmony import */ var ethers__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(ethers__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _abis_TravaLendingPool_json__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(116);
-/* harmony import */ var _abis_BEP20_json__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(117);
+/* harmony import */ var _abis_TravaLendingPool_json__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(117);
+/* harmony import */ var _abis_BEP20_json__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(118);
 /* harmony import */ var _utils_address__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(12);
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
@@ -20710,22 +20654,123 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
 
 
-// call this before all actions
-function updateTravaLPInfo(_x, _x2) {
-  return _updateTravaLPInfo.apply(this, arguments);
+function updateLPtTokenInfo(_x, _x2) {
+  return _updateLPtTokenInfo.apply(this, arguments);
+}
+function _updateLPtTokenInfo() {
+  _updateLPtTokenInfo = _asyncToGenerator(function* (appState1, _tokenAddress) {
+    try {
+      var appState = _objectSpread({}, appState1);
+      var travaLP = new ethers__WEBPACK_IMPORTED_MODULE_0__.Contract((0,_utils_address__WEBPACK_IMPORTED_MODULE_3__.getAddr)("TRAVA_LENDING_POOL_MARKET", appState.chainId), _abis_TravaLendingPool_json__WEBPACK_IMPORTED_MODULE_1__, appState.web3);
+      var reverseList = yield travaLP.getReservesList();
+      var tokenAddress = (0,_utils_address__WEBPACK_IMPORTED_MODULE_3__.convertHexStringToAddress)(_tokenAddress);
+      var tokenAddressState = tokenAddress.toLowerCase();
+      if (reverseList.includes(tokenAddress) && !appState.smartWalletState.detailTokenInPool.has(tokenAddressState)) {
+        // get reserve data
+        var reserveData = yield travaLP.getReserveData(tokenAddress);
+
+        // token address
+        var tTokenAddress = String(reserveData[6]).toLowerCase();
+
+        // get amount
+        var tTokenContract = new ethers__WEBPACK_IMPORTED_MODULE_0__.Contract(tTokenAddress, _abis_BEP20_json__WEBPACK_IMPORTED_MODULE_2__, appState.web3);
+        var tTokenBalance = yield tTokenContract.balanceOf(appState.smartWalletState.address);
+        appState.smartWalletState.detailTokenInPool = appState.smartWalletState.detailTokenInPool.set(tokenAddressState, {
+          tToken: {
+            address: tTokenAddress.toLowerCase(),
+            balances: tTokenBalance.toString()
+          },
+          dToken: {
+            address: "",
+            balances: ""
+          }
+        });
+      } else if (reverseList.includes(tokenAddress) && appState.smartWalletState.detailTokenInPool.has(tokenAddressState)) {
+        var _reserveData = yield travaLP.getReserveData(tokenAddress);
+
+        // token address
+        var _tTokenAddress = String(_reserveData[6]).toLowerCase();
+
+        // get amount
+        var _tTokenContract = new ethers__WEBPACK_IMPORTED_MODULE_0__.Contract(_tTokenAddress, _abis_BEP20_json__WEBPACK_IMPORTED_MODULE_2__, appState.web3);
+        var _tTokenBalance = yield _tTokenContract.balanceOf(appState.smartWalletState.address);
+        var tokenInfo = appState.smartWalletState.detailTokenInPool.get(tokenAddressState);
+        tokenInfo.tToken = {
+          address: _tTokenAddress.toLowerCase(),
+          balances: _tTokenBalance.toString()
+        };
+        appState.smartWalletState.detailTokenInPool.set(tokenAddressState, tokenInfo);
+      } else {
+        throw new Error("Can't update info of LP tToken ".concat(tokenAddress));
+      }
+      return appState;
+    } catch (error) {
+      throw new Error("Can't update LP tToken info !");
+    }
+  });
+  return _updateLPtTokenInfo.apply(this, arguments);
+}
+function updateLPDebtTokenInfo(_x3, _x4) {
+  return _updateLPDebtTokenInfo.apply(this, arguments);
 }
 
-// const appState = new ApplicationState(
-//   "0x0d7a757EECAbfe8daa06E9ab8F106911d846D8a1",
-//   "0x957d84Da98c5Db9e0d3d7FE667D3FA00339f3372"
-// );
+// call this before all actions
+function _updateLPDebtTokenInfo() {
+  _updateLPDebtTokenInfo = _asyncToGenerator(function* (appState1, _tokenAddress) {
+    try {
+      var appState = _objectSpread({}, appState1);
+      var travaLP = new ethers__WEBPACK_IMPORTED_MODULE_0__.Contract((0,_utils_address__WEBPACK_IMPORTED_MODULE_3__.getAddr)("TRAVA_LENDING_POOL_MARKET", appState.chainId), _abis_TravaLendingPool_json__WEBPACK_IMPORTED_MODULE_1__, appState.web3);
+      var reverseList = yield travaLP.getReservesList();
+      var tokenAddress = (0,_utils_address__WEBPACK_IMPORTED_MODULE_3__.convertHexStringToAddress)(_tokenAddress);
+      var tokenAddressState = tokenAddress.toLowerCase();
+      if (reverseList.includes(tokenAddress) && !appState.smartWalletState.detailTokenInPool.has(tokenAddressState)) {
+        // get reserve data
+        var reserveData = yield travaLP.getReserveData(tokenAddress);
 
-// updateTravaLPInfo(appState, "0x0d7a757EECAbfe8daa06E9ab8F106911d846D8a1").then(
-//   () => {
-//     console.log(appState.walletState.travaLPState);
-//     console.log(appState.walletState.tokenBalances);
-//   }
-// );
+        // token address
+        var variableDebtTokenAddress = String(reserveData[7]).toLowerCase();
+
+        // get amount
+        var debtTokenContract = new ethers__WEBPACK_IMPORTED_MODULE_0__.Contract(variableDebtTokenAddress, _abis_BEP20_json__WEBPACK_IMPORTED_MODULE_2__, appState.web3);
+        var debtTokenBalance = yield debtTokenContract.balanceOf(appState.smartWalletState.address);
+        appState.smartWalletState.detailTokenInPool = appState.smartWalletState.detailTokenInPool.set(tokenAddressState, {
+          dToken: {
+            address: variableDebtTokenAddress.toLowerCase(),
+            balances: debtTokenBalance.toString()
+          },
+          tToken: {
+            address: "",
+            balances: ""
+          }
+        });
+      } else if (reverseList.includes(tokenAddress) && appState.smartWalletState.detailTokenInPool.has(tokenAddressState)) {
+        var _reserveData2 = yield travaLP.getReserveData(tokenAddress);
+
+        // token address
+        var _variableDebtTokenAddress = String(_reserveData2[7]).toLowerCase();
+
+        // get amount
+        var _debtTokenContract = new ethers__WEBPACK_IMPORTED_MODULE_0__.Contract(_variableDebtTokenAddress, _abis_BEP20_json__WEBPACK_IMPORTED_MODULE_2__, appState.web3);
+        var _debtTokenBalance = yield _debtTokenContract.balanceOf(appState.smartWalletState.address);
+        var tokenInfo = appState.smartWalletState.detailTokenInPool.get(tokenAddressState);
+        tokenInfo.dToken = {
+          address: _variableDebtTokenAddress.toLowerCase(),
+          balances: _debtTokenBalance.toString()
+        };
+        appState.smartWalletState.detailTokenInPool.set(tokenAddressState, tokenInfo);
+      } else {
+        throw new Error("Can't update info of LP Debt Token ".concat(tokenAddress));
+      }
+      return appState;
+    } catch (error) {
+      throw new Error("Can't update LP Debt Token info !");
+    }
+  });
+  return _updateLPDebtTokenInfo.apply(this, arguments);
+}
+function updateTravaLPInfo(_x5, _x6) {
+  return _updateTravaLPInfo.apply(this, arguments);
+}
 function _updateTravaLPInfo() {
   _updateTravaLPInfo = _asyncToGenerator(function* (appState1, userAddress) {
     var appState = _objectSpread({}, appState1);
@@ -20774,13 +20819,28 @@ function _updateTravaLPInfo() {
       appState.smartWalletState.travaLPState.currentLiquidationThreshold = smartWalletData.currentLiquidationThreshold;
       appState.smartWalletState.travaLPState.healthFactor = smartWalletData.healthFactor;
       appState.smartWalletState.travaLPState.ltv = smartWalletData.ltv;
+      return appState;
     } catch (e) {
       console.log(e);
+      return appState1;
     }
-    return appState;
   });
   return _updateTravaLPInfo.apply(this, arguments);
 }
+
+/***/ }),
+/* 117 */
+/***/ ((module) => {
+
+"use strict";
+module.exports = JSON.parse('[{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"reserve","type":"address"},{"indexed":false,"internalType":"address","name":"user","type":"address"},{"indexed":true,"internalType":"address","name":"onBehalfOf","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"borrowRate","type":"uint256"},{"indexed":true,"internalType":"uint16","name":"referral","type":"uint16"}],"name":"Borrow","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"reserve","type":"address"},{"indexed":false,"internalType":"address","name":"user","type":"address"},{"indexed":true,"internalType":"address","name":"onBehalfOf","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"},{"indexed":true,"internalType":"uint16","name":"referral","type":"uint16"}],"name":"Deposit","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"collateralAsset","type":"address"},{"indexed":true,"internalType":"address","name":"debtAsset","type":"address"},{"indexed":true,"internalType":"address","name":"user","type":"address"},{"indexed":false,"internalType":"uint256","name":"debtToCover","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"liquidatedCollateralAmount","type":"uint256"},{"indexed":false,"internalType":"address","name":"liquidator","type":"address"},{"indexed":false,"internalType":"bool","name":"receiveTToken","type":"bool"}],"name":"LiquidationCall","type":"event"},{"anonymous":false,"inputs":[],"name":"Paused","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"reserve","type":"address"},{"indexed":true,"internalType":"address","name":"user","type":"address"},{"indexed":true,"internalType":"address","name":"repayer","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"}],"name":"Repay","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"reserve","type":"address"},{"indexed":false,"internalType":"uint256","name":"liquidityRate","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"stableBorrowRate","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"variableBorrowRate","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"liquidityIndex","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"variableBorrowIndex","type":"uint256"}],"name":"ReserveDataUpdated","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"reserve","type":"address"},{"indexed":true,"internalType":"address","name":"user","type":"address"}],"name":"ReserveUsedAsCollateralDisabled","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"reserve","type":"address"},{"indexed":true,"internalType":"address","name":"user","type":"address"}],"name":"ReserveUsedAsCollateralEnabled","type":"event"},{"anonymous":false,"inputs":[],"name":"Unpaused","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"reserve","type":"address"},{"indexed":true,"internalType":"address","name":"user","type":"address"},{"indexed":true,"internalType":"address","name":"to","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"}],"name":"Withdraw","type":"event"},{"inputs":[{"internalType":"address","name":"asset","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"},{"internalType":"uint16","name":"referralCode","type":"uint16"},{"internalType":"address","name":"onBehalfOf","type":"address"}],"name":"borrow","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"asset","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"},{"internalType":"address","name":"onBehalfOf","type":"address"},{"internalType":"uint16","name":"referralCode","type":"uint16"}],"name":"deposit","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"asset","type":"address"},{"internalType":"address","name":"from","type":"address"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"},{"internalType":"uint256","name":"balanceFromBefore","type":"uint256"},{"internalType":"uint256","name":"balanceToBefore","type":"uint256"}],"name":"finalizeTransfer","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"getAddressesProvider","outputs":[{"internalType":"contract IAddressesProviderFactory","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"asset","type":"address"}],"name":"getConfiguration","outputs":[{"components":[{"internalType":"uint256","name":"data","type":"uint256"}],"internalType":"struct DataTypes.ReserveConfigurationMap","name":"","type":"tuple"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"asset","type":"address"}],"name":"getReserveData","outputs":[{"components":[{"components":[{"internalType":"uint256","name":"data","type":"uint256"}],"internalType":"struct DataTypes.ReserveConfigurationMap","name":"configuration","type":"tuple"},{"internalType":"uint128","name":"liquidityIndex","type":"uint128"},{"internalType":"uint128","name":"variableBorrowIndex","type":"uint128"},{"internalType":"uint128","name":"currentLiquidityRate","type":"uint128"},{"internalType":"uint128","name":"currentVariableBorrowRate","type":"uint128"},{"internalType":"uint40","name":"lastUpdateTimestamp","type":"uint40"},{"internalType":"address","name":"tTokenAddress","type":"address"},{"internalType":"address","name":"variableDebtTokenAddress","type":"address"},{"internalType":"address","name":"interestRateStrategyAddress","type":"address"},{"internalType":"uint8","name":"id","type":"uint8"}],"internalType":"struct DataTypes.ReserveData","name":"","type":"tuple"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"asset","type":"address"}],"name":"getReserveNormalizedIncome","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"asset","type":"address"}],"name":"getReserveNormalizedVariableDebt","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"getReservesList","outputs":[{"internalType":"address[]","name":"","type":"address[]"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"user","type":"address"}],"name":"getUserAccountData","outputs":[{"internalType":"uint256","name":"totalCollateralUSD","type":"uint256"},{"internalType":"uint256","name":"totalDebtUSD","type":"uint256"},{"internalType":"uint256","name":"availableBorrowsUSD","type":"uint256"},{"internalType":"uint256","name":"currentLiquidationThreshold","type":"uint256"},{"internalType":"uint256","name":"ltv","type":"uint256"},{"internalType":"uint256","name":"healthFactor","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"asset","type":"address"},{"internalType":"address","name":"tTokenAddress","type":"address"},{"internalType":"address","name":"variableDebtTokenAddress","type":"address"},{"internalType":"address","name":"reserveInterestRateStrategyAddress","type":"address"}],"name":"initReserve","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"contract IAddressesProviderFactory","name":"provider","type":"address"},{"internalType":"uint256","name":"providerId","type":"uint256"}],"name":"initialize","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"collateralAsset","type":"address"},{"internalType":"address","name":"debtAsset","type":"address"},{"internalType":"address","name":"user","type":"address"},{"internalType":"uint256","name":"debtToCover","type":"uint256"},{"internalType":"bool","name":"receiveTToken","type":"bool"}],"name":"liquidationCall","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"paused","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"asset","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"},{"internalType":"address","name":"onBehalfOf","type":"address"}],"name":"repay","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"asset","type":"address"},{"internalType":"uint256","name":"configuration","type":"uint256"}],"name":"setConfiguration","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"bool","name":"val","type":"bool"}],"name":"setPause","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"asset","type":"address"},{"internalType":"address","name":"rateStrategyAddress","type":"address"}],"name":"setReserveInterestRateStrategyAddress","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"asset","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"},{"internalType":"address","name":"to","type":"address"}],"name":"withdraw","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"nonpayable","type":"function"}]');
+
+/***/ }),
+/* 118 */
+/***/ ((module) => {
+
+"use strict";
+module.exports = JSON.parse('[{"inputs":[{"internalType":"string","name":"name","type":"string"},{"internalType":"string","name":"symbol","type":"string"}],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":true,"internalType":"address","name":"spender","type":"address"},{"indexed":false,"internalType":"uint256","name":"value","type":"uint256"}],"name":"Approval","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"previousOwner","type":"address"},{"indexed":true,"internalType":"address","name":"newOwner","type":"address"}],"name":"OwnershipTransferred","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"from","type":"address"},{"indexed":true,"internalType":"address","name":"to","type":"address"},{"indexed":false,"internalType":"uint256","name":"value","type":"uint256"}],"name":"Transfer","type":"event"},{"inputs":[{"internalType":"address","name":"owner","type":"address"},{"internalType":"address","name":"spender","type":"address"}],"name":"allowance","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"spender","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"approve","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"account","type":"address"}],"name":"balanceOf","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"decimals","outputs":[{"internalType":"uint8","name":"","type":"uint8"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"spender","type":"address"},{"internalType":"uint256","name":"subtractedValue","type":"uint256"}],"name":"decreaseAllowance","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"getOwner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"spender","type":"address"},{"internalType":"uint256","name":"addedValue","type":"uint256"}],"name":"increaseAllowance","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"mint","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"name","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"owner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"renounceOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"symbol","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"totalSupply","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"recipient","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"transfer","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"sender","type":"address"},{"internalType":"address","name":"recipient","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"transferFrom","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"}]');
 
 /***/ }),
 /* 119 */
@@ -33613,6 +33673,14 @@ function _simulateSwap() {
   return _simulateSwap.apply(this, arguments);
 }
 
+/***/ }),
+/* 216 */
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+
+
 /***/ })
 /******/ 	]);
 /************************************************************************/
@@ -33720,6 +33788,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   simulateWrap: () => (/* reexport safe */ _Simulation__WEBPACK_IMPORTED_MODULE_1__.simulateWrap),
 /* harmony export */   updateCollectionBalanceFromContract: () => (/* reexport safe */ _Simulation__WEBPACK_IMPORTED_MODULE_1__.updateCollectionBalanceFromContract),
 /* harmony export */   updateCollectionBalanceFromGraph: () => (/* reexport safe */ _Simulation__WEBPACK_IMPORTED_MODULE_1__.updateCollectionBalanceFromGraph),
+/* harmony export */   updateLPDebtTokenInfo: () => (/* reexport safe */ _Simulation__WEBPACK_IMPORTED_MODULE_1__.updateLPDebtTokenInfo),
+/* harmony export */   updateLPtTokenInfo: () => (/* reexport safe */ _Simulation__WEBPACK_IMPORTED_MODULE_1__.updateLPtTokenInfo),
 /* harmony export */   updateNFTBalanceFromContract: () => (/* reexport safe */ _Simulation__WEBPACK_IMPORTED_MODULE_1__.updateNFTBalanceFromContract),
 /* harmony export */   updateSellingNFTFromContract: () => (/* reexport safe */ _Simulation__WEBPACK_IMPORTED_MODULE_1__.updateSellingNFTFromContract),
 /* harmony export */   updateSellingNFTFromGraph: () => (/* reexport safe */ _Simulation__WEBPACK_IMPORTED_MODULE_1__.updateSellingNFTFromGraph),
@@ -33734,6 +33804,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Simulation__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(7);
 /* harmony import */ var _utils_oraclePrice__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(113);
 /* harmony import */ var _utils_config__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(13);
+/* harmony import */ var _global__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(216);
+
 
 
 
