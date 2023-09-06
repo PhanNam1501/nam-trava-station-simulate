@@ -64,7 +64,7 @@ export async function simulateTravaNFTBuy(
 export async function simulateTravaNFTSell(
   appState1: ApplicationState,
   tokenId: number | string,
-  price: number | string,
+  price: string,
   from: EthAddress
 ): Promise<ApplicationState> {
   try {
@@ -99,7 +99,7 @@ export async function simulateTravaNFTSell(
       rarity: currentNFT.rarity.toString(),
       type: currentNFT.type.toString(),
       exp: currentNFT.exp,
-      price: price as number,
+      price: price,
       seller: appState.smartWalletState.address,
     };
     appState.NFTSellingState[currentVersion].push(data);

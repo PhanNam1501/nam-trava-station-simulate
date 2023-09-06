@@ -10,7 +10,7 @@ export type SellingArmouryType = {
   rarity: string;
   type: string;
   exp: number;
-  price: number;
+  price: string;
   seller: string;
 };
 

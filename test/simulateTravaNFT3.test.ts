@@ -20,7 +20,7 @@ const testBuy =async () => {
   let newState = await simulateTravaNFTCancelSale(
     oldState,
     oldState.walletState.address,
-    "5527" // k test đươc vì k bán gì cả
+    "4330" // k test đươc vì k bán gì cả
   );
 
   console.log("=================AFTER==========================");

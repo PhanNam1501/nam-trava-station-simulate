@@ -25,14 +25,14 @@ const testBuy =async () => {
   
   let newState = await simulateTravaNFTBuy(
     oldState,
-    "5536",
+    "4891",
     oldState.walletState.address, // from
     oldState.walletState.address, // to
   );
   newState = await simulateTravaNFTSell(
     newState,
     "4006",
-    "10",
+    "10000000000000000000",
     newState.walletState.address
   );
   newState = await simulateTravaNFTTransfer(

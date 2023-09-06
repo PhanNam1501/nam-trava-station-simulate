@@ -1,4 +1,4 @@
-import { EthAddress } from "../../utils/types";
+import { EthAddress, uint256 } from "../../utils/types";
 import { ApplicationState } from "../../State/ApplicationState";
 import OraclePrice from "../../utils/oraclePrice";
 import ABITravaLP from "../../abis/TravaLendingPool.json";
@@ -7,6 +7,7 @@ import { convertHexStringToAddress, getAddr } from "../../utils/address";
 import { Contract } from "ethers";
 import _ from "lodash";
 import { MAX_UINT256 } from "../../utils/config";
+import IncentiveContractABI from "../../abis/IncentiveContract.json";
 
 export async function SimulationSupply(
   appState1: ApplicationState,
@@ -590,6 +591,98 @@ export async function SimulationWithdraw(
         `Token ${tokenAddress} is not exist in reverseList or smart wallet does not have ${tokenAddress} token.`
       );
     }
+  } catch (err) {
+    throw err;
+  }
+}
+
+export async function SimulationClaimReward(
+  appState1: ApplicationState,
+  token: EthAddress,
+  amount: string,
+): Promise<ApplicationState> {
+  try {
+    const appState = { ...appState1 };
+
+    const incentiveContract = new Contract(
+      getAddr("INCENTIVE_CONTRACT", appState.chainId),
+      IncentiveContractABI,
+      appState.web3!
+    );
+    const rTravaAddress = await incentiveContract.REWARD_TOKEN();
+
+    const currentTokenData = appState.smartWalletState.detailTokenInPool.get(token);
+    if(currentTokenData){
+      let realAmount = amount;
+      if(BigInt(amount) > BigInt(currentTokenData.maxRewardCanGet)){
+        realAmount = currentTokenData.maxRewardCanGet;
+      }
+      appState.smartWalletState.detailTokenInPool.set(token, {
+        ...currentTokenData,
+        maxRewardCanGet: (BigInt(currentTokenData.maxRewardCanGet) - BigInt(amount)).toString()
+      })
+      const currentRTrava = appState.smartWalletState.tokenBalances.get(rTravaAddress);
+      if(currentRTrava) {
+        appState.smartWalletState.tokenBalances.set(rTravaAddress, (BigInt(currentRTrava) + BigInt(amount)).toString());
+      } else {
+        appState.smartWalletState.tokenBalances.set(rTravaAddress, BigInt(amount).toString());
+      }
+    } else {
+      throw new Error(
+        `Token ${token} is not exist in reverseList or smart wallet does not have ${token} token.`
+      );
+    }
+    return appState;
+  } catch (err) {
+    throw err;
+  }
+}
+
+export async function SimulationConvertReward(
+  appState1: ApplicationState,
+  to: EthAddress,
+  amount: string,
+): Promise<ApplicationState> {
+  try {
+    const appState = { ...appState1 };
+
+    const incentiveContract = new Contract(
+      getAddr("INCENTIVE_CONTRACT", appState.chainId),
+      IncentiveContractABI,
+      appState.web3!
+    );
+    const rTravaAddress = await incentiveContract.REWARD_TOKEN();
+
+    const rTravaBalance = appState.smartWalletState.tokenBalances.get(rTravaAddress);
+
+    if(rTravaBalance){
+      let realAmount = amount;
+      if(BigInt(amount) > BigInt(rTravaBalance)){
+        realAmount = rTravaBalance;
+      }
+      appState.smartWalletState.tokenBalances.set(rTravaAddress, (BigInt(rTravaBalance) - BigInt(realAmount)).toString());
+      const travaAddress = getAddr("TRAVA_TOKEN_IN_MARKET", appState.chainId);
+      if(to == appState.smartWalletState.address){
+        const travaBalance = appState.smartWalletState.tokenBalances.get(travaAddress);
+        if(travaBalance) {
+          appState.smartWalletState.tokenBalances.set(travaAddress, (BigInt(travaBalance) + BigInt(amount)).toString());
+        } else {
+          appState.smartWalletState.tokenBalances.set(rTravaAddress, BigInt(amount).toString());
+        }
+      } else if(to == appState.walletState.address){
+        const travaBalance = appState.walletState.tokenBalances.get(travaAddress);
+        if(travaBalance) {
+          appState.walletState.tokenBalances.set(travaAddress, (BigInt(travaBalance) + BigInt(amount)).toString());
+        } else {
+          appState.walletState.tokenBalances.set(rTravaAddress, BigInt(amount).toString());
+        }
+      }
+    } else {
+      throw new Error(
+        `Token rTrava is not exist in reverseList or smart wallet does not have token rTrava.`
+      );
+    }
+    return appState;
   } catch (err) {
     throw err;
   }

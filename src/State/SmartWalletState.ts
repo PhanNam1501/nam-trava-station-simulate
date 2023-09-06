@@ -21,6 +21,7 @@ export class SmartWalletState {
   travaLPState: WalletTravaLPState;
   ethBalances: string;
   detailTokenInPool: Map<any, any>;
+  sellingNFT: NFTSellingState;
 
   constructor(address: EthAddress) {
     this.address = address;
@@ -30,6 +31,7 @@ export class SmartWalletState {
     this.collection = new CollectionOwned();
     this.ethBalances = "";
     this.detailTokenInPool = new Map();
+    this.sellingNFT = new NFTSellingState();
   }
 
   // async getTokenAmount(tokenAddress: string): Promise<string> {

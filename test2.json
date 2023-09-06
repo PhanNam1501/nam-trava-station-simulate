@@ -5,12 +5,12 @@
     "nfts": {
       "v1": {},
       "v2": {
-        "5527": {
-          "tokenId": "5527",
+        "4330": {
+          "tokenId": "4330",
           "version": "v2",
           "set": 2,
-          "rarity": 5,
-          "type": 4,
+          "rarity": 3,
+          "type": 3,
           "exp": 0
         }
       }
@@ -26,16 +26,29 @@
     },
     "ethBalances": "",
     "sellingNFT": {
-      "v1": [],
+      "v1": [
+        {
+          "id": 4891,
+          "collectionName": "genesis",
+          "collectionId": 1,
+          "nRarity": 5,
+          "nType": 1,
+          "rarity": "crystal",
+          "type": "helmet",
+          "exp": 0,
+          "price": 10,
+          "seller": "0x595622cBd0Fc4727DF476a1172AdA30A9dDf8F43"
+        }
+      ],
       "v2": [
         {
-          "id": 5338,
+          "id": 5530,
           "collectionName": "triumph",
           "collectionId": 2,
-          "nRarity": 4,
-          "nType": 3,
-          "rarity": "diamond",
-          "type": "weapon",
+          "nRarity": 5,
+          "nType": 1,
+          "rarity": "crystal",
+          "type": "helmet",
           "exp": 0,
           "price": 10,
           "seller": "0x595622cBd0Fc4727DF476a1172AdA30A9dDf8F43"
