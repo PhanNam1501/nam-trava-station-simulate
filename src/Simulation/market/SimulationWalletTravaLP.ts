@@ -405,9 +405,8 @@ export async function SimulationWithdraw(
 
     // check tokenAddress is exist on reverseList
     if (
-      1
-      // reverseList.includes(tokenAddress) &&
-      // appState.smartWalletState.tokenBalances.has(_tokenAddress)
+      appState.smartWalletState.detailTokenInPool.has(_tokenAddress) &&
+      appState.smartWalletState.tokenBalances.has(_tokenAddress)
     ) {
       if (
         amount.toString() == MAX_UINT256 ||
