@@ -206,7 +206,13 @@ appState16 = await simulateTravaNFTSell(
 )
 ```
 ## Cancel order
-
+```
+appState17 = await simulateTravaNFTCancelSale(
+    appState16,
+    to,
+    tokenId
+)
+```
 # Simulate Trava NFT Utilities
 ## Transfer armoury
 ```

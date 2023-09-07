@@ -32,8 +32,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   ApplicationState: () => (/* binding */ ApplicationState)
 /* harmony export */ });
 /* harmony import */ var _WalletState__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(3);
-/* harmony import */ var _SmartWalletState__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(5);
-/* harmony import */ var _NFTSellingState__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(6);
+/* harmony import */ var _SmartWalletState__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(6);
+/* harmony import */ var _NFTSellingState__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(4);
 function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return typeof key === "symbol" ? key : String(key); }
 function _toPrimitive(input, hint) { if (typeof input !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (typeof res !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
@@ -76,10 +76,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   NFTOwned: () => (/* binding */ NFTOwned),
 /* harmony export */   WalletState: () => (/* binding */ WalletState)
 /* harmony export */ });
-/* harmony import */ var _TravaDeFiState__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(4);
+/* harmony import */ var _NFTSellingState__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(4);
+/* harmony import */ var _TravaDeFiState__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(5);
 function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return typeof key === "symbol" ? key : String(key); }
 function _toPrimitive(input, hint) { if (typeof input !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (typeof res !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
+
 
 
 // export class NFTData {
@@ -127,12 +129,14 @@ class WalletState {
     _defineProperty(this, "collection", void 0);
     _defineProperty(this, "travaLPState", void 0);
     _defineProperty(this, "ethBalances", void 0);
+    _defineProperty(this, "sellingNFT", void 0);
     this.address = address;
     this.tokenBalances = new Map();
     this.nfts = new NFTOwned();
     this.collection = new CollectionOwned();
-    this.travaLPState = new _TravaDeFiState__WEBPACK_IMPORTED_MODULE_0__.WalletTravaLPState();
+    this.travaLPState = new _TravaDeFiState__WEBPACK_IMPORTED_MODULE_1__.WalletTravaLPState();
     this.ethBalances = "";
+    this.sellingNFT = new _NFTSellingState__WEBPACK_IMPORTED_MODULE_0__.NFTSellingState();
   }
 
   // async getTokenAmount(tokenAddress: string): Promise<string> {
@@ -163,6 +167,27 @@ class WalletState {
 
 /***/ }),
 /* 4 */
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   NFTSellingState: () => (/* binding */ NFTSellingState)
+/* harmony export */ });
+function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return typeof key === "symbol" ? key : String(key); }
+function _toPrimitive(input, hint) { if (typeof input !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (typeof res !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
+class NFTSellingState {
+  constructor() {
+    _defineProperty(this, "v1", void 0);
+    _defineProperty(this, "v2", void 0);
+    this.v1 = new Array();
+    this.v2 = new Array();
+  }
+}
+
+/***/ }),
+/* 5 */
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -205,7 +230,7 @@ class WalletTravaLPState {
 class TravaLPState {}
 
 /***/ }),
-/* 5 */
+/* 6 */
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -213,11 +238,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   SmartWalletState: () => (/* binding */ SmartWalletState)
 /* harmony export */ });
-/* harmony import */ var _TravaDeFiState__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(4);
-/* harmony import */ var _WalletState__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(3);
+/* harmony import */ var _NFTSellingState__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(4);
+/* harmony import */ var _TravaDeFiState__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(5);
+/* harmony import */ var _WalletState__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(3);
 function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return typeof key === "symbol" ? key : String(key); }
 function _toPrimitive(input, hint) { if (typeof input !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (typeof res !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
+
 
 
 class SmartWalletState {
@@ -228,13 +255,15 @@ class SmartWalletState {
     _defineProperty(this, "collection", void 0);
     _defineProperty(this, "travaLPState", void 0);
     _defineProperty(this, "ethBalances", void 0);
+    _defineProperty(this, "sellingNFT", void 0);
     _defineProperty(this, "detailTokenInPool", void 0);
     this.address = address;
     this.tokenBalances = new Map();
-    this.nfts = new _WalletState__WEBPACK_IMPORTED_MODULE_1__.NFTOwned();
-    this.travaLPState = new _TravaDeFiState__WEBPACK_IMPORTED_MODULE_0__.WalletTravaLPState();
-    this.collection = new _WalletState__WEBPACK_IMPORTED_MODULE_1__.CollectionOwned();
+    this.nfts = new _WalletState__WEBPACK_IMPORTED_MODULE_2__.NFTOwned();
+    this.travaLPState = new _TravaDeFiState__WEBPACK_IMPORTED_MODULE_1__.WalletTravaLPState();
+    this.collection = new _WalletState__WEBPACK_IMPORTED_MODULE_2__.CollectionOwned();
     this.ethBalances = "";
+    this.sellingNFT = new _NFTSellingState__WEBPACK_IMPORTED_MODULE_0__.NFTSellingState();
     this.detailTokenInPool = new Map();
   }
 
@@ -264,27 +293,6 @@ class SmartWalletState {
 }
 
 /***/ }),
-/* 6 */
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   NFTSellingState: () => (/* binding */ NFTSellingState)
-/* harmony export */ });
-function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return typeof key === "symbol" ? key : String(key); }
-function _toPrimitive(input, hint) { if (typeof input !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (typeof res !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
-class NFTSellingState {
-  constructor() {
-    _defineProperty(this, "v1", void 0);
-    _defineProperty(this, "v2", void 0);
-    this.v1 = new Array();
-    this.v2 = new Array();
-  }
-}
-
-/***/ }),
 /* 7 */
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
@@ -298,6 +306,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   simulateSendToken: () => (/* reexport safe */ _basic_SimulationBasic__WEBPACK_IMPORTED_MODULE_0__.simulateSendToken),
 /* harmony export */   simulateSwap: () => (/* reexport safe */ _swap_SimulationSwap__WEBPACK_IMPORTED_MODULE_6__.simulateSwap),
 /* harmony export */   simulateTravaNFTBuy: () => (/* reexport safe */ _nft_SimulationTravaNFT__WEBPACK_IMPORTED_MODULE_4__.simulateTravaNFTBuy),
+/* harmony export */   simulateTravaNFTCancelSale: () => (/* reexport safe */ _nft_SimulationTravaNFT__WEBPACK_IMPORTED_MODULE_4__.simulateTravaNFTCancelSale),
 /* harmony export */   simulateTravaNFTSell: () => (/* reexport safe */ _nft_SimulationTravaNFT__WEBPACK_IMPORTED_MODULE_4__.simulateTravaNFTSell),
 /* harmony export */   simulateTravaNFTTransfer: () => (/* reexport safe */ _nft_SimulationTravaNFT__WEBPACK_IMPORTED_MODULE_4__.simulateTravaNFTTransfer),
 /* harmony export */   simulateUnwrap: () => (/* reexport safe */ _basic_SimulationBasic__WEBPACK_IMPORTED_MODULE_0__.simulateUnwrap),
@@ -307,6 +316,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   updateLPDebtTokenInfo: () => (/* reexport safe */ _market_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_3__.updateLPDebtTokenInfo),
 /* harmony export */   updateLPtTokenInfo: () => (/* reexport safe */ _market_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_3__.updateLPtTokenInfo),
 /* harmony export */   updateNFTBalanceFromContract: () => (/* reexport safe */ _nft_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_5__.updateNFTBalanceFromContract),
+/* harmony export */   updateOwnedSellingNFT: () => (/* reexport safe */ _nft_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_5__.updateOwnedSellingNFT),
+/* harmony export */   updateOwnedSellingNFTFromContract: () => (/* reexport safe */ _nft_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_5__.updateOwnedSellingNFTFromContract),
 /* harmony export */   updateSellingNFTFromContract: () => (/* reexport safe */ _nft_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_5__.updateSellingNFTFromContract),
 /* harmony export */   updateSellingNFTFromGraph: () => (/* reexport safe */ _nft_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_5__.updateSellingNFTFromGraph),
 /* harmony export */   updateSmartWalletEthBalance: () => (/* reexport safe */ _basic_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_1__.updateSmartWalletEthBalance),
@@ -20850,6 +20861,7 @@ module.exports = JSON.parse('[{"inputs":[{"internalType":"string","name":"name",
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   simulateTravaNFTBuy: () => (/* binding */ simulateTravaNFTBuy),
+/* harmony export */   simulateTravaNFTCancelSale: () => (/* binding */ simulateTravaNFTCancelSale),
 /* harmony export */   simulateTravaNFTSell: () => (/* binding */ simulateTravaNFTSell),
 /* harmony export */   simulateTravaNFTTransfer: () => (/* binding */ simulateTravaNFTTransfer)
 /* harmony export */ });
@@ -21031,6 +21043,41 @@ function _simulateTravaNFTTransfer() {
   });
   return _simulateTravaNFTTransfer.apply(this, arguments);
 }
+function simulateTravaNFTCancelSale(_x14, _x15, _x16) {
+  return _simulateTravaNFTCancelSale.apply(this, arguments);
+}
+function _simulateTravaNFTCancelSale() {
+  _simulateTravaNFTCancelSale = _asyncToGenerator(function* (appState1, to, tokenId) {
+    try {
+      var appState = _objectSpread({}, appState1);
+      var currentVersion = "v1";
+      var currentNFT = appState.smartWalletState.sellingNFT.v1.find(n => n.id == tokenId);
+      if (!currentNFT) {
+        currentNFT = appState.smartWalletState.sellingNFT.v2.find(n => n.id == tokenId);
+        currentVersion = "v2";
+      }
+      appState.NFTSellingState[currentVersion] = appState.NFTSellingState[currentVersion].filter(x => x.id != tokenId);
+      appState.smartWalletState.sellingNFT[currentVersion] = appState.smartWalletState.sellingNFT[currentVersion].filter(x => x.id != tokenId);
+      var data = {
+        tokenId: tokenId,
+        version: currentVersion,
+        set: currentNFT.collectionId,
+        rarity: currentNFT.nRarity,
+        type: currentNFT.nType,
+        exp: currentNFT.exp
+      };
+      if (to == appState.smartWalletState.address) {
+        appState.smartWalletState.nfts[currentVersion][tokenId] = data;
+      } else if (to == appState.walletState.address) {
+        appState.walletState.nfts[currentVersion][tokenId] = data;
+      }
+      return appState;
+    } catch (err) {
+      throw err;
+    }
+  });
+  return _simulateTravaNFTCancelSale.apply(this, arguments);
+}
 
 /***/ }),
 /* 120 */
@@ -21057,6 +21104,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   updateCollectionBalanceFromContract: () => (/* binding */ updateCollectionBalanceFromContract),
 /* harmony export */   updateCollectionBalanceFromGraph: () => (/* binding */ updateCollectionBalanceFromGraph),
 /* harmony export */   updateNFTBalanceFromContract: () => (/* binding */ updateNFTBalanceFromContract),
+/* harmony export */   updateOwnedSellingNFT: () => (/* binding */ updateOwnedSellingNFT),
+/* harmony export */   updateOwnedSellingNFTFromContract: () => (/* binding */ updateOwnedSellingNFTFromContract),
 /* harmony export */   updateSellingNFTFromContract: () => (/* binding */ updateSellingNFTFromContract),
 /* harmony export */   updateSellingNFTFromGraph: () => (/* binding */ updateSellingNFTFromGraph),
 /* harmony export */   updateTravaBalance: () => (/* binding */ updateTravaBalance)
@@ -21483,6 +21532,95 @@ function _updateCollectionBalanceFromGraph() {
     return appState;
   });
   return _updateCollectionBalanceFromGraph.apply(this, arguments);
+}
+function updateOwnedSellingNFTFromContract(_x23, _x24) {
+  return _updateOwnedSellingNFTFromContract.apply(this, arguments);
+}
+function _updateOwnedSellingNFTFromContract() {
+  _updateOwnedSellingNFTFromContract = _asyncToGenerator(function* (appState1, mode) {
+    var appState = _objectSpread({}, appState1);
+    try {
+      var nftsell = new ethers__WEBPACK_IMPORTED_MODULE_6__.Contract((0,_utils_address__WEBPACK_IMPORTED_MODULE_7__.getAddr)("NFT_SELL_ADDRESS", appState.chainId), _abis_TravaNFTSell_json__WEBPACK_IMPORTED_MODULE_4__, appState.web3);
+      var tokenLength = yield nftsell.getTokenOfOwnerBalance(appState[mode].address);
+      var [tokenIds] = yield Promise.all([multiCall(_abis_TravaNFTSell_json__WEBPACK_IMPORTED_MODULE_4__, new Array(parseInt(tokenLength)).fill(1).map((_, idx) => ({
+        address: (0,_utils_address__WEBPACK_IMPORTED_MODULE_7__.getAddr)("NFT_SELL_ADDRESS", appState.chainId),
+        name: "getTokenOfOwnerAtIndex",
+        params: [appState[mode].address, idx]
+      })), appState.web3, appState.chainId)]);
+      var tokenIdsFlattened = tokenIds.flat();
+      var [tokensMetadata, ordersMetadata] = yield Promise.all([multiCall(_abis_TravaNFTCore_json__WEBPACK_IMPORTED_MODULE_2__, tokenIdsFlattened.map(tokenId => ({
+        address: (0,_utils_address__WEBPACK_IMPORTED_MODULE_7__.getAddr)("NFT_CORE_ADDRESS", appState.chainId),
+        name: "getTokenMetadata",
+        params: [tokenId]
+      })), appState.web3, appState.chainId), multiCall(_abis_TravaNFTSell_json__WEBPACK_IMPORTED_MODULE_4__, tokenIdsFlattened.map(tokenId => ({
+        address: (0,_utils_address__WEBPACK_IMPORTED_MODULE_7__.getAddr)("NFT_SELL_ADDRESS", appState.chainId),
+        name: "getTokenOrder",
+        params: [tokenId]
+      })), appState.web3, appState.chainId)]);
+      var tokensMetadataFlattened = tokensMetadata.flat();
+      var ordersMetadataFlattened = ordersMetadata.flat();
+      var v1 = [];
+      var v2 = [];
+      var counter = 0;
+      for (var tokenData of tokensMetadataFlattened) {
+        var collectionId = parseInt(tokenData[3]);
+        var collectionName = _KnightConfig__WEBPACK_IMPORTED_MODULE_8__.CollectionName[collectionId - 1];
+        if (collectionName) {
+          var id = parseInt(tokenIdsFlattened[counter]);
+          var rarity = parseInt(tokenData[1]);
+          var type = parseInt(tokenData[2]);
+          var exp = parseInt(tokenData[4]);
+          var tRarity = _KnightConfig__WEBPACK_IMPORTED_MODULE_8__.RarityMapping[rarity - 1];
+          var tType = _KnightConfig__WEBPACK_IMPORTED_MODULE_8__.TypeMapping[type - 1];
+          var price = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_9__["default"])(ordersMetadataFlattened[counter][1]).dividedBy(BASE18).toNumber();
+          var data = {
+            id,
+            collectionName,
+            collectionId,
+            nRarity: rarity,
+            nType: type,
+            rarity: tRarity,
+            type: tType,
+            exp,
+            price,
+            seller: ordersMetadataFlattened[counter][0]
+          };
+          if (collectionId == 1) v1.push(data);else if (collectionId == 2) v2.push(data);
+        }
+        counter++;
+      }
+      v1 = v1.sort((item1, item2) => item2.nRarity - item1.nRarity || item2.exp - item1.exp);
+      v2 = v2.sort((item1, item2) => item2.nRarity - item1.nRarity || item2.exp - item1.exp);
+      appState[mode].sellingNFT.v1 = v1;
+      appState[mode].sellingNFT.v2 = v2;
+    } catch (e) {
+      console.log(e);
+    }
+    return appState;
+  });
+  return _updateOwnedSellingNFTFromContract.apply(this, arguments);
+}
+function updateOwnedSellingNFT(_x25) {
+  return _updateOwnedSellingNFT.apply(this, arguments);
+}
+function _updateOwnedSellingNFT() {
+  _updateOwnedSellingNFT = _asyncToGenerator(function* (appState1) {
+    var appState = _objectSpread({}, appState1);
+    try {
+      var _appState$NFTSellingS, _appState$NFTSellingS2;
+      if (!(appState !== null && appState !== void 0 && (_appState$NFTSellingS = appState.NFTSellingState) !== null && _appState$NFTSellingS !== void 0 && _appState$NFTSellingS.v1) && !(appState !== null && appState !== void 0 && (_appState$NFTSellingS2 = appState.NFTSellingState) !== null && _appState$NFTSellingS2 !== void 0 && _appState$NFTSellingS2.v2)) {
+        updateSellingNFTFromContract(appState1);
+      }
+      appState.smartWalletState.sellingNFT.v1 = appState.NFTSellingState.v1.filter(x => x.seller == appState.smartWalletState.address);
+      appState.smartWalletState.sellingNFT.v2 = appState.NFTSellingState.v2.filter(x => x.seller == appState.smartWalletState.address);
+      appState.walletState.sellingNFT.v1 = appState.NFTSellingState.v1.filter(x => x.seller == appState.walletState.address);
+      appState.walletState.sellingNFT.v2 = appState.NFTSellingState.v2.filter(x => x.seller == appState.walletState.address);
+    } catch (e) {
+      console.log(e);
+    }
+    return appState;
+  });
+  return _updateOwnedSellingNFT.apply(this, arguments);
 }
 
 /***/ }),
@@ -33782,6 +33920,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   simulateSendToken: () => (/* reexport safe */ _Simulation__WEBPACK_IMPORTED_MODULE_1__.simulateSendToken),
 /* harmony export */   simulateSwap: () => (/* reexport safe */ _Simulation__WEBPACK_IMPORTED_MODULE_1__.simulateSwap),
 /* harmony export */   simulateTravaNFTBuy: () => (/* reexport safe */ _Simulation__WEBPACK_IMPORTED_MODULE_1__.simulateTravaNFTBuy),
+/* harmony export */   simulateTravaNFTCancelSale: () => (/* reexport safe */ _Simulation__WEBPACK_IMPORTED_MODULE_1__.simulateTravaNFTCancelSale),
 /* harmony export */   simulateTravaNFTSell: () => (/* reexport safe */ _Simulation__WEBPACK_IMPORTED_MODULE_1__.simulateTravaNFTSell),
 /* harmony export */   simulateTravaNFTTransfer: () => (/* reexport safe */ _Simulation__WEBPACK_IMPORTED_MODULE_1__.simulateTravaNFTTransfer),
 /* harmony export */   simulateUnwrap: () => (/* reexport safe */ _Simulation__WEBPACK_IMPORTED_MODULE_1__.simulateUnwrap),
@@ -33791,6 +33930,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   updateLPDebtTokenInfo: () => (/* reexport safe */ _Simulation__WEBPACK_IMPORTED_MODULE_1__.updateLPDebtTokenInfo),
 /* harmony export */   updateLPtTokenInfo: () => (/* reexport safe */ _Simulation__WEBPACK_IMPORTED_MODULE_1__.updateLPtTokenInfo),
 /* harmony export */   updateNFTBalanceFromContract: () => (/* reexport safe */ _Simulation__WEBPACK_IMPORTED_MODULE_1__.updateNFTBalanceFromContract),
+/* harmony export */   updateOwnedSellingNFT: () => (/* reexport safe */ _Simulation__WEBPACK_IMPORTED_MODULE_1__.updateOwnedSellingNFT),
+/* harmony export */   updateOwnedSellingNFTFromContract: () => (/* reexport safe */ _Simulation__WEBPACK_IMPORTED_MODULE_1__.updateOwnedSellingNFTFromContract),
 /* harmony export */   updateSellingNFTFromContract: () => (/* reexport safe */ _Simulation__WEBPACK_IMPORTED_MODULE_1__.updateSellingNFTFromContract),
 /* harmony export */   updateSellingNFTFromGraph: () => (/* reexport safe */ _Simulation__WEBPACK_IMPORTED_MODULE_1__.updateSellingNFTFromGraph),
 /* harmony export */   updateSmartWalletEthBalance: () => (/* reexport safe */ _Simulation__WEBPACK_IMPORTED_MODULE_1__.updateSmartWalletEthBalance),

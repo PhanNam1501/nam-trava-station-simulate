@@ -20,6 +20,7 @@ export class SmartWalletState {
   collection: CollectionOwned;
   travaLPState: WalletTravaLPState;
   ethBalances: string;
+  sellingNFT: NFTSellingState;
   detailTokenInPool: Map<any, any>;
   sellingNFT: NFTSellingState;
 
@@ -30,6 +31,7 @@ export class SmartWalletState {
     this.travaLPState = new WalletTravaLPState();
     this.collection = new CollectionOwned();
     this.ethBalances = "";
+    this.sellingNFT = new NFTSellingState();
     this.detailTokenInPool = new Map();
     this.sellingNFT = new NFTSellingState();
   }

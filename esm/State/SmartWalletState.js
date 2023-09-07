@@ -1,3 +1,4 @@
+import { NFTSellingState } from "./NFTSellingState";
 import { WalletTravaLPState } from "./TravaDeFiState";
 import { CollectionOwned, NFTOwned } from "./WalletState";
 export class SmartWalletState {
@@ -8,6 +9,7 @@ export class SmartWalletState {
         this.travaLPState = new WalletTravaLPState();
         this.collection = new CollectionOwned();
         this.ethBalances = "";
+        this.sellingNFT = new NFTSellingState();
         this.detailTokenInPool = new Map();
     }
 }

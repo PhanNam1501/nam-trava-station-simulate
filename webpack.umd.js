@@ -37,6 +37,6 @@ module.exports = {
   },
   externals: ["decimal.js", "@zennomi/tokens", "ethers"],
   resolve: {
-    extensions: [".ts", ".js", ".json", ".d.ts"],
+    extensions: [".ts", ".js", ".json"],
   },
 };

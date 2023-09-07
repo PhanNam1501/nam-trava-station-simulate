@@ -175,3 +175,36 @@ export function simulateTravaNFTTransfer(appState1, from, to, tokenId, contract)
         }
     });
 }
+export function simulateTravaNFTCancelSale(appState1, to, tokenId) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            const appState = Object.assign({}, appState1);
+            let currentVersion = "v1";
+            let currentNFT = appState.smartWalletState.sellingNFT.v1.find((n) => n.id == tokenId);
+            if (!currentNFT) {
+                currentNFT = appState.smartWalletState.sellingNFT.v2.find((n) => n.id == tokenId);
+                currentVersion = "v2";
+            }
+            appState.NFTSellingState[currentVersion] = appState.NFTSellingState[currentVersion].filter(x => x.id != tokenId);
+            appState.smartWalletState.sellingNFT[currentVersion] = appState.smartWalletState.sellingNFT[currentVersion].filter(x => x.id != tokenId);
+            let data = {
+                tokenId: tokenId,
+                version: currentVersion,
+                set: currentNFT.collectionId,
+                rarity: currentNFT.nRarity,
+                type: currentNFT.nType,
+                exp: currentNFT.exp
+            };
+            if (to == appState.smartWalletState.address) {
+                appState.smartWalletState.nfts[currentVersion][tokenId] = data;
+            }
+            else if (to == appState.walletState.address) {
+                appState.walletState.nfts[currentVersion][tokenId] = data;
+            }
+            return appState;
+        }
+        catch (err) {
+            throw err;
+        }
+    });
+}
