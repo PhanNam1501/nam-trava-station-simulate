@@ -112,6 +112,7 @@ Sau khi init state xong. Với mỗi state, các simulate khác nhau
 appState6 = await simulateSendToken(
     appState5,
     tokenAddress,
+    from: wallet address
     to: smart wallet address,
     amount: number | string
 )
@@ -121,6 +122,7 @@ appState6 = await simulateSendToken(
 appState7 = await simulateSendToken(
     appState6,
     tokenAddress,
+    from: smart wallet address
     to: main wallet address,
     amount: number | string
 )
@@ -169,7 +171,7 @@ appState12 = await SimulationBorrow(
 ## Repay
 get max amount:
 ```
-maxAmount = appState.smartWalletState.detailTokenInPool[tokenAddress].tToken.balances
+maxAmount = appState.smartWalletState.detailTokenInPool[tokenAddress].dToken.balances
 ```
 ```
 appState13 = await SimulationRepay(
@@ -179,6 +181,11 @@ appState13 = await SimulationRepay(
 )
 ```
 ## Withdraw
+get max amount:
+```
+maxAmount = appState.smartWalletState.detailTokenInPool[tokenAddress].tToken.balances
+```
+```
 ```
 appState14 = await SimulationWWithdraw(
     appState13,

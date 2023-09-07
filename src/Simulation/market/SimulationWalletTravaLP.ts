@@ -57,11 +57,11 @@ export async function SimulationSupply(
           ((BigInt(appState.smartWalletState.travaLPState.totalCollateralUSD) *
             BigInt(10 ** 18) +
             BigInt(amount) *
-              BigInt(await oraclePrice.getAssetPrice(tokenAddress))) *
+            BigInt(await oraclePrice.getAssetPrice(tokenAddress))) *
             BigInt(appState.smartWalletState.travaLPState.ltv) -
             BigInt(appState.smartWalletState.travaLPState.totalDebtUSD) *
-              BigInt(10 ** 24)) /
-            BigInt(10 ** 22)
+            BigInt(10 ** 24)) /
+          BigInt(10 ** 22)
         );
 
         // update healthFactor .((deposited + amount * asset.price) * currentLiquidationThreshold) / borrowe
@@ -73,12 +73,12 @@ export async function SimulationSupply(
             ) *
               BigInt(10 ** 18) +
               BigInt(amount) *
-                BigInt(await oraclePrice.getAssetPrice(tokenAddress))) *
+              BigInt(await oraclePrice.getAssetPrice(tokenAddress))) *
               BigInt(
                 appState.smartWalletState.travaLPState
                   .currentLiquidationThreshold
               )) /
-              BigInt(appState.smartWalletState.travaLPState.totalDebtUSD)
+            BigInt(appState.smartWalletState.travaLPState.totalDebtUSD)
           );
         } else {
           // healthFactor = MaxUint256
@@ -88,9 +88,9 @@ export async function SimulationSupply(
         // update totalCollateralUSD. deposited + amount * asset.price
         appState.smartWalletState.travaLPState.totalCollateralUSD = String(
           BigInt(appState.smartWalletState.travaLPState.totalCollateralUSD) +
-            (BigInt(amount) *
-              BigInt(await oraclePrice.getAssetPrice(tokenAddress))) /
-              BigInt(10 ** 18)
+          (BigInt(amount) *
+            BigInt(await oraclePrice.getAssetPrice(tokenAddress))) /
+          BigInt(10 ** 18)
         );
       }
 
@@ -169,10 +169,10 @@ export async function SimulationBorrow(
           ((BigInt(appState.smartWalletState.travaLPState.totalCollateralUSD) *
             BigInt(appState.smartWalletState.travaLPState.ltv) -
             BigInt(appState.smartWalletState.travaLPState.totalDebtUSD) *
-              BigInt(10 ** 4)) *
+            BigInt(10 ** 4)) *
             BigInt(10 ** 14) -
             borrowUSD * BigInt(10 ** 18)) /
-            BigInt(10 ** 18)
+          BigInt(10 ** 18)
         );
 
         // update healthFactor :(deposited * currentLiquidationThreshold) / (borrowed + amount * asset.price)
@@ -182,15 +182,15 @@ export async function SimulationBorrow(
               appState.smartWalletState.travaLPState.currentLiquidationThreshold
             ) *
             BigInt(10 ** 32)) /
-            (BigInt(appState.smartWalletState.travaLPState.totalDebtUSD) *
-              BigInt(10 ** 18) +
-              borrowUSD * BigInt(10 ** 18))
+          (BigInt(appState.smartWalletState.travaLPState.totalDebtUSD) *
+            BigInt(10 ** 18) +
+            borrowUSD * BigInt(10 ** 18))
         );
 
         // update totalDebtUSD : borrowed + amount * asset.price
         appState.smartWalletState.travaLPState.totalDebtUSD = String(
           BigInt(appState.smartWalletState.travaLPState.totalDebtUSD) +
-            borrowUSD
+          borrowUSD
         );
       }
 
@@ -199,7 +199,7 @@ export async function SimulationBorrow(
         _tokenAddress,
         String(
           BigInt(appState.smartWalletState.tokenBalances.get(_tokenAddress)!) +
-            BigInt(amount)
+          BigInt(amount)
         )
       );
 
@@ -259,129 +259,129 @@ export async function SimulationRepay(
         appState.smartWalletState.detailTokenInPool.get(_tokenAddress)!.dToken
           .balances;
 
-      if (debtTokenSmartWalletBalance == "0") {
-        throw new Error(`Smart wallet does not borrow ${tokenAddress} token.`);
-      } else {
-        if (BigInt(debtTokenSmartWalletBalance) > BigInt(amount)) {
-          // repay piece of borrowed token
+      // if (debtTokenSmartWalletBalance == "0") {
+      //   throw new Error(`Smart wallet does not borrow ${tokenAddress} token.`);
+      // } else {
+      if (BigInt(debtTokenSmartWalletBalance) > BigInt(amount)) {
+        // repay piece of borrowed token
 
-          // update state for smart wallet in travaLP state ( availableBorrowUSD , totalDebtUSD , healthFactor)
+        // update state for smart wallet in travaLP state ( availableBorrowUSD , totalDebtUSD , healthFactor)
 
-          // update healthFactor :(deposited * currentLiquidationThreshold) / (borrowed - amount * asset.price)
-          appState.smartWalletState.travaLPState.healthFactor = String(
-            (BigInt(appState.smartWalletState.travaLPState.totalCollateralUSD) *
-              BigInt(
-                appState.smartWalletState.travaLPState
-                  .currentLiquidationThreshold
-              ) *
-              BigInt(10 ** 32)) /
-              (BigInt(appState.smartWalletState.travaLPState.totalDebtUSD) *
-                BigInt(10 ** 18) -
-                BigInt(amount) *
-                  BigInt(await oraclePrice.getAssetPrice(tokenAddress)))
-          );
-
-          // update availableBorrowUSD :  availableBorrowsUSD + amount * asset.price
-          appState.smartWalletState.travaLPState.availableBorrowsUSD = String(
-            (BigInt(
-              appState.smartWalletState.travaLPState.availableBorrowsUSD
+        // update healthFactor :(deposited * currentLiquidationThreshold) / (borrowed - amount * asset.price)
+        appState.smartWalletState.travaLPState.healthFactor = String(
+          (BigInt(appState.smartWalletState.travaLPState.totalCollateralUSD) *
+            BigInt(
+              appState.smartWalletState.travaLPState
+                .currentLiquidationThreshold
             ) *
-              BigInt(10 ** 18) +
-              BigInt(amount) *
-                BigInt(await oraclePrice.getAssetPrice(tokenAddress))) /
-              BigInt(10 ** 18)
-          );
+            BigInt(10 ** 32)) /
+          (BigInt(appState.smartWalletState.travaLPState.totalDebtUSD) *
+            BigInt(10 ** 18) -
+            BigInt(amount) *
+            BigInt(await oraclePrice.getAssetPrice(tokenAddress)))
+        );
 
-          // update totalDebtUSD : borrowed - amount * asset.price
-          appState.smartWalletState.travaLPState.totalDebtUSD = String(
-            (BigInt(appState.smartWalletState.travaLPState.totalDebtUSD) *
-              BigInt(10 ** 18) -
-              BigInt(amount) *
-                BigInt(await oraclePrice.getAssetPrice(tokenAddress))) /
-              BigInt(10 ** 18)
-          );
+        // update availableBorrowUSD :  availableBorrowsUSD + amount * asset.price
+        appState.smartWalletState.travaLPState.availableBorrowsUSD = String(
+          (BigInt(
+            appState.smartWalletState.travaLPState.availableBorrowsUSD
+          ) *
+            BigInt(10 ** 18) +
+            BigInt(amount) *
+            BigInt(await oraclePrice.getAssetPrice(tokenAddress))) /
+          BigInt(10 ** 18)
+        );
 
-          // set debt token balance to debtTokenSmartWalletBalance - amount
-          appState.smartWalletState.tokenBalances.set(
-            _tokenAddress,
-            String(
-              BigInt(
-                appState.smartWalletState.tokenBalances.get(_tokenAddress)!
-              ) - BigInt(amount)
-            )
-          );
+        // update totalDebtUSD : borrowed - amount * asset.price
+        appState.smartWalletState.travaLPState.totalDebtUSD = String(
+          (BigInt(appState.smartWalletState.travaLPState.totalDebtUSD) *
+            BigInt(10 ** 18) -
+            BigInt(amount) *
+            BigInt(await oraclePrice.getAssetPrice(tokenAddress))) /
+          BigInt(10 ** 18)
+        );
 
-          let tokenInfo =
-            appState.smartWalletState.detailTokenInPool.get(_tokenAddress)!;
+        // set debt token balance to debtTokenSmartWalletBalance - amount
+        appState.smartWalletState.tokenBalances.set(
+          _tokenAddress,
+          String(
+            BigInt(
+              appState.smartWalletState.tokenBalances.get(_tokenAddress)!
+            ) - BigInt(amount)
+          )
+        );
 
-          tokenInfo.dToken.balances = String(
-            BigInt(tokenInfo.dToken.balances) - BigInt(amount)
-          );
+        let tokenInfo =
+          appState.smartWalletState.detailTokenInPool.get(_tokenAddress)!;
 
-          appState.smartWalletState.detailTokenInPool.set(
-            _tokenAddress,
-            tokenInfo
-          );
-        } else if (BigInt(amount) >= BigInt(debtTokenSmartWalletBalance)) {
-          // repay all borrowed token
+        tokenInfo.dToken.balances = String(
+          BigInt(tokenInfo.dToken.balances) - BigInt(amount)
+        );
 
-          // update state for smart wallet in travaLP state ( availableBorrowUSD , totalDebtUSD , healthFactor)
+        appState.smartWalletState.detailTokenInPool.set(
+          _tokenAddress,
+          tokenInfo
+        );
+      } else if (BigInt(amount) >= BigInt(debtTokenSmartWalletBalance)) {
+        // repay all borrowed token
 
-          // update availableBorrowUSD :  availableBorrowsUSD + debtTokenBalance * asset.price
-          appState.smartWalletState.travaLPState.availableBorrowsUSD = String(
-            (BigInt(
-              appState.smartWalletState.travaLPState.availableBorrowsUSD
-            ) *
-              BigInt(10 ** 18) +
-              BigInt(debtTokenSmartWalletBalance) *
-                BigInt(await oraclePrice.getAssetPrice(tokenAddress))) /
-              BigInt(10 ** 18)
-          );
+        // update state for smart wallet in travaLP state ( availableBorrowUSD , totalDebtUSD , healthFactor)
 
-          // update healthFactor :(deposited * currentLiquidationThreshold) / (borrowed - debtTokenBalance * asset.price)
+        // update availableBorrowUSD :  availableBorrowsUSD + debtTokenBalance * asset.price
+        appState.smartWalletState.travaLPState.availableBorrowsUSD = String(
+          (BigInt(
+            appState.smartWalletState.travaLPState.availableBorrowsUSD
+          ) *
+            BigInt(10 ** 18) +
+            BigInt(debtTokenSmartWalletBalance) *
+            BigInt(await oraclePrice.getAssetPrice(tokenAddress))) /
+          BigInt(10 ** 18)
+        );
 
-          appState.smartWalletState.travaLPState.healthFactor =
-            String(MAX_UINT256);
+        // update healthFactor :(deposited * currentLiquidationThreshold) / (borrowed - debtTokenBalance * asset.price)
 
-          // update totalDebtUSD : borrowed - debtTokenBalance * asset.price
-          appState.smartWalletState.travaLPState.totalDebtUSD = String(
-            (BigInt(appState.smartWalletState.travaLPState.totalDebtUSD) *
-              BigInt(10 ** 18) -
-              BigInt(debtTokenSmartWalletBalance) *
-                BigInt(await oraclePrice.getAssetPrice(tokenAddress))) /
-              BigInt(10 ** 18)
-          );
+        appState.smartWalletState.travaLPState.healthFactor =
+          String(MAX_UINT256);
 
-          // set debt token balance to 0
-          appState.smartWalletState.tokenBalances.set(
-            _tokenAddress,
-            String(
-              BigInt(
-                appState.smartWalletState.tokenBalances.get(_tokenAddress)!
-              ) - BigInt(amount)
-            )
-          );
+        // update totalDebtUSD : borrowed - debtTokenBalance * asset.price
+        appState.smartWalletState.travaLPState.totalDebtUSD = String(
+          (BigInt(appState.smartWalletState.travaLPState.totalDebtUSD) *
+            BigInt(10 ** 18) -
+            BigInt(debtTokenSmartWalletBalance) *
+            BigInt(await oraclePrice.getAssetPrice(tokenAddress))) /
+          BigInt(10 ** 18)
+        );
 
-          let tokenInfo =
-            appState.smartWalletState.detailTokenInPool.get(_tokenAddress)!;
+        // set debt token balance to <= 0
+        appState.smartWalletState.tokenBalances.set(
+          _tokenAddress,
+          String(
+            BigInt(
+              appState.smartWalletState.tokenBalances.get(_tokenAddress)!
+            ) - BigInt(amount)
+          )
+        );
 
-          tokenInfo.dToken = {
-            ...tokenInfo.dToken,
-            balances: "0",
-          };
+        let tokenInfo =
+          appState.smartWalletState.detailTokenInPool.get(_tokenAddress)!;
 
-          appState.smartWalletState.detailTokenInPool.set(
-            _tokenAddress,
-            tokenInfo
-          );
-        }
+        tokenInfo.dToken = {
+          ...tokenInfo.dToken,
+          balances: (BigInt(debtTokenSmartWalletBalance) - BigInt(amount)).toString(),
+        };
+
+        appState.smartWalletState.detailTokenInPool.set(
+          _tokenAddress,
+          tokenInfo
+        );
       }
-      return appState;
-    } else {
-      throw new Error(
-        `Token ${tokenAddress} is not exist in reverseList or smart wallet does not have ${tokenAddress} token.`
-      );
     }
+    return appState;
+    // } else {
+    //   throw new Error(
+    //     `Token ${tokenAddress} is not exist in reverseList or smart wallet does not have ${tokenAddress} token.`
+    //   );
+    // }
   } catch (err) {
     throw err;
   }
@@ -418,272 +418,275 @@ export async function SimulationWithdraw(
             .balances;
       }
 
+      // if (
+      //   appState.smartWalletState.detailTokenInPool.get(_tokenAddress)!.tToken
+      //     .balances == "0"
+      // ) {
+      //   throw new Error(`Smart wallet does not supply ${tokenAddress} token.`);
+      // } else {
       if (
-        appState.smartWalletState.detailTokenInPool.get(_tokenAddress)!.tToken
-          .balances == "0"
+        BigInt(
+          appState.smartWalletState.detailTokenInPool.get(_tokenAddress)!
+            .tToken.balances
+        ) > BigInt(amount)
       ) {
-        throw new Error(`Smart wallet does not supply ${tokenAddress} token.`);
-      } else {
-        if (
-          BigInt(
-            appState.smartWalletState.detailTokenInPool.get(_tokenAddress)!
-              .tToken.balances
-          ) > BigInt(amount)
-        ) {
-          console.log("Withdraw piece of supplied token");
-          // withdraw piece of supplied token
+        console.log("Withdraw piece of supplied token");
+        // withdraw piece of supplied token
 
-          // update state for smart wallet in travaLP state ( availableBorrowUSD , totalDebtUSD , healthFactor)
+        // update state for smart wallet in travaLP state ( availableBorrowUSD , totalDebtUSD , healthFactor)
 
-          // update availableBorrowUSD : (deposited - amount * asset.price) * ltv - borrowed
-          appState.smartWalletState.travaLPState.availableBorrowsUSD = String(
-            ((BigInt(
-              appState.smartWalletState.travaLPState.totalCollateralUSD
-            ) *
-              BigInt(10 ** 18) -
-              BigInt(amount) *
+        // update availableBorrowUSD : (deposited - amount * asset.price) * ltv - borrowed
+        appState.smartWalletState.travaLPState.availableBorrowsUSD = String(
+          ((BigInt(
+            appState.smartWalletState.travaLPState.totalCollateralUSD
+          ) *
+            BigInt(10 ** 18) -
+            BigInt(amount) *
+            BigInt(await oraclePrice.getAssetPrice(tokenAddress))) *
+            BigInt(appState.smartWalletState.travaLPState.ltv) -
+            BigInt(appState.smartWalletState.travaLPState.totalDebtUSD) *
+            BigInt(10 ** 24)) /
+          BigInt(10 ** 22)
+        );
+
+        // update healthFactor :((deposited - amount * asset.price) * currentLiquidationThreshold) / borrowed
+        if (appState.smartWalletState.travaLPState.totalDebtUSD != "0") {
+          appState.smartWalletState.travaLPState.healthFactor = String(
+            (appState.smartWalletState.travaLPState.healthFactor = String(
+              ((BigInt(
+                appState.smartWalletState.travaLPState.totalCollateralUSD
+              ) *
+                BigInt(10 ** 18) -
+                BigInt(amount) *
                 BigInt(await oraclePrice.getAssetPrice(tokenAddress))) *
-              BigInt(appState.smartWalletState.travaLPState.ltv) -
-              BigInt(appState.smartWalletState.travaLPState.totalDebtUSD) *
-                BigInt(10 ** 24)) /
-              BigInt(10 ** 22)
+                BigInt(
+                  appState.smartWalletState.travaLPState
+                    .currentLiquidationThreshold
+                )) /
+              BigInt(appState.smartWalletState.travaLPState.totalDebtUSD)
+            ))
           );
+        } else {
+          // healthFactor = MaxUint256
+          // need check this
+          appState.smartWalletState.travaLPState.healthFactor = MAX_UINT256;
+        }
 
-          // update healthFactor :((deposited - amount * asset.price) * currentLiquidationThreshold) / borrowed
-          if (appState.smartWalletState.travaLPState.totalDebtUSD != "0") {
-            appState.smartWalletState.travaLPState.healthFactor = String(
-              (appState.smartWalletState.travaLPState.healthFactor = String(
-                ((BigInt(
-                  appState.smartWalletState.travaLPState.totalCollateralUSD
-                ) *
-                  BigInt(10 ** 18) -
-                  BigInt(amount) *
-                    BigInt(await oraclePrice.getAssetPrice(tokenAddress))) *
-                  BigInt(
-                    appState.smartWalletState.travaLPState
-                      .currentLiquidationThreshold
-                  )) /
-                  BigInt(appState.smartWalletState.travaLPState.totalDebtUSD)
-              ))
-            );
-          } else {
-            // healthFactor = MaxUint256
-            // need check this
-            appState.smartWalletState.travaLPState.healthFactor = MAX_UINT256;
-          }
+        // update totalCollateralUSD. deposited - amount * asset.price
+        appState.smartWalletState.travaLPState.totalCollateralUSD = String(
+          BigInt(appState.smartWalletState.travaLPState.totalCollateralUSD) -
+          (BigInt(amount) *
+            BigInt(await oraclePrice.getAssetPrice(tokenAddress))) /
+          BigInt(10 ** 18)
+        );
 
-          // update totalCollateralUSD. deposited - amount * asset.price
-          appState.smartWalletState.travaLPState.totalCollateralUSD = String(
-            BigInt(appState.smartWalletState.travaLPState.totalCollateralUSD) -
-              (BigInt(amount) *
-                BigInt(await oraclePrice.getAssetPrice(tokenAddress))) /
-                BigInt(10 ** 18)
-          );
-
-          // update token balances
-          appState.smartWalletState.tokenBalances.set(
-            _tokenAddress,
-            String(
-              BigInt(
-                appState.smartWalletState.tokenBalances.get(_tokenAddress)!
-              ) + BigInt(amount)
-            )
-          );
-
-          let tokenInfo =
-            appState.smartWalletState.detailTokenInPool.get(_tokenAddress)!;
-
-          tokenInfo.tToken = {
-            ...tokenInfo.tToken,
-            balances: String(
-              BigInt(tokenInfo.tToken.balances) - BigInt(amount)
-            ),
-          };
-
-          appState.smartWalletState.detailTokenInPool.set(
-            _tokenAddress,
-            tokenInfo
-          );
-        } else if (
-          BigInt(amount) >=
-          BigInt(
-            appState.smartWalletState.detailTokenInPool.get(_tokenAddress)!
-              .tToken.balances
+        // update token balances
+        appState.smartWalletState.tokenBalances.set(
+          _tokenAddress,
+          String(
+            BigInt(
+              appState.smartWalletState.tokenBalances.get(_tokenAddress)!
+            ) + BigInt(amount)
           )
-        ) {
-          console.log("withdraw all supplied token");
-          // withdraw all supplied token
+        );
 
-          // update state for smart wallet in travaLP state ( availableBorrowUSD , totalDebtUSD , healthFactor)
+        let tokenInfo =
+          appState.smartWalletState.detailTokenInPool.get(_tokenAddress)!;
 
-          // update availableBorrowUSD : (deposited - amount * asset.price) * ltv - borrowed
-          appState.smartWalletState.travaLPState.availableBorrowsUSD = String(
-            ((BigInt(
-              appState.smartWalletState.travaLPState.totalCollateralUSD
-            ) *
-              BigInt(10 ** 18) -
-              BigInt(amount) *
+        tokenInfo.tToken = {
+          ...tokenInfo.tToken,
+          balances: String(
+            BigInt(tokenInfo.tToken.balances) - BigInt(amount)
+          ),
+        };
+
+        appState.smartWalletState.detailTokenInPool.set(
+          _tokenAddress,
+          tokenInfo
+        );
+      } else if (
+        BigInt(amount) >=
+        BigInt(
+          appState.smartWalletState.detailTokenInPool.get(_tokenAddress)!
+            .tToken.balances
+        )
+      ) {
+        console.log("withdraw all supplied token");
+        // withdraw all supplied token
+
+        // update state for smart wallet in travaLP state ( availableBorrowUSD , totalDebtUSD , healthFactor)
+
+        // update availableBorrowUSD : (deposited - amount * asset.price) * ltv - borrowed
+        appState.smartWalletState.travaLPState.availableBorrowsUSD = String(
+          ((BigInt(
+            appState.smartWalletState.travaLPState.totalCollateralUSD
+          ) *
+            BigInt(10 ** 18) -
+            BigInt(amount) *
+            BigInt(await oraclePrice.getAssetPrice(tokenAddress))) *
+            BigInt(appState.smartWalletState.travaLPState.ltv) -
+            BigInt(appState.smartWalletState.travaLPState.totalDebtUSD) *
+            BigInt(10 ** 24)) /
+          BigInt(10 ** 22)
+        );
+
+        // update healthFactor :((deposited - amount * asset.price) * currentLiquidationThreshold) / borrowed
+        if (appState.smartWalletState.travaLPState.totalDebtUSD != "0") {
+          appState.smartWalletState.travaLPState.healthFactor = String(
+            (appState.smartWalletState.travaLPState.healthFactor = String(
+              ((BigInt(
+                appState.smartWalletState.travaLPState.totalCollateralUSD
+              ) *
+                BigInt(10 ** 18) -
+                BigInt(amount) *
                 BigInt(await oraclePrice.getAssetPrice(tokenAddress))) *
-              BigInt(appState.smartWalletState.travaLPState.ltv) -
-              BigInt(appState.smartWalletState.travaLPState.totalDebtUSD) *
-                BigInt(10 ** 24)) /
-              BigInt(10 ** 22)
+                BigInt(
+                  appState.smartWalletState.travaLPState
+                    .currentLiquidationThreshold
+                )) /
+              BigInt(appState.smartWalletState.travaLPState.totalDebtUSD)
+            ))
           );
-
-          // update healthFactor :((deposited - amount * asset.price) * currentLiquidationThreshold) / borrowed
-          if (appState.smartWalletState.travaLPState.totalDebtUSD != "0") {
-            appState.smartWalletState.travaLPState.healthFactor = String(
-              (appState.smartWalletState.travaLPState.healthFactor = String(
-                ((BigInt(
-                  appState.smartWalletState.travaLPState.totalCollateralUSD
-                ) *
-                  BigInt(10 ** 18) -
-                  BigInt(amount) *
-                    BigInt(await oraclePrice.getAssetPrice(tokenAddress))) *
-                  BigInt(
-                    appState.smartWalletState.travaLPState
-                      .currentLiquidationThreshold
-                  )) /
-                  BigInt(appState.smartWalletState.travaLPState.totalDebtUSD)
-              ))
-            );
-          } else {
-            // healthFactor = MaxUint256
-            // need check this
-            appState.smartWalletState.travaLPState.healthFactor = MAX_UINT256;
-          }
-
-          // update totalCollateralUSD. deposited - amount * asset.price
-          appState.smartWalletState.travaLPState.totalCollateralUSD = String(
-            BigInt(appState.smartWalletState.travaLPState.totalCollateralUSD) -
-              (BigInt(amount) *
-                BigInt(await oraclePrice.getAssetPrice(tokenAddress))) /
-                BigInt(10 ** 18)
-          );
-
-          // set tToken balance to 0
-          appState.smartWalletState.tokenBalances.set(
-            _tokenAddress,
-            String(
-              BigInt(
-                appState.smartWalletState.tokenBalances.get(_tokenAddress)!
-              ) + BigInt(amount)
-            )
-          );
-
-          let tokenInfo =
-            appState.smartWalletState.detailTokenInPool.get(_tokenAddress)!;
-
-          tokenInfo.tToken = {
-            ...tokenInfo.tToken,
-            balances: "0",
-          };
-
-          appState.smartWalletState.detailTokenInPool.set(
-            _tokenAddress,
-            tokenInfo
-          );
+        } else {
+          // healthFactor = MaxUint256
+          // need check this
+          appState.smartWalletState.travaLPState.healthFactor = MAX_UINT256;
         }
-      }
-      return appState;
-    } else {
-      throw new Error(
-        `Token ${tokenAddress} is not exist in reverseList or smart wallet does not have ${tokenAddress} token.`
-      );
-    }
-  } catch (err) {
-    throw err;
-  }
-}
 
-export async function SimulationClaimReward(
-  appState1: ApplicationState,
-  token: EthAddress,
-  amount: string,
-): Promise<ApplicationState> {
-  try {
-    const appState = { ...appState1 };
+        // update totalCollateralUSD. deposited - amount * asset.price
+        appState.smartWalletState.travaLPState.totalCollateralUSD = String(
+          BigInt(appState.smartWalletState.travaLPState.totalCollateralUSD) -
+          (BigInt(amount) *
+            BigInt(await oraclePrice.getAssetPrice(tokenAddress))) /
+          BigInt(10 ** 18)
+        );
 
-    const incentiveContract = new Contract(
-      getAddr("INCENTIVE_CONTRACT", appState.chainId),
-      IncentiveContractABI,
-      appState.web3!
-    );
-    const rTravaAddress = await incentiveContract.REWARD_TOKEN();
+        // set tToken balance to 0
+        appState.smartWalletState.tokenBalances.set(
+          _tokenAddress,
+          String(
+            BigInt(
+              appState.smartWalletState.tokenBalances.get(_tokenAddress)!
+            ) + BigInt(amount)
+          )
+        );
 
-    const currentTokenData = appState.smartWalletState.detailTokenInPool.get(token);
-    if(currentTokenData){
-      let realAmount = amount;
-      if(BigInt(amount) > BigInt(currentTokenData.maxRewardCanGet)){
-        realAmount = currentTokenData.maxRewardCanGet;
+        let tokenInfo =
+          appState.smartWalletState.detailTokenInPool.get(_tokenAddress)!;
+
+        tokenInfo.tToken = {
+          ...tokenInfo.tToken,
+          balances: (BigInt(
+            appState.smartWalletState.detailTokenInPool.get(_tokenAddress)!
+              .tToken.balances
+          ) - BigInt(amount)).toString(),
+        };
+
+        appState.smartWalletState.detailTokenInPool.set(
+          _tokenAddress,
+          tokenInfo
+        );
       }
-      appState.smartWalletState.detailTokenInPool.set(token, {
-        ...currentTokenData,
-        maxRewardCanGet: (BigInt(currentTokenData.maxRewardCanGet) - BigInt(amount)).toString()
-      })
-      const currentRTrava = appState.smartWalletState.tokenBalances.get(rTravaAddress);
-      if(currentRTrava) {
-        appState.smartWalletState.tokenBalances.set(rTravaAddress, (BigInt(currentRTrava) + BigInt(amount)).toString());
-      } else {
-        appState.smartWalletState.tokenBalances.set(rTravaAddress, BigInt(amount).toString());
-      }
-    } else {
-      throw new Error(
-        `Token ${token} is not exist in reverseList or smart wallet does not have ${token} token.`
-      );
     }
     return appState;
+    // } else {
+    //   throw new Error(
+    //     `Token ${tokenAddress} is not exist in reverseList or smart wallet does not have ${tokenAddress} token.`
+    //   );
+    // }
   } catch (err) {
     throw err;
   }
 }
 
-export async function SimulationConvertReward(
-  appState1: ApplicationState,
-  to: EthAddress,
-  amount: string,
-): Promise<ApplicationState> {
-  try {
-    const appState = { ...appState1 };
+// export async function SimulationClaimReward(
+//   appState1: ApplicationState,
+//   token: EthAddress,
+//   amount: string,
+// ): Promise<ApplicationState> {
+//   try {
+//     const appState = { ...appState1 };
 
-    const incentiveContract = new Contract(
-      getAddr("INCENTIVE_CONTRACT", appState.chainId),
-      IncentiveContractABI,
-      appState.web3!
-    );
-    const rTravaAddress = await incentiveContract.REWARD_TOKEN();
+//     const incentiveContract = new Contract(
+//       getAddr("INCENTIVE_CONTRACT", appState.chainId),
+//       IncentiveContractABI,
+//       appState.web3!
+//     );
+//     const rTravaAddress = String(await incentiveContract.REWARD_TOKEN()).toLowerCase();
 
-    const rTravaBalance = appState.smartWalletState.tokenBalances.get(rTravaAddress);
+//     const currentTokenData = appState.smartWalletState.detailTokenInPool.get(token);
+//     if(currentTokenData){
+//       let realAmount = amount;
+//       if(BigInt(amount) > BigInt(currentTokenData.maxRewardCanGet)){
+//         realAmount = currentTokenData.maxRewardCanGet;
+//       }
+//       appState.smartWalletState.detailTokenInPool.set(token, {
+//         ...currentTokenData,
+//         maxRewardCanGet: (BigInt(currentTokenData.maxRewardCanGet) - BigInt(amount)).toString()
+//       })
+//       const currentRTrava = appState.smartWalletState.tokenBalances.get(rTravaAddress);
+//       if(currentRTrava) {
+//         appState.smartWalletState.tokenBalances.set(rTravaAddress, (BigInt(currentRTrava) + BigInt(amount)).toString());
+//       } else {
+//         appState.smartWalletState.tokenBalances.set(rTravaAddress, BigInt(amount).toString());
+//       }
+//     } else {
+//       throw new Error(
+//         `Token ${token} is not exist in reverseList or smart wallet does not have ${token} token.`
+//       );
+//     }
+//     return appState;
+//   } catch (err) {
+//     throw err;
+//   }
+// }
 
-    if(rTravaBalance){
-      let realAmount = amount;
-      if(BigInt(amount) > BigInt(rTravaBalance)){
-        realAmount = rTravaBalance;
-      }
-      appState.smartWalletState.tokenBalances.set(rTravaAddress, (BigInt(rTravaBalance) - BigInt(realAmount)).toString());
-      const travaAddress = getAddr("TRAVA_TOKEN_IN_MARKET", appState.chainId);
-      if(to == appState.smartWalletState.address){
-        const travaBalance = appState.smartWalletState.tokenBalances.get(travaAddress);
-        if(travaBalance) {
-          appState.smartWalletState.tokenBalances.set(travaAddress, (BigInt(travaBalance) + BigInt(amount)).toString());
-        } else {
-          appState.smartWalletState.tokenBalances.set(rTravaAddress, BigInt(amount).toString());
-        }
-      } else if(to == appState.walletState.address){
-        const travaBalance = appState.walletState.tokenBalances.get(travaAddress);
-        if(travaBalance) {
-          appState.walletState.tokenBalances.set(travaAddress, (BigInt(travaBalance) + BigInt(amount)).toString());
-        } else {
-          appState.walletState.tokenBalances.set(rTravaAddress, BigInt(amount).toString());
-        }
-      }
-    } else {
-      throw new Error(
-        `Token rTrava is not exist in reverseList or smart wallet does not have token rTrava.`
-      );
-    }
-    return appState;
-  } catch (err) {
-    throw err;
-  }
-}
+// export async function SimulationConvertReward(
+//   appState1: ApplicationState,
+//   to: EthAddress,
+//   amount: string,
+// ): Promise<ApplicationState> {
+//   try {
+//     const appState = { ...appState1 };
+
+//     const incentiveContract = new Contract(
+//       getAddr("INCENTIVE_CONTRACT", appState.chainId),
+//       IncentiveContractABI,
+//       appState.web3!
+//     );
+//     const rTravaAddress = await incentiveContract.REWARD_TOKEN();
+
+//     const rTravaBalance = appState.smartWalletState.tokenBalances.get(rTravaAddress);
+
+//     if(rTravaBalance){
+//       let realAmount = amount;
+//       if(BigInt(amount) > BigInt(rTravaBalance)){
+//         realAmount = rTravaBalance;
+//       }
+//       appState.smartWalletState.tokenBalances.set(rTravaAddress, (BigInt(rTravaBalance) - BigInt(realAmount)).toString());
+//       const travaAddress = getAddr("TRAVA_TOKEN_IN_MARKET", appState.chainId);
+//       if(to == appState.smartWalletState.address){
+//         const travaBalance = appState.smartWalletState.tokenBalances.get(travaAddress);
+//         if(travaBalance) {
+//           appState.smartWalletState.tokenBalances.set(travaAddress, (BigInt(travaBalance) + BigInt(amount)).toString());
+//         } else {
+//           appState.smartWalletState.tokenBalances.set(rTravaAddress, BigInt(amount).toString());
+//         }
+//       } else if(to == appState.walletState.address){
+//         const travaBalance = appState.walletState.tokenBalances.get(travaAddress);
+//         if(travaBalance) {
+//           appState.walletState.tokenBalances.set(travaAddress, (BigInt(travaBalance) + BigInt(amount)).toString());
+//         } else {
+//           appState.walletState.tokenBalances.set(rTravaAddress, BigInt(amount).toString());
+//         }
+//       }
+//     } else {
+//       throw new Error(
+//         `Token rTrava is not exist in reverseList or smart wallet does not have token rTrava.`
+//       );
+//     }
+//     return appState;
+//   } catch (err) {
+//     throw err;
+//   }
+// }

@@ -18,6 +18,6 @@ export declare class SmartWalletState {
     travaLPState: WalletTravaLPState;
     ethBalances: string;
     sellingNFT: NFTSellingState;
-    detailTokenInPool: Map<any, any>;
+    detailTokenInPool: Map<string, DetailTokenInPool>;
     constructor(address: EthAddress);
 }

@@ -300,8 +300,6 @@ class SmartWalletState {
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   SimulationBorrow: () => (/* reexport safe */ _market_SimulationWalletTravaLP__WEBPACK_IMPORTED_MODULE_2__.SimulationBorrow),
-/* harmony export */   SimulationClaimReward: () => (/* reexport safe */ _market_SimulationWalletTravaLP__WEBPACK_IMPORTED_MODULE_2__.SimulationClaimReward),
-/* harmony export */   SimulationConvertReward: () => (/* reexport safe */ _market_SimulationWalletTravaLP__WEBPACK_IMPORTED_MODULE_2__.SimulationConvertReward),
 /* harmony export */   SimulationRepay: () => (/* reexport safe */ _market_SimulationWalletTravaLP__WEBPACK_IMPORTED_MODULE_2__.SimulationRepay),
 /* harmony export */   SimulationSupply: () => (/* reexport safe */ _market_SimulationWalletTravaLP__WEBPACK_IMPORTED_MODULE_2__.SimulationSupply),
 /* harmony export */   SimulationWithdraw: () => (/* reexport safe */ _market_SimulationWalletTravaLP__WEBPACK_IMPORTED_MODULE_2__.SimulationWithdraw),
@@ -317,7 +315,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   updateCollectionBalanceFromGraph: () => (/* reexport safe */ _nft_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_5__.updateCollectionBalanceFromGraph),
 /* harmony export */   updateLPDebtTokenInfo: () => (/* reexport safe */ _market_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_3__.updateLPDebtTokenInfo),
 /* harmony export */   updateLPtTokenInfo: () => (/* reexport safe */ _market_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_3__.updateLPtTokenInfo),
-/* harmony export */   updateListToken: () => (/* reexport safe */ _market_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_3__.updateListToken),
 /* harmony export */   updateNFTBalanceFromContract: () => (/* reexport safe */ _nft_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_5__.updateNFTBalanceFromContract),
 /* harmony export */   updateOwnedSellingNFT: () => (/* reexport safe */ _nft_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_5__.updateOwnedSellingNFT),
 /* harmony export */   updateOwnedSellingNFTFromContract: () => (/* reexport safe */ _nft_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_5__.updateOwnedSellingNFTFromContract),
@@ -334,7 +331,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _basic_SimulationBasic__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(8);
 /* harmony import */ var _basic_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(9);
 /* harmony import */ var _market_SimulationWalletTravaLP__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(112);
-/* harmony import */ var _market_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(117);
+/* harmony import */ var _market_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(116);
 /* harmony import */ var _nft_SimulationTravaNFT__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(121);
 /* harmony import */ var _nft_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(123);
 /* harmony import */ var _swap_SimulationSwap__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(216);
@@ -20289,18 +20286,13 @@ exports.defineProperties = defineProperties;
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   SimulationBorrow: () => (/* binding */ SimulationBorrow),
-/* harmony export */   SimulationClaimReward: () => (/* binding */ SimulationClaimReward),
-/* harmony export */   SimulationConvertReward: () => (/* binding */ SimulationConvertReward),
 /* harmony export */   SimulationRepay: () => (/* binding */ SimulationRepay),
 /* harmony export */   SimulationSupply: () => (/* binding */ SimulationSupply),
 /* harmony export */   SimulationWithdraw: () => (/* binding */ SimulationWithdraw)
 /* harmony export */ });
 /* harmony import */ var _utils_oraclePrice__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(113);
 /* harmony import */ var _utils_address__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(12);
-/* harmony import */ var ethers__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(11);
-/* harmony import */ var ethers__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(ethers__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _utils_config__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(13);
-/* harmony import */ var _abis_IncentiveContract_json__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(116);
+/* harmony import */ var _utils_config__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(13);
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
 function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
@@ -20308,8 +20300,6 @@ function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return typ
 function _toPrimitive(input, hint) { if (typeof input !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (typeof res !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
-
-
 
 
 
@@ -20333,7 +20323,7 @@ function _SimulationSupply() {
 
         // get token amount
         var tokenAmount = BigInt(appState.walletState.tokenBalances.get(_tokenAddress));
-        if (amount.toString() == _utils_config__WEBPACK_IMPORTED_MODULE_3__.MAX_UINT256 || BigInt(amount) == BigInt(_utils_config__WEBPACK_IMPORTED_MODULE_3__.MAX_UINT256)) {
+        if (amount.toString() == _utils_config__WEBPACK_IMPORTED_MODULE_2__.MAX_UINT256 || BigInt(amount) == BigInt(_utils_config__WEBPACK_IMPORTED_MODULE_2__.MAX_UINT256)) {
           amount = appState.walletState.tokenBalances.get(_tokenAddress);
         }
 
@@ -20354,7 +20344,7 @@ function _SimulationSupply() {
             appState.smartWalletState.travaLPState.healthFactor = String((BigInt(appState.smartWalletState.travaLPState.totalCollateralUSD) * BigInt(10 ** 18) + BigInt(amount) * BigInt(yield oraclePrice.getAssetPrice(tokenAddress))) * BigInt(appState.smartWalletState.travaLPState.currentLiquidationThreshold) / BigInt(appState.smartWalletState.travaLPState.totalDebtUSD));
           } else {
             // healthFactor = MaxUint256
-            appState.smartWalletState.travaLPState.healthFactor = _utils_config__WEBPACK_IMPORTED_MODULE_3__.MAX_UINT256;
+            appState.smartWalletState.travaLPState.healthFactor = _utils_config__WEBPACK_IMPORTED_MODULE_2__.MAX_UINT256;
           }
 
           // update totalCollateralUSD. deposited + amount * asset.price
@@ -20398,7 +20388,7 @@ function _SimulationBorrow() {
         // get token price
         var tokenPrice = BigInt(yield oraclePrice.getAssetPrice(tokenAddress));
         var borrowUSD;
-        if (amount.toString() == _utils_config__WEBPACK_IMPORTED_MODULE_3__.MAX_UINT256 || BigInt(amount) == BigInt(_utils_config__WEBPACK_IMPORTED_MODULE_3__.MAX_UINT256)) {
+        if (amount.toString() == _utils_config__WEBPACK_IMPORTED_MODULE_2__.MAX_UINT256 || BigInt(amount) == BigInt(_utils_config__WEBPACK_IMPORTED_MODULE_2__.MAX_UINT256)) {
           borrowUSD = BigInt(appState.smartWalletState.travaLPState.availableBorrowsUSD);
           amount = (borrowUSD * BigInt(10 ** 18) / BigInt(tokenPrice)).toString();
         } else {
@@ -20451,60 +20441,63 @@ function _SimulationRepay() {
 
       // check tokenAddress is exist on reverseList
       if (appState.smartWalletState.tokenBalances.has(_tokenAddress) && appState.smartWalletState.detailTokenInPool.has(_tokenAddress)) {
-        if (amount.toString() == _utils_config__WEBPACK_IMPORTED_MODULE_3__.MAX_UINT256 || BigInt(amount) == BigInt(_utils_config__WEBPACK_IMPORTED_MODULE_3__.MAX_UINT256)) {
+        if (amount.toString() == _utils_config__WEBPACK_IMPORTED_MODULE_2__.MAX_UINT256 || BigInt(amount) == BigInt(_utils_config__WEBPACK_IMPORTED_MODULE_2__.MAX_UINT256)) {
           amount = appState.smartWalletState.detailTokenInPool.get(_tokenAddress).dToken.balances;
         }
         var debtTokenSmartWalletBalance = appState.smartWalletState.detailTokenInPool.get(_tokenAddress).dToken.balances;
-        if (debtTokenSmartWalletBalance == "0") {
-          throw new Error("Smart wallet does not borrow ".concat(tokenAddress, " token."));
-        } else {
-          if (BigInt(debtTokenSmartWalletBalance) > BigInt(amount)) {
-            // repay piece of borrowed token
 
-            // update state for smart wallet in travaLP state ( availableBorrowUSD , totalDebtUSD , healthFactor)
+        // if (debtTokenSmartWalletBalance == "0") {
+        //   throw new Error(`Smart wallet does not borrow ${tokenAddress} token.`);
+        // } else {
+        if (BigInt(debtTokenSmartWalletBalance) > BigInt(amount)) {
+          // repay piece of borrowed token
 
-            // update healthFactor :(deposited * currentLiquidationThreshold) / (borrowed - amount * asset.price)
-            appState.smartWalletState.travaLPState.healthFactor = String(BigInt(appState.smartWalletState.travaLPState.totalCollateralUSD) * BigInt(appState.smartWalletState.travaLPState.currentLiquidationThreshold) * BigInt(10 ** 32) / (BigInt(appState.smartWalletState.travaLPState.totalDebtUSD) * BigInt(10 ** 18) - BigInt(amount) * BigInt(yield oraclePrice.getAssetPrice(tokenAddress))));
+          // update state for smart wallet in travaLP state ( availableBorrowUSD , totalDebtUSD , healthFactor)
 
-            // update availableBorrowUSD :  availableBorrowsUSD + amount * asset.price
-            appState.smartWalletState.travaLPState.availableBorrowsUSD = String((BigInt(appState.smartWalletState.travaLPState.availableBorrowsUSD) * BigInt(10 ** 18) + BigInt(amount) * BigInt(yield oraclePrice.getAssetPrice(tokenAddress))) / BigInt(10 ** 18));
+          // update healthFactor :(deposited * currentLiquidationThreshold) / (borrowed - amount * asset.price)
+          appState.smartWalletState.travaLPState.healthFactor = String(BigInt(appState.smartWalletState.travaLPState.totalCollateralUSD) * BigInt(appState.smartWalletState.travaLPState.currentLiquidationThreshold) * BigInt(10 ** 32) / (BigInt(appState.smartWalletState.travaLPState.totalDebtUSD) * BigInt(10 ** 18) - BigInt(amount) * BigInt(yield oraclePrice.getAssetPrice(tokenAddress))));
 
-            // update totalDebtUSD : borrowed - amount * asset.price
-            appState.smartWalletState.travaLPState.totalDebtUSD = String((BigInt(appState.smartWalletState.travaLPState.totalDebtUSD) * BigInt(10 ** 18) - BigInt(amount) * BigInt(yield oraclePrice.getAssetPrice(tokenAddress))) / BigInt(10 ** 18));
+          // update availableBorrowUSD :  availableBorrowsUSD + amount * asset.price
+          appState.smartWalletState.travaLPState.availableBorrowsUSD = String((BigInt(appState.smartWalletState.travaLPState.availableBorrowsUSD) * BigInt(10 ** 18) + BigInt(amount) * BigInt(yield oraclePrice.getAssetPrice(tokenAddress))) / BigInt(10 ** 18));
 
-            // set debt token balance to debtTokenSmartWalletBalance - amount
-            appState.smartWalletState.tokenBalances.set(_tokenAddress, String(BigInt(appState.smartWalletState.tokenBalances.get(_tokenAddress)) - BigInt(amount)));
-            var tokenInfo = appState.smartWalletState.detailTokenInPool.get(_tokenAddress);
-            tokenInfo.dToken.balances = String(BigInt(tokenInfo.dToken.balances) - BigInt(amount));
-            appState.smartWalletState.detailTokenInPool.set(_tokenAddress, tokenInfo);
-          } else if (BigInt(amount) >= BigInt(debtTokenSmartWalletBalance)) {
-            // repay all borrowed token
+          // update totalDebtUSD : borrowed - amount * asset.price
+          appState.smartWalletState.travaLPState.totalDebtUSD = String((BigInt(appState.smartWalletState.travaLPState.totalDebtUSD) * BigInt(10 ** 18) - BigInt(amount) * BigInt(yield oraclePrice.getAssetPrice(tokenAddress))) / BigInt(10 ** 18));
 
-            // update state for smart wallet in travaLP state ( availableBorrowUSD , totalDebtUSD , healthFactor)
+          // set debt token balance to debtTokenSmartWalletBalance - amount
+          appState.smartWalletState.tokenBalances.set(_tokenAddress, String(BigInt(appState.smartWalletState.tokenBalances.get(_tokenAddress)) - BigInt(amount)));
+          var tokenInfo = appState.smartWalletState.detailTokenInPool.get(_tokenAddress);
+          tokenInfo.dToken.balances = String(BigInt(tokenInfo.dToken.balances) - BigInt(amount));
+          appState.smartWalletState.detailTokenInPool.set(_tokenAddress, tokenInfo);
+        } else if (BigInt(amount) >= BigInt(debtTokenSmartWalletBalance)) {
+          // repay all borrowed token
 
-            // update availableBorrowUSD :  availableBorrowsUSD + debtTokenBalance * asset.price
-            appState.smartWalletState.travaLPState.availableBorrowsUSD = String((BigInt(appState.smartWalletState.travaLPState.availableBorrowsUSD) * BigInt(10 ** 18) + BigInt(debtTokenSmartWalletBalance) * BigInt(yield oraclePrice.getAssetPrice(tokenAddress))) / BigInt(10 ** 18));
+          // update state for smart wallet in travaLP state ( availableBorrowUSD , totalDebtUSD , healthFactor)
 
-            // update healthFactor :(deposited * currentLiquidationThreshold) / (borrowed - debtTokenBalance * asset.price)
+          // update availableBorrowUSD :  availableBorrowsUSD + debtTokenBalance * asset.price
+          appState.smartWalletState.travaLPState.availableBorrowsUSD = String((BigInt(appState.smartWalletState.travaLPState.availableBorrowsUSD) * BigInt(10 ** 18) + BigInt(debtTokenSmartWalletBalance) * BigInt(yield oraclePrice.getAssetPrice(tokenAddress))) / BigInt(10 ** 18));
 
-            appState.smartWalletState.travaLPState.healthFactor = String(_utils_config__WEBPACK_IMPORTED_MODULE_3__.MAX_UINT256);
+          // update healthFactor :(deposited * currentLiquidationThreshold) / (borrowed - debtTokenBalance * asset.price)
 
-            // update totalDebtUSD : borrowed - debtTokenBalance * asset.price
-            appState.smartWalletState.travaLPState.totalDebtUSD = String((BigInt(appState.smartWalletState.travaLPState.totalDebtUSD) * BigInt(10 ** 18) - BigInt(debtTokenSmartWalletBalance) * BigInt(yield oraclePrice.getAssetPrice(tokenAddress))) / BigInt(10 ** 18));
+          appState.smartWalletState.travaLPState.healthFactor = String(_utils_config__WEBPACK_IMPORTED_MODULE_2__.MAX_UINT256);
 
-            // set debt token balance to 0
-            appState.smartWalletState.tokenBalances.set(_tokenAddress, String(BigInt(appState.smartWalletState.tokenBalances.get(_tokenAddress)) - BigInt(amount)));
-            var _tokenInfo = appState.smartWalletState.detailTokenInPool.get(_tokenAddress);
-            _tokenInfo.dToken = _objectSpread(_objectSpread({}, _tokenInfo.dToken), {}, {
-              balances: "0"
-            });
-            appState.smartWalletState.detailTokenInPool.set(_tokenAddress, _tokenInfo);
-          }
+          // update totalDebtUSD : borrowed - debtTokenBalance * asset.price
+          appState.smartWalletState.travaLPState.totalDebtUSD = String((BigInt(appState.smartWalletState.travaLPState.totalDebtUSD) * BigInt(10 ** 18) - BigInt(debtTokenSmartWalletBalance) * BigInt(yield oraclePrice.getAssetPrice(tokenAddress))) / BigInt(10 ** 18));
+
+          // set debt token balance to <= 0
+          appState.smartWalletState.tokenBalances.set(_tokenAddress, String(BigInt(appState.smartWalletState.tokenBalances.get(_tokenAddress)) - BigInt(amount)));
+          var _tokenInfo = appState.smartWalletState.detailTokenInPool.get(_tokenAddress);
+          _tokenInfo.dToken = _objectSpread(_objectSpread({}, _tokenInfo.dToken), {}, {
+            balances: (BigInt(debtTokenSmartWalletBalance) - BigInt(amount)).toString()
+          });
+          appState.smartWalletState.detailTokenInPool.set(_tokenAddress, _tokenInfo);
         }
-        return appState;
-      } else {
-        throw new Error("Token ".concat(tokenAddress, " is not exist in reverseList or smart wallet does not have ").concat(tokenAddress, " token."));
       }
+      return appState;
+      // } else {
+      //   throw new Error(
+      //     `Token ${tokenAddress} is not exist in reverseList or smart wallet does not have ${tokenAddress} token.`
+      //   );
+      // }
     } catch (err) {
       throw err;
     }
@@ -20514,6 +20507,98 @@ function _SimulationRepay() {
 function SimulationWithdraw(_x10, _x11, _x12) {
   return _SimulationWithdraw.apply(this, arguments);
 }
+
+// export async function SimulationClaimReward(
+//   appState1: ApplicationState,
+//   token: EthAddress,
+//   amount: string,
+// ): Promise<ApplicationState> {
+//   try {
+//     const appState = { ...appState1 };
+
+//     const incentiveContract = new Contract(
+//       getAddr("INCENTIVE_CONTRACT", appState.chainId),
+//       IncentiveContractABI,
+//       appState.web3!
+//     );
+//     const rTravaAddress = String(await incentiveContract.REWARD_TOKEN()).toLowerCase();
+
+//     const currentTokenData = appState.smartWalletState.detailTokenInPool.get(token);
+//     if(currentTokenData){
+//       let realAmount = amount;
+//       if(BigInt(amount) > BigInt(currentTokenData.maxRewardCanGet)){
+//         realAmount = currentTokenData.maxRewardCanGet;
+//       }
+//       appState.smartWalletState.detailTokenInPool.set(token, {
+//         ...currentTokenData,
+//         maxRewardCanGet: (BigInt(currentTokenData.maxRewardCanGet) - BigInt(amount)).toString()
+//       })
+//       const currentRTrava = appState.smartWalletState.tokenBalances.get(rTravaAddress);
+//       if(currentRTrava) {
+//         appState.smartWalletState.tokenBalances.set(rTravaAddress, (BigInt(currentRTrava) + BigInt(amount)).toString());
+//       } else {
+//         appState.smartWalletState.tokenBalances.set(rTravaAddress, BigInt(amount).toString());
+//       }
+//     } else {
+//       throw new Error(
+//         `Token ${token} is not exist in reverseList or smart wallet does not have ${token} token.`
+//       );
+//     }
+//     return appState;
+//   } catch (err) {
+//     throw err;
+//   }
+// }
+
+// export async function SimulationConvertReward(
+//   appState1: ApplicationState,
+//   to: EthAddress,
+//   amount: string,
+// ): Promise<ApplicationState> {
+//   try {
+//     const appState = { ...appState1 };
+
+//     const incentiveContract = new Contract(
+//       getAddr("INCENTIVE_CONTRACT", appState.chainId),
+//       IncentiveContractABI,
+//       appState.web3!
+//     );
+//     const rTravaAddress = await incentiveContract.REWARD_TOKEN();
+
+//     const rTravaBalance = appState.smartWalletState.tokenBalances.get(rTravaAddress);
+
+//     if(rTravaBalance){
+//       let realAmount = amount;
+//       if(BigInt(amount) > BigInt(rTravaBalance)){
+//         realAmount = rTravaBalance;
+//       }
+//       appState.smartWalletState.tokenBalances.set(rTravaAddress, (BigInt(rTravaBalance) - BigInt(realAmount)).toString());
+//       const travaAddress = getAddr("TRAVA_TOKEN_IN_MARKET", appState.chainId);
+//       if(to == appState.smartWalletState.address){
+//         const travaBalance = appState.smartWalletState.tokenBalances.get(travaAddress);
+//         if(travaBalance) {
+//           appState.smartWalletState.tokenBalances.set(travaAddress, (BigInt(travaBalance) + BigInt(amount)).toString());
+//         } else {
+//           appState.smartWalletState.tokenBalances.set(rTravaAddress, BigInt(amount).toString());
+//         }
+//       } else if(to == appState.walletState.address){
+//         const travaBalance = appState.walletState.tokenBalances.get(travaAddress);
+//         if(travaBalance) {
+//           appState.walletState.tokenBalances.set(travaAddress, (BigInt(travaBalance) + BigInt(amount)).toString());
+//         } else {
+//           appState.walletState.tokenBalances.set(rTravaAddress, BigInt(amount).toString());
+//         }
+//       }
+//     } else {
+//       throw new Error(
+//         `Token rTrava is not exist in reverseList or smart wallet does not have token rTrava.`
+//       );
+//     }
+//     return appState;
+//   } catch (err) {
+//     throw err;
+//   }
+// }
 function _SimulationWithdraw() {
   _SimulationWithdraw = _asyncToGenerator(function* (appState1, _tokenAddress, _amount) {
     try {
@@ -20525,155 +20610,85 @@ function _SimulationWithdraw() {
 
       // check tokenAddress is exist on reverseList
       if (appState.smartWalletState.detailTokenInPool.has(_tokenAddress) && appState.smartWalletState.tokenBalances.has(_tokenAddress)) {
-        if (amount.toString() == _utils_config__WEBPACK_IMPORTED_MODULE_3__.MAX_UINT256 || BigInt(amount) == BigInt(_utils_config__WEBPACK_IMPORTED_MODULE_3__.MAX_UINT256)) {
+        if (amount.toString() == _utils_config__WEBPACK_IMPORTED_MODULE_2__.MAX_UINT256 || BigInt(amount) == BigInt(_utils_config__WEBPACK_IMPORTED_MODULE_2__.MAX_UINT256)) {
           amount = appState.smartWalletState.detailTokenInPool.get(_tokenAddress).tToken.balances;
         }
-        if (appState.smartWalletState.detailTokenInPool.get(_tokenAddress).tToken.balances == "0") {
-          throw new Error("Smart wallet does not supply ".concat(tokenAddress, " token."));
-        } else {
-          if (BigInt(appState.smartWalletState.detailTokenInPool.get(_tokenAddress).tToken.balances) > BigInt(amount)) {
-            console.log("Withdraw piece of supplied token");
-            // withdraw piece of supplied token
 
-            // update state for smart wallet in travaLP state ( availableBorrowUSD , totalDebtUSD , healthFactor)
+        // if (
+        //   appState.smartWalletState.detailTokenInPool.get(_tokenAddress)!.tToken
+        //     .balances == "0"
+        // ) {
+        //   throw new Error(`Smart wallet does not supply ${tokenAddress} token.`);
+        // } else {
+        if (BigInt(appState.smartWalletState.detailTokenInPool.get(_tokenAddress).tToken.balances) > BigInt(amount)) {
+          console.log("Withdraw piece of supplied token");
+          // withdraw piece of supplied token
 
-            // update availableBorrowUSD : (deposited - amount * asset.price) * ltv - borrowed
-            appState.smartWalletState.travaLPState.availableBorrowsUSD = String(((BigInt(appState.smartWalletState.travaLPState.totalCollateralUSD) * BigInt(10 ** 18) - BigInt(amount) * BigInt(yield oraclePrice.getAssetPrice(tokenAddress))) * BigInt(appState.smartWalletState.travaLPState.ltv) - BigInt(appState.smartWalletState.travaLPState.totalDebtUSD) * BigInt(10 ** 24)) / BigInt(10 ** 22));
+          // update state for smart wallet in travaLP state ( availableBorrowUSD , totalDebtUSD , healthFactor)
 
-            // update healthFactor :((deposited - amount * asset.price) * currentLiquidationThreshold) / borrowed
-            if (appState.smartWalletState.travaLPState.totalDebtUSD != "0") {
-              appState.smartWalletState.travaLPState.healthFactor = String(appState.smartWalletState.travaLPState.healthFactor = String((BigInt(appState.smartWalletState.travaLPState.totalCollateralUSD) * BigInt(10 ** 18) - BigInt(amount) * BigInt(yield oraclePrice.getAssetPrice(tokenAddress))) * BigInt(appState.smartWalletState.travaLPState.currentLiquidationThreshold) / BigInt(appState.smartWalletState.travaLPState.totalDebtUSD)));
-            } else {
-              // healthFactor = MaxUint256
-              // need check this
-              appState.smartWalletState.travaLPState.healthFactor = _utils_config__WEBPACK_IMPORTED_MODULE_3__.MAX_UINT256;
-            }
+          // update availableBorrowUSD : (deposited - amount * asset.price) * ltv - borrowed
+          appState.smartWalletState.travaLPState.availableBorrowsUSD = String(((BigInt(appState.smartWalletState.travaLPState.totalCollateralUSD) * BigInt(10 ** 18) - BigInt(amount) * BigInt(yield oraclePrice.getAssetPrice(tokenAddress))) * BigInt(appState.smartWalletState.travaLPState.ltv) - BigInt(appState.smartWalletState.travaLPState.totalDebtUSD) * BigInt(10 ** 24)) / BigInt(10 ** 22));
 
-            // update totalCollateralUSD. deposited - amount * asset.price
-            appState.smartWalletState.travaLPState.totalCollateralUSD = String(BigInt(appState.smartWalletState.travaLPState.totalCollateralUSD) - BigInt(amount) * BigInt(yield oraclePrice.getAssetPrice(tokenAddress)) / BigInt(10 ** 18));
-
-            // update token balances
-            appState.smartWalletState.tokenBalances.set(_tokenAddress, String(BigInt(appState.smartWalletState.tokenBalances.get(_tokenAddress)) + BigInt(amount)));
-            var tokenInfo = appState.smartWalletState.detailTokenInPool.get(_tokenAddress);
-            tokenInfo.tToken = _objectSpread(_objectSpread({}, tokenInfo.tToken), {}, {
-              balances: String(BigInt(tokenInfo.tToken.balances) - BigInt(amount))
-            });
-            appState.smartWalletState.detailTokenInPool.set(_tokenAddress, tokenInfo);
-          } else if (BigInt(amount) >= BigInt(appState.smartWalletState.detailTokenInPool.get(_tokenAddress).tToken.balances)) {
-            console.log("withdraw all supplied token");
-            // withdraw all supplied token
-
-            // update state for smart wallet in travaLP state ( availableBorrowUSD , totalDebtUSD , healthFactor)
-
-            // update availableBorrowUSD : (deposited - amount * asset.price) * ltv - borrowed
-            appState.smartWalletState.travaLPState.availableBorrowsUSD = String(((BigInt(appState.smartWalletState.travaLPState.totalCollateralUSD) * BigInt(10 ** 18) - BigInt(amount) * BigInt(yield oraclePrice.getAssetPrice(tokenAddress))) * BigInt(appState.smartWalletState.travaLPState.ltv) - BigInt(appState.smartWalletState.travaLPState.totalDebtUSD) * BigInt(10 ** 24)) / BigInt(10 ** 22));
-
-            // update healthFactor :((deposited - amount * asset.price) * currentLiquidationThreshold) / borrowed
-            if (appState.smartWalletState.travaLPState.totalDebtUSD != "0") {
-              appState.smartWalletState.travaLPState.healthFactor = String(appState.smartWalletState.travaLPState.healthFactor = String((BigInt(appState.smartWalletState.travaLPState.totalCollateralUSD) * BigInt(10 ** 18) - BigInt(amount) * BigInt(yield oraclePrice.getAssetPrice(tokenAddress))) * BigInt(appState.smartWalletState.travaLPState.currentLiquidationThreshold) / BigInt(appState.smartWalletState.travaLPState.totalDebtUSD)));
-            } else {
-              // healthFactor = MaxUint256
-              // need check this
-              appState.smartWalletState.travaLPState.healthFactor = _utils_config__WEBPACK_IMPORTED_MODULE_3__.MAX_UINT256;
-            }
-
-            // update totalCollateralUSD. deposited - amount * asset.price
-            appState.smartWalletState.travaLPState.totalCollateralUSD = String(BigInt(appState.smartWalletState.travaLPState.totalCollateralUSD) - BigInt(amount) * BigInt(yield oraclePrice.getAssetPrice(tokenAddress)) / BigInt(10 ** 18));
-
-            // set tToken balance to 0
-            appState.smartWalletState.tokenBalances.set(_tokenAddress, String(BigInt(appState.smartWalletState.tokenBalances.get(_tokenAddress)) + BigInt(amount)));
-            var _tokenInfo2 = appState.smartWalletState.detailTokenInPool.get(_tokenAddress);
-            _tokenInfo2.tToken = _objectSpread(_objectSpread({}, _tokenInfo2.tToken), {}, {
-              balances: "0"
-            });
-            appState.smartWalletState.detailTokenInPool.set(_tokenAddress, _tokenInfo2);
+          // update healthFactor :((deposited - amount * asset.price) * currentLiquidationThreshold) / borrowed
+          if (appState.smartWalletState.travaLPState.totalDebtUSD != "0") {
+            appState.smartWalletState.travaLPState.healthFactor = String(appState.smartWalletState.travaLPState.healthFactor = String((BigInt(appState.smartWalletState.travaLPState.totalCollateralUSD) * BigInt(10 ** 18) - BigInt(amount) * BigInt(yield oraclePrice.getAssetPrice(tokenAddress))) * BigInt(appState.smartWalletState.travaLPState.currentLiquidationThreshold) / BigInt(appState.smartWalletState.travaLPState.totalDebtUSD)));
+          } else {
+            // healthFactor = MaxUint256
+            // need check this
+            appState.smartWalletState.travaLPState.healthFactor = _utils_config__WEBPACK_IMPORTED_MODULE_2__.MAX_UINT256;
           }
+
+          // update totalCollateralUSD. deposited - amount * asset.price
+          appState.smartWalletState.travaLPState.totalCollateralUSD = String(BigInt(appState.smartWalletState.travaLPState.totalCollateralUSD) - BigInt(amount) * BigInt(yield oraclePrice.getAssetPrice(tokenAddress)) / BigInt(10 ** 18));
+
+          // update token balances
+          appState.smartWalletState.tokenBalances.set(_tokenAddress, String(BigInt(appState.smartWalletState.tokenBalances.get(_tokenAddress)) + BigInt(amount)));
+          var tokenInfo = appState.smartWalletState.detailTokenInPool.get(_tokenAddress);
+          tokenInfo.tToken = _objectSpread(_objectSpread({}, tokenInfo.tToken), {}, {
+            balances: String(BigInt(tokenInfo.tToken.balances) - BigInt(amount))
+          });
+          appState.smartWalletState.detailTokenInPool.set(_tokenAddress, tokenInfo);
+        } else if (BigInt(amount) >= BigInt(appState.smartWalletState.detailTokenInPool.get(_tokenAddress).tToken.balances)) {
+          console.log("withdraw all supplied token");
+          // withdraw all supplied token
+
+          // update state for smart wallet in travaLP state ( availableBorrowUSD , totalDebtUSD , healthFactor)
+
+          // update availableBorrowUSD : (deposited - amount * asset.price) * ltv - borrowed
+          appState.smartWalletState.travaLPState.availableBorrowsUSD = String(((BigInt(appState.smartWalletState.travaLPState.totalCollateralUSD) * BigInt(10 ** 18) - BigInt(amount) * BigInt(yield oraclePrice.getAssetPrice(tokenAddress))) * BigInt(appState.smartWalletState.travaLPState.ltv) - BigInt(appState.smartWalletState.travaLPState.totalDebtUSD) * BigInt(10 ** 24)) / BigInt(10 ** 22));
+
+          // update healthFactor :((deposited - amount * asset.price) * currentLiquidationThreshold) / borrowed
+          if (appState.smartWalletState.travaLPState.totalDebtUSD != "0") {
+            appState.smartWalletState.travaLPState.healthFactor = String(appState.smartWalletState.travaLPState.healthFactor = String((BigInt(appState.smartWalletState.travaLPState.totalCollateralUSD) * BigInt(10 ** 18) - BigInt(amount) * BigInt(yield oraclePrice.getAssetPrice(tokenAddress))) * BigInt(appState.smartWalletState.travaLPState.currentLiquidationThreshold) / BigInt(appState.smartWalletState.travaLPState.totalDebtUSD)));
+          } else {
+            // healthFactor = MaxUint256
+            // need check this
+            appState.smartWalletState.travaLPState.healthFactor = _utils_config__WEBPACK_IMPORTED_MODULE_2__.MAX_UINT256;
+          }
+
+          // update totalCollateralUSD. deposited - amount * asset.price
+          appState.smartWalletState.travaLPState.totalCollateralUSD = String(BigInt(appState.smartWalletState.travaLPState.totalCollateralUSD) - BigInt(amount) * BigInt(yield oraclePrice.getAssetPrice(tokenAddress)) / BigInt(10 ** 18));
+
+          // set tToken balance to 0
+          appState.smartWalletState.tokenBalances.set(_tokenAddress, String(BigInt(appState.smartWalletState.tokenBalances.get(_tokenAddress)) + BigInt(amount)));
+          var _tokenInfo2 = appState.smartWalletState.detailTokenInPool.get(_tokenAddress);
+          _tokenInfo2.tToken = _objectSpread(_objectSpread({}, _tokenInfo2.tToken), {}, {
+            balances: (BigInt(appState.smartWalletState.detailTokenInPool.get(_tokenAddress).tToken.balances) - BigInt(amount)).toString()
+          });
+          appState.smartWalletState.detailTokenInPool.set(_tokenAddress, _tokenInfo2);
         }
-        return appState;
-      } else {
-        throw new Error("Token ".concat(tokenAddress, " is not exist in reverseList or smart wallet does not have ").concat(tokenAddress, " token."));
       }
+      return appState;
+      // } else {
+      //   throw new Error(
+      //     `Token ${tokenAddress} is not exist in reverseList or smart wallet does not have ${tokenAddress} token.`
+      //   );
+      // }
     } catch (err) {
       throw err;
     }
   });
   return _SimulationWithdraw.apply(this, arguments);
-}
-function SimulationClaimReward(_x13, _x14, _x15) {
-  return _SimulationClaimReward.apply(this, arguments);
-}
-function _SimulationClaimReward() {
-  _SimulationClaimReward = _asyncToGenerator(function* (appState1, token, amount) {
-    try {
-      var appState = _objectSpread({}, appState1);
-      var incentiveContract = new ethers__WEBPACK_IMPORTED_MODULE_2__.Contract((0,_utils_address__WEBPACK_IMPORTED_MODULE_1__.getAddr)("INCENTIVE_CONTRACT", appState.chainId), _abis_IncentiveContract_json__WEBPACK_IMPORTED_MODULE_4__, appState.web3);
-      var rTravaAddress = yield incentiveContract.REWARD_TOKEN();
-      var currentTokenData = appState.smartWalletState.detailTokenInPool.get(token);
-      if (currentTokenData) {
-        var realAmount = amount;
-        if (BigInt(amount) > BigInt(currentTokenData.maxRewardCanGet)) {
-          realAmount = currentTokenData.maxRewardCanGet;
-        }
-        appState.smartWalletState.detailTokenInPool.set(token, _objectSpread(_objectSpread({}, currentTokenData), {}, {
-          maxRewardCanGet: (BigInt(currentTokenData.maxRewardCanGet) - BigInt(amount)).toString()
-        }));
-        var currentRTrava = appState.smartWalletState.tokenBalances.get(rTravaAddress);
-        if (currentRTrava) {
-          appState.smartWalletState.tokenBalances.set(rTravaAddress, (BigInt(currentRTrava) + BigInt(amount)).toString());
-        } else {
-          appState.smartWalletState.tokenBalances.set(rTravaAddress, BigInt(amount).toString());
-        }
-      } else {
-        throw new Error("Token ".concat(token, " is not exist in reverseList or smart wallet does not have ").concat(token, " token."));
-      }
-      return appState;
-    } catch (err) {
-      throw err;
-    }
-  });
-  return _SimulationClaimReward.apply(this, arguments);
-}
-function SimulationConvertReward(_x16, _x17, _x18) {
-  return _SimulationConvertReward.apply(this, arguments);
-}
-function _SimulationConvertReward() {
-  _SimulationConvertReward = _asyncToGenerator(function* (appState1, to, amount) {
-    try {
-      var appState = _objectSpread({}, appState1);
-      var incentiveContract = new ethers__WEBPACK_IMPORTED_MODULE_2__.Contract((0,_utils_address__WEBPACK_IMPORTED_MODULE_1__.getAddr)("INCENTIVE_CONTRACT", appState.chainId), _abis_IncentiveContract_json__WEBPACK_IMPORTED_MODULE_4__, appState.web3);
-      var rTravaAddress = yield incentiveContract.REWARD_TOKEN();
-      var rTravaBalance = appState.smartWalletState.tokenBalances.get(rTravaAddress);
-      if (rTravaBalance) {
-        var realAmount = amount;
-        if (BigInt(amount) > BigInt(rTravaBalance)) {
-          realAmount = rTravaBalance;
-        }
-        appState.smartWalletState.tokenBalances.set(rTravaAddress, (BigInt(rTravaBalance) - BigInt(realAmount)).toString());
-        var travaAddress = (0,_utils_address__WEBPACK_IMPORTED_MODULE_1__.getAddr)("TRAVA_TOKEN_IN_MARKET", appState.chainId);
-        if (to == appState.smartWalletState.address) {
-          var travaBalance = appState.smartWalletState.tokenBalances.get(travaAddress);
-          if (travaBalance) {
-            appState.smartWalletState.tokenBalances.set(travaAddress, (BigInt(travaBalance) + BigInt(amount)).toString());
-          } else {
-            appState.smartWalletState.tokenBalances.set(rTravaAddress, BigInt(amount).toString());
-          }
-        } else if (to == appState.walletState.address) {
-          var _travaBalance = appState.walletState.tokenBalances.get(travaAddress);
-          if (_travaBalance) {
-            appState.walletState.tokenBalances.set(travaAddress, (BigInt(_travaBalance) + BigInt(amount)).toString());
-          } else {
-            appState.walletState.tokenBalances.set(rTravaAddress, BigInt(amount).toString());
-          }
-        }
-      } else {
-        throw new Error("Token rTrava is not exist in reverseList or smart wallet does not have token rTrava.");
-      }
-      return appState;
-    } catch (err) {
-      throw err;
-    }
-  });
-  return _SimulationConvertReward.apply(this, arguments);
 }
 
 /***/ }),
@@ -20748,13 +20763,6 @@ class BaseReadContract {
 
 /***/ }),
 /* 116 */
-/***/ ((module) => {
-
-"use strict";
-module.exports = JSON.parse('[{"inputs":[{"internalType":"contract IStakedTokenWithConfig","name":"stakeToken","type":"address"},{"internalType":"address","name":"emissionManager","type":"address"}],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"asset","type":"address"},{"indexed":false,"internalType":"uint256","name":"emission","type":"uint256"}],"name":"AssetConfigUpdated","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"asset","type":"address"},{"indexed":false,"internalType":"uint256","name":"index","type":"uint256"}],"name":"AssetIndexUpdated","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"user","type":"address"},{"indexed":true,"internalType":"address","name":"claimer","type":"address"}],"name":"ClaimerSet","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"uint256","name":"newDistributionEnd","type":"uint256"}],"name":"DistributionEndUpdated","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"user","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"}],"name":"RewardsAccrued","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"user","type":"address"},{"indexed":true,"internalType":"address","name":"to","type":"address"},{"indexed":true,"internalType":"address","name":"claimer","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"}],"name":"RewardsClaimed","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"user","type":"address"},{"indexed":true,"internalType":"address","name":"asset","type":"address"},{"indexed":false,"internalType":"uint256","name":"index","type":"uint256"}],"name":"UserIndexUpdated","type":"event"},{"inputs":[],"name":"DISTRIBUTION_END","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"EMISSION_MANAGER","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"PRECISION","outputs":[{"internalType":"uint8","name":"","type":"uint8"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"REVISION","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"REWARD_TOKEN","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"STAKE_TOKEN","outputs":[{"internalType":"contract IStakedTokenWithConfig","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"assets","outputs":[{"internalType":"uint104","name":"emissionPerSecond","type":"uint104"},{"internalType":"uint104","name":"index","type":"uint104"},{"internalType":"uint40","name":"lastUpdateTimestamp","type":"uint40"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address[]","name":"assets","type":"address[]"},{"internalType":"uint256","name":"amount","type":"uint256"},{"internalType":"address","name":"to","type":"address"}],"name":"claimRewards","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address[]","name":"assets","type":"address[]"},{"internalType":"uint256","name":"amount","type":"uint256"},{"internalType":"address","name":"user","type":"address"},{"internalType":"address","name":"to","type":"address"}],"name":"claimRewardsOnBehalf","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address[]","name":"assets","type":"address[]"},{"internalType":"uint256[]","name":"emissionsPerSecond","type":"uint256[]"}],"name":"configureAssets","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"asset","type":"address"}],"name":"getAssetData","outputs":[{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"user","type":"address"}],"name":"getClaimer","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"getDistributionEnd","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address[]","name":"assets","type":"address[]"},{"internalType":"address","name":"user","type":"address"}],"name":"getRewardsBalance","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"user","type":"address"},{"internalType":"address","name":"asset","type":"address"}],"name":"getUserAssetData","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"_user","type":"address"}],"name":"getUserUnclaimedRewards","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"user","type":"address"},{"internalType":"uint256","name":"totalSupply","type":"uint256"},{"internalType":"uint256","name":"userBalance","type":"uint256"}],"name":"handleAction","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"addressesProvider","type":"address"}],"name":"initialize","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"user","type":"address"},{"internalType":"address","name":"caller","type":"address"}],"name":"setClaimer","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"distributionEnd","type":"uint256"}],"name":"setDistributionEnd","outputs":[],"stateMutability":"nonpayable","type":"function"}]');
-
-/***/ }),
-/* 117 */
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -20762,14 +20770,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   updateLPDebtTokenInfo: () => (/* binding */ updateLPDebtTokenInfo),
 /* harmony export */   updateLPtTokenInfo: () => (/* binding */ updateLPtTokenInfo),
-/* harmony export */   updateListToken: () => (/* binding */ updateListToken),
 /* harmony export */   updateRTravaAndTravaForReward: () => (/* binding */ updateRTravaAndTravaForReward),
 /* harmony export */   updateTravaLPInfo: () => (/* binding */ updateTravaLPInfo)
 /* harmony export */ });
 /* harmony import */ var ethers__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(11);
 /* harmony import */ var ethers__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(ethers__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _abis_TravaLendingPool_json__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(118);
-/* harmony import */ var _abis_IncentiveContract_json__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(116);
+/* harmony import */ var _abis_TravaLendingPool_json__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(117);
+/* harmony import */ var _abis_IncentiveContract_json__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(118);
 /* harmony import */ var _abis_BEP20_json__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(119);
 /* harmony import */ var _utils_address__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(12);
 /* harmony import */ var _abis_Multicall_json__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(120);
@@ -20974,72 +20981,110 @@ var multiCall = /*#__PURE__*/function () {
     return _ref.apply(this, arguments);
   };
 }();
-function updateListToken(_x11) {
-  return _updateListToken.apply(this, arguments);
-}
-function _updateListToken() {
-  _updateListToken = _asyncToGenerator(function* (appState1) {
-    try {
-      var appState = _objectSpread({}, appState1);
-      var travaLP = new ethers__WEBPACK_IMPORTED_MODULE_0__.Contract((0,_utils_address__WEBPACK_IMPORTED_MODULE_4__.getAddr)("TRAVA_LENDING_POOL_MARKET", appState.chainId), _abis_TravaLendingPool_json__WEBPACK_IMPORTED_MODULE_1__, appState.web3);
-      var reverseList = yield travaLP.getReservesList();
-      reverseList = reverseList.map(e => e.toLowerCase());
-      var [reserveData] = yield Promise.all([multiCall(_abis_TravaLendingPool_json__WEBPACK_IMPORTED_MODULE_1__, reverseList.map((address, _) => ({
-        address: (0,_utils_address__WEBPACK_IMPORTED_MODULE_4__.getAddr)("TRAVA_LENDING_POOL_MARKET", appState.chainId),
-        name: 'getReserveData',
-        params: [address]
-      })), appState.web3, appState.chainId)]);
-      reserveData = reserveData.flat();
-      var tTokenList = [];
-      var dTokenList = [];
-      for (var r of reserveData) {
-        tTokenList.push(r[6]);
-        dTokenList.push(r[7]);
-      }
-      var [balanceTList] = yield Promise.all([multiCall(_abis_BEP20_json__WEBPACK_IMPORTED_MODULE_3__, tTokenList.map((address, _) => ({
-        address: address,
-        name: 'balanceOf',
-        params: [appState.smartWalletState.address]
-      })), appState.web3, appState.chainId)]);
-      balanceTList = balanceTList.flat();
-      var [balanceDList] = yield Promise.all([multiCall(_abis_BEP20_json__WEBPACK_IMPORTED_MODULE_3__, dTokenList.map((address, _) => ({
-        address: address,
-        name: 'balanceOf',
-        params: [appState.smartWalletState.address]
-      })), appState.web3, appState.chainId)]);
-      balanceDList = balanceDList.flat();
-      var [maxRewardCanGets] = yield Promise.all([multiCall(_abis_IncentiveContract_json__WEBPACK_IMPORTED_MODULE_2__, reverseList.map((address, index) => ({
-        address: (0,_utils_address__WEBPACK_IMPORTED_MODULE_4__.getAddr)("INCENTIVE_CONTRACT", appState.chainId),
-        name: 'getRewardsBalance',
-        params: [[tTokenList[index], dTokenList[index]], appState.smartWalletState.address]
-      })), appState.web3, appState.chainId)]);
-      maxRewardCanGets = maxRewardCanGets.flat();
-      appState.smartWalletState.detailTokenInPool = new Map();
-      var counter = 0;
-      for (var token of reverseList) {
-        if (balanceDList[counter] > 0 || balanceTList[counter] > 0) {
-          appState.smartWalletState.detailTokenInPool = appState.smartWalletState.detailTokenInPool.set(token, {
-            tToken: {
-              address: tTokenList[counter].toLowerCase(),
-              balances: balanceTList[counter].toString()
-            },
-            dToken: {
-              address: dTokenList[counter].toLowerCase(),
-              balances: balanceDList[counter].toString()
-            },
-            maxRewardCanGet: maxRewardCanGets[counter].toString()
-          });
-        }
-        counter++;
-      }
-      return appState;
-    } catch (error) {
-      throw new Error("Can't update LP tToken info !");
-    }
-  });
-  return _updateListToken.apply(this, arguments);
-}
-function updateRTravaAndTravaForReward(_x12) {
+
+// export async function updateListToken(
+//   appState1: ApplicationState,
+// ) {
+//   try {
+//     const appState = { ...appState1 };
+//     const travaLP = new Contract(
+//       getAddr("TRAVA_LENDING_POOL_MARKET", appState.chainId),
+//       ABITravaLP,
+//       appState.web3!
+//     );
+//     let reverseList = await travaLP.getReservesList();
+//     reverseList = reverseList.map((e: string) => e.toLowerCase());
+
+//     let [reserveData] = await Promise.all([
+//       multiCall(
+//         ABITravaLP,
+//         reverseList.map((address: string, _: number) => ({
+//           address: getAddr("TRAVA_LENDING_POOL_MARKET", appState.chainId),
+//           name: 'getReserveData',
+//           params: [address],
+//         })),
+//         appState.web3,
+//         appState.chainId
+//       ),
+//     ]);
+//     reserveData = reserveData.flat();
+//     let tTokenList = [] as Array<string>;
+//     let dTokenList = [] as Array<string>;
+//     for(const r of reserveData) {
+//       tTokenList.push(r[6]);
+//       dTokenList.push(r[7]);
+//     }
+
+//     let [balanceTList] = await Promise.all([
+//       multiCall(
+//         BEP20ABI,
+//         tTokenList.map((address: string, _: number) => ({
+//           address: address,
+//           name: 'balanceOf',
+//           params: [appState.smartWalletState.address],
+//         })),
+//         appState.web3,
+//         appState.chainId
+//       ),
+//     ]);
+//     balanceTList = balanceTList.flat();
+
+//     let [balanceDList] = await Promise.all([
+//       multiCall(
+//         BEP20ABI,
+//         dTokenList.map((address: string, _: number) => ({
+//           address: address,
+//           name: 'balanceOf',
+//           params: [appState.smartWalletState.address],
+//         })),
+//         appState.web3,
+//         appState.chainId
+//       ),
+//     ]);
+//     balanceDList = balanceDList.flat();
+
+//     let [maxRewardCanGets] = await Promise.all([
+//       multiCall(
+//         IncentiveContractABI,
+//         reverseList.map((address: string, index: number) => ({
+//           address: getAddr("INCENTIVE_CONTRACT", appState.chainId),
+//           name: 'getRewardsBalance',
+//           params: [[tTokenList[index], dTokenList[index]], appState.smartWalletState.address],
+//         })),
+//         appState.web3,
+//         appState.chainId
+//       ),
+//     ]);
+//     maxRewardCanGets = maxRewardCanGets.flat();
+
+//     appState.smartWalletState.detailTokenInPool = new Map();
+//     let counter = 0;
+//     for(const token of reverseList) {
+//       if(balanceDList[counter] > 0 || balanceTList[counter] > 0) {
+//         appState.smartWalletState.detailTokenInPool = appState.smartWalletState.detailTokenInPool.set(
+//           token, 
+//           {
+//             tToken: {
+//               address: tTokenList[counter].toLowerCase(),
+//               balances: balanceTList[counter].toString(),
+//             },
+//             dToken: {
+//               address: dTokenList[counter].toLowerCase(),
+//               balances: balanceDList[counter].toString(),
+//             },
+//             maxRewardCanGet: maxRewardCanGets[counter].toString()
+//           }
+//         );
+//       }
+//       counter++;
+//     }
+//     return appState;
+//   } catch (error) {
+//     throw new Error("Can't update LP tToken info !");
+//   }
+// }
+
+function updateRTravaAndTravaForReward(_x11) {
   return _updateRTravaAndTravaForReward.apply(this, arguments);
 }
 function _updateRTravaAndTravaForReward() {
@@ -21065,11 +21110,18 @@ function _updateRTravaAndTravaForReward() {
 }
 
 /***/ }),
-/* 118 */
+/* 117 */
 /***/ ((module) => {
 
 "use strict";
 module.exports = JSON.parse('[{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"reserve","type":"address"},{"indexed":false,"internalType":"address","name":"user","type":"address"},{"indexed":true,"internalType":"address","name":"onBehalfOf","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"borrowRate","type":"uint256"},{"indexed":true,"internalType":"uint16","name":"referral","type":"uint16"}],"name":"Borrow","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"reserve","type":"address"},{"indexed":false,"internalType":"address","name":"user","type":"address"},{"indexed":true,"internalType":"address","name":"onBehalfOf","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"},{"indexed":true,"internalType":"uint16","name":"referral","type":"uint16"}],"name":"Deposit","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"collateralAsset","type":"address"},{"indexed":true,"internalType":"address","name":"debtAsset","type":"address"},{"indexed":true,"internalType":"address","name":"user","type":"address"},{"indexed":false,"internalType":"uint256","name":"debtToCover","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"liquidatedCollateralAmount","type":"uint256"},{"indexed":false,"internalType":"address","name":"liquidator","type":"address"},{"indexed":false,"internalType":"bool","name":"receiveTToken","type":"bool"}],"name":"LiquidationCall","type":"event"},{"anonymous":false,"inputs":[],"name":"Paused","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"reserve","type":"address"},{"indexed":true,"internalType":"address","name":"user","type":"address"},{"indexed":true,"internalType":"address","name":"repayer","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"}],"name":"Repay","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"reserve","type":"address"},{"indexed":false,"internalType":"uint256","name":"liquidityRate","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"stableBorrowRate","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"variableBorrowRate","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"liquidityIndex","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"variableBorrowIndex","type":"uint256"}],"name":"ReserveDataUpdated","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"reserve","type":"address"},{"indexed":true,"internalType":"address","name":"user","type":"address"}],"name":"ReserveUsedAsCollateralDisabled","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"reserve","type":"address"},{"indexed":true,"internalType":"address","name":"user","type":"address"}],"name":"ReserveUsedAsCollateralEnabled","type":"event"},{"anonymous":false,"inputs":[],"name":"Unpaused","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"reserve","type":"address"},{"indexed":true,"internalType":"address","name":"user","type":"address"},{"indexed":true,"internalType":"address","name":"to","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"}],"name":"Withdraw","type":"event"},{"inputs":[{"internalType":"address","name":"asset","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"},{"internalType":"uint16","name":"referralCode","type":"uint16"},{"internalType":"address","name":"onBehalfOf","type":"address"}],"name":"borrow","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"asset","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"},{"internalType":"address","name":"onBehalfOf","type":"address"},{"internalType":"uint16","name":"referralCode","type":"uint16"}],"name":"deposit","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"asset","type":"address"},{"internalType":"address","name":"from","type":"address"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"},{"internalType":"uint256","name":"balanceFromBefore","type":"uint256"},{"internalType":"uint256","name":"balanceToBefore","type":"uint256"}],"name":"finalizeTransfer","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"getAddressesProvider","outputs":[{"internalType":"contract IAddressesProviderFactory","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"asset","type":"address"}],"name":"getConfiguration","outputs":[{"components":[{"internalType":"uint256","name":"data","type":"uint256"}],"internalType":"struct DataTypes.ReserveConfigurationMap","name":"","type":"tuple"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"asset","type":"address"}],"name":"getReserveData","outputs":[{"components":[{"components":[{"internalType":"uint256","name":"data","type":"uint256"}],"internalType":"struct DataTypes.ReserveConfigurationMap","name":"configuration","type":"tuple"},{"internalType":"uint128","name":"liquidityIndex","type":"uint128"},{"internalType":"uint128","name":"variableBorrowIndex","type":"uint128"},{"internalType":"uint128","name":"currentLiquidityRate","type":"uint128"},{"internalType":"uint128","name":"currentVariableBorrowRate","type":"uint128"},{"internalType":"uint40","name":"lastUpdateTimestamp","type":"uint40"},{"internalType":"address","name":"tTokenAddress","type":"address"},{"internalType":"address","name":"variableDebtTokenAddress","type":"address"},{"internalType":"address","name":"interestRateStrategyAddress","type":"address"},{"internalType":"uint8","name":"id","type":"uint8"}],"internalType":"struct DataTypes.ReserveData","name":"","type":"tuple"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"asset","type":"address"}],"name":"getReserveNormalizedIncome","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"asset","type":"address"}],"name":"getReserveNormalizedVariableDebt","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"getReservesList","outputs":[{"internalType":"address[]","name":"","type":"address[]"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"user","type":"address"}],"name":"getUserAccountData","outputs":[{"internalType":"uint256","name":"totalCollateralUSD","type":"uint256"},{"internalType":"uint256","name":"totalDebtUSD","type":"uint256"},{"internalType":"uint256","name":"availableBorrowsUSD","type":"uint256"},{"internalType":"uint256","name":"currentLiquidationThreshold","type":"uint256"},{"internalType":"uint256","name":"ltv","type":"uint256"},{"internalType":"uint256","name":"healthFactor","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"asset","type":"address"},{"internalType":"address","name":"tTokenAddress","type":"address"},{"internalType":"address","name":"variableDebtTokenAddress","type":"address"},{"internalType":"address","name":"reserveInterestRateStrategyAddress","type":"address"}],"name":"initReserve","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"contract IAddressesProviderFactory","name":"provider","type":"address"},{"internalType":"uint256","name":"providerId","type":"uint256"}],"name":"initialize","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"collateralAsset","type":"address"},{"internalType":"address","name":"debtAsset","type":"address"},{"internalType":"address","name":"user","type":"address"},{"internalType":"uint256","name":"debtToCover","type":"uint256"},{"internalType":"bool","name":"receiveTToken","type":"bool"}],"name":"liquidationCall","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"paused","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"asset","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"},{"internalType":"address","name":"onBehalfOf","type":"address"}],"name":"repay","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"asset","type":"address"},{"internalType":"uint256","name":"configuration","type":"uint256"}],"name":"setConfiguration","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"bool","name":"val","type":"bool"}],"name":"setPause","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"asset","type":"address"},{"internalType":"address","name":"rateStrategyAddress","type":"address"}],"name":"setReserveInterestRateStrategyAddress","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"asset","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"},{"internalType":"address","name":"to","type":"address"}],"name":"withdraw","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"nonpayable","type":"function"}]');
+
+/***/ }),
+/* 118 */
+/***/ ((module) => {
+
+"use strict";
+module.exports = JSON.parse('[{"inputs":[{"internalType":"contract IStakedTokenWithConfig","name":"stakeToken","type":"address"},{"internalType":"address","name":"emissionManager","type":"address"}],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"asset","type":"address"},{"indexed":false,"internalType":"uint256","name":"emission","type":"uint256"}],"name":"AssetConfigUpdated","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"asset","type":"address"},{"indexed":false,"internalType":"uint256","name":"index","type":"uint256"}],"name":"AssetIndexUpdated","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"user","type":"address"},{"indexed":true,"internalType":"address","name":"claimer","type":"address"}],"name":"ClaimerSet","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"uint256","name":"newDistributionEnd","type":"uint256"}],"name":"DistributionEndUpdated","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"user","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"}],"name":"RewardsAccrued","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"user","type":"address"},{"indexed":true,"internalType":"address","name":"to","type":"address"},{"indexed":true,"internalType":"address","name":"claimer","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"}],"name":"RewardsClaimed","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"user","type":"address"},{"indexed":true,"internalType":"address","name":"asset","type":"address"},{"indexed":false,"internalType":"uint256","name":"index","type":"uint256"}],"name":"UserIndexUpdated","type":"event"},{"inputs":[],"name":"DISTRIBUTION_END","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"EMISSION_MANAGER","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"PRECISION","outputs":[{"internalType":"uint8","name":"","type":"uint8"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"REVISION","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"REWARD_TOKEN","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"STAKE_TOKEN","outputs":[{"internalType":"contract IStakedTokenWithConfig","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"assets","outputs":[{"internalType":"uint104","name":"emissionPerSecond","type":"uint104"},{"internalType":"uint104","name":"index","type":"uint104"},{"internalType":"uint40","name":"lastUpdateTimestamp","type":"uint40"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address[]","name":"assets","type":"address[]"},{"internalType":"uint256","name":"amount","type":"uint256"},{"internalType":"address","name":"to","type":"address"}],"name":"claimRewards","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address[]","name":"assets","type":"address[]"},{"internalType":"uint256","name":"amount","type":"uint256"},{"internalType":"address","name":"user","type":"address"},{"internalType":"address","name":"to","type":"address"}],"name":"claimRewardsOnBehalf","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address[]","name":"assets","type":"address[]"},{"internalType":"uint256[]","name":"emissionsPerSecond","type":"uint256[]"}],"name":"configureAssets","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"asset","type":"address"}],"name":"getAssetData","outputs":[{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"user","type":"address"}],"name":"getClaimer","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"getDistributionEnd","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address[]","name":"assets","type":"address[]"},{"internalType":"address","name":"user","type":"address"}],"name":"getRewardsBalance","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"user","type":"address"},{"internalType":"address","name":"asset","type":"address"}],"name":"getUserAssetData","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"_user","type":"address"}],"name":"getUserUnclaimedRewards","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"user","type":"address"},{"internalType":"uint256","name":"totalSupply","type":"uint256"},{"internalType":"uint256","name":"userBalance","type":"uint256"}],"name":"handleAction","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"addressesProvider","type":"address"}],"name":"initialize","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"user","type":"address"},{"internalType":"address","name":"caller","type":"address"}],"name":"setClaimer","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"distributionEnd","type":"uint256"}],"name":"setDistributionEnd","outputs":[],"stateMutability":"nonpayable","type":"function"}]');
 
 /***/ }),
 /* 119 */
@@ -34137,8 +34189,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   MAX_UINT256: () => (/* reexport safe */ _utils_config__WEBPACK_IMPORTED_MODULE_3__.MAX_UINT256),
 /* harmony export */   NETWORKS: () => (/* reexport safe */ _utils_config__WEBPACK_IMPORTED_MODULE_3__.NETWORKS),
 /* harmony export */   SimulationBorrow: () => (/* reexport safe */ _Simulation__WEBPACK_IMPORTED_MODULE_1__.SimulationBorrow),
-/* harmony export */   SimulationClaimReward: () => (/* reexport safe */ _Simulation__WEBPACK_IMPORTED_MODULE_1__.SimulationClaimReward),
-/* harmony export */   SimulationConvertReward: () => (/* reexport safe */ _Simulation__WEBPACK_IMPORTED_MODULE_1__.SimulationConvertReward),
 /* harmony export */   SimulationRepay: () => (/* reexport safe */ _Simulation__WEBPACK_IMPORTED_MODULE_1__.SimulationRepay),
 /* harmony export */   SimulationSupply: () => (/* reexport safe */ _Simulation__WEBPACK_IMPORTED_MODULE_1__.SimulationSupply),
 /* harmony export */   SimulationWithdraw: () => (/* reexport safe */ _Simulation__WEBPACK_IMPORTED_MODULE_1__.SimulationWithdraw),
@@ -34156,7 +34206,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   updateCollectionBalanceFromGraph: () => (/* reexport safe */ _Simulation__WEBPACK_IMPORTED_MODULE_1__.updateCollectionBalanceFromGraph),
 /* harmony export */   updateLPDebtTokenInfo: () => (/* reexport safe */ _Simulation__WEBPACK_IMPORTED_MODULE_1__.updateLPDebtTokenInfo),
 /* harmony export */   updateLPtTokenInfo: () => (/* reexport safe */ _Simulation__WEBPACK_IMPORTED_MODULE_1__.updateLPtTokenInfo),
-/* harmony export */   updateListToken: () => (/* reexport safe */ _Simulation__WEBPACK_IMPORTED_MODULE_1__.updateListToken),
 /* harmony export */   updateNFTBalanceFromContract: () => (/* reexport safe */ _Simulation__WEBPACK_IMPORTED_MODULE_1__.updateNFTBalanceFromContract),
 /* harmony export */   updateOwnedSellingNFT: () => (/* reexport safe */ _Simulation__WEBPACK_IMPORTED_MODULE_1__.updateOwnedSellingNFT),
 /* harmony export */   updateOwnedSellingNFTFromContract: () => (/* reexport safe */ _Simulation__WEBPACK_IMPORTED_MODULE_1__.updateOwnedSellingNFTFromContract),
