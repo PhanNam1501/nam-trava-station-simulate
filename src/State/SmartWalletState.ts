@@ -22,7 +22,6 @@ export class SmartWalletState {
   ethBalances: string;
   sellingNFT: NFTSellingState;
   detailTokenInPool: Map<any, any>;
-  sellingNFT: NFTSellingState;
 
   constructor(address: EthAddress) {
     this.address = address;
@@ -33,7 +32,6 @@ export class SmartWalletState {
     this.ethBalances = "";
     this.sellingNFT = new NFTSellingState();
     this.detailTokenInPool = new Map();
-    this.sellingNFT = new NFTSellingState();
   }
 
   // async getTokenAmount(tokenAddress: string): Promise<string> {

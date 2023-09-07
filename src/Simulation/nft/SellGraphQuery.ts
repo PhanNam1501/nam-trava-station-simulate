@@ -18,18 +18,18 @@ export default class SellGraphQuery {
     const nRarity = data.token.rarity;
     const nType = data.token.type;
     const rawPrice = data.price as string;
-    const price = BigNumber(rawPrice).div(BASE18).toNumber();
+    const price = BigNumber(rawPrice).div(BASE18).toString();
     return {
       rawData: data,
-      collectionId: setId,
-      collectionName,
-      exp: data.token.exp ?? 0,
       id: Number(data.id),
+      collectionName,
+      collectionId: setId,
       nRarity,
       nType,
-      price,
       rarity: RarityMapping[nRarity - 1],
+      exp: data.token.exp ?? 0,
       type: TypeMapping[nType - 1],
+      price,
       seller: data.seller,
     } as SellingArmouryType & { rawData: NFTMarketplaceType };
   }

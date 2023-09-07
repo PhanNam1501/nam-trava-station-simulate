@@ -434,15 +434,15 @@ export async function updateRTravaAndTravaForReward(
     );
 
     appState.smartWalletState.tokenBalances.set(
-      getAddr("TRAVA_TOKEN_IN_MARKET", appState.chainId), 
+      getAddr("TRAVA_TOKEN_IN_MARKET", appState.chainId).toLowerCase(), 
       travaBalance.toString()
     );
     appState.walletState.tokenBalances.set(
-      getAddr("TRAVA_TOKEN_IN_MARKET", appState.chainId), 
+      getAddr("TRAVA_TOKEN_IN_MARKET", appState.chainId).toLowerCase(), 
       travaBalance2.toString()
     );
     appState.smartWalletState.tokenBalances.set(
-      rTravaAddress, 
+      String(rTravaAddress).toLowerCase(), 
       rTravaBalance.toString()
     );
     return appState;

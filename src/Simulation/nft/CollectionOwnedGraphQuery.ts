@@ -20,7 +20,7 @@ export default class SellGraphQuery {
     const nRarity = data.token.rarity;
     const nType = data.token.type;
     const rawPrice = data.price as string;
-    const price = BigNumber(rawPrice).div(BASE18).toNumber();
+    const price = BigNumber(rawPrice).div(BASE18).toString();
     return {
       rawData: data,
       collectionId: setId,

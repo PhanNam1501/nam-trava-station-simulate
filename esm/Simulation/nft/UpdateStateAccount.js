@@ -293,7 +293,7 @@ function _fetchNormal(appState, tokenIds) {
                 const tRarity = RarityMapping[rarity - 1];
                 const id = parseInt(tokenIds[counter]);
                 const exp = parseInt(tokenData.experiencePoint);
-                const price = BigNumber(tokenOrders[counter].price).dividedBy(BASE18).toNumber();
+                const price = BigNumber(tokenOrders[counter].price).toString();
                 const seller = tokenOrders[counter].nftSeller;
                 const data = {
                     id,
@@ -429,7 +429,7 @@ export function updateOwnedSellingNFTFromContract(appState1, mode) {
                     const exp = parseInt(tokenData[4]);
                     const tRarity = RarityMapping[rarity - 1];
                     const tType = TypeMapping[type - 1];
-                    const price = BigNumber(ordersMetadataFlattened[counter][1]).dividedBy(BASE18).toNumber();
+                    const price = BigNumber(ordersMetadataFlattened[counter][1]).toString();
                     const data = {
                         id,
                         collectionName,

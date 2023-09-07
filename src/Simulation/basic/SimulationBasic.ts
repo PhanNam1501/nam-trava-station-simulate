@@ -47,7 +47,7 @@ export async function simulateUnwrap(appState1: ApplicationState, _amount: numbe
     appState.walletState.ethBalances = String(newBNBBalance);
     return appState;
 }
-export async function simulateSendToken(appState1: ApplicationState, _tokenAddress: EthAddress, to: EthAddress, _amount: number | string): Promise<ApplicationState> {
+export async function simulateSendToken(appState1: ApplicationState, _tokenAddress: EthAddress, from: EthAddress, to: EthAddress, _amount: number | string): Promise<ApplicationState> {
     let amount = _amount;
     const appState = {...appState1};
     const bnb_address = getAddr("WBNB_ADDRESS", appState.chainId).toLowerCase();
@@ -62,16 +62,35 @@ export async function simulateSendToken(appState1: ApplicationState, _tokenAddre
     // if (BigInt(appState.smartWalletState.tokenBalances.get(tokenAddress)!) < BigInt(amount)) {
     //     throw new Error("Not enough Balance");
     // }
-    if(amount.toString() == MAX_UINT256 || BigInt(amount) == BigInt(MAX_UINT256)) {
-        amount = appState.smartWalletState.tokenBalances.get(tokenAddress)!;
-    }
+    const oldWalletBalance = appState.walletState.tokenBalances.get(tokenAddress)!;
+    const oldSmartWalletBalance = appState.smartWalletState.tokenBalances.get(tokenAddress)!;
+    
 
-    let newTokenBalance = BigInt(appState.smartWalletState.tokenBalances.get(tokenAddress)!) - BigInt(amount);
-    appState.smartWalletState.tokenBalances.set(tokenAddress, String(newTokenBalance));
-    if (to == appState.walletState.address) {
-        let newUserTokenBalance = BigInt(appState.walletState.tokenBalances.get(tokenAddress)!) + BigInt(amount);
-        appState.walletState.tokenBalances.set(tokenAddress, String(newUserTokenBalance));
+    if(from.toLowerCase() == appState.walletState.address.toLowerCase()) {
+        if(amount.toString() == MAX_UINT256 || BigInt(amount) == BigInt(MAX_UINT256)) {
+            amount = oldWalletBalance
+        }
+        appState.walletState.tokenBalances.set(tokenAddress, String(BigInt(oldWalletBalance) - BigInt(amount)));
+        appState.smartWalletState.tokenBalances.set(tokenAddress, String(BigInt(oldSmartWalletBalance) + BigInt(amount)));
+    } else if(from.toLowerCase() == appState.smartWalletState.address.toLowerCase())  {
+        if(amount.toString() == MAX_UINT256 || BigInt(amount) == BigInt(MAX_UINT256)) {
+            amount = oldSmartWalletBalance
+        }
+        appState.smartWalletState.tokenBalances.set(tokenAddress, String(BigInt(oldSmartWalletBalance) - BigInt(amount)));
+        appState.walletState.tokenBalances.set(tokenAddress, String(BigInt(oldWalletBalance) + BigInt(amount)));
+    } else {
+        new Error(`from addresses are wallet address or smart wallet address: ${appState.walletState.address} || ${appState.smartWalletState.address}.`);
     }
+    // if(amount.toString() == MAX_UINT256 || BigInt(amount) == BigInt(MAX_UINT256)) {
+    //     amount = appState.smartWalletState.tokenBalances.get(tokenAddress)!;
+    // }
+
+    // let newTokenBalance = BigInt(appState.smartWalletState.tokenBalances.get(tokenAddress)!) - BigInt(amount);
+    // appState.smartWalletState.tokenBalances.set(tokenAddress, String(newTokenBalance));
+    // if (to == appState.walletState.address) {
+    //     let newUserTokenBalance = BigInt(appState.walletState.tokenBalances.get(tokenAddress)!) + BigInt(amount);
+    //     appState.walletState.tokenBalances.set(tokenAddress, String(newUserTokenBalance));
+    // }
     return appState;
 }
 
