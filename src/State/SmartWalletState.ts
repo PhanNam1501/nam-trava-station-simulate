@@ -1,6 +1,6 @@
 import { EthAddress } from "../utils/types";
 import { NFTSellingState } from "./NFTSellingState";
-import { WalletTravaLPState } from "./TravaDeFiState";
+import { BaseAccountVault, TravaLPStakingState, WalletTravaLPState } from "./TravaDeFiState";
 import { CollectionOwned, NFTOwned } from "./WalletState";
 
 export interface TokenData {
@@ -22,6 +22,7 @@ export class SmartWalletState {
   ethBalances: string;
   sellingNFT: NFTSellingState;
   detailTokenInPool: Map<string, DetailTokenInPool>;
+  travaLPStakingStateList : BaseAccountVault[]
 
   constructor(address: EthAddress) {
     this.address = address;
@@ -32,6 +33,7 @@ export class SmartWalletState {
     this.ethBalances = "";
     this.sellingNFT = new NFTSellingState();
     this.detailTokenInPool = new Map();
+    this.travaLPStakingStateList = [];
   }
 
   // async getTokenAmount(tokenAddress: string): Promise<string> {
