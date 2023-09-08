@@ -31,7 +31,7 @@ type Network = {
 };
 
 type Networks = {
-  bsc: Network;
+  bscTestnet: Network;
   bscMainnet: Network;
 };
 

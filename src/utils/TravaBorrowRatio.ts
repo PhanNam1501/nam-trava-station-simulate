@@ -1,7 +1,7 @@
 import { CONFIG, NETWORKS } from "./config";
 
 export const TRAVA_TVL_BSC = {
-  [NETWORKS.bsc.chainId]: {
+  [NETWORKS.bscTestnet.chainId]: {
     DAI: "77", // %
     USDC: "80", // %
     USDT: "75", // %
@@ -22,7 +22,7 @@ export const TRAVA_TVL_BSC = {
 };
 
 export const TOKEN_NAME_TO_ADDRESS = {
-  [NETWORKS.bsc.chainId]: {
+  [NETWORKS.bscTestnet.chainId]: {
     DAI: "0x1af3f329e8be154074d8769d1ffa4ee058b1dbc3", // fake address
     USDC: "0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d", // fake address
     USDT: "0x55d398326f99059ff775485246999027b3197955", // fake address
