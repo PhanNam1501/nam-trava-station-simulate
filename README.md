@@ -96,6 +96,10 @@ Update các armouries đang bán trên marketplace
 appState4 = await updateSellingNFTFromContract(
     appState3
 )
+// update nft mà user đang bán
+appState41 = await updateOwnedSellingNFT(
+    appState4
+)
 ```
 Update state của [trava token](#các-action-liên-quan-đến-token) như trên
 ```
@@ -103,7 +107,10 @@ appState5 = await updateUserTokenBalance(
     appState4,
     travaTokenAddress
 )
+
 ```
+Update các armouries mà user đang bán trên marketplace
+
 # Simulate state
 Sau khi init state xong. Với mỗi state, các simulate khác nhau
 ## Simulate Utilities actions
@@ -185,9 +192,9 @@ get max amount:
 ```
 maxAmount = appState.smartWalletState.detailTokenInPool[tokenAddress].tToken.balances
 ```
+
 ```
-```
-appState14 = await SimulationWWithdraw(
+appState14 = await SimulationWithdraw(
     appState13,
     tokenAddress,
     amount

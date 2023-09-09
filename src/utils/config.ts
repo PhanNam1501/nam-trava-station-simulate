@@ -7,7 +7,7 @@ import { Contract, ethers } from "ethers";
  * @type {Networks}
  */
 export const NETWORKS: Networks = {
-  bsc: {
+  bscTestnet: {
     chainId: 97,
     chainName: "Binance Smart Chain Testnet",
     blockExplorerUrls: ["https://testnet.bscscan.com/"],
@@ -29,7 +29,7 @@ export const NETWORKS: Networks = {
  *
  */
 export const CONFIG: Config = {
-  chainId: NETWORKS.bsc.chainId,
+  chainId: NETWORKS.bscTestnet.chainId,
   testingMode: false,
 };
 
