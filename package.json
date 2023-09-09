@@ -5,7 +5,6 @@
   "main": "./umd/index.js",
   "module": "./esm/index.js",
   "types": "./esm/index.d.ts",
-  "type": "module",
   "scripts": {
     "build:esm": "tsc -b",
     "build:umd": "webpack --config=webpack.umd.js",
