@@ -298,107 +298,118 @@ const multiCall = async (abi: any, calls: any, provider: any, chainId: any) => {
   );
 };
 
-// export async function updateListToken(
-//   appState1: ApplicationState,
-// ) {
-//   try {
-//     const appState = { ...appState1 };
-//     const travaLP = new Contract(
-//       getAddr("TRAVA_LENDING_POOL_MARKET", appState.chainId),
-//       ABITravaLP,
-//       appState.web3!
-//     );
-//     let reverseList = await travaLP.getReservesList();
-//     reverseList = reverseList.map((e: string) => e.toLowerCase());
+export async function updateMaxRewardCanClaims(
+  appState1: ApplicationState,
+) {
+  try {
+    const appState = { ...appState1 };
+    const travaLP = new Contract(
+      getAddr("TRAVA_LENDING_POOL_MARKET", appState.chainId),
+      ABITravaLP,
+      appState.web3!
+    );
+    let reverseList = await travaLP.getReservesList();
+    reverseList = reverseList.map((e: string) => e.toLowerCase());
 
-//     let [reserveData] = await Promise.all([
-//       multiCall(
-//         ABITravaLP,
-//         reverseList.map((address: string, _: number) => ({
-//           address: getAddr("TRAVA_LENDING_POOL_MARKET", appState.chainId),
-//           name: 'getReserveData',
-//           params: [address],
-//         })),
-//         appState.web3,
-//         appState.chainId
-//       ),
-//     ]);
-//     reserveData = reserveData.flat();
-//     let tTokenList = [] as Array<string>;
-//     let dTokenList = [] as Array<string>;
-//     for(const r of reserveData) {
-//       tTokenList.push(r[6]);
-//       dTokenList.push(r[7]);
-//     }
+    let [reserveData] = await Promise.all([
+      multiCall(
+        ABITravaLP,
+        reverseList.map((address: string, _: number) => ({
+          address: getAddr("TRAVA_LENDING_POOL_MARKET", appState.chainId),
+          name: 'getReserveData',
+          params: [address],
+        })),
+        appState.web3,
+        appState.chainId
+      ),
+    ]);
+    reserveData = reserveData.flat();
+    let tTokenList = [] as Array<string>;
+    let dTokenList = [] as Array<string>;
+    for(const r of reserveData) {
+      tTokenList.push(r[6]);
+      dTokenList.push(r[7]);
+    }
 
-//     let [balanceTList] = await Promise.all([
-//       multiCall(
-//         BEP20ABI,
-//         tTokenList.map((address: string, _: number) => ({
-//           address: address,
-//           name: 'balanceOf',
-//           params: [appState.smartWalletState.address],
-//         })),
-//         appState.web3,
-//         appState.chainId
-//       ),
-//     ]);
-//     balanceTList = balanceTList.flat();
+    // let [balanceTList] = await Promise.all([
+    //   multiCall(
+    //     BEP20ABI,
+    //     tTokenList.map((address: string, _: number) => ({
+    //       address: address,
+    //       name: 'balanceOf',
+    //       params: [appState.smartWalletState.address],
+    //     })),
+    //     appState.web3,
+    //     appState.chainId
+    //   ),
+    // ]);
+    // balanceTList = balanceTList.flat();
 
-//     let [balanceDList] = await Promise.all([
-//       multiCall(
-//         BEP20ABI,
-//         dTokenList.map((address: string, _: number) => ({
-//           address: address,
-//           name: 'balanceOf',
-//           params: [appState.smartWalletState.address],
-//         })),
-//         appState.web3,
-//         appState.chainId
-//       ),
-//     ]);
-//     balanceDList = balanceDList.flat();
+    // let [balanceDList] = await Promise.all([
+    //   multiCall(
+    //     BEP20ABI,
+    //     dTokenList.map((address: string, _: number) => ({
+    //       address: address,
+    //       name: 'balanceOf',
+    //       params: [appState.smartWalletState.address],
+    //     })),
+    //     appState.web3,
+    //     appState.chainId
+    //   ),
+    // ]);
+    // balanceDList = balanceDList.flat();
 
-//     let [maxRewardCanGets] = await Promise.all([
-//       multiCall(
-//         IncentiveContractABI,
-//         reverseList.map((address: string, index: number) => ({
-//           address: getAddr("INCENTIVE_CONTRACT", appState.chainId),
-//           name: 'getRewardsBalance',
-//           params: [[tTokenList[index], dTokenList[index]], appState.smartWalletState.address],
-//         })),
-//         appState.web3,
-//         appState.chainId
-//       ),
-//     ]);
-//     maxRewardCanGets = maxRewardCanGets.flat();
+    // let [maxRewardCanGets] = await Promise.all([
+    //   multiCall(
+    //     IncentiveContractABI,
+    //     reverseList.map((address: string, index: number) => ({
+    //       address: getAddr("INCENTIVE_CONTRACT", appState.chainId),
+    //       name: 'getRewardsBalance',
+    //       params: [[tTokenList[index], dTokenList[index]], appState.smartWalletState.address],
+    //     })),
+    //     appState.web3,
+    //     appState.chainId
+    //   ),
+    // ]);
+    // maxRewardCanGets = maxRewardCanGets.flat();
 
-//     appState.smartWalletState.detailTokenInPool = new Map();
-//     let counter = 0;
-//     for(const token of reverseList) {
-//       if(balanceDList[counter] > 0 || balanceTList[counter] > 0) {
-//         appState.smartWalletState.detailTokenInPool = appState.smartWalletState.detailTokenInPool.set(
-//           token, 
-//           {
-//             tToken: {
-//               address: tTokenList[counter].toLowerCase(),
-//               balances: balanceTList[counter].toString(),
-//             },
-//             dToken: {
-//               address: dTokenList[counter].toLowerCase(),
-//               balances: balanceDList[counter].toString(),
-//             },
-//             maxRewardCanGet: maxRewardCanGets[counter].toString()
-//           }
-//         );
-//       }
-//       counter++;
-//     }
-//     return appState;
-//   } catch (error) {
-//     throw new Error("Can't update LP tToken info !");
-//   }
-// }
+    const travaIncentiveContract = new Contract(
+      getAddr("INCENTIVE_CONTRACT", appState.chainId),
+      IncentiveContractABI,
+      appState.web3!
+    );
+    let maxRewardCanGet = await travaIncentiveContract.getRewardsBalance(
+      tTokenList.concat(dTokenList),
+      appState.smartWalletState.address
+    );
+    appState.smartWalletState.maxRewardCanClaim = "100000000000000000000";
+
+    // appState.smartWalletState.detailTokenInPool = new Map();
+    // let counter = 0;
+    // for(const token of reverseList) {
+    //   if(balanceDList[counter] > 0 || balanceTList[counter] > 0) {
+    //     appState.smartWalletState.detailTokenInPool = appState.smartWalletState.detailTokenInPool.set(
+    //       token, 
+    //       {
+    //         tToken: {
+    //           address: tTokenList[counter].toLowerCase(),
+    //           balances: balanceTList[counter].toString(),
+    //         },
+    //         dToken: {
+    //           address: dTokenList[counter].toLowerCase(),
+    //           balances: balanceDList[counter].toString(),
+    //         },
+    //         maxRewardCanGet: maxRewardCanGets[counter].toString()
+    //       }
+    //     );
+    //   }
+    //   counter++;
+    // }
+    return appState;
+  } catch (error) {
+    throw new Error("Can't update LP tToken info !");
+  }
+}
 
 export async function updateRTravaAndTravaForReward(
   appState1: ApplicationState,
@@ -419,6 +430,9 @@ export async function updateRTravaAndTravaForReward(
     );
     const rTravaBalance = await rTravaContract.balanceOf(
       appState.smartWalletState.address
+    );
+    const rTravaBalance2 = await rTravaContract.balanceOf(
+      appState.walletState.address
     );
 
     const travaContract = new Contract(
@@ -444,6 +458,10 @@ export async function updateRTravaAndTravaForReward(
     appState.smartWalletState.tokenBalances.set(
       String(rTravaAddress).toLowerCase(), 
       rTravaBalance.toString()
+    );
+    appState.walletState.tokenBalances.set(
+      String(rTravaAddress).toLowerCase(), 
+      rTravaBalance2.toString()
     );
     return appState;
   } catch (error) {
