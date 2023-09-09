@@ -382,7 +382,7 @@ export async function updateMaxRewardCanClaims(
       tTokenList.concat(dTokenList),
       appState.smartWalletState.address
     );
-    appState.smartWalletState.maxRewardCanClaim = "100000000000000000000";
+    appState.smartWalletState.maxRewardCanClaim = maxRewardCanGet.toString();
 
     // appState.smartWalletState.detailTokenInPool = new Map();
     // let counter = 0;
