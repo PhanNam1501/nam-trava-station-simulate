@@ -1,4 +1,4 @@
-import { updateListToken, updateRTravaAndTravaForReward } from "../src/Simulation/market/UpdateStateAccount";
+import { updateMaxRewardCanClaims, updateRTravaAndTravaForReward } from "../src/Simulation/market/UpdateStateAccount";
 import { ApplicationState } from "../src/State/ApplicationState";
 import { SimulationClaimReward, SimulationConvertReward } from "../src/Simulation/market/SimulationWalletTravaLP";
 import { Contract, JsonRpcProvider } from "ethers";
@@ -15,14 +15,12 @@ const test = async () => {
     chainId
   );
   let oldState = await updateRTravaAndTravaForReward(appState);
-  oldState = await updateListToken(oldState);
-  console.log(oldState.smartWalletState.detailTokenInPool);
+  oldState = await updateMaxRewardCanClaims(oldState);
   console.log(oldState.smartWalletState.tokenBalances);
   console.log(JSON.stringify(oldState));
   
   let newState = await SimulationClaimReward(
     oldState,
-    "0x910cb19698eac48a6ab7ccc9542b756f2bdd67c6",
     "10000000000000000000"
   );
   
@@ -33,7 +31,6 @@ const test = async () => {
   );
 
   console.log("=================AFTER==========================");
-  console.log(newState.smartWalletState.detailTokenInPool);
   console.log(newState.smartWalletState.tokenBalances);
   console.log(JSON.stringify(newState));
 };
