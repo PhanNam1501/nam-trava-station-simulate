@@ -20429,7 +20429,8 @@ function _SimulationBorrow() {
         var borrowUSD;
         if (amount.toString() == _utils_config__WEBPACK_IMPORTED_MODULE_2__.MAX_UINT256 || BigInt(amount) == BigInt(_utils_config__WEBPACK_IMPORTED_MODULE_2__.MAX_UINT256)) {
           borrowUSD = BigInt(appState.smartWalletState.travaLPState.availableBorrowsUSD);
-          amount = (borrowUSD * BigInt(10 ** 18) / BigInt(tokenPrice)).toString();
+          var x = borrowUSD * BigInt(10 ** 18) % BigInt(tokenPrice);
+          amount = ((borrowUSD * BigInt(10 ** 18) - BigInt(x)) / BigInt(tokenPrice)).toString();
         } else {
           borrowUSD = BigInt(amount) * BigInt(tokenPrice) / BigInt(10 ** 18);
         }

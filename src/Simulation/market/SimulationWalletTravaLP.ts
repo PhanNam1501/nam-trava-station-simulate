@@ -8,6 +8,7 @@ import { Contract } from "ethers";
 import _ from "lodash";
 import { MAX_UINT256 } from "../../utils/config";
 import IncentiveContractABI from "../../abis/IncentiveContract.json";
+import { BigNumber } from "bignumber.js";
 
 export async function SimulationSupply(
   appState1: ApplicationState,
@@ -150,10 +151,12 @@ export async function SimulationBorrow(
         borrowUSD = BigInt(
           appState.smartWalletState.travaLPState.availableBorrowsUSD
         );
+        let x = (borrowUSD * BigInt(10 ** 18)) % BigInt(tokenPrice)
         amount = (
-          (borrowUSD * BigInt(10 ** 18)) /
-          BigInt(tokenPrice)
+          ((borrowUSD * BigInt(10 ** 18)) - BigInt(x)) / BigInt(tokenPrice)
         ).toString();
+
+
       } else {
         borrowUSD = (BigInt(amount) * BigInt(tokenPrice)) / BigInt(10 ** 18);
       }

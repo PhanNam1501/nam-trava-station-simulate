@@ -98,8 +98,8 @@ export function SimulationBorrow(appState1, _tokenAddress, _amount) {
                 if (amount.toString() == MAX_UINT256 ||
                     BigInt(amount) == BigInt(MAX_UINT256)) {
                     borrowUSD = BigInt(appState.smartWalletState.travaLPState.availableBorrowsUSD);
-                    amount = ((borrowUSD * BigInt(Math.pow(10, 18))) /
-                        BigInt(tokenPrice)).toString();
+                    let x = (borrowUSD * BigInt(Math.pow(10, 18))) % BigInt(tokenPrice);
+                    amount = (((borrowUSD * BigInt(Math.pow(10, 18))) - BigInt(x)) / BigInt(tokenPrice)).toString();
                 }
                 else {
                     borrowUSD = (BigInt(amount) * BigInt(tokenPrice)) / BigInt(Math.pow(10, 18));
