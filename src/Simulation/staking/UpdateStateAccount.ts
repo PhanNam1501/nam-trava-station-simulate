@@ -41,7 +41,7 @@ function is3RewardVault(vault :any){
     return vault.vaultType === VAULT_TYPES.BASE || vault.vaultType === VAULT_TYPES.REWARD_ON_FTM;
 }
 function isNative(chainId : number ,vaultId : string){
-    return ((chainId== Number(NETWORKS.bsc.chainId) || chainId == Number(NETWORKS.bscMainnet.chainId) ) && vaultId == "bsc")
+    return ((chainId== Number(NETWORKS.bscTestnet.chainId) || chainId == Number(NETWORKS.bscMainnet.chainId) ) && vaultId == "bsc")
 }
 export async function fetchReward(accountAddress :EthAddress,web3Reader: JsonRpcApiProvider,vaultConfig : any,chainId:number){
   const { id: vaultId, underlyingAddress, stakedTokenAddress, reserveDecimals } = vaultConfig;

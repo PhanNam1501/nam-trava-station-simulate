@@ -5,7 +5,7 @@ type Config = {
 };
 
 type ContractNetwork = {
-  bsc: Contract;
+  bscTestnet: Contract;
 };
 
 type Contract = {

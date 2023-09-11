@@ -2,8 +2,9 @@ import { ApplicationState } from "../src/State/ApplicationState";
 import { JsonRpcProvider } from "ethers";
 import { updateOwnedSellingNFTFromContract } from "../src/Simulation/nft/UpdateStateAccount"
 import { simulateTravaNFTCancelSale } from "../src/Simulation/nft/SimulationTravaNFT";
-
+// import {actions} from "trava-station-sdk";
 const testBuy =async () => {
+  // let a = actions.NAC()
   console.log("=================BEFORE==========================");
   const provider = new JsonRpcProvider("https://bsc-testnet.publicnode.com")
   const chainId = Number((await provider.getNetwork()).chainId)
@@ -15,15 +16,15 @@ const testBuy =async () => {
   );
   let oldState = await updateOwnedSellingNFTFromContract(appState, "walletState");
   oldState = await updateOwnedSellingNFTFromContract(appState, "smartWalletState");
-  console.log(JSON.stringify(oldState));
+  console.log(JSON.stringify(oldState.smartWalletState.sellingNFT));
   
-  let newState = await simulateTravaNFTCancelSale(
-    oldState,
-    oldState.walletState.address,
-    "4330" // k test đươc vì k bán gì cả
-  );
+  // let newState = await simulateTravaNFTCancelSale(
+  //   oldState,
+  //   oldState.walletState.address,
+  //   "4625" // k test đươc vì k bán gì cả
+  // );
 
   console.log("=================AFTER==========================");
-  console.log(JSON.stringify(newState));
+  // console.log(JSON.stringify(newState));
 };
 testBuy()

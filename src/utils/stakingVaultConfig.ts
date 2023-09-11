@@ -1,7 +1,7 @@
 import { NETWORKS, CONFIG } from "./config";
 
 export const listStakingVault = {
-    [NETWORKS.bsc.chainId] : [
+    [NETWORKS.bscTestnet.chainId] : [
         {
             id: "bsc-mainnet-travabnb",
             name: "Trava BNB",

@@ -2,8 +2,9 @@ import { updateTravaBalance } from "../src/Simulation/nft/UpdateStateAccount";
 import { simulateTravaNFTBuy, simulateTravaNFTSell, simulateTravaNFTTransfer } from "../src/Simulation/nft/SimulationTravaNFT";
 import { ApplicationState } from "../src/State/ApplicationState";
 import { JsonRpcProvider } from "ethers";
-
+// import {} from "trava-station-sdk"
 const testBuy = async () => {
+  // let a = new action
   console.log("=================BEFORE==========================");
   const provider = new JsonRpcProvider("https://bsc-testnet.publicnode.com")
   const chainId = Number((await provider.getNetwork()).chainId)
