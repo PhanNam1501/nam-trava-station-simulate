@@ -179,16 +179,20 @@ export async function SimulationBorrow(
         );
 
         // update healthFactor :(deposited * currentLiquidationThreshold) / (borrowed + amount * asset.price)
-        appState.smartWalletState.travaLPState.healthFactor = String(
-          (BigInt(appState.smartWalletState.travaLPState.totalCollateralUSD) *
-            BigInt(
-              appState.smartWalletState.travaLPState.currentLiquidationThreshold
-            ) *
-            BigInt(10 ** 32)) /
-          (BigInt(appState.smartWalletState.travaLPState.totalDebtUSD) *
-            BigInt(10 ** 18) +
-            borrowUSD * BigInt(10 ** 18))
-        );
+        if ((BigInt(appState.smartWalletState.travaLPState.totalDebtUSD) + BigInt(borrowUSD)).toString() == "0") {
+          appState.smartWalletState.travaLPState.healthFactor = MAX_UINT256;
+        } else {
+          appState.smartWalletState.travaLPState.healthFactor = String(
+            (BigInt(appState.smartWalletState.travaLPState.totalCollateralUSD) *
+              BigInt(
+                appState.smartWalletState.travaLPState.currentLiquidationThreshold
+              ) *
+              BigInt(10 ** 32)) /
+            (BigInt(appState.smartWalletState.travaLPState.totalDebtUSD) *
+              BigInt(10 ** 18) +
+              borrowUSD * BigInt(10 ** 18))
+          );
+        }
 
         // update totalDebtUSD : borrowed + amount * asset.price
         appState.smartWalletState.travaLPState.totalDebtUSD = String(
@@ -620,7 +624,7 @@ export async function SimulationClaimReward(
     appState.smartWalletState.maxRewardCanClaim = (BigInt(currentReward) - BigInt(amount)).toString();
 
     const rTravaBalance = appState.smartWalletState.tokenBalances.get(rTravaAddress);
-    if(rTravaBalance) {
+    if (rTravaBalance) {
       appState.smartWalletState.tokenBalances.set(rTravaAddress, (BigInt(rTravaBalance) + BigInt(amount)).toString());
     } else {
       appState.smartWalletState.tokenBalances.set(rTravaAddress, BigInt(amount).toString());
@@ -648,23 +652,23 @@ export async function SimulationConvertReward(
 
     const rTravaBalance = appState.smartWalletState.tokenBalances.get(rTravaAddress);
 
-    if(rTravaBalance){
+    if (rTravaBalance) {
       let realAmount = amount;
-      if(BigInt(amount) > BigInt(rTravaBalance)){
+      if (BigInt(amount) > BigInt(rTravaBalance)) {
         realAmount = rTravaBalance;
       }
       appState.smartWalletState.tokenBalances.set(rTravaAddress, (BigInt(rTravaBalance) - BigInt(realAmount)).toString());
       const travaAddress = getAddr("TRAVA_TOKEN_IN_MARKET", appState.chainId);
-      if(to == appState.smartWalletState.address){
+      if (to == appState.smartWalletState.address) {
         const travaBalance = appState.smartWalletState.tokenBalances.get(travaAddress);
-        if(travaBalance) {
+        if (travaBalance) {
           appState.smartWalletState.tokenBalances.set(travaAddress, (BigInt(travaBalance) + BigInt(amount)).toString());
         } else {
           appState.smartWalletState.tokenBalances.set(rTravaAddress, BigInt(amount).toString());
         }
-      } else if(to == appState.walletState.address){
+      } else if (to == appState.walletState.address) {
         const travaBalance = appState.walletState.tokenBalances.get(travaAddress);
-        if(travaBalance) {
+        if (travaBalance) {
           appState.walletState.tokenBalances.set(travaAddress, (BigInt(travaBalance) + BigInt(amount)).toString());
         } else {
           appState.walletState.tokenBalances.set(rTravaAddress, BigInt(amount).toString());
