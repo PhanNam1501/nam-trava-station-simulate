@@ -20,5 +20,6 @@ export declare class SmartWalletState {
     sellingNFT: NFTSellingState;
     detailTokenInPool: Map<string, DetailTokenInPool>;
     travaLPStakingStateList: BaseAccountVault[];
+    maxRewardCanClaim: string;
     constructor(address: EthAddress);
 }
