@@ -195,7 +195,8 @@ export async function updateLPDebtTokenInfo(
 // call this before all actions
 export async function updateTravaLPInfo(
   appState1: ApplicationState,
-  userAddress: EthAddress
+  userAddress: EthAddress,
+  market?: EthAddress
 ): Promise<ApplicationState> {
   const appState = { ...appState1 };
   try {

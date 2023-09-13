@@ -12,5 +12,6 @@ export class SmartWalletState {
         this.sellingNFT = new NFTSellingState();
         this.detailTokenInPool = new Map();
         this.travaLPStakingStateList = [];
+        this.maxRewardCanClaim = "0";
     }
 }
