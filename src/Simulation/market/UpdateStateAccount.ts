@@ -48,15 +48,19 @@ export async function updateLPtTokenInfo(
         appState.smartWalletState.address
       );
 
+      const tokenDecimal = await tTokenContract.decimals();
+
       appState.smartWalletState.detailTokenInPool =
         appState.smartWalletState.detailTokenInPool.set(tokenAddressState, {
           tToken: {
             address: tTokenAddress.toLowerCase(),
             balances: tTokenBalance.toString(),
+            decimals: tokenDecimal.toString(),
           },
           dToken: {
             address: "",
             balances: "",
+            decimals: "",
           },
         });
     } else if (
@@ -79,12 +83,15 @@ export async function updateLPtTokenInfo(
         appState.smartWalletState.address
       );
 
+      const tokenDecimal = await tTokenContract.decimals();
+
       let tokenInfo =
         appState.smartWalletState.detailTokenInPool.get(tokenAddressState)!;
 
       tokenInfo.tToken = {
         address: tTokenAddress.toLowerCase(),
         balances: tTokenBalance.toString(),
+        decimals: tokenDecimal.toString(),
       };
 
       appState.smartWalletState.detailTokenInPool.set(
@@ -140,15 +147,19 @@ export async function updateLPDebtTokenInfo(
         appState.smartWalletState.address
       );
 
+      const tokenDecimal = await debtTokenContract.decimals();
+
       appState.smartWalletState.detailTokenInPool =
         appState.smartWalletState.detailTokenInPool.set(tokenAddressState, {
           dToken: {
             address: variableDebtTokenAddress.toLowerCase(),
             balances: debtTokenBalance.toString(),
+            decimals: tokenDecimal.toString(),
           },
           tToken: {
             address: "",
             balances: "",
+            decimals: "",
           },
         });
     } else if (
@@ -171,11 +182,14 @@ export async function updateLPDebtTokenInfo(
         appState.smartWalletState.address
       );
 
+      const tokenDecimal = await debtTokenContract.decimals();
+
       let tokenInfo =
         appState.smartWalletState.detailTokenInPool.get(tokenAddressState)!;
       tokenInfo.dToken = {
         address: variableDebtTokenAddress.toLowerCase(),
         balances: debtTokenBalance.toString(),
+        decimals: tokenDecimal.toString(),
       };
 
       appState.smartWalletState.detailTokenInPool.set(
@@ -298,9 +312,7 @@ const multiCall = async (abi: any, calls: any, provider: any, chainId: any) => {
   );
 };
 
-export async function updateMaxRewardCanClaims(
-  appState1: ApplicationState,
-) {
+export async function updateMaxRewardCanClaims(appState1: ApplicationState) {
   try {
     const appState = { ...appState1 };
     const travaLP = new Contract(
@@ -316,7 +328,7 @@ export async function updateMaxRewardCanClaims(
         ABITravaLP,
         reverseList.map((address: string, _: number) => ({
           address: getAddr("TRAVA_LENDING_POOL_MARKET", appState.chainId),
-          name: 'getReserveData',
+          name: "getReserveData",
           params: [address],
         })),
         appState.web3,
@@ -326,7 +338,7 @@ export async function updateMaxRewardCanClaims(
     reserveData = reserveData.flat();
     let tTokenList = [] as Array<string>;
     let dTokenList = [] as Array<string>;
-    for(const r of reserveData) {
+    for (const r of reserveData) {
       tTokenList.push(r[6]);
       dTokenList.push(r[7]);
     }
@@ -389,7 +401,7 @@ export async function updateMaxRewardCanClaims(
     // for(const token of reverseList) {
     //   if(balanceDList[counter] > 0 || balanceTList[counter] > 0) {
     //     appState.smartWalletState.detailTokenInPool = appState.smartWalletState.detailTokenInPool.set(
-    //       token, 
+    //       token,
     //       {
     //         tToken: {
     //           address: tTokenList[counter].toLowerCase(),
@@ -412,7 +424,7 @@ export async function updateMaxRewardCanClaims(
 }
 
 export async function updateRTravaAndTravaForReward(
-  appState1: ApplicationState,
+  appState1: ApplicationState
 ) {
   try {
     const appState = { ...appState1 };
@@ -423,11 +435,7 @@ export async function updateRTravaAndTravaForReward(
     );
     const rTravaAddress = await incentiveContract.REWARD_TOKEN();
 
-    const rTravaContract = new Contract(
-      rTravaAddress,
-      BEP20ABI,
-      appState.web3
-    );
+    const rTravaContract = new Contract(rTravaAddress, BEP20ABI, appState.web3);
     const rTravaBalance = await rTravaContract.balanceOf(
       appState.smartWalletState.address
     );
@@ -448,19 +456,19 @@ export async function updateRTravaAndTravaForReward(
     );
 
     appState.smartWalletState.tokenBalances.set(
-      getAddr("TRAVA_TOKEN_IN_MARKET", appState.chainId).toLowerCase(), 
+      getAddr("TRAVA_TOKEN_IN_MARKET", appState.chainId).toLowerCase(),
       travaBalance.toString()
     );
     appState.walletState.tokenBalances.set(
-      getAddr("TRAVA_TOKEN_IN_MARKET", appState.chainId).toLowerCase(), 
+      getAddr("TRAVA_TOKEN_IN_MARKET", appState.chainId).toLowerCase(),
       travaBalance2.toString()
     );
     appState.smartWalletState.tokenBalances.set(
-      String(rTravaAddress).toLowerCase(), 
+      String(rTravaAddress).toLowerCase(),
       rTravaBalance.toString()
     );
     appState.walletState.tokenBalances.set(
-      String(rTravaAddress).toLowerCase(), 
+      String(rTravaAddress).toLowerCase(),
       rTravaBalance2.toString()
     );
     return appState;
@@ -468,4 +476,3 @@ export async function updateRTravaAndTravaForReward(
     throw new Error("Can't update LP tToken info !");
   }
 }
-
