@@ -48,10 +48,10 @@ export async function simulateTravaNFTBuy(
       type: currentNFT.nType,
       exp: currentNFT.exp,
     };
-    if (to == appState.walletState.address) {
+    if (to.toLowerCase() == appState.walletState.address.toLowerCase()) {
       appState.walletState.nfts[currentVersion][tokenId] = data;
     }
-    if (to == appState.smartWalletState.address) {
+    if (to.toLowerCase() == appState.smartWalletState.address.toLowerCase()) {
       appState.smartWalletState.nfts[currentVersion][tokenId] = data;
     }
     appState.NFTSellingState[currentVersion] = appState.NFTSellingState[currentVersion].filter((obj) => obj.id != tokenId);
@@ -132,9 +132,11 @@ export async function simulateTravaNFTTransfer(
         delete appState.smartWalletState.nfts[currentVersion][tokenId];
       }
       // Tăng NFT
-      if (to == appState.walletState.address) {
+      if (to.toLowerCase() == appState.walletState.address.toLowerCase()) {
+        to = appState.walletState.address;
         appState.walletState.nfts[currentVersion][tokenId] = currentNFT;
-      } else {
+      } else if (to.toLowerCase() == appState.smartWalletState.address.toLowerCase()) {
+        to = appState.smartWalletState.address;
         appState.smartWalletState.nfts[currentVersion][tokenId] = currentNFT;
       }
     }
@@ -212,9 +214,9 @@ export async function simulateTravaNFTCancelSale(
       type: (currentNFT as SellingArmouryType).nType,
       exp: (currentNFT as SellingArmouryType).exp
     }
-    if(to == appState.smartWalletState.address) {
+    if(to.toLowerCase() == appState.smartWalletState.address.toLowerCase()) {
       appState.smartWalletState.nfts[currentVersion][tokenId] = data;
-    } else if(to == appState.walletState.address) {
+    } else if(to.toLowerCase() == appState.walletState.address.toLowerCase()) {
       appState.walletState.nfts[currentVersion][tokenId] = data;
     }
     return appState;

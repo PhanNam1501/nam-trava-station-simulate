@@ -8,8 +8,8 @@ export async function simulateSwap(
     appState1: ApplicationState,
     _fromToken: EthAddress,
     _toToken: EthAddress,
-    _fromAmount: EthAddress,
-    _toAmount: EthAddress
+    _fromAmount: string,
+    _toAmount: string
 ): Promise<ApplicationState> {
     let fromAmount = _fromAmount;
     let toAmount = _toAmount;

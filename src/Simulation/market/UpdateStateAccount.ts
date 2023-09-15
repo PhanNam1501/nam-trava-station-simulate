@@ -261,14 +261,14 @@ export async function updateTravaLPInfo(
 
     // update appState for wallet
     appState.walletState.travaLPState.totalCollateralUSD =
-      userData.totalCollateralUSD;
-    appState.walletState.travaLPState.totalDebtUSD = userData.totalDebtUSD;
+      String(userData.totalCollateralUSD);
+    appState.walletState.travaLPState.totalDebtUSD = String(userData.totalDebtUSD);
     appState.walletState.travaLPState.availableBorrowsUSD =
-      userData.availableBorrowsUSD;
+      String(userData.availableBorrowsUSD);
     appState.walletState.travaLPState.currentLiquidationThreshold =
       userData.currentLiquidationThreshold;
-    appState.walletState.travaLPState.healthFactor = userData.healthFactor;
-    appState.walletState.travaLPState.ltv = userData.ltv;
+    appState.walletState.travaLPState.healthFactor = String(userData.healthFactor);
+    appState.walletState.travaLPState.ltv = String(userData.ltv);
 
     // third update TravaLP state for smart wallet
     const smartWalletData = await TravaLendingPool.getUserAccountData(
@@ -277,16 +277,16 @@ export async function updateTravaLPInfo(
 
     // update appState for smart wallet
     appState.smartWalletState.travaLPState.totalCollateralUSD =
-      smartWalletData.totalCollateralUSD;
+      String(smartWalletData.totalCollateralUSD);
     appState.smartWalletState.travaLPState.totalDebtUSD =
-      smartWalletData.totalDebtUSD;
+      String(smartWalletData.totalDebtUSD);
     appState.smartWalletState.travaLPState.availableBorrowsUSD =
-      smartWalletData.availableBorrowsUSD;
+      String(smartWalletData.availableBorrowsUSD);
     appState.smartWalletState.travaLPState.currentLiquidationThreshold =
-      smartWalletData.currentLiquidationThreshold;
+      String(smartWalletData.currentLiquidationThreshold);
     appState.smartWalletState.travaLPState.healthFactor =
-      smartWalletData.healthFactor;
-    appState.smartWalletState.travaLPState.ltv = smartWalletData.ltv;
+      String(smartWalletData.healthFactor);
+    appState.smartWalletState.travaLPState.ltv = String(smartWalletData.ltv);
     return appState;
   } catch (e) {
     console.log(e);
