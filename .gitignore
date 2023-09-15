@@ -4,8 +4,6 @@ coverage
 coverage.json
 typechain
 typechain-types
-esm
-umd
 # Hardhat files
 cache
 artifacts

@@ -29,10 +29,10 @@ const test = async () => {
     ABITravaLP,
     provider
   );
-  const userAddress = "0x595622cBd0Fc4727DF476a1172AdA30A9dDf8F43";
-  const proxyAddress = "0x826D824BE55A403859A6Db67D5EeC5aC386307fE";
+  const userAddress = "0xCC8FdfC90Ed30aB2Da9b53302C1ba5E976210281";
+  const proxyAddress = "0x3E66FF926474Ceaa438E8ba87F36c4D69FA4792D";
   const tokenAddress = "0xE1F005623934D3D8C724EC68Cc9bFD95498D4435";
-  const amount = BigInt(10**23).toString()
+  const amount = BigInt(0).toString()
   // second update TravaLP state for wallet
   const userData = await TravaLendingPool.getUserAccountData(userAddress);
   console.log("userData", userData.totalCollateralUSD, userData.healthFactor);
@@ -57,15 +57,15 @@ const test = async () => {
     appState12,
     userAddress
   );
-  const appState2 = await updateLPtTokenInfo(
-    appState1,
-    tokenAddress
-  );
+  // const appState2 = await updateLPtTokenInfo(
+  //   appState1,
+  //   tokenAddress
+  // );
 
-  const appState3 = await updateLPDebtTokenInfo(
-    appState2,
-    tokenAddress
-  );
+  // const appState3 = await updateLPDebtTokenInfo(
+  //   appState2,
+  //   tokenAddress
+  // );
 
   // const appState2 = await updateLPDebtTokenInfo(
   //   appState1,
@@ -93,10 +93,10 @@ const test = async () => {
   //   "smartWalletState before phase1 : ",
   //   appState.smartWalletState.travaLPState
   // );
-  console.log("Started: ", appState3.smartWalletState.travaLPState.availableBorrowsUSD)
+  console.log("Started: ", appState1.smartWalletState.travaLPState.availableBorrowsUSD)
   console.log("================= PHASE 2 Supply ==========================");
   const appState4 = await SimulationSupply(
-    appState3,
+    appState1,
     proxyAddress,
     tokenAddress,
     amount

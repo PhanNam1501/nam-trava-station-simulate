@@ -1,7 +1,7 @@
 import { ApplicationState } from "../src/State/ApplicationState";
 import { JsonRpcProvider } from "ethers";
-import { updateTravaBalance, updateNFTBalanceFromContract, updateCollectionBalanceFromContract, updateSellingNFTFromContract, updateSellingNFTFromGraph, updateCollectionBalanceFromGraph } from "../src/Simulation/nft/UpdateStateAccount"
-import { simulateTravaNFTBuy, simulateTravaNFTSell, simulateTravaNFTTransfer } from "../src/Simulation/nft/SimulationTravaNFT";
+import { updateTravaBalance, updateNFTBalanceFromContract, updateCollectionBalanceFromContract, updateSellingNFTFromContract, updateSellingNFTFromGraph, updateCollectionBalanceFromGraph, updateOwnedSellingNFTFromContract, updateOwnedSellingNFT } from "../src/Simulation/nft/UpdateStateAccount"
+import { simulateTravaNFTBuy, simulateTravaNFTCancelSale, simulateTravaNFTSell } from "../src/Simulation/nft/SimulationTravaNFT";
 import { getAddr } from "../src/utils/address";
 
 const testBuy =async () => {
@@ -20,30 +20,36 @@ const testBuy =async () => {
   oldState = await updateCollectionBalanceFromContract(oldState, "walletState"); // Lấy từ contract
   // oldState = await updateCollectionBalanceFromGraph(oldState, "walletState"); // Lấy từ graph => lỗi
   oldState = await updateSellingNFTFromContract(oldState); // Lấy từ contract
+  oldState = await updateOwnedSellingNFT(oldState);
   // oldState = await updateSellingNFTFromGraph(oldState); // Lấy từ graph
-  console.log(JSON.stringify(oldState));
+  console.log((JSON.stringify(oldState.smartWalletState.sellingNFT)));
   
+  let tokenId = oldState.NFTSellingState.v2[0].id || oldState.NFTSellingState.v1[0].id
+  console.log(tokenId)
   let newState = await simulateTravaNFTBuy(
     oldState,
-    "4891",
+    tokenId,
     oldState.walletState.address, // from
-    oldState.walletState.address, // to
+    oldState.smartWalletState.address, // to
   );
-  newState = await simulateTravaNFTSell(
-    newState,
-    "4006",
-    "10000000000000000000",
-    newState.walletState.address
-  );
-  newState = await simulateTravaNFTTransfer(
-    newState,
-    newState.walletState.address,
-    newState.smartWalletState.address,
-    "4062",
-    getAddr("NFT_CORE_ADDRESS", newState.chainId)
-  );
+  console.log("AFTER BUYING.....")
+  console.log(JSON.stringify(newState.smartWalletState.sellingNFT));
+  // newState = await simulateTravaNFTSell(
+  //   newState,
+  //   tokenId,
+  //   BigInt(2 * 10**19).toString(),
+  //   newState.smartWalletState.address
+  //   );
+  // console.log("AFTER SELLING.....")
+  // console.log(JSON.stringify(newState.NFTSellingState.v2), (JSON.stringify(newState.NFTSellingState.v1)));
+  // newState = await simulateTravaNFTCancelSale(
+  //     newState,
+  //   newState.walletState.address,
+  //   tokenId
+  // );
 
-  console.log("=================AFTER==========================");
-  console.log(JSON.stringify(newState));
+  // console.log("=================AFTER==========================");
+  // console.log(JSON.stringify(newState.smartWalletState.sellingNFT));
+  // console.log(JSON.stringify(newState.smartWalletState.nfts));
 };
 testBuy()

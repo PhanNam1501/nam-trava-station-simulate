@@ -25,9 +25,11 @@ import { WalletTravaLPState } from "./TravaDeFiState";
 export class NFTOwned {
   v1: ArmouryObject;
   v2: ArmouryObject;
+  isFetch: boolean;
   constructor() {
     this.v1 = {};
     this.v2 = {};
+    this.isFetch = false;
   }
 }
 
@@ -35,10 +37,12 @@ export class CollectionOwned {
   v1: Array<NormalKnight>;
   v2: Array<NormalKnight>;
   specials: Array<SpecialKnight>;
+  isFetch: boolean;
   constructor() {
     this.v1 = [];
     this.v2 = [];
     this.specials = [];
+    this.isFetch = false;
   }
 }
 

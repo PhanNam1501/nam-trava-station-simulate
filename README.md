@@ -156,6 +156,8 @@ appState10 = await simulateSwap(
     toToken: token2 address,
     fromAmount: amount of token 1 will swap
     toAmount: amount of token 2 will receive
+    fromAddress,
+    toAddress
 )
 ```
 # Simulate Trava Pools actions

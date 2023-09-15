@@ -139,6 +139,7 @@ export async function updateNFTBalanceFromContract(
         };
         if (item.version == 1) appState[mode].nfts.v1[item.tokenId] = data;
         else if (item.version == 2) appState[mode].nfts.v2[item.tokenId] = data;
+        appState[mode].nfts.isFetch = true;
       }
     });
   } catch (e) {
@@ -206,6 +207,7 @@ export async function updateCollectionBalanceFromContract(
     appState[mode].collection.v1 = v1.sort(collectionSort);
     appState[mode].collection.v2 = v2;
     appState[mode].collection.specials = specialCollections;
+    appState[mode].collection.isFetch = true;
   } catch (e) {
     console.log(e);
   }
@@ -352,7 +354,7 @@ const fetchBasicCollections = async (collectionIds: Array<string>, appState: App
     .filter((item: any) => item.rarity >= 1);
   const normalCollections = _collectionsMetadata.filter((item: any) => item.rarity <= 5);
   let specialCollections = _collectionsMetadata.filter((item: any) => item.rarity > 5);
-  
+
   // fetch special collections metadata
   let [tokenURIList] = await Promise.all([
     multiCall(
@@ -483,11 +485,12 @@ export async function updateSellingNFTFromContract(
         (result, element) => ({
           v1: [...result.v1, ...element.v1],
           v2: [...result.v2, ...element.v2],
+          isFetch: true
         }),
-        { v1: [], v2: [] }
+        { v1: [], v2: [], isFetch: false }
       );
       appState.NFTSellingState = mergedObject;
-    } 
+    }
     else {
       appState.NFTSellingState.v1 = [];
       appState.NFTSellingState.v2 = [];
@@ -507,6 +510,7 @@ export async function updateSellingNFTFromGraph(
     const a = await SellGraphQuery.fetchData();
     appState.NFTSellingState.v1 = a.v1;
     appState.NFTSellingState.v2 = a.v2;
+    appState.NFTSellingState.isFetch = true;
   } catch (e) {
     console.log(e);
   }
@@ -530,9 +534,9 @@ export async function updateCollectionBalanceFromGraph(
 export async function updateOwnedSellingNFTFromContract(
   appState1: ApplicationState,
   mode: "walletState" | "smartWalletState"
-){
+) {
   const appState = { ...appState1 };
-  try{
+  try {
     const nftsell = new Contract(
       getAddr("NFT_SELL_ADDRESS", appState.chainId),
       TravaNFTSellABI,
@@ -609,9 +613,10 @@ export async function updateOwnedSellingNFTFromContract(
     }
     v1 = v1.sort((item1, item2) => item2.nRarity - item1.nRarity || item2.exp - item1.exp);
     v2 = v2.sort((item1, item2) => item2.nRarity - item1.nRarity || item2.exp - item1.exp);
-    
+
     appState[mode].sellingNFT.v1 = v1;
     appState[mode].sellingNFT.v2 = v2;
+    appState[mode].sellingNFT.isFetch = true;
   } catch (e) {
     console.log(e);
   }
@@ -620,16 +625,17 @@ export async function updateOwnedSellingNFTFromContract(
 
 export async function updateOwnedSellingNFT(
   appState1: ApplicationState
-){
+) {
   const appState = { ...appState1 };
-  try{
-    if(!appState?.NFTSellingState?.v1 && !appState?.NFTSellingState?.v2){
+  try {
+    if (!appState?.NFTSellingState?.v1 && !appState?.NFTSellingState?.v2) {
       updateSellingNFTFromContract(appState1);
     }
-    appState.smartWalletState.sellingNFT.v1 = appState.NFTSellingState.v1.filter(x => x.seller == appState.smartWalletState.address);
-    appState.smartWalletState.sellingNFT.v2 = appState.NFTSellingState.v2.filter(x => x.seller == appState.smartWalletState.address);
-    appState.walletState.sellingNFT.v1 = appState.NFTSellingState.v1.filter(x => x.seller == appState.walletState.address);
-    appState.walletState.sellingNFT.v2 = appState.NFTSellingState.v2.filter(x => x.seller == appState.walletState.address);
+    appState.smartWalletState.sellingNFT.v1 = appState.NFTSellingState.v1.filter(x => x.seller.toLowerCase() == appState.smartWalletState.address.toLowerCase());
+    appState.smartWalletState.sellingNFT.v2 = appState.NFTSellingState.v2.filter(x => x.seller.toLowerCase() == appState.smartWalletState.address.toLowerCase());
+    appState.walletState.sellingNFT.v1 = appState.NFTSellingState.v1.filter(x => x.seller.toLowerCase() == appState.walletState.address.toLowerCase());
+    appState.walletState.sellingNFT.v2 = appState.NFTSellingState.v2.filter(x => x.seller.toLowerCase() == appState.walletState.address.toLowerCase());
+    appState.walletState.sellingNFT.isFetch = true;
   } catch (e) {
     console.log(e);
   }

@@ -1,6 +1,6 @@
 {
   "name": "trava-simulation-route",
-  "version": "1.0.52",
+  "version": "1.0.57",
   "description": "",
   "main": "./umd/index.js",
   "module": "./esm/index.js",
@@ -22,7 +22,7 @@
     "ethereumjs-util": "^7.1.5",
     "ethers": "^6.7.0",
     "lodash": "^4.17.21",
-    "trava-station-sdk": "1.0.27"
+    "trava-station-sdk": "1.0.30"
   },
   "devDependencies": {
     "@babel/core": "^7.12.10",

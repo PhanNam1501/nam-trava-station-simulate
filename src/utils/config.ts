@@ -1,6 +1,7 @@
 import { set as dfsTokensSetConfig } from "@zennomi/tokens";
 import { Config, ContractNetwork, Network, Networks } from "./types";
 import { Contract, ethers } from "ethers";
+import BigNumber from "bignumber.js";
 
 /**
  *
@@ -78,4 +79,17 @@ export const CONTRACT_NETWORK: ContractNetwork = {
   },
 };
 
+export const percentMul = (_value: string, percentage: string): BigNumber => {
+  let value: BigNumber = BigNumber(_value);
+  if (value.toString() == "0" || percentage == "0") {
+    return BigNumber(0);
+  }
+  if (value.isGreaterThanOrEqualTo(BigNumber(MAX_UINT256).minus(HALF_PERCENT))) {
+    new Error("MATH_MULTIPLICATION_OVERFLOW")
+  }
+  return BigNumber(value.multipliedBy(percentage).plus(HALF_PERCENT).div(PERCENTAGE_FACTOR).toFixed(0))
+}
+
 export const MAX_UINT256: string = ethers.MaxUint256.toString()
+export const PERCENTAGE_FACTOR: BigNumber = BigNumber(1e4)
+export const HALF_PERCENT: BigNumber = PERCENTAGE_FACTOR.div(2)

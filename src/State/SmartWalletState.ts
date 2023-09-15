@@ -16,6 +16,7 @@ export interface TokenData {
 export interface DetailTokenInPool {
   dToken: TokenData;
   tToken: TokenData;
+  maxLTV: string
 }
 
 export class SmartWalletState {
