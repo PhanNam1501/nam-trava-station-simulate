@@ -1,5 +1,6 @@
 import { set as dfsTokensSetConfig } from "@zennomi/tokens";
 import { ethers } from "ethers";
+import BigNumber from "bignumber.js";
 /**
  *
  * @type {Networks}
@@ -67,4 +68,16 @@ export const CONTRACT_NETWORK = {
         TRAVA_TOKEN: "0x4ABEf176F22B9a71B45ddc6c4A115095d8761b37",
     },
 };
+export const percentMul = (_value, percentage) => {
+    let value = BigNumber(_value);
+    if (value.toString() == "0" || percentage == "0") {
+        return BigNumber(0);
+    }
+    if (value.isGreaterThanOrEqualTo(BigNumber(MAX_UINT256).minus(HALF_PERCENT))) {
+        new Error("MATH_MULTIPLICATION_OVERFLOW");
+    }
+    return BigNumber(value.multipliedBy(percentage).plus(HALF_PERCENT).div(PERCENTAGE_FACTOR).toFixed(0));
+};
 export const MAX_UINT256 = ethers.MaxUint256.toString();
+export const PERCENTAGE_FACTOR = BigNumber(1e4);
+export const HALF_PERCENT = PERCENTAGE_FACTOR.div(2);

@@ -351,6 +351,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   SimulationRepay: () => (/* reexport safe */ _market_SimulationWalletTravaLP__WEBPACK_IMPORTED_MODULE_2__.SimulationRepay),
 /* harmony export */   SimulationSupply: () => (/* reexport safe */ _market_SimulationWalletTravaLP__WEBPACK_IMPORTED_MODULE_2__.SimulationSupply),
 /* harmony export */   SimulationWithdraw: () => (/* reexport safe */ _market_SimulationWalletTravaLP__WEBPACK_IMPORTED_MODULE_2__.SimulationWithdraw),
+/* harmony export */   calculateNewAvailableBorrow: () => (/* reexport safe */ _market_SimulationWalletTravaLP__WEBPACK_IMPORTED_MODULE_2__.calculateNewAvailableBorrow),
+/* harmony export */   calculateNewHealFactor: () => (/* reexport safe */ _market_SimulationWalletTravaLP__WEBPACK_IMPORTED_MODULE_2__.calculateNewHealFactor),
+/* harmony export */   calculateNewLTV: () => (/* reexport safe */ _market_SimulationWalletTravaLP__WEBPACK_IMPORTED_MODULE_2__.calculateNewLTV),
+/* harmony export */   calculateNewLiquidThreshold: () => (/* reexport safe */ _market_SimulationWalletTravaLP__WEBPACK_IMPORTED_MODULE_2__.calculateNewLiquidThreshold),
+/* harmony export */   getAmountFromBalanceUsd: () => (/* reexport safe */ _market_SimulationWalletTravaLP__WEBPACK_IMPORTED_MODULE_2__.getAmountFromBalanceUsd),
+/* harmony export */   getBalanceUsdFromAmount: () => (/* reexport safe */ _market_SimulationWalletTravaLP__WEBPACK_IMPORTED_MODULE_2__.getBalanceUsdFromAmount),
 /* harmony export */   getTokenBalance: () => (/* reexport safe */ _market_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_3__.getTokenBalance),
 /* harmony export */   simulateSendToken: () => (/* reexport safe */ _basic_SimulationBasic__WEBPACK_IMPORTED_MODULE_0__.simulateSendToken),
 /* harmony export */   simulateSwap: () => (/* reexport safe */ _swap_SimulationSwap__WEBPACK_IMPORTED_MODULE_6__.simulateSwap),
@@ -380,8 +386,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _basic_SimulationBasic__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(8);
 /* harmony import */ var _basic_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(9);
-/* harmony import */ var _market_SimulationWalletTravaLP__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(112);
-/* harmony import */ var _market_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(118);
+/* harmony import */ var _market_SimulationWalletTravaLP__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(113);
+/* harmony import */ var _market_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(115);
 /* harmony import */ var _nft_SimulationTravaNFT__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(122);
 /* harmony import */ var _nft_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(124);
 /* harmony import */ var _swap_SimulationSwap__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(216);
@@ -628,7 +634,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   listAddr: () => (/* binding */ listAddr)
 /* harmony export */ });
 /* harmony import */ var _config__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(13);
-/* harmony import */ var ethereumjs_util__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(15);
+/* harmony import */ var ethereumjs_util__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(16);
 /* harmony import */ var ethereumjs_util__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(ethereumjs_util__WEBPACK_IMPORTED_MODULE_1__);
 
 
@@ -699,15 +705,20 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   CONFIG: () => (/* binding */ CONFIG),
 /* harmony export */   CONTRACT_NETWORK: () => (/* binding */ CONTRACT_NETWORK),
+/* harmony export */   HALF_PERCENT: () => (/* binding */ HALF_PERCENT),
 /* harmony export */   MAX_UINT256: () => (/* binding */ MAX_UINT256),
 /* harmony export */   NETWORKS: () => (/* binding */ NETWORKS),
+/* harmony export */   PERCENTAGE_FACTOR: () => (/* binding */ PERCENTAGE_FACTOR),
 /* harmony export */   configure: () => (/* binding */ configure),
-/* harmony export */   getNetworkData: () => (/* binding */ getNetworkData)
+/* harmony export */   getNetworkData: () => (/* binding */ getNetworkData),
+/* harmony export */   percentMul: () => (/* binding */ percentMul)
 /* harmony export */ });
 /* harmony import */ var _zennomi_tokens__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(14);
 /* harmony import */ var _zennomi_tokens__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_zennomi_tokens__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var ethers__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(11);
 /* harmony import */ var ethers__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(ethers__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var bignumber_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(15);
+
 
 
 
@@ -786,7 +797,19 @@ var CONTRACT_NETWORK = {
     TRAVA_TOKEN: "0x4ABEf176F22B9a71B45ddc6c4A115095d8761b37"
   }
 };
+var percentMul = (_value, percentage) => {
+  var value = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_2__["default"])(_value);
+  if (value.toString() == "0" || percentage == "0") {
+    return (0,bignumber_js__WEBPACK_IMPORTED_MODULE_2__["default"])(0);
+  }
+  if (value.isGreaterThanOrEqualTo((0,bignumber_js__WEBPACK_IMPORTED_MODULE_2__["default"])(MAX_UINT256).minus(HALF_PERCENT))) {
+    new Error("MATH_MULTIPLICATION_OVERFLOW");
+  }
+  return (0,bignumber_js__WEBPACK_IMPORTED_MODULE_2__["default"])(value.multipliedBy(percentage).plus(HALF_PERCENT).div(PERCENTAGE_FACTOR).toFixed(0));
+};
 var MAX_UINT256 = ethers__WEBPACK_IMPORTED_MODULE_1__.ethers.MaxUint256.toString();
+var PERCENTAGE_FACTOR = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_2__["default"])(1e4);
+var HALF_PERCENT = PERCENTAGE_FACTOR.div(2);
 
 /***/ }),
 /* 14 */
@@ -797,6 +820,2907 @@ module.exports = __WEBPACK_EXTERNAL_MODULE__14__;
 
 /***/ }),
 /* 15 */
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   BigNumber: () => (/* binding */ BigNumber),
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/*
+ *      bignumber.js v9.1.1
+ *      A JavaScript library for arbitrary-precision arithmetic.
+ *      https://github.com/MikeMcl/bignumber.js
+ *      Copyright (c) 2022 Michael Mclaughlin <M8ch88l@gmail.com>
+ *      MIT Licensed.
+ *
+ *      BigNumber.prototype methods     |  BigNumber methods
+ *                                      |
+ *      absoluteValue            abs    |  clone
+ *      comparedTo                      |  config               set
+ *      decimalPlaces            dp     |      DECIMAL_PLACES
+ *      dividedBy                div    |      ROUNDING_MODE
+ *      dividedToIntegerBy       idiv   |      EXPONENTIAL_AT
+ *      exponentiatedBy          pow    |      RANGE
+ *      integerValue                    |      CRYPTO
+ *      isEqualTo                eq     |      MODULO_MODE
+ *      isFinite                        |      POW_PRECISION
+ *      isGreaterThan            gt     |      FORMAT
+ *      isGreaterThanOrEqualTo   gte    |      ALPHABET
+ *      isInteger                       |  isBigNumber
+ *      isLessThan               lt     |  maximum              max
+ *      isLessThanOrEqualTo      lte    |  minimum              min
+ *      isNaN                           |  random
+ *      isNegative                      |  sum
+ *      isPositive                      |
+ *      isZero                          |
+ *      minus                           |
+ *      modulo                   mod    |
+ *      multipliedBy             times  |
+ *      negated                         |
+ *      plus                            |
+ *      precision                sd     |
+ *      shiftedBy                       |
+ *      squareRoot               sqrt   |
+ *      toExponential                   |
+ *      toFixed                         |
+ *      toFormat                        |
+ *      toFraction                      |
+ *      toJSON                          |
+ *      toNumber                        |
+ *      toPrecision                     |
+ *      toString                        |
+ *      valueOf                         |
+ *
+ */
+
+
+var
+  isNumeric = /^-?(?:\d+(?:\.\d*)?|\.\d+)(?:e[+-]?\d+)?$/i,
+  mathceil = Math.ceil,
+  mathfloor = Math.floor,
+
+  bignumberError = '[BigNumber Error] ',
+  tooManyDigits = bignumberError + 'Number primitive has more than 15 significant digits: ',
+
+  BASE = 1e14,
+  LOG_BASE = 14,
+  MAX_SAFE_INTEGER = 0x1fffffffffffff,         // 2^53 - 1
+  // MAX_INT32 = 0x7fffffff,                   // 2^31 - 1
+  POWS_TEN = [1, 10, 100, 1e3, 1e4, 1e5, 1e6, 1e7, 1e8, 1e9, 1e10, 1e11, 1e12, 1e13],
+  SQRT_BASE = 1e7,
+
+  // EDITABLE
+  // The limit on the value of DECIMAL_PLACES, TO_EXP_NEG, TO_EXP_POS, MIN_EXP, MAX_EXP, and
+  // the arguments to toExponential, toFixed, toFormat, and toPrecision.
+  MAX = 1E9;                                   // 0 to MAX_INT32
+
+
+/*
+ * Create and return a BigNumber constructor.
+ */
+function clone(configObject) {
+  var div, convertBase, parseNumeric,
+    P = BigNumber.prototype = { constructor: BigNumber, toString: null, valueOf: null },
+    ONE = new BigNumber(1),
+
+
+    //----------------------------- EDITABLE CONFIG DEFAULTS -------------------------------
+
+
+    // The default values below must be integers within the inclusive ranges stated.
+    // The values can also be changed at run-time using BigNumber.set.
+
+    // The maximum number of decimal places for operations involving division.
+    DECIMAL_PLACES = 20,                     // 0 to MAX
+
+    // The rounding mode used when rounding to the above decimal places, and when using
+    // toExponential, toFixed, toFormat and toPrecision, and round (default value).
+    // UP         0 Away from zero.
+    // DOWN       1 Towards zero.
+    // CEIL       2 Towards +Infinity.
+    // FLOOR      3 Towards -Infinity.
+    // HALF_UP    4 Towards nearest neighbour. If equidistant, up.
+    // HALF_DOWN  5 Towards nearest neighbour. If equidistant, down.
+    // HALF_EVEN  6 Towards nearest neighbour. If equidistant, towards even neighbour.
+    // HALF_CEIL  7 Towards nearest neighbour. If equidistant, towards +Infinity.
+    // HALF_FLOOR 8 Towards nearest neighbour. If equidistant, towards -Infinity.
+    ROUNDING_MODE = 4,                       // 0 to 8
+
+    // EXPONENTIAL_AT : [TO_EXP_NEG , TO_EXP_POS]
+
+    // The exponent value at and beneath which toString returns exponential notation.
+    // Number type: -7
+    TO_EXP_NEG = -7,                         // 0 to -MAX
+
+    // The exponent value at and above which toString returns exponential notation.
+    // Number type: 21
+    TO_EXP_POS = 21,                         // 0 to MAX
+
+    // RANGE : [MIN_EXP, MAX_EXP]
+
+    // The minimum exponent value, beneath which underflow to zero occurs.
+    // Number type: -324  (5e-324)
+    MIN_EXP = -1e7,                          // -1 to -MAX
+
+    // The maximum exponent value, above which overflow to Infinity occurs.
+    // Number type:  308  (1.7976931348623157e+308)
+    // For MAX_EXP > 1e7, e.g. new BigNumber('1e100000000').plus(1) may be slow.
+    MAX_EXP = 1e7,                           // 1 to MAX
+
+    // Whether to use cryptographically-secure random number generation, if available.
+    CRYPTO = false,                          // true or false
+
+    // The modulo mode used when calculating the modulus: a mod n.
+    // The quotient (q = a / n) is calculated according to the corresponding rounding mode.
+    // The remainder (r) is calculated as: r = a - n * q.
+    //
+    // UP        0 The remainder is positive if the dividend is negative, else is negative.
+    // DOWN      1 The remainder has the same sign as the dividend.
+    //             This modulo mode is commonly known as 'truncated division' and is
+    //             equivalent to (a % n) in JavaScript.
+    // FLOOR     3 The remainder has the same sign as the divisor (Python %).
+    // HALF_EVEN 6 This modulo mode implements the IEEE 754 remainder function.
+    // EUCLID    9 Euclidian division. q = sign(n) * floor(a / abs(n)).
+    //             The remainder is always positive.
+    //
+    // The truncated division, floored division, Euclidian division and IEEE 754 remainder
+    // modes are commonly used for the modulus operation.
+    // Although the other rounding modes can also be used, they may not give useful results.
+    MODULO_MODE = 1,                         // 0 to 9
+
+    // The maximum number of significant digits of the result of the exponentiatedBy operation.
+    // If POW_PRECISION is 0, there will be unlimited significant digits.
+    POW_PRECISION = 0,                       // 0 to MAX
+
+    // The format specification used by the BigNumber.prototype.toFormat method.
+    FORMAT = {
+      prefix: '',
+      groupSize: 3,
+      secondaryGroupSize: 0,
+      groupSeparator: ',',
+      decimalSeparator: '.',
+      fractionGroupSize: 0,
+      fractionGroupSeparator: '\xA0',        // non-breaking space
+      suffix: ''
+    },
+
+    // The alphabet used for base conversion. It must be at least 2 characters long, with no '+',
+    // '-', '.', whitespace, or repeated character.
+    // '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ$_'
+    ALPHABET = '0123456789abcdefghijklmnopqrstuvwxyz',
+    alphabetHasNormalDecimalDigits = true;
+
+
+  //------------------------------------------------------------------------------------------
+
+
+  // CONSTRUCTOR
+
+
+  /*
+   * The BigNumber constructor and exported function.
+   * Create and return a new instance of a BigNumber object.
+   *
+   * v {number|string|BigNumber} A numeric value.
+   * [b] {number} The base of v. Integer, 2 to ALPHABET.length inclusive.
+   */
+  function BigNumber(v, b) {
+    var alphabet, c, caseChanged, e, i, isNum, len, str,
+      x = this;
+
+    // Enable constructor call without `new`.
+    if (!(x instanceof BigNumber)) return new BigNumber(v, b);
+
+    if (b == null) {
+
+      if (v && v._isBigNumber === true) {
+        x.s = v.s;
+
+        if (!v.c || v.e > MAX_EXP) {
+          x.c = x.e = null;
+        } else if (v.e < MIN_EXP) {
+          x.c = [x.e = 0];
+        } else {
+          x.e = v.e;
+          x.c = v.c.slice();
+        }
+
+        return;
+      }
+
+      if ((isNum = typeof v == 'number') && v * 0 == 0) {
+
+        // Use `1 / n` to handle minus zero also.
+        x.s = 1 / v < 0 ? (v = -v, -1) : 1;
+
+        // Fast path for integers, where n < 2147483648 (2**31).
+        if (v === ~~v) {
+          for (e = 0, i = v; i >= 10; i /= 10, e++);
+
+          if (e > MAX_EXP) {
+            x.c = x.e = null;
+          } else {
+            x.e = e;
+            x.c = [v];
+          }
+
+          return;
+        }
+
+        str = String(v);
+      } else {
+
+        if (!isNumeric.test(str = String(v))) return parseNumeric(x, str, isNum);
+
+        x.s = str.charCodeAt(0) == 45 ? (str = str.slice(1), -1) : 1;
+      }
+
+      // Decimal point?
+      if ((e = str.indexOf('.')) > -1) str = str.replace('.', '');
+
+      // Exponential form?
+      if ((i = str.search(/e/i)) > 0) {
+
+        // Determine exponent.
+        if (e < 0) e = i;
+        e += +str.slice(i + 1);
+        str = str.substring(0, i);
+      } else if (e < 0) {
+
+        // Integer.
+        e = str.length;
+      }
+
+    } else {
+
+      // '[BigNumber Error] Base {not a primitive number|not an integer|out of range}: {b}'
+      intCheck(b, 2, ALPHABET.length, 'Base');
+
+      // Allow exponential notation to be used with base 10 argument, while
+      // also rounding to DECIMAL_PLACES as with other bases.
+      if (b == 10 && alphabetHasNormalDecimalDigits) {
+        x = new BigNumber(v);
+        return round(x, DECIMAL_PLACES + x.e + 1, ROUNDING_MODE);
+      }
+
+      str = String(v);
+
+      if (isNum = typeof v == 'number') {
+
+        // Avoid potential interpretation of Infinity and NaN as base 44+ values.
+        if (v * 0 != 0) return parseNumeric(x, str, isNum, b);
+
+        x.s = 1 / v < 0 ? (str = str.slice(1), -1) : 1;
+
+        // '[BigNumber Error] Number primitive has more than 15 significant digits: {n}'
+        if (BigNumber.DEBUG && str.replace(/^0\.0*|\./, '').length > 15) {
+          throw Error
+           (tooManyDigits + v);
+        }
+      } else {
+        x.s = str.charCodeAt(0) === 45 ? (str = str.slice(1), -1) : 1;
+      }
+
+      alphabet = ALPHABET.slice(0, b);
+      e = i = 0;
+
+      // Check that str is a valid base b number.
+      // Don't use RegExp, so alphabet can contain special characters.
+      for (len = str.length; i < len; i++) {
+        if (alphabet.indexOf(c = str.charAt(i)) < 0) {
+          if (c == '.') {
+
+            // If '.' is not the first character and it has not be found before.
+            if (i > e) {
+              e = len;
+              continue;
+            }
+          } else if (!caseChanged) {
+
+            // Allow e.g. hexadecimal 'FF' as well as 'ff'.
+            if (str == str.toUpperCase() && (str = str.toLowerCase()) ||
+                str == str.toLowerCase() && (str = str.toUpperCase())) {
+              caseChanged = true;
+              i = -1;
+              e = 0;
+              continue;
+            }
+          }
+
+          return parseNumeric(x, String(v), isNum, b);
+        }
+      }
+
+      // Prevent later check for length on converted number.
+      isNum = false;
+      str = convertBase(str, b, 10, x.s);
+
+      // Decimal point?
+      if ((e = str.indexOf('.')) > -1) str = str.replace('.', '');
+      else e = str.length;
+    }
+
+    // Determine leading zeros.
+    for (i = 0; str.charCodeAt(i) === 48; i++);
+
+    // Determine trailing zeros.
+    for (len = str.length; str.charCodeAt(--len) === 48;);
+
+    if (str = str.slice(i, ++len)) {
+      len -= i;
+
+      // '[BigNumber Error] Number primitive has more than 15 significant digits: {n}'
+      if (isNum && BigNumber.DEBUG &&
+        len > 15 && (v > MAX_SAFE_INTEGER || v !== mathfloor(v))) {
+          throw Error
+           (tooManyDigits + (x.s * v));
+      }
+
+       // Overflow?
+      if ((e = e - i - 1) > MAX_EXP) {
+
+        // Infinity.
+        x.c = x.e = null;
+
+      // Underflow?
+      } else if (e < MIN_EXP) {
+
+        // Zero.
+        x.c = [x.e = 0];
+      } else {
+        x.e = e;
+        x.c = [];
+
+        // Transform base
+
+        // e is the base 10 exponent.
+        // i is where to slice str to get the first element of the coefficient array.
+        i = (e + 1) % LOG_BASE;
+        if (e < 0) i += LOG_BASE;  // i < 1
+
+        if (i < len) {
+          if (i) x.c.push(+str.slice(0, i));
+
+          for (len -= LOG_BASE; i < len;) {
+            x.c.push(+str.slice(i, i += LOG_BASE));
+          }
+
+          i = LOG_BASE - (str = str.slice(i)).length;
+        } else {
+          i -= len;
+        }
+
+        for (; i--; str += '0');
+        x.c.push(+str);
+      }
+    } else {
+
+      // Zero.
+      x.c = [x.e = 0];
+    }
+  }
+
+
+  // CONSTRUCTOR PROPERTIES
+
+
+  BigNumber.clone = clone;
+
+  BigNumber.ROUND_UP = 0;
+  BigNumber.ROUND_DOWN = 1;
+  BigNumber.ROUND_CEIL = 2;
+  BigNumber.ROUND_FLOOR = 3;
+  BigNumber.ROUND_HALF_UP = 4;
+  BigNumber.ROUND_HALF_DOWN = 5;
+  BigNumber.ROUND_HALF_EVEN = 6;
+  BigNumber.ROUND_HALF_CEIL = 7;
+  BigNumber.ROUND_HALF_FLOOR = 8;
+  BigNumber.EUCLID = 9;
+
+
+  /*
+   * Configure infrequently-changing library-wide settings.
+   *
+   * Accept an object with the following optional properties (if the value of a property is
+   * a number, it must be an integer within the inclusive range stated):
+   *
+   *   DECIMAL_PLACES   {number}           0 to MAX
+   *   ROUNDING_MODE    {number}           0 to 8
+   *   EXPONENTIAL_AT   {number|number[]}  -MAX to MAX  or  [-MAX to 0, 0 to MAX]
+   *   RANGE            {number|number[]}  -MAX to MAX (not zero)  or  [-MAX to -1, 1 to MAX]
+   *   CRYPTO           {boolean}          true or false
+   *   MODULO_MODE      {number}           0 to 9
+   *   POW_PRECISION       {number}           0 to MAX
+   *   ALPHABET         {string}           A string of two or more unique characters which does
+   *                                       not contain '.'.
+   *   FORMAT           {object}           An object with some of the following properties:
+   *     prefix                 {string}
+   *     groupSize              {number}
+   *     secondaryGroupSize     {number}
+   *     groupSeparator         {string}
+   *     decimalSeparator       {string}
+   *     fractionGroupSize      {number}
+   *     fractionGroupSeparator {string}
+   *     suffix                 {string}
+   *
+   * (The values assigned to the above FORMAT object properties are not checked for validity.)
+   *
+   * E.g.
+   * BigNumber.config({ DECIMAL_PLACES : 20, ROUNDING_MODE : 4 })
+   *
+   * Ignore properties/parameters set to null or undefined, except for ALPHABET.
+   *
+   * Return an object with the properties current values.
+   */
+  BigNumber.config = BigNumber.set = function (obj) {
+    var p, v;
+
+    if (obj != null) {
+
+      if (typeof obj == 'object') {
+
+        // DECIMAL_PLACES {number} Integer, 0 to MAX inclusive.
+        // '[BigNumber Error] DECIMAL_PLACES {not a primitive number|not an integer|out of range}: {v}'
+        if (obj.hasOwnProperty(p = 'DECIMAL_PLACES')) {
+          v = obj[p];
+          intCheck(v, 0, MAX, p);
+          DECIMAL_PLACES = v;
+        }
+
+        // ROUNDING_MODE {number} Integer, 0 to 8 inclusive.
+        // '[BigNumber Error] ROUNDING_MODE {not a primitive number|not an integer|out of range}: {v}'
+        if (obj.hasOwnProperty(p = 'ROUNDING_MODE')) {
+          v = obj[p];
+          intCheck(v, 0, 8, p);
+          ROUNDING_MODE = v;
+        }
+
+        // EXPONENTIAL_AT {number|number[]}
+        // Integer, -MAX to MAX inclusive or
+        // [integer -MAX to 0 inclusive, 0 to MAX inclusive].
+        // '[BigNumber Error] EXPONENTIAL_AT {not a primitive number|not an integer|out of range}: {v}'
+        if (obj.hasOwnProperty(p = 'EXPONENTIAL_AT')) {
+          v = obj[p];
+          if (v && v.pop) {
+            intCheck(v[0], -MAX, 0, p);
+            intCheck(v[1], 0, MAX, p);
+            TO_EXP_NEG = v[0];
+            TO_EXP_POS = v[1];
+          } else {
+            intCheck(v, -MAX, MAX, p);
+            TO_EXP_NEG = -(TO_EXP_POS = v < 0 ? -v : v);
+          }
+        }
+
+        // RANGE {number|number[]} Non-zero integer, -MAX to MAX inclusive or
+        // [integer -MAX to -1 inclusive, integer 1 to MAX inclusive].
+        // '[BigNumber Error] RANGE {not a primitive number|not an integer|out of range|cannot be zero}: {v}'
+        if (obj.hasOwnProperty(p = 'RANGE')) {
+          v = obj[p];
+          if (v && v.pop) {
+            intCheck(v[0], -MAX, -1, p);
+            intCheck(v[1], 1, MAX, p);
+            MIN_EXP = v[0];
+            MAX_EXP = v[1];
+          } else {
+            intCheck(v, -MAX, MAX, p);
+            if (v) {
+              MIN_EXP = -(MAX_EXP = v < 0 ? -v : v);
+            } else {
+              throw Error
+               (bignumberError + p + ' cannot be zero: ' + v);
+            }
+          }
+        }
+
+        // CRYPTO {boolean} true or false.
+        // '[BigNumber Error] CRYPTO not true or false: {v}'
+        // '[BigNumber Error] crypto unavailable'
+        if (obj.hasOwnProperty(p = 'CRYPTO')) {
+          v = obj[p];
+          if (v === !!v) {
+            if (v) {
+              if (typeof crypto != 'undefined' && crypto &&
+               (crypto.getRandomValues || crypto.randomBytes)) {
+                CRYPTO = v;
+              } else {
+                CRYPTO = !v;
+                throw Error
+                 (bignumberError + 'crypto unavailable');
+              }
+            } else {
+              CRYPTO = v;
+            }
+          } else {
+            throw Error
+             (bignumberError + p + ' not true or false: ' + v);
+          }
+        }
+
+        // MODULO_MODE {number} Integer, 0 to 9 inclusive.
+        // '[BigNumber Error] MODULO_MODE {not a primitive number|not an integer|out of range}: {v}'
+        if (obj.hasOwnProperty(p = 'MODULO_MODE')) {
+          v = obj[p];
+          intCheck(v, 0, 9, p);
+          MODULO_MODE = v;
+        }
+
+        // POW_PRECISION {number} Integer, 0 to MAX inclusive.
+        // '[BigNumber Error] POW_PRECISION {not a primitive number|not an integer|out of range}: {v}'
+        if (obj.hasOwnProperty(p = 'POW_PRECISION')) {
+          v = obj[p];
+          intCheck(v, 0, MAX, p);
+          POW_PRECISION = v;
+        }
+
+        // FORMAT {object}
+        // '[BigNumber Error] FORMAT not an object: {v}'
+        if (obj.hasOwnProperty(p = 'FORMAT')) {
+          v = obj[p];
+          if (typeof v == 'object') FORMAT = v;
+          else throw Error
+           (bignumberError + p + ' not an object: ' + v);
+        }
+
+        // ALPHABET {string}
+        // '[BigNumber Error] ALPHABET invalid: {v}'
+        if (obj.hasOwnProperty(p = 'ALPHABET')) {
+          v = obj[p];
+
+          // Disallow if less than two characters,
+          // or if it contains '+', '-', '.', whitespace, or a repeated character.
+          if (typeof v == 'string' && !/^.?$|[+\-.\s]|(.).*\1/.test(v)) {
+            alphabetHasNormalDecimalDigits = v.slice(0, 10) == '0123456789';
+            ALPHABET = v;
+          } else {
+            throw Error
+             (bignumberError + p + ' invalid: ' + v);
+          }
+        }
+
+      } else {
+
+        // '[BigNumber Error] Object expected: {v}'
+        throw Error
+         (bignumberError + 'Object expected: ' + obj);
+      }
+    }
+
+    return {
+      DECIMAL_PLACES: DECIMAL_PLACES,
+      ROUNDING_MODE: ROUNDING_MODE,
+      EXPONENTIAL_AT: [TO_EXP_NEG, TO_EXP_POS],
+      RANGE: [MIN_EXP, MAX_EXP],
+      CRYPTO: CRYPTO,
+      MODULO_MODE: MODULO_MODE,
+      POW_PRECISION: POW_PRECISION,
+      FORMAT: FORMAT,
+      ALPHABET: ALPHABET
+    };
+  };
+
+
+  /*
+   * Return true if v is a BigNumber instance, otherwise return false.
+   *
+   * If BigNumber.DEBUG is true, throw if a BigNumber instance is not well-formed.
+   *
+   * v {any}
+   *
+   * '[BigNumber Error] Invalid BigNumber: {v}'
+   */
+  BigNumber.isBigNumber = function (v) {
+    if (!v || v._isBigNumber !== true) return false;
+    if (!BigNumber.DEBUG) return true;
+
+    var i, n,
+      c = v.c,
+      e = v.e,
+      s = v.s;
+
+    out: if ({}.toString.call(c) == '[object Array]') {
+
+      if ((s === 1 || s === -1) && e >= -MAX && e <= MAX && e === mathfloor(e)) {
+
+        // If the first element is zero, the BigNumber value must be zero.
+        if (c[0] === 0) {
+          if (e === 0 && c.length === 1) return true;
+          break out;
+        }
+
+        // Calculate number of digits that c[0] should have, based on the exponent.
+        i = (e + 1) % LOG_BASE;
+        if (i < 1) i += LOG_BASE;
+
+        // Calculate number of digits of c[0].
+        //if (Math.ceil(Math.log(c[0] + 1) / Math.LN10) == i) {
+        if (String(c[0]).length == i) {
+
+          for (i = 0; i < c.length; i++) {
+            n = c[i];
+            if (n < 0 || n >= BASE || n !== mathfloor(n)) break out;
+          }
+
+          // Last element cannot be zero, unless it is the only element.
+          if (n !== 0) return true;
+        }
+      }
+
+    // Infinity/NaN
+    } else if (c === null && e === null && (s === null || s === 1 || s === -1)) {
+      return true;
+    }
+
+    throw Error
+      (bignumberError + 'Invalid BigNumber: ' + v);
+  };
+
+
+  /*
+   * Return a new BigNumber whose value is the maximum of the arguments.
+   *
+   * arguments {number|string|BigNumber}
+   */
+  BigNumber.maximum = BigNumber.max = function () {
+    return maxOrMin(arguments, P.lt);
+  };
+
+
+  /*
+   * Return a new BigNumber whose value is the minimum of the arguments.
+   *
+   * arguments {number|string|BigNumber}
+   */
+  BigNumber.minimum = BigNumber.min = function () {
+    return maxOrMin(arguments, P.gt);
+  };
+
+
+  /*
+   * Return a new BigNumber with a random value equal to or greater than 0 and less than 1,
+   * and with dp, or DECIMAL_PLACES if dp is omitted, decimal places (or less if trailing
+   * zeros are produced).
+   *
+   * [dp] {number} Decimal places. Integer, 0 to MAX inclusive.
+   *
+   * '[BigNumber Error] Argument {not a primitive number|not an integer|out of range}: {dp}'
+   * '[BigNumber Error] crypto unavailable'
+   */
+  BigNumber.random = (function () {
+    var pow2_53 = 0x20000000000000;
+
+    // Return a 53 bit integer n, where 0 <= n < 9007199254740992.
+    // Check if Math.random() produces more than 32 bits of randomness.
+    // If it does, assume at least 53 bits are produced, otherwise assume at least 30 bits.
+    // 0x40000000 is 2^30, 0x800000 is 2^23, 0x1fffff is 2^21 - 1.
+    var random53bitInt = (Math.random() * pow2_53) & 0x1fffff
+     ? function () { return mathfloor(Math.random() * pow2_53); }
+     : function () { return ((Math.random() * 0x40000000 | 0) * 0x800000) +
+       (Math.random() * 0x800000 | 0); };
+
+    return function (dp) {
+      var a, b, e, k, v,
+        i = 0,
+        c = [],
+        rand = new BigNumber(ONE);
+
+      if (dp == null) dp = DECIMAL_PLACES;
+      else intCheck(dp, 0, MAX);
+
+      k = mathceil(dp / LOG_BASE);
+
+      if (CRYPTO) {
+
+        // Browsers supporting crypto.getRandomValues.
+        if (crypto.getRandomValues) {
+
+          a = crypto.getRandomValues(new Uint32Array(k *= 2));
+
+          for (; i < k;) {
+
+            // 53 bits:
+            // ((Math.pow(2, 32) - 1) * Math.pow(2, 21)).toString(2)
+            // 11111 11111111 11111111 11111111 11100000 00000000 00000000
+            // ((Math.pow(2, 32) - 1) >>> 11).toString(2)
+            //                                     11111 11111111 11111111
+            // 0x20000 is 2^21.
+            v = a[i] * 0x20000 + (a[i + 1] >>> 11);
+
+            // Rejection sampling:
+            // 0 <= v < 9007199254740992
+            // Probability that v >= 9e15, is
+            // 7199254740992 / 9007199254740992 ~= 0.0008, i.e. 1 in 1251
+            if (v >= 9e15) {
+              b = crypto.getRandomValues(new Uint32Array(2));
+              a[i] = b[0];
+              a[i + 1] = b[1];
+            } else {
+
+              // 0 <= v <= 8999999999999999
+              // 0 <= (v % 1e14) <= 99999999999999
+              c.push(v % 1e14);
+              i += 2;
+            }
+          }
+          i = k / 2;
+
+        // Node.js supporting crypto.randomBytes.
+        } else if (crypto.randomBytes) {
+
+          // buffer
+          a = crypto.randomBytes(k *= 7);
+
+          for (; i < k;) {
+
+            // 0x1000000000000 is 2^48, 0x10000000000 is 2^40
+            // 0x100000000 is 2^32, 0x1000000 is 2^24
+            // 11111 11111111 11111111 11111111 11111111 11111111 11111111
+            // 0 <= v < 9007199254740992
+            v = ((a[i] & 31) * 0x1000000000000) + (a[i + 1] * 0x10000000000) +
+               (a[i + 2] * 0x100000000) + (a[i + 3] * 0x1000000) +
+               (a[i + 4] << 16) + (a[i + 5] << 8) + a[i + 6];
+
+            if (v >= 9e15) {
+              crypto.randomBytes(7).copy(a, i);
+            } else {
+
+              // 0 <= (v % 1e14) <= 99999999999999
+              c.push(v % 1e14);
+              i += 7;
+            }
+          }
+          i = k / 7;
+        } else {
+          CRYPTO = false;
+          throw Error
+           (bignumberError + 'crypto unavailable');
+        }
+      }
+
+      // Use Math.random.
+      if (!CRYPTO) {
+
+        for (; i < k;) {
+          v = random53bitInt();
+          if (v < 9e15) c[i++] = v % 1e14;
+        }
+      }
+
+      k = c[--i];
+      dp %= LOG_BASE;
+
+      // Convert trailing digits to zeros according to dp.
+      if (k && dp) {
+        v = POWS_TEN[LOG_BASE - dp];
+        c[i] = mathfloor(k / v) * v;
+      }
+
+      // Remove trailing elements which are zero.
+      for (; c[i] === 0; c.pop(), i--);
+
+      // Zero?
+      if (i < 0) {
+        c = [e = 0];
+      } else {
+
+        // Remove leading elements which are zero and adjust exponent accordingly.
+        for (e = -1 ; c[0] === 0; c.splice(0, 1), e -= LOG_BASE);
+
+        // Count the digits of the first element of c to determine leading zeros, and...
+        for (i = 1, v = c[0]; v >= 10; v /= 10, i++);
+
+        // adjust the exponent accordingly.
+        if (i < LOG_BASE) e -= LOG_BASE - i;
+      }
+
+      rand.e = e;
+      rand.c = c;
+      return rand;
+    };
+  })();
+
+
+   /*
+   * Return a BigNumber whose value is the sum of the arguments.
+   *
+   * arguments {number|string|BigNumber}
+   */
+  BigNumber.sum = function () {
+    var i = 1,
+      args = arguments,
+      sum = new BigNumber(args[0]);
+    for (; i < args.length;) sum = sum.plus(args[i++]);
+    return sum;
+  };
+
+
+  // PRIVATE FUNCTIONS
+
+
+  // Called by BigNumber and BigNumber.prototype.toString.
+  convertBase = (function () {
+    var decimal = '0123456789';
+
+    /*
+     * Convert string of baseIn to an array of numbers of baseOut.
+     * Eg. toBaseOut('255', 10, 16) returns [15, 15].
+     * Eg. toBaseOut('ff', 16, 10) returns [2, 5, 5].
+     */
+    function toBaseOut(str, baseIn, baseOut, alphabet) {
+      var j,
+        arr = [0],
+        arrL,
+        i = 0,
+        len = str.length;
+
+      for (; i < len;) {
+        for (arrL = arr.length; arrL--; arr[arrL] *= baseIn);
+
+        arr[0] += alphabet.indexOf(str.charAt(i++));
+
+        for (j = 0; j < arr.length; j++) {
+
+          if (arr[j] > baseOut - 1) {
+            if (arr[j + 1] == null) arr[j + 1] = 0;
+            arr[j + 1] += arr[j] / baseOut | 0;
+            arr[j] %= baseOut;
+          }
+        }
+      }
+
+      return arr.reverse();
+    }
+
+    // Convert a numeric string of baseIn to a numeric string of baseOut.
+    // If the caller is toString, we are converting from base 10 to baseOut.
+    // If the caller is BigNumber, we are converting from baseIn to base 10.
+    return function (str, baseIn, baseOut, sign, callerIsToString) {
+      var alphabet, d, e, k, r, x, xc, y,
+        i = str.indexOf('.'),
+        dp = DECIMAL_PLACES,
+        rm = ROUNDING_MODE;
+
+      // Non-integer.
+      if (i >= 0) {
+        k = POW_PRECISION;
+
+        // Unlimited precision.
+        POW_PRECISION = 0;
+        str = str.replace('.', '');
+        y = new BigNumber(baseIn);
+        x = y.pow(str.length - i);
+        POW_PRECISION = k;
+
+        // Convert str as if an integer, then restore the fraction part by dividing the
+        // result by its base raised to a power.
+
+        y.c = toBaseOut(toFixedPoint(coeffToString(x.c), x.e, '0'),
+         10, baseOut, decimal);
+        y.e = y.c.length;
+      }
+
+      // Convert the number as integer.
+
+      xc = toBaseOut(str, baseIn, baseOut, callerIsToString
+       ? (alphabet = ALPHABET, decimal)
+       : (alphabet = decimal, ALPHABET));
+
+      // xc now represents str as an integer and converted to baseOut. e is the exponent.
+      e = k = xc.length;
+
+      // Remove trailing zeros.
+      for (; xc[--k] == 0; xc.pop());
+
+      // Zero?
+      if (!xc[0]) return alphabet.charAt(0);
+
+      // Does str represent an integer? If so, no need for the division.
+      if (i < 0) {
+        --e;
+      } else {
+        x.c = xc;
+        x.e = e;
+
+        // The sign is needed for correct rounding.
+        x.s = sign;
+        x = div(x, y, dp, rm, baseOut);
+        xc = x.c;
+        r = x.r;
+        e = x.e;
+      }
+
+      // xc now represents str converted to baseOut.
+
+      // THe index of the rounding digit.
+      d = e + dp + 1;
+
+      // The rounding digit: the digit to the right of the digit that may be rounded up.
+      i = xc[d];
+
+      // Look at the rounding digits and mode to determine whether to round up.
+
+      k = baseOut / 2;
+      r = r || d < 0 || xc[d + 1] != null;
+
+      r = rm < 4 ? (i != null || r) && (rm == 0 || rm == (x.s < 0 ? 3 : 2))
+            : i > k || i == k &&(rm == 4 || r || rm == 6 && xc[d - 1] & 1 ||
+             rm == (x.s < 0 ? 8 : 7));
+
+      // If the index of the rounding digit is not greater than zero, or xc represents
+      // zero, then the result of the base conversion is zero or, if rounding up, a value
+      // such as 0.00001.
+      if (d < 1 || !xc[0]) {
+
+        // 1^-dp or 0
+        str = r ? toFixedPoint(alphabet.charAt(1), -dp, alphabet.charAt(0)) : alphabet.charAt(0);
+      } else {
+
+        // Truncate xc to the required number of decimal places.
+        xc.length = d;
+
+        // Round up?
+        if (r) {
+
+          // Rounding up may mean the previous digit has to be rounded up and so on.
+          for (--baseOut; ++xc[--d] > baseOut;) {
+            xc[d] = 0;
+
+            if (!d) {
+              ++e;
+              xc = [1].concat(xc);
+            }
+          }
+        }
+
+        // Determine trailing zeros.
+        for (k = xc.length; !xc[--k];);
+
+        // E.g. [4, 11, 15] becomes 4bf.
+        for (i = 0, str = ''; i <= k; str += alphabet.charAt(xc[i++]));
+
+        // Add leading zeros, decimal point and trailing zeros as required.
+        str = toFixedPoint(str, e, alphabet.charAt(0));
+      }
+
+      // The caller will add the sign.
+      return str;
+    };
+  })();
+
+
+  // Perform division in the specified base. Called by div and convertBase.
+  div = (function () {
+
+    // Assume non-zero x and k.
+    function multiply(x, k, base) {
+      var m, temp, xlo, xhi,
+        carry = 0,
+        i = x.length,
+        klo = k % SQRT_BASE,
+        khi = k / SQRT_BASE | 0;
+
+      for (x = x.slice(); i--;) {
+        xlo = x[i] % SQRT_BASE;
+        xhi = x[i] / SQRT_BASE | 0;
+        m = khi * xlo + xhi * klo;
+        temp = klo * xlo + ((m % SQRT_BASE) * SQRT_BASE) + carry;
+        carry = (temp / base | 0) + (m / SQRT_BASE | 0) + khi * xhi;
+        x[i] = temp % base;
+      }
+
+      if (carry) x = [carry].concat(x);
+
+      return x;
+    }
+
+    function compare(a, b, aL, bL) {
+      var i, cmp;
+
+      if (aL != bL) {
+        cmp = aL > bL ? 1 : -1;
+      } else {
+
+        for (i = cmp = 0; i < aL; i++) {
+
+          if (a[i] != b[i]) {
+            cmp = a[i] > b[i] ? 1 : -1;
+            break;
+          }
+        }
+      }
+
+      return cmp;
+    }
+
+    function subtract(a, b, aL, base) {
+      var i = 0;
+
+      // Subtract b from a.
+      for (; aL--;) {
+        a[aL] -= i;
+        i = a[aL] < b[aL] ? 1 : 0;
+        a[aL] = i * base + a[aL] - b[aL];
+      }
+
+      // Remove leading zeros.
+      for (; !a[0] && a.length > 1; a.splice(0, 1));
+    }
+
+    // x: dividend, y: divisor.
+    return function (x, y, dp, rm, base) {
+      var cmp, e, i, more, n, prod, prodL, q, qc, rem, remL, rem0, xi, xL, yc0,
+        yL, yz,
+        s = x.s == y.s ? 1 : -1,
+        xc = x.c,
+        yc = y.c;
+
+      // Either NaN, Infinity or 0?
+      if (!xc || !xc[0] || !yc || !yc[0]) {
+
+        return new BigNumber(
+
+         // Return NaN if either NaN, or both Infinity or 0.
+         !x.s || !y.s || (xc ? yc && xc[0] == yc[0] : !yc) ? NaN :
+
+          // Return ±0 if x is ±0 or y is ±Infinity, or return ±Infinity as y is ±0.
+          xc && xc[0] == 0 || !yc ? s * 0 : s / 0
+       );
+      }
+
+      q = new BigNumber(s);
+      qc = q.c = [];
+      e = x.e - y.e;
+      s = dp + e + 1;
+
+      if (!base) {
+        base = BASE;
+        e = bitFloor(x.e / LOG_BASE) - bitFloor(y.e / LOG_BASE);
+        s = s / LOG_BASE | 0;
+      }
+
+      // Result exponent may be one less then the current value of e.
+      // The coefficients of the BigNumbers from convertBase may have trailing zeros.
+      for (i = 0; yc[i] == (xc[i] || 0); i++);
+
+      if (yc[i] > (xc[i] || 0)) e--;
+
+      if (s < 0) {
+        qc.push(1);
+        more = true;
+      } else {
+        xL = xc.length;
+        yL = yc.length;
+        i = 0;
+        s += 2;
+
+        // Normalise xc and yc so highest order digit of yc is >= base / 2.
+
+        n = mathfloor(base / (yc[0] + 1));
+
+        // Not necessary, but to handle odd bases where yc[0] == (base / 2) - 1.
+        // if (n > 1 || n++ == 1 && yc[0] < base / 2) {
+        if (n > 1) {
+          yc = multiply(yc, n, base);
+          xc = multiply(xc, n, base);
+          yL = yc.length;
+          xL = xc.length;
+        }
+
+        xi = yL;
+        rem = xc.slice(0, yL);
+        remL = rem.length;
+
+        // Add zeros to make remainder as long as divisor.
+        for (; remL < yL; rem[remL++] = 0);
+        yz = yc.slice();
+        yz = [0].concat(yz);
+        yc0 = yc[0];
+        if (yc[1] >= base / 2) yc0++;
+        // Not necessary, but to prevent trial digit n > base, when using base 3.
+        // else if (base == 3 && yc0 == 1) yc0 = 1 + 1e-15;
+
+        do {
+          n = 0;
+
+          // Compare divisor and remainder.
+          cmp = compare(yc, rem, yL, remL);
+
+          // If divisor < remainder.
+          if (cmp < 0) {
+
+            // Calculate trial digit, n.
+
+            rem0 = rem[0];
+            if (yL != remL) rem0 = rem0 * base + (rem[1] || 0);
+
+            // n is how many times the divisor goes into the current remainder.
+            n = mathfloor(rem0 / yc0);
+
+            //  Algorithm:
+            //  product = divisor multiplied by trial digit (n).
+            //  Compare product and remainder.
+            //  If product is greater than remainder:
+            //    Subtract divisor from product, decrement trial digit.
+            //  Subtract product from remainder.
+            //  If product was less than remainder at the last compare:
+            //    Compare new remainder and divisor.
+            //    If remainder is greater than divisor:
+            //      Subtract divisor from remainder, increment trial digit.
+
+            if (n > 1) {
+
+              // n may be > base only when base is 3.
+              if (n >= base) n = base - 1;
+
+              // product = divisor * trial digit.
+              prod = multiply(yc, n, base);
+              prodL = prod.length;
+              remL = rem.length;
+
+              // Compare product and remainder.
+              // If product > remainder then trial digit n too high.
+              // n is 1 too high about 5% of the time, and is not known to have
+              // ever been more than 1 too high.
+              while (compare(prod, rem, prodL, remL) == 1) {
+                n--;
+
+                // Subtract divisor from product.
+                subtract(prod, yL < prodL ? yz : yc, prodL, base);
+                prodL = prod.length;
+                cmp = 1;
+              }
+            } else {
+
+              // n is 0 or 1, cmp is -1.
+              // If n is 0, there is no need to compare yc and rem again below,
+              // so change cmp to 1 to avoid it.
+              // If n is 1, leave cmp as -1, so yc and rem are compared again.
+              if (n == 0) {
+
+                // divisor < remainder, so n must be at least 1.
+                cmp = n = 1;
+              }
+
+              // product = divisor
+              prod = yc.slice();
+              prodL = prod.length;
+            }
+
+            if (prodL < remL) prod = [0].concat(prod);
+
+            // Subtract product from remainder.
+            subtract(rem, prod, remL, base);
+            remL = rem.length;
+
+             // If product was < remainder.
+            if (cmp == -1) {
+
+              // Compare divisor and new remainder.
+              // If divisor < new remainder, subtract divisor from remainder.
+              // Trial digit n too low.
+              // n is 1 too low about 5% of the time, and very rarely 2 too low.
+              while (compare(yc, rem, yL, remL) < 1) {
+                n++;
+
+                // Subtract divisor from remainder.
+                subtract(rem, yL < remL ? yz : yc, remL, base);
+                remL = rem.length;
+              }
+            }
+          } else if (cmp === 0) {
+            n++;
+            rem = [0];
+          } // else cmp === 1 and n will be 0
+
+          // Add the next digit, n, to the result array.
+          qc[i++] = n;
+
+          // Update the remainder.
+          if (rem[0]) {
+            rem[remL++] = xc[xi] || 0;
+          } else {
+            rem = [xc[xi]];
+            remL = 1;
+          }
+        } while ((xi++ < xL || rem[0] != null) && s--);
+
+        more = rem[0] != null;
+
+        // Leading zero?
+        if (!qc[0]) qc.splice(0, 1);
+      }
+
+      if (base == BASE) {
+
+        // To calculate q.e, first get the number of digits of qc[0].
+        for (i = 1, s = qc[0]; s >= 10; s /= 10, i++);
+
+        round(q, dp + (q.e = i + e * LOG_BASE - 1) + 1, rm, more);
+
+      // Caller is convertBase.
+      } else {
+        q.e = e;
+        q.r = +more;
+      }
+
+      return q;
+    };
+  })();
+
+
+  /*
+   * Return a string representing the value of BigNumber n in fixed-point or exponential
+   * notation rounded to the specified decimal places or significant digits.
+   *
+   * n: a BigNumber.
+   * i: the index of the last digit required (i.e. the digit that may be rounded up).
+   * rm: the rounding mode.
+   * id: 1 (toExponential) or 2 (toPrecision).
+   */
+  function format(n, i, rm, id) {
+    var c0, e, ne, len, str;
+
+    if (rm == null) rm = ROUNDING_MODE;
+    else intCheck(rm, 0, 8);
+
+    if (!n.c) return n.toString();
+
+    c0 = n.c[0];
+    ne = n.e;
+
+    if (i == null) {
+      str = coeffToString(n.c);
+      str = id == 1 || id == 2 && (ne <= TO_EXP_NEG || ne >= TO_EXP_POS)
+       ? toExponential(str, ne)
+       : toFixedPoint(str, ne, '0');
+    } else {
+      n = round(new BigNumber(n), i, rm);
+
+      // n.e may have changed if the value was rounded up.
+      e = n.e;
+
+      str = coeffToString(n.c);
+      len = str.length;
+
+      // toPrecision returns exponential notation if the number of significant digits
+      // specified is less than the number of digits necessary to represent the integer
+      // part of the value in fixed-point notation.
+
+      // Exponential notation.
+      if (id == 1 || id == 2 && (i <= e || e <= TO_EXP_NEG)) {
+
+        // Append zeros?
+        for (; len < i; str += '0', len++);
+        str = toExponential(str, e);
+
+      // Fixed-point notation.
+      } else {
+        i -= ne;
+        str = toFixedPoint(str, e, '0');
+
+        // Append zeros?
+        if (e + 1 > len) {
+          if (--i > 0) for (str += '.'; i--; str += '0');
+        } else {
+          i += e - len;
+          if (i > 0) {
+            if (e + 1 == len) str += '.';
+            for (; i--; str += '0');
+          }
+        }
+      }
+    }
+
+    return n.s < 0 && c0 ? '-' + str : str;
+  }
+
+
+  // Handle BigNumber.max and BigNumber.min.
+  function maxOrMin(args, method) {
+    var n,
+      i = 1,
+      m = new BigNumber(args[0]);
+
+    for (; i < args.length; i++) {
+      n = new BigNumber(args[i]);
+
+      // If any number is NaN, return NaN.
+      if (!n.s) {
+        m = n;
+        break;
+      } else if (method.call(m, n)) {
+        m = n;
+      }
+    }
+
+    return m;
+  }
+
+
+  /*
+   * Strip trailing zeros, calculate base 10 exponent and check against MIN_EXP and MAX_EXP.
+   * Called by minus, plus and times.
+   */
+  function normalise(n, c, e) {
+    var i = 1,
+      j = c.length;
+
+     // Remove trailing zeros.
+    for (; !c[--j]; c.pop());
+
+    // Calculate the base 10 exponent. First get the number of digits of c[0].
+    for (j = c[0]; j >= 10; j /= 10, i++);
+
+    // Overflow?
+    if ((e = i + e * LOG_BASE - 1) > MAX_EXP) {
+
+      // Infinity.
+      n.c = n.e = null;
+
+    // Underflow?
+    } else if (e < MIN_EXP) {
+
+      // Zero.
+      n.c = [n.e = 0];
+    } else {
+      n.e = e;
+      n.c = c;
+    }
+
+    return n;
+  }
+
+
+  // Handle values that fail the validity test in BigNumber.
+  parseNumeric = (function () {
+    var basePrefix = /^(-?)0([xbo])(?=\w[\w.]*$)/i,
+      dotAfter = /^([^.]+)\.$/,
+      dotBefore = /^\.([^.]+)$/,
+      isInfinityOrNaN = /^-?(Infinity|NaN)$/,
+      whitespaceOrPlus = /^\s*\+(?=[\w.])|^\s+|\s+$/g;
+
+    return function (x, str, isNum, b) {
+      var base,
+        s = isNum ? str : str.replace(whitespaceOrPlus, '');
+
+      // No exception on ±Infinity or NaN.
+      if (isInfinityOrNaN.test(s)) {
+        x.s = isNaN(s) ? null : s < 0 ? -1 : 1;
+      } else {
+        if (!isNum) {
+
+          // basePrefix = /^(-?)0([xbo])(?=\w[\w.]*$)/i
+          s = s.replace(basePrefix, function (m, p1, p2) {
+            base = (p2 = p2.toLowerCase()) == 'x' ? 16 : p2 == 'b' ? 2 : 8;
+            return !b || b == base ? p1 : m;
+          });
+
+          if (b) {
+            base = b;
+
+            // E.g. '1.' to '1', '.1' to '0.1'
+            s = s.replace(dotAfter, '$1').replace(dotBefore, '0.$1');
+          }
+
+          if (str != s) return new BigNumber(s, base);
+        }
+
+        // '[BigNumber Error] Not a number: {n}'
+        // '[BigNumber Error] Not a base {b} number: {n}'
+        if (BigNumber.DEBUG) {
+          throw Error
+            (bignumberError + 'Not a' + (b ? ' base ' + b : '') + ' number: ' + str);
+        }
+
+        // NaN
+        x.s = null;
+      }
+
+      x.c = x.e = null;
+    }
+  })();
+
+
+  /*
+   * Round x to sd significant digits using rounding mode rm. Check for over/under-flow.
+   * If r is truthy, it is known that there are more digits after the rounding digit.
+   */
+  function round(x, sd, rm, r) {
+    var d, i, j, k, n, ni, rd,
+      xc = x.c,
+      pows10 = POWS_TEN;
+
+    // if x is not Infinity or NaN...
+    if (xc) {
+
+      // rd is the rounding digit, i.e. the digit after the digit that may be rounded up.
+      // n is a base 1e14 number, the value of the element of array x.c containing rd.
+      // ni is the index of n within x.c.
+      // d is the number of digits of n.
+      // i is the index of rd within n including leading zeros.
+      // j is the actual index of rd within n (if < 0, rd is a leading zero).
+      out: {
+
+        // Get the number of digits of the first element of xc.
+        for (d = 1, k = xc[0]; k >= 10; k /= 10, d++);
+        i = sd - d;
+
+        // If the rounding digit is in the first element of xc...
+        if (i < 0) {
+          i += LOG_BASE;
+          j = sd;
+          n = xc[ni = 0];
+
+          // Get the rounding digit at index j of n.
+          rd = n / pows10[d - j - 1] % 10 | 0;
+        } else {
+          ni = mathceil((i + 1) / LOG_BASE);
+
+          if (ni >= xc.length) {
+
+            if (r) {
+
+              // Needed by sqrt.
+              for (; xc.length <= ni; xc.push(0));
+              n = rd = 0;
+              d = 1;
+              i %= LOG_BASE;
+              j = i - LOG_BASE + 1;
+            } else {
+              break out;
+            }
+          } else {
+            n = k = xc[ni];
+
+            // Get the number of digits of n.
+            for (d = 1; k >= 10; k /= 10, d++);
+
+            // Get the index of rd within n.
+            i %= LOG_BASE;
+
+            // Get the index of rd within n, adjusted for leading zeros.
+            // The number of leading zeros of n is given by LOG_BASE - d.
+            j = i - LOG_BASE + d;
+
+            // Get the rounding digit at index j of n.
+            rd = j < 0 ? 0 : n / pows10[d - j - 1] % 10 | 0;
+          }
+        }
+
+        r = r || sd < 0 ||
+
+        // Are there any non-zero digits after the rounding digit?
+        // The expression  n % pows10[d - j - 1]  returns all digits of n to the right
+        // of the digit at j, e.g. if n is 908714 and j is 2, the expression gives 714.
+         xc[ni + 1] != null || (j < 0 ? n : n % pows10[d - j - 1]);
+
+        r = rm < 4
+         ? (rd || r) && (rm == 0 || rm == (x.s < 0 ? 3 : 2))
+         : rd > 5 || rd == 5 && (rm == 4 || r || rm == 6 &&
+
+          // Check whether the digit to the left of the rounding digit is odd.
+          ((i > 0 ? j > 0 ? n / pows10[d - j] : 0 : xc[ni - 1]) % 10) & 1 ||
+           rm == (x.s < 0 ? 8 : 7));
+
+        if (sd < 1 || !xc[0]) {
+          xc.length = 0;
+
+          if (r) {
+
+            // Convert sd to decimal places.
+            sd -= x.e + 1;
+
+            // 1, 0.1, 0.01, 0.001, 0.0001 etc.
+            xc[0] = pows10[(LOG_BASE - sd % LOG_BASE) % LOG_BASE];
+            x.e = -sd || 0;
+          } else {
+
+            // Zero.
+            xc[0] = x.e = 0;
+          }
+
+          return x;
+        }
+
+        // Remove excess digits.
+        if (i == 0) {
+          xc.length = ni;
+          k = 1;
+          ni--;
+        } else {
+          xc.length = ni + 1;
+          k = pows10[LOG_BASE - i];
+
+          // E.g. 56700 becomes 56000 if 7 is the rounding digit.
+          // j > 0 means i > number of leading zeros of n.
+          xc[ni] = j > 0 ? mathfloor(n / pows10[d - j] % pows10[j]) * k : 0;
+        }
+
+        // Round up?
+        if (r) {
+
+          for (; ;) {
+
+            // If the digit to be rounded up is in the first element of xc...
+            if (ni == 0) {
+
+              // i will be the length of xc[0] before k is added.
+              for (i = 1, j = xc[0]; j >= 10; j /= 10, i++);
+              j = xc[0] += k;
+              for (k = 1; j >= 10; j /= 10, k++);
+
+              // if i != k the length has increased.
+              if (i != k) {
+                x.e++;
+                if (xc[0] == BASE) xc[0] = 1;
+              }
+
+              break;
+            } else {
+              xc[ni] += k;
+              if (xc[ni] != BASE) break;
+              xc[ni--] = 0;
+              k = 1;
+            }
+          }
+        }
+
+        // Remove trailing zeros.
+        for (i = xc.length; xc[--i] === 0; xc.pop());
+      }
+
+      // Overflow? Infinity.
+      if (x.e > MAX_EXP) {
+        x.c = x.e = null;
+
+      // Underflow? Zero.
+      } else if (x.e < MIN_EXP) {
+        x.c = [x.e = 0];
+      }
+    }
+
+    return x;
+  }
+
+
+  function valueOf(n) {
+    var str,
+      e = n.e;
+
+    if (e === null) return n.toString();
+
+    str = coeffToString(n.c);
+
+    str = e <= TO_EXP_NEG || e >= TO_EXP_POS
+      ? toExponential(str, e)
+      : toFixedPoint(str, e, '0');
+
+    return n.s < 0 ? '-' + str : str;
+  }
+
+
+  // PROTOTYPE/INSTANCE METHODS
+
+
+  /*
+   * Return a new BigNumber whose value is the absolute value of this BigNumber.
+   */
+  P.absoluteValue = P.abs = function () {
+    var x = new BigNumber(this);
+    if (x.s < 0) x.s = 1;
+    return x;
+  };
+
+
+  /*
+   * Return
+   *   1 if the value of this BigNumber is greater than the value of BigNumber(y, b),
+   *   -1 if the value of this BigNumber is less than the value of BigNumber(y, b),
+   *   0 if they have the same value,
+   *   or null if the value of either is NaN.
+   */
+  P.comparedTo = function (y, b) {
+    return compare(this, new BigNumber(y, b));
+  };
+
+
+  /*
+   * If dp is undefined or null or true or false, return the number of decimal places of the
+   * value of this BigNumber, or null if the value of this BigNumber is ±Infinity or NaN.
+   *
+   * Otherwise, if dp is a number, return a new BigNumber whose value is the value of this
+   * BigNumber rounded to a maximum of dp decimal places using rounding mode rm, or
+   * ROUNDING_MODE if rm is omitted.
+   *
+   * [dp] {number} Decimal places: integer, 0 to MAX inclusive.
+   * [rm] {number} Rounding mode. Integer, 0 to 8 inclusive.
+   *
+   * '[BigNumber Error] Argument {not a primitive number|not an integer|out of range}: {dp|rm}'
+   */
+  P.decimalPlaces = P.dp = function (dp, rm) {
+    var c, n, v,
+      x = this;
+
+    if (dp != null) {
+      intCheck(dp, 0, MAX);
+      if (rm == null) rm = ROUNDING_MODE;
+      else intCheck(rm, 0, 8);
+
+      return round(new BigNumber(x), dp + x.e + 1, rm);
+    }
+
+    if (!(c = x.c)) return null;
+    n = ((v = c.length - 1) - bitFloor(this.e / LOG_BASE)) * LOG_BASE;
+
+    // Subtract the number of trailing zeros of the last number.
+    if (v = c[v]) for (; v % 10 == 0; v /= 10, n--);
+    if (n < 0) n = 0;
+
+    return n;
+  };
+
+
+  /*
+   *  n / 0 = I
+   *  n / N = N
+   *  n / I = 0
+   *  0 / n = 0
+   *  0 / 0 = N
+   *  0 / N = N
+   *  0 / I = 0
+   *  N / n = N
+   *  N / 0 = N
+   *  N / N = N
+   *  N / I = N
+   *  I / n = I
+   *  I / 0 = I
+   *  I / N = N
+   *  I / I = N
+   *
+   * Return a new BigNumber whose value is the value of this BigNumber divided by the value of
+   * BigNumber(y, b), rounded according to DECIMAL_PLACES and ROUNDING_MODE.
+   */
+  P.dividedBy = P.div = function (y, b) {
+    return div(this, new BigNumber(y, b), DECIMAL_PLACES, ROUNDING_MODE);
+  };
+
+
+  /*
+   * Return a new BigNumber whose value is the integer part of dividing the value of this
+   * BigNumber by the value of BigNumber(y, b).
+   */
+  P.dividedToIntegerBy = P.idiv = function (y, b) {
+    return div(this, new BigNumber(y, b), 0, 1);
+  };
+
+
+  /*
+   * Return a BigNumber whose value is the value of this BigNumber exponentiated by n.
+   *
+   * If m is present, return the result modulo m.
+   * If n is negative round according to DECIMAL_PLACES and ROUNDING_MODE.
+   * If POW_PRECISION is non-zero and m is not present, round to POW_PRECISION using ROUNDING_MODE.
+   *
+   * The modular power operation works efficiently when x, n, and m are integers, otherwise it
+   * is equivalent to calculating x.exponentiatedBy(n).modulo(m) with a POW_PRECISION of 0.
+   *
+   * n {number|string|BigNumber} The exponent. An integer.
+   * [m] {number|string|BigNumber} The modulus.
+   *
+   * '[BigNumber Error] Exponent not an integer: {n}'
+   */
+  P.exponentiatedBy = P.pow = function (n, m) {
+    var half, isModExp, i, k, more, nIsBig, nIsNeg, nIsOdd, y,
+      x = this;
+
+    n = new BigNumber(n);
+
+    // Allow NaN and ±Infinity, but not other non-integers.
+    if (n.c && !n.isInteger()) {
+      throw Error
+        (bignumberError + 'Exponent not an integer: ' + valueOf(n));
+    }
+
+    if (m != null) m = new BigNumber(m);
+
+    // Exponent of MAX_SAFE_INTEGER is 15.
+    nIsBig = n.e > 14;
+
+    // If x is NaN, ±Infinity, ±0 or ±1, or n is ±Infinity, NaN or ±0.
+    if (!x.c || !x.c[0] || x.c[0] == 1 && !x.e && x.c.length == 1 || !n.c || !n.c[0]) {
+
+      // The sign of the result of pow when x is negative depends on the evenness of n.
+      // If +n overflows to ±Infinity, the evenness of n would be not be known.
+      y = new BigNumber(Math.pow(+valueOf(x), nIsBig ? n.s * (2 - isOdd(n)) : +valueOf(n)));
+      return m ? y.mod(m) : y;
+    }
+
+    nIsNeg = n.s < 0;
+
+    if (m) {
+
+      // x % m returns NaN if abs(m) is zero, or m is NaN.
+      if (m.c ? !m.c[0] : !m.s) return new BigNumber(NaN);
+
+      isModExp = !nIsNeg && x.isInteger() && m.isInteger();
+
+      if (isModExp) x = x.mod(m);
+
+    // Overflow to ±Infinity: >=2**1e10 or >=1.0000024**1e15.
+    // Underflow to ±0: <=0.79**1e10 or <=0.9999975**1e15.
+    } else if (n.e > 9 && (x.e > 0 || x.e < -1 || (x.e == 0
+      // [1, 240000000]
+      ? x.c[0] > 1 || nIsBig && x.c[1] >= 24e7
+      // [80000000000000]  [99999750000000]
+      : x.c[0] < 8e13 || nIsBig && x.c[0] <= 9999975e7))) {
+
+      // If x is negative and n is odd, k = -0, else k = 0.
+      k = x.s < 0 && isOdd(n) ? -0 : 0;
+
+      // If x >= 1, k = ±Infinity.
+      if (x.e > -1) k = 1 / k;
+
+      // If n is negative return ±0, else return ±Infinity.
+      return new BigNumber(nIsNeg ? 1 / k : k);
+
+    } else if (POW_PRECISION) {
+
+      // Truncating each coefficient array to a length of k after each multiplication
+      // equates to truncating significant digits to POW_PRECISION + [28, 41],
+      // i.e. there will be a minimum of 28 guard digits retained.
+      k = mathceil(POW_PRECISION / LOG_BASE + 2);
+    }
+
+    if (nIsBig) {
+      half = new BigNumber(0.5);
+      if (nIsNeg) n.s = 1;
+      nIsOdd = isOdd(n);
+    } else {
+      i = Math.abs(+valueOf(n));
+      nIsOdd = i % 2;
+    }
+
+    y = new BigNumber(ONE);
+
+    // Performs 54 loop iterations for n of 9007199254740991.
+    for (; ;) {
+
+      if (nIsOdd) {
+        y = y.times(x);
+        if (!y.c) break;
+
+        if (k) {
+          if (y.c.length > k) y.c.length = k;
+        } else if (isModExp) {
+          y = y.mod(m);    //y = y.minus(div(y, m, 0, MODULO_MODE).times(m));
+        }
+      }
+
+      if (i) {
+        i = mathfloor(i / 2);
+        if (i === 0) break;
+        nIsOdd = i % 2;
+      } else {
+        n = n.times(half);
+        round(n, n.e + 1, 1);
+
+        if (n.e > 14) {
+          nIsOdd = isOdd(n);
+        } else {
+          i = +valueOf(n);
+          if (i === 0) break;
+          nIsOdd = i % 2;
+        }
+      }
+
+      x = x.times(x);
+
+      if (k) {
+        if (x.c && x.c.length > k) x.c.length = k;
+      } else if (isModExp) {
+        x = x.mod(m);    //x = x.minus(div(x, m, 0, MODULO_MODE).times(m));
+      }
+    }
+
+    if (isModExp) return y;
+    if (nIsNeg) y = ONE.div(y);
+
+    return m ? y.mod(m) : k ? round(y, POW_PRECISION, ROUNDING_MODE, more) : y;
+  };
+
+
+  /*
+   * Return a new BigNumber whose value is the value of this BigNumber rounded to an integer
+   * using rounding mode rm, or ROUNDING_MODE if rm is omitted.
+   *
+   * [rm] {number} Rounding mode. Integer, 0 to 8 inclusive.
+   *
+   * '[BigNumber Error] Argument {not a primitive number|not an integer|out of range}: {rm}'
+   */
+  P.integerValue = function (rm) {
+    var n = new BigNumber(this);
+    if (rm == null) rm = ROUNDING_MODE;
+    else intCheck(rm, 0, 8);
+    return round(n, n.e + 1, rm);
+  };
+
+
+  /*
+   * Return true if the value of this BigNumber is equal to the value of BigNumber(y, b),
+   * otherwise return false.
+   */
+  P.isEqualTo = P.eq = function (y, b) {
+    return compare(this, new BigNumber(y, b)) === 0;
+  };
+
+
+  /*
+   * Return true if the value of this BigNumber is a finite number, otherwise return false.
+   */
+  P.isFinite = function () {
+    return !!this.c;
+  };
+
+
+  /*
+   * Return true if the value of this BigNumber is greater than the value of BigNumber(y, b),
+   * otherwise return false.
+   */
+  P.isGreaterThan = P.gt = function (y, b) {
+    return compare(this, new BigNumber(y, b)) > 0;
+  };
+
+
+  /*
+   * Return true if the value of this BigNumber is greater than or equal to the value of
+   * BigNumber(y, b), otherwise return false.
+   */
+  P.isGreaterThanOrEqualTo = P.gte = function (y, b) {
+    return (b = compare(this, new BigNumber(y, b))) === 1 || b === 0;
+
+  };
+
+
+  /*
+   * Return true if the value of this BigNumber is an integer, otherwise return false.
+   */
+  P.isInteger = function () {
+    return !!this.c && bitFloor(this.e / LOG_BASE) > this.c.length - 2;
+  };
+
+
+  /*
+   * Return true if the value of this BigNumber is less than the value of BigNumber(y, b),
+   * otherwise return false.
+   */
+  P.isLessThan = P.lt = function (y, b) {
+    return compare(this, new BigNumber(y, b)) < 0;
+  };
+
+
+  /*
+   * Return true if the value of this BigNumber is less than or equal to the value of
+   * BigNumber(y, b), otherwise return false.
+   */
+  P.isLessThanOrEqualTo = P.lte = function (y, b) {
+    return (b = compare(this, new BigNumber(y, b))) === -1 || b === 0;
+  };
+
+
+  /*
+   * Return true if the value of this BigNumber is NaN, otherwise return false.
+   */
+  P.isNaN = function () {
+    return !this.s;
+  };
+
+
+  /*
+   * Return true if the value of this BigNumber is negative, otherwise return false.
+   */
+  P.isNegative = function () {
+    return this.s < 0;
+  };
+
+
+  /*
+   * Return true if the value of this BigNumber is positive, otherwise return false.
+   */
+  P.isPositive = function () {
+    return this.s > 0;
+  };
+
+
+  /*
+   * Return true if the value of this BigNumber is 0 or -0, otherwise return false.
+   */
+  P.isZero = function () {
+    return !!this.c && this.c[0] == 0;
+  };
+
+
+  /*
+   *  n - 0 = n
+   *  n - N = N
+   *  n - I = -I
+   *  0 - n = -n
+   *  0 - 0 = 0
+   *  0 - N = N
+   *  0 - I = -I
+   *  N - n = N
+   *  N - 0 = N
+   *  N - N = N
+   *  N - I = N
+   *  I - n = I
+   *  I - 0 = I
+   *  I - N = N
+   *  I - I = N
+   *
+   * Return a new BigNumber whose value is the value of this BigNumber minus the value of
+   * BigNumber(y, b).
+   */
+  P.minus = function (y, b) {
+    var i, j, t, xLTy,
+      x = this,
+      a = x.s;
+
+    y = new BigNumber(y, b);
+    b = y.s;
+
+    // Either NaN?
+    if (!a || !b) return new BigNumber(NaN);
+
+    // Signs differ?
+    if (a != b) {
+      y.s = -b;
+      return x.plus(y);
+    }
+
+    var xe = x.e / LOG_BASE,
+      ye = y.e / LOG_BASE,
+      xc = x.c,
+      yc = y.c;
+
+    if (!xe || !ye) {
+
+      // Either Infinity?
+      if (!xc || !yc) return xc ? (y.s = -b, y) : new BigNumber(yc ? x : NaN);
+
+      // Either zero?
+      if (!xc[0] || !yc[0]) {
+
+        // Return y if y is non-zero, x if x is non-zero, or zero if both are zero.
+        return yc[0] ? (y.s = -b, y) : new BigNumber(xc[0] ? x :
+
+         // IEEE 754 (2008) 6.3: n - n = -0 when rounding to -Infinity
+         ROUNDING_MODE == 3 ? -0 : 0);
+      }
+    }
+
+    xe = bitFloor(xe);
+    ye = bitFloor(ye);
+    xc = xc.slice();
+
+    // Determine which is the bigger number.
+    if (a = xe - ye) {
+
+      if (xLTy = a < 0) {
+        a = -a;
+        t = xc;
+      } else {
+        ye = xe;
+        t = yc;
+      }
+
+      t.reverse();
+
+      // Prepend zeros to equalise exponents.
+      for (b = a; b--; t.push(0));
+      t.reverse();
+    } else {
+
+      // Exponents equal. Check digit by digit.
+      j = (xLTy = (a = xc.length) < (b = yc.length)) ? a : b;
+
+      for (a = b = 0; b < j; b++) {
+
+        if (xc[b] != yc[b]) {
+          xLTy = xc[b] < yc[b];
+          break;
+        }
+      }
+    }
+
+    // x < y? Point xc to the array of the bigger number.
+    if (xLTy) t = xc, xc = yc, yc = t, y.s = -y.s;
+
+    b = (j = yc.length) - (i = xc.length);
+
+    // Append zeros to xc if shorter.
+    // No need to add zeros to yc if shorter as subtract only needs to start at yc.length.
+    if (b > 0) for (; b--; xc[i++] = 0);
+    b = BASE - 1;
+
+    // Subtract yc from xc.
+    for (; j > a;) {
+
+      if (xc[--j] < yc[j]) {
+        for (i = j; i && !xc[--i]; xc[i] = b);
+        --xc[i];
+        xc[j] += BASE;
+      }
+
+      xc[j] -= yc[j];
+    }
+
+    // Remove leading zeros and adjust exponent accordingly.
+    for (; xc[0] == 0; xc.splice(0, 1), --ye);
+
+    // Zero?
+    if (!xc[0]) {
+
+      // Following IEEE 754 (2008) 6.3,
+      // n - n = +0  but  n - n = -0  when rounding towards -Infinity.
+      y.s = ROUNDING_MODE == 3 ? -1 : 1;
+      y.c = [y.e = 0];
+      return y;
+    }
+
+    // No need to check for Infinity as +x - +y != Infinity && -x - -y != Infinity
+    // for finite x and y.
+    return normalise(y, xc, ye);
+  };
+
+
+  /*
+   *   n % 0 =  N
+   *   n % N =  N
+   *   n % I =  n
+   *   0 % n =  0
+   *  -0 % n = -0
+   *   0 % 0 =  N
+   *   0 % N =  N
+   *   0 % I =  0
+   *   N % n =  N
+   *   N % 0 =  N
+   *   N % N =  N
+   *   N % I =  N
+   *   I % n =  N
+   *   I % 0 =  N
+   *   I % N =  N
+   *   I % I =  N
+   *
+   * Return a new BigNumber whose value is the value of this BigNumber modulo the value of
+   * BigNumber(y, b). The result depends on the value of MODULO_MODE.
+   */
+  P.modulo = P.mod = function (y, b) {
+    var q, s,
+      x = this;
+
+    y = new BigNumber(y, b);
+
+    // Return NaN if x is Infinity or NaN, or y is NaN or zero.
+    if (!x.c || !y.s || y.c && !y.c[0]) {
+      return new BigNumber(NaN);
+
+    // Return x if y is Infinity or x is zero.
+    } else if (!y.c || x.c && !x.c[0]) {
+      return new BigNumber(x);
+    }
+
+    if (MODULO_MODE == 9) {
+
+      // Euclidian division: q = sign(y) * floor(x / abs(y))
+      // r = x - qy    where  0 <= r < abs(y)
+      s = y.s;
+      y.s = 1;
+      q = div(x, y, 0, 3);
+      y.s = s;
+      q.s *= s;
+    } else {
+      q = div(x, y, 0, MODULO_MODE);
+    }
+
+    y = x.minus(q.times(y));
+
+    // To match JavaScript %, ensure sign of zero is sign of dividend.
+    if (!y.c[0] && MODULO_MODE == 1) y.s = x.s;
+
+    return y;
+  };
+
+
+  /*
+   *  n * 0 = 0
+   *  n * N = N
+   *  n * I = I
+   *  0 * n = 0
+   *  0 * 0 = 0
+   *  0 * N = N
+   *  0 * I = N
+   *  N * n = N
+   *  N * 0 = N
+   *  N * N = N
+   *  N * I = N
+   *  I * n = I
+   *  I * 0 = N
+   *  I * N = N
+   *  I * I = I
+   *
+   * Return a new BigNumber whose value is the value of this BigNumber multiplied by the value
+   * of BigNumber(y, b).
+   */
+  P.multipliedBy = P.times = function (y, b) {
+    var c, e, i, j, k, m, xcL, xlo, xhi, ycL, ylo, yhi, zc,
+      base, sqrtBase,
+      x = this,
+      xc = x.c,
+      yc = (y = new BigNumber(y, b)).c;
+
+    // Either NaN, ±Infinity or ±0?
+    if (!xc || !yc || !xc[0] || !yc[0]) {
+
+      // Return NaN if either is NaN, or one is 0 and the other is Infinity.
+      if (!x.s || !y.s || xc && !xc[0] && !yc || yc && !yc[0] && !xc) {
+        y.c = y.e = y.s = null;
+      } else {
+        y.s *= x.s;
+
+        // Return ±Infinity if either is ±Infinity.
+        if (!xc || !yc) {
+          y.c = y.e = null;
+
+        // Return ±0 if either is ±0.
+        } else {
+          y.c = [0];
+          y.e = 0;
+        }
+      }
+
+      return y;
+    }
+
+    e = bitFloor(x.e / LOG_BASE) + bitFloor(y.e / LOG_BASE);
+    y.s *= x.s;
+    xcL = xc.length;
+    ycL = yc.length;
+
+    // Ensure xc points to longer array and xcL to its length.
+    if (xcL < ycL) zc = xc, xc = yc, yc = zc, i = xcL, xcL = ycL, ycL = i;
+
+    // Initialise the result array with zeros.
+    for (i = xcL + ycL, zc = []; i--; zc.push(0));
+
+    base = BASE;
+    sqrtBase = SQRT_BASE;
+
+    for (i = ycL; --i >= 0;) {
+      c = 0;
+      ylo = yc[i] % sqrtBase;
+      yhi = yc[i] / sqrtBase | 0;
+
+      for (k = xcL, j = i + k; j > i;) {
+        xlo = xc[--k] % sqrtBase;
+        xhi = xc[k] / sqrtBase | 0;
+        m = yhi * xlo + xhi * ylo;
+        xlo = ylo * xlo + ((m % sqrtBase) * sqrtBase) + zc[j] + c;
+        c = (xlo / base | 0) + (m / sqrtBase | 0) + yhi * xhi;
+        zc[j--] = xlo % base;
+      }
+
+      zc[j] = c;
+    }
+
+    if (c) {
+      ++e;
+    } else {
+      zc.splice(0, 1);
+    }
+
+    return normalise(y, zc, e);
+  };
+
+
+  /*
+   * Return a new BigNumber whose value is the value of this BigNumber negated,
+   * i.e. multiplied by -1.
+   */
+  P.negated = function () {
+    var x = new BigNumber(this);
+    x.s = -x.s || null;
+    return x;
+  };
+
+
+  /*
+   *  n + 0 = n
+   *  n + N = N
+   *  n + I = I
+   *  0 + n = n
+   *  0 + 0 = 0
+   *  0 + N = N
+   *  0 + I = I
+   *  N + n = N
+   *  N + 0 = N
+   *  N + N = N
+   *  N + I = N
+   *  I + n = I
+   *  I + 0 = I
+   *  I + N = N
+   *  I + I = I
+   *
+   * Return a new BigNumber whose value is the value of this BigNumber plus the value of
+   * BigNumber(y, b).
+   */
+  P.plus = function (y, b) {
+    var t,
+      x = this,
+      a = x.s;
+
+    y = new BigNumber(y, b);
+    b = y.s;
+
+    // Either NaN?
+    if (!a || !b) return new BigNumber(NaN);
+
+    // Signs differ?
+     if (a != b) {
+      y.s = -b;
+      return x.minus(y);
+    }
+
+    var xe = x.e / LOG_BASE,
+      ye = y.e / LOG_BASE,
+      xc = x.c,
+      yc = y.c;
+
+    if (!xe || !ye) {
+
+      // Return ±Infinity if either ±Infinity.
+      if (!xc || !yc) return new BigNumber(a / 0);
+
+      // Either zero?
+      // Return y if y is non-zero, x if x is non-zero, or zero if both are zero.
+      if (!xc[0] || !yc[0]) return yc[0] ? y : new BigNumber(xc[0] ? x : a * 0);
+    }
+
+    xe = bitFloor(xe);
+    ye = bitFloor(ye);
+    xc = xc.slice();
+
+    // Prepend zeros to equalise exponents. Faster to use reverse then do unshifts.
+    if (a = xe - ye) {
+      if (a > 0) {
+        ye = xe;
+        t = yc;
+      } else {
+        a = -a;
+        t = xc;
+      }
+
+      t.reverse();
+      for (; a--; t.push(0));
+      t.reverse();
+    }
+
+    a = xc.length;
+    b = yc.length;
+
+    // Point xc to the longer array, and b to the shorter length.
+    if (a - b < 0) t = yc, yc = xc, xc = t, b = a;
+
+    // Only start adding at yc.length - 1 as the further digits of xc can be ignored.
+    for (a = 0; b;) {
+      a = (xc[--b] = xc[b] + yc[b] + a) / BASE | 0;
+      xc[b] = BASE === xc[b] ? 0 : xc[b] % BASE;
+    }
+
+    if (a) {
+      xc = [a].concat(xc);
+      ++ye;
+    }
+
+    // No need to check for zero, as +x + +y != 0 && -x + -y != 0
+    // ye = MAX_EXP + 1 possible
+    return normalise(y, xc, ye);
+  };
+
+
+  /*
+   * If sd is undefined or null or true or false, return the number of significant digits of
+   * the value of this BigNumber, or null if the value of this BigNumber is ±Infinity or NaN.
+   * If sd is true include integer-part trailing zeros in the count.
+   *
+   * Otherwise, if sd is a number, return a new BigNumber whose value is the value of this
+   * BigNumber rounded to a maximum of sd significant digits using rounding mode rm, or
+   * ROUNDING_MODE if rm is omitted.
+   *
+   * sd {number|boolean} number: significant digits: integer, 1 to MAX inclusive.
+   *                     boolean: whether to count integer-part trailing zeros: true or false.
+   * [rm] {number} Rounding mode. Integer, 0 to 8 inclusive.
+   *
+   * '[BigNumber Error] Argument {not a primitive number|not an integer|out of range}: {sd|rm}'
+   */
+  P.precision = P.sd = function (sd, rm) {
+    var c, n, v,
+      x = this;
+
+    if (sd != null && sd !== !!sd) {
+      intCheck(sd, 1, MAX);
+      if (rm == null) rm = ROUNDING_MODE;
+      else intCheck(rm, 0, 8);
+
+      return round(new BigNumber(x), sd, rm);
+    }
+
+    if (!(c = x.c)) return null;
+    v = c.length - 1;
+    n = v * LOG_BASE + 1;
+
+    if (v = c[v]) {
+
+      // Subtract the number of trailing zeros of the last element.
+      for (; v % 10 == 0; v /= 10, n--);
+
+      // Add the number of digits of the first element.
+      for (v = c[0]; v >= 10; v /= 10, n++);
+    }
+
+    if (sd && x.e + 1 > n) n = x.e + 1;
+
+    return n;
+  };
+
+
+  /*
+   * Return a new BigNumber whose value is the value of this BigNumber shifted by k places
+   * (powers of 10). Shift to the right if n > 0, and to the left if n < 0.
+   *
+   * k {number} Integer, -MAX_SAFE_INTEGER to MAX_SAFE_INTEGER inclusive.
+   *
+   * '[BigNumber Error] Argument {not a primitive number|not an integer|out of range}: {k}'
+   */
+  P.shiftedBy = function (k) {
+    intCheck(k, -MAX_SAFE_INTEGER, MAX_SAFE_INTEGER);
+    return this.times('1e' + k);
+  };
+
+
+  /*
+   *  sqrt(-n) =  N
+   *  sqrt(N) =  N
+   *  sqrt(-I) =  N
+   *  sqrt(I) =  I
+   *  sqrt(0) =  0
+   *  sqrt(-0) = -0
+   *
+   * Return a new BigNumber whose value is the square root of the value of this BigNumber,
+   * rounded according to DECIMAL_PLACES and ROUNDING_MODE.
+   */
+  P.squareRoot = P.sqrt = function () {
+    var m, n, r, rep, t,
+      x = this,
+      c = x.c,
+      s = x.s,
+      e = x.e,
+      dp = DECIMAL_PLACES + 4,
+      half = new BigNumber('0.5');
+
+    // Negative/NaN/Infinity/zero?
+    if (s !== 1 || !c || !c[0]) {
+      return new BigNumber(!s || s < 0 && (!c || c[0]) ? NaN : c ? x : 1 / 0);
+    }
+
+    // Initial estimate.
+    s = Math.sqrt(+valueOf(x));
+
+    // Math.sqrt underflow/overflow?
+    // Pass x to Math.sqrt as integer, then adjust the exponent of the result.
+    if (s == 0 || s == 1 / 0) {
+      n = coeffToString(c);
+      if ((n.length + e) % 2 == 0) n += '0';
+      s = Math.sqrt(+n);
+      e = bitFloor((e + 1) / 2) - (e < 0 || e % 2);
+
+      if (s == 1 / 0) {
+        n = '5e' + e;
+      } else {
+        n = s.toExponential();
+        n = n.slice(0, n.indexOf('e') + 1) + e;
+      }
+
+      r = new BigNumber(n);
+    } else {
+      r = new BigNumber(s + '');
+    }
+
+    // Check for zero.
+    // r could be zero if MIN_EXP is changed after the this value was created.
+    // This would cause a division by zero (x/t) and hence Infinity below, which would cause
+    // coeffToString to throw.
+    if (r.c[0]) {
+      e = r.e;
+      s = e + dp;
+      if (s < 3) s = 0;
+
+      // Newton-Raphson iteration.
+      for (; ;) {
+        t = r;
+        r = half.times(t.plus(div(x, t, dp, 1)));
+
+        if (coeffToString(t.c).slice(0, s) === (n = coeffToString(r.c)).slice(0, s)) {
+
+          // The exponent of r may here be one less than the final result exponent,
+          // e.g 0.0009999 (e-4) --> 0.001 (e-3), so adjust s so the rounding digits
+          // are indexed correctly.
+          if (r.e < e) --s;
+          n = n.slice(s - 3, s + 1);
+
+          // The 4th rounding digit may be in error by -1 so if the 4 rounding digits
+          // are 9999 or 4999 (i.e. approaching a rounding boundary) continue the
+          // iteration.
+          if (n == '9999' || !rep && n == '4999') {
+
+            // On the first iteration only, check to see if rounding up gives the
+            // exact result as the nines may infinitely repeat.
+            if (!rep) {
+              round(t, t.e + DECIMAL_PLACES + 2, 0);
+
+              if (t.times(t).eq(x)) {
+                r = t;
+                break;
+              }
+            }
+
+            dp += 4;
+            s += 4;
+            rep = 1;
+          } else {
+
+            // If rounding digits are null, 0{0,4} or 50{0,3}, check for exact
+            // result. If not, then there are further digits and m will be truthy.
+            if (!+n || !+n.slice(1) && n.charAt(0) == '5') {
+
+              // Truncate to the first rounding digit.
+              round(r, r.e + DECIMAL_PLACES + 2, 1);
+              m = !r.times(r).eq(x);
+            }
+
+            break;
+          }
+        }
+      }
+    }
+
+    return round(r, r.e + DECIMAL_PLACES + 1, ROUNDING_MODE, m);
+  };
+
+
+  /*
+   * Return a string representing the value of this BigNumber in exponential notation and
+   * rounded using ROUNDING_MODE to dp fixed decimal places.
+   *
+   * [dp] {number} Decimal places. Integer, 0 to MAX inclusive.
+   * [rm] {number} Rounding mode. Integer, 0 to 8 inclusive.
+   *
+   * '[BigNumber Error] Argument {not a primitive number|not an integer|out of range}: {dp|rm}'
+   */
+  P.toExponential = function (dp, rm) {
+    if (dp != null) {
+      intCheck(dp, 0, MAX);
+      dp++;
+    }
+    return format(this, dp, rm, 1);
+  };
+
+
+  /*
+   * Return a string representing the value of this BigNumber in fixed-point notation rounding
+   * to dp fixed decimal places using rounding mode rm, or ROUNDING_MODE if rm is omitted.
+   *
+   * Note: as with JavaScript's number type, (-0).toFixed(0) is '0',
+   * but e.g. (-0.00001).toFixed(0) is '-0'.
+   *
+   * [dp] {number} Decimal places. Integer, 0 to MAX inclusive.
+   * [rm] {number} Rounding mode. Integer, 0 to 8 inclusive.
+   *
+   * '[BigNumber Error] Argument {not a primitive number|not an integer|out of range}: {dp|rm}'
+   */
+  P.toFixed = function (dp, rm) {
+    if (dp != null) {
+      intCheck(dp, 0, MAX);
+      dp = dp + this.e + 1;
+    }
+    return format(this, dp, rm);
+  };
+
+
+  /*
+   * Return a string representing the value of this BigNumber in fixed-point notation rounded
+   * using rm or ROUNDING_MODE to dp decimal places, and formatted according to the properties
+   * of the format or FORMAT object (see BigNumber.set).
+   *
+   * The formatting object may contain some or all of the properties shown below.
+   *
+   * FORMAT = {
+   *   prefix: '',
+   *   groupSize: 3,
+   *   secondaryGroupSize: 0,
+   *   groupSeparator: ',',
+   *   decimalSeparator: '.',
+   *   fractionGroupSize: 0,
+   *   fractionGroupSeparator: '\xA0',      // non-breaking space
+   *   suffix: ''
+   * };
+   *
+   * [dp] {number} Decimal places. Integer, 0 to MAX inclusive.
+   * [rm] {number} Rounding mode. Integer, 0 to 8 inclusive.
+   * [format] {object} Formatting options. See FORMAT pbject above.
+   *
+   * '[BigNumber Error] Argument {not a primitive number|not an integer|out of range}: {dp|rm}'
+   * '[BigNumber Error] Argument not an object: {format}'
+   */
+  P.toFormat = function (dp, rm, format) {
+    var str,
+      x = this;
+
+    if (format == null) {
+      if (dp != null && rm && typeof rm == 'object') {
+        format = rm;
+        rm = null;
+      } else if (dp && typeof dp == 'object') {
+        format = dp;
+        dp = rm = null;
+      } else {
+        format = FORMAT;
+      }
+    } else if (typeof format != 'object') {
+      throw Error
+        (bignumberError + 'Argument not an object: ' + format);
+    }
+
+    str = x.toFixed(dp, rm);
+
+    if (x.c) {
+      var i,
+        arr = str.split('.'),
+        g1 = +format.groupSize,
+        g2 = +format.secondaryGroupSize,
+        groupSeparator = format.groupSeparator || '',
+        intPart = arr[0],
+        fractionPart = arr[1],
+        isNeg = x.s < 0,
+        intDigits = isNeg ? intPart.slice(1) : intPart,
+        len = intDigits.length;
+
+      if (g2) i = g1, g1 = g2, g2 = i, len -= i;
+
+      if (g1 > 0 && len > 0) {
+        i = len % g1 || g1;
+        intPart = intDigits.substr(0, i);
+        for (; i < len; i += g1) intPart += groupSeparator + intDigits.substr(i, g1);
+        if (g2 > 0) intPart += groupSeparator + intDigits.slice(i);
+        if (isNeg) intPart = '-' + intPart;
+      }
+
+      str = fractionPart
+       ? intPart + (format.decimalSeparator || '') + ((g2 = +format.fractionGroupSize)
+        ? fractionPart.replace(new RegExp('\\d{' + g2 + '}\\B', 'g'),
+         '$&' + (format.fractionGroupSeparator || ''))
+        : fractionPart)
+       : intPart;
+    }
+
+    return (format.prefix || '') + str + (format.suffix || '');
+  };
+
+
+  /*
+   * Return an array of two BigNumbers representing the value of this BigNumber as a simple
+   * fraction with an integer numerator and an integer denominator.
+   * The denominator will be a positive non-zero value less than or equal to the specified
+   * maximum denominator. If a maximum denominator is not specified, the denominator will be
+   * the lowest value necessary to represent the number exactly.
+   *
+   * [md] {number|string|BigNumber} Integer >= 1, or Infinity. The maximum denominator.
+   *
+   * '[BigNumber Error] Argument {not an integer|out of range} : {md}'
+   */
+  P.toFraction = function (md) {
+    var d, d0, d1, d2, e, exp, n, n0, n1, q, r, s,
+      x = this,
+      xc = x.c;
+
+    if (md != null) {
+      n = new BigNumber(md);
+
+      // Throw if md is less than one or is not an integer, unless it is Infinity.
+      if (!n.isInteger() && (n.c || n.s !== 1) || n.lt(ONE)) {
+        throw Error
+          (bignumberError + 'Argument ' +
+            (n.isInteger() ? 'out of range: ' : 'not an integer: ') + valueOf(n));
+      }
+    }
+
+    if (!xc) return new BigNumber(x);
+
+    d = new BigNumber(ONE);
+    n1 = d0 = new BigNumber(ONE);
+    d1 = n0 = new BigNumber(ONE);
+    s = coeffToString(xc);
+
+    // Determine initial denominator.
+    // d is a power of 10 and the minimum max denominator that specifies the value exactly.
+    e = d.e = s.length - x.e - 1;
+    d.c[0] = POWS_TEN[(exp = e % LOG_BASE) < 0 ? LOG_BASE + exp : exp];
+    md = !md || n.comparedTo(d) > 0 ? (e > 0 ? d : n1) : n;
+
+    exp = MAX_EXP;
+    MAX_EXP = 1 / 0;
+    n = new BigNumber(s);
+
+    // n0 = d1 = 0
+    n0.c[0] = 0;
+
+    for (; ;)  {
+      q = div(n, d, 0, 1);
+      d2 = d0.plus(q.times(d1));
+      if (d2.comparedTo(md) == 1) break;
+      d0 = d1;
+      d1 = d2;
+      n1 = n0.plus(q.times(d2 = n1));
+      n0 = d2;
+      d = n.minus(q.times(d2 = d));
+      n = d2;
+    }
+
+    d2 = div(md.minus(d0), d1, 0, 1);
+    n0 = n0.plus(d2.times(n1));
+    d0 = d0.plus(d2.times(d1));
+    n0.s = n1.s = x.s;
+    e = e * 2;
+
+    // Determine which fraction is closer to x, n0/d0 or n1/d1
+    r = div(n1, d1, e, ROUNDING_MODE).minus(x).abs().comparedTo(
+        div(n0, d0, e, ROUNDING_MODE).minus(x).abs()) < 1 ? [n1, d1] : [n0, d0];
+
+    MAX_EXP = exp;
+
+    return r;
+  };
+
+
+  /*
+   * Return the value of this BigNumber converted to a number primitive.
+   */
+  P.toNumber = function () {
+    return +valueOf(this);
+  };
+
+
+  /*
+   * Return a string representing the value of this BigNumber rounded to sd significant digits
+   * using rounding mode rm or ROUNDING_MODE. If sd is less than the number of digits
+   * necessary to represent the integer part of the value in fixed-point notation, then use
+   * exponential notation.
+   *
+   * [sd] {number} Significant digits. Integer, 1 to MAX inclusive.
+   * [rm] {number} Rounding mode. Integer, 0 to 8 inclusive.
+   *
+   * '[BigNumber Error] Argument {not a primitive number|not an integer|out of range}: {sd|rm}'
+   */
+  P.toPrecision = function (sd, rm) {
+    if (sd != null) intCheck(sd, 1, MAX);
+    return format(this, sd, rm, 2);
+  };
+
+
+  /*
+   * Return a string representing the value of this BigNumber in base b, or base 10 if b is
+   * omitted. If a base is specified, including base 10, round according to DECIMAL_PLACES and
+   * ROUNDING_MODE. If a base is not specified, and this BigNumber has a positive exponent
+   * that is equal to or greater than TO_EXP_POS, or a negative exponent equal to or less than
+   * TO_EXP_NEG, return exponential notation.
+   *
+   * [b] {number} Integer, 2 to ALPHABET.length inclusive.
+   *
+   * '[BigNumber Error] Base {not a primitive number|not an integer|out of range}: {b}'
+   */
+  P.toString = function (b) {
+    var str,
+      n = this,
+      s = n.s,
+      e = n.e;
+
+    // Infinity or NaN?
+    if (e === null) {
+      if (s) {
+        str = 'Infinity';
+        if (s < 0) str = '-' + str;
+      } else {
+        str = 'NaN';
+      }
+    } else {
+      if (b == null) {
+        str = e <= TO_EXP_NEG || e >= TO_EXP_POS
+         ? toExponential(coeffToString(n.c), e)
+         : toFixedPoint(coeffToString(n.c), e, '0');
+      } else if (b === 10 && alphabetHasNormalDecimalDigits) {
+        n = round(new BigNumber(n), DECIMAL_PLACES + e + 1, ROUNDING_MODE);
+        str = toFixedPoint(coeffToString(n.c), n.e, '0');
+      } else {
+        intCheck(b, 2, ALPHABET.length, 'Base');
+        str = convertBase(toFixedPoint(coeffToString(n.c), e, '0'), 10, b, s, true);
+      }
+
+      if (s < 0 && n.c[0]) str = '-' + str;
+    }
+
+    return str;
+  };
+
+
+  /*
+   * Return as toString, but do not accept a base argument, and include the minus sign for
+   * negative zero.
+   */
+  P.valueOf = P.toJSON = function () {
+    return valueOf(this);
+  };
+
+
+  P._isBigNumber = true;
+
+  P[Symbol.toStringTag] = 'BigNumber';
+
+  // Node.js v10.12.0+
+  P[Symbol.for('nodejs.util.inspect.custom')] = P.valueOf;
+
+  if (configObject != null) BigNumber.set(configObject);
+
+  return BigNumber;
+}
+
+
+// PRIVATE HELPER FUNCTIONS
+
+// These functions don't need access to variables,
+// e.g. DECIMAL_PLACES, in the scope of the `clone` function above.
+
+
+function bitFloor(n) {
+  var i = n | 0;
+  return n > 0 || n === i ? i : i - 1;
+}
+
+
+// Return a coefficient array as a string of base 10 digits.
+function coeffToString(a) {
+  var s, z,
+    i = 1,
+    j = a.length,
+    r = a[0] + '';
+
+  for (; i < j;) {
+    s = a[i++] + '';
+    z = LOG_BASE - s.length;
+    for (; z--; s = '0' + s);
+    r += s;
+  }
+
+  // Determine trailing zeros.
+  for (j = r.length; r.charCodeAt(--j) === 48;);
+
+  return r.slice(0, j + 1 || 1);
+}
+
+
+// Compare the value of BigNumbers x and y.
+function compare(x, y) {
+  var a, b,
+    xc = x.c,
+    yc = y.c,
+    i = x.s,
+    j = y.s,
+    k = x.e,
+    l = y.e;
+
+  // Either NaN?
+  if (!i || !j) return null;
+
+  a = xc && !xc[0];
+  b = yc && !yc[0];
+
+  // Either zero?
+  if (a || b) return a ? b ? 0 : -j : i;
+
+  // Signs differ?
+  if (i != j) return i;
+
+  a = i < 0;
+  b = k == l;
+
+  // Either Infinity?
+  if (!xc || !yc) return b ? 0 : !xc ^ a ? 1 : -1;
+
+  // Compare exponents.
+  if (!b) return k > l ^ a ? 1 : -1;
+
+  j = (k = xc.length) < (l = yc.length) ? k : l;
+
+  // Compare digit by digit.
+  for (i = 0; i < j; i++) if (xc[i] != yc[i]) return xc[i] > yc[i] ^ a ? 1 : -1;
+
+  // Compare lengths.
+  return k == l ? 0 : k > l ^ a ? 1 : -1;
+}
+
+
+/*
+ * Check that n is a primitive number, an integer, and in range, otherwise throw.
+ */
+function intCheck(n, min, max, name) {
+  if (n < min || n > max || n !== mathfloor(n)) {
+    throw Error
+     (bignumberError + (name || 'Argument') + (typeof n == 'number'
+       ? n < min || n > max ? ' out of range: ' : ' not an integer: '
+       : ' not a primitive number: ') + String(n));
+  }
+}
+
+
+// Assumes finite n.
+function isOdd(n) {
+  var k = n.c.length - 1;
+  return bitFloor(n.e / LOG_BASE) == k && n.c[k] % 2 != 0;
+}
+
+
+function toExponential(str, e) {
+  return (str.length > 1 ? str.charAt(0) + '.' + str.slice(1) : str) +
+   (e < 0 ? 'e' : 'e+') + e;
+}
+
+
+function toFixedPoint(str, e, z) {
+  var len, zs;
+
+  // Negative exponent?
+  if (e < 0) {
+
+    // Prepend zeros.
+    for (zs = z + '.'; ++e; zs += z);
+    str = zs + str;
+
+  // Positive exponent
+  } else {
+    len = str.length;
+
+    // Append zeros.
+    if (++e > len) {
+      for (zs = z, e -= len; --e; zs += z);
+      str += zs;
+    } else if (e < len) {
+      str = str.slice(0, e) + '.' + str.slice(e);
+    }
+  }
+
+  return str;
+}
+
+
+// EXPORT
+
+
+var BigNumber = clone();
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (BigNumber);
+
+
+/***/ }),
+/* 16 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -820,43 +3744,43 @@ exports.isHexString = exports.getKeys = exports.fromAscii = exports.fromUtf8 = e
 /**
  * Constants
  */
-__exportStar(__webpack_require__(16), exports);
+__exportStar(__webpack_require__(17), exports);
 /**
  * Account class and helper functions
  */
-__exportStar(__webpack_require__(21), exports);
+__exportStar(__webpack_require__(22), exports);
 /**
  * Address type
  */
-__exportStar(__webpack_require__(109), exports);
+__exportStar(__webpack_require__(110), exports);
 /**
  * Hash functions
  */
-__exportStar(__webpack_require__(76), exports);
+__exportStar(__webpack_require__(77), exports);
 /**
  * ECDSA signature
  */
-__exportStar(__webpack_require__(110), exports);
+__exportStar(__webpack_require__(111), exports);
 /**
  * Utilities for manipulating Buffers, byte arrays, etc.
  */
-__exportStar(__webpack_require__(74), exports);
+__exportStar(__webpack_require__(75), exports);
 /**
  * Function for definining properties on an object
  */
-__exportStar(__webpack_require__(111), exports);
+__exportStar(__webpack_require__(112), exports);
 /**
  * External exports (BN, rlp)
  */
-__exportStar(__webpack_require__(18), exports);
+__exportStar(__webpack_require__(19), exports);
 /**
  * Helpful TypeScript types
  */
-__exportStar(__webpack_require__(108), exports);
+__exportStar(__webpack_require__(109), exports);
 /**
  * Export ethjs-util methods
  */
-var internal_1 = __webpack_require__(73);
+var internal_1 = __webpack_require__(74);
 Object.defineProperty(exports, "isHexPrefixed", ({ enumerable: true, get: function () { return internal_1.isHexPrefixed; } }));
 Object.defineProperty(exports, "stripHexPrefix", ({ enumerable: true, get: function () { return internal_1.stripHexPrefix; } }));
 Object.defineProperty(exports, "padToEven", ({ enumerable: true, get: function () { return internal_1.padToEven; } }));
@@ -870,15 +3794,15 @@ Object.defineProperty(exports, "isHexString", ({ enumerable: true, get: function
 //# sourceMappingURL=index.js.map
 
 /***/ }),
-/* 16 */
+/* 17 */
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.KECCAK256_RLP = exports.KECCAK256_RLP_S = exports.KECCAK256_RLP_ARRAY = exports.KECCAK256_RLP_ARRAY_S = exports.KECCAK256_NULL = exports.KECCAK256_NULL_S = exports.TWO_POW256 = exports.MAX_INTEGER = exports.MAX_UINT64 = void 0;
-const buffer_1 = __webpack_require__(17);
-const externals_1 = __webpack_require__(18);
+const buffer_1 = __webpack_require__(18);
+const externals_1 = __webpack_require__(19);
 /**
  * 2^64-1
  */
@@ -918,14 +3842,14 @@ exports.KECCAK256_RLP = buffer_1.Buffer.from(exports.KECCAK256_RLP_S, 'hex');
 //# sourceMappingURL=constants.js.map
 
 /***/ }),
-/* 17 */
+/* 18 */
 /***/ ((module) => {
 
 "use strict";
 module.exports = require("buffer");
 
 /***/ }),
-/* 18 */
+/* 19 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -963,14 +3887,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.rlp = exports.BN = void 0;
-const bn_js_1 = __importDefault(__webpack_require__(19));
+const bn_js_1 = __importDefault(__webpack_require__(20));
 exports.BN = bn_js_1.default;
-const rlp = __importStar(__webpack_require__(20));
+const rlp = __importStar(__webpack_require__(21));
 exports.rlp = rlp;
 //# sourceMappingURL=externals.js.map
 
 /***/ }),
-/* 19 */
+/* 20 */
 /***/ (function(module, __unused_webpack_exports, __webpack_require__) {
 
 /* module decorator */ module = __webpack_require__.nmd(module);
@@ -1029,7 +3953,7 @@ exports.rlp = rlp;
     if (typeof window !== 'undefined' && typeof window.Buffer !== 'undefined') {
       Buffer = window.Buffer;
     } else {
-      Buffer = (__webpack_require__(17).Buffer);
+      Buffer = (__webpack_require__(18).Buffer);
     }
   } catch (e) {
   }
@@ -4524,7 +7448,7 @@ exports.rlp = rlp;
 
 
 /***/ }),
-/* 20 */
+/* 21 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -4534,7 +7458,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.getLength = exports.decode = exports.encode = void 0;
-const bn_js_1 = __importDefault(__webpack_require__(19));
+const bn_js_1 = __importDefault(__webpack_require__(20));
 /**
  * RLP Encoding based on: https://github.com/ethereum/wiki/wiki/%5BEnglish%5D-RLP
  * This function takes in a data, convert it to buffer if not, and a length for recursion
@@ -4781,7 +7705,7 @@ function toBuffer(v) {
 //# sourceMappingURL=index.js.map
 
 /***/ }),
-/* 21 */
+/* 22 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -4791,15 +7715,15 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.isZeroAddress = exports.zeroAddress = exports.importPublic = exports.privateToAddress = exports.privateToPublic = exports.publicToAddress = exports.pubToAddress = exports.isValidPublic = exports.isValidPrivate = exports.generateAddress2 = exports.generateAddress = exports.isValidChecksumAddress = exports.toChecksumAddress = exports.isValidAddress = exports.Account = void 0;
-const assert_1 = __importDefault(__webpack_require__(22));
-const externals_1 = __webpack_require__(18);
-const secp256k1_1 = __webpack_require__(23);
-const internal_1 = __webpack_require__(73);
-const constants_1 = __webpack_require__(16);
-const bytes_1 = __webpack_require__(74);
-const hash_1 = __webpack_require__(76);
-const helpers_1 = __webpack_require__(75);
-const types_1 = __webpack_require__(108);
+const assert_1 = __importDefault(__webpack_require__(23));
+const externals_1 = __webpack_require__(19);
+const secp256k1_1 = __webpack_require__(24);
+const internal_1 = __webpack_require__(74);
+const constants_1 = __webpack_require__(17);
+const bytes_1 = __webpack_require__(75);
+const hash_1 = __webpack_require__(77);
+const helpers_1 = __webpack_require__(76);
+const types_1 = __webpack_require__(109);
 class Account {
     /**
      * This constructor assigns and validates the values.
@@ -5060,14 +7984,14 @@ exports.isZeroAddress = isZeroAddress;
 //# sourceMappingURL=account.js.map
 
 /***/ }),
-/* 22 */
+/* 23 */
 /***/ ((module) => {
 
 "use strict";
 module.exports = require("assert");
 
 /***/ }),
-/* 23 */
+/* 24 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -5112,8 +8036,8 @@ function __export(m) {
     for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 }
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-var secp256k1_1 = __webpack_require__(24);
-var random_1 = __webpack_require__(71);
+var secp256k1_1 = __webpack_require__(25);
+var random_1 = __webpack_require__(72);
 var SECP256K1_PRIVATE_KEY_SIZE = 32;
 function createPrivateKey() {
     return __awaiter(this, void 0, void 0, function () {
@@ -5144,46 +8068,46 @@ function createPrivateKeySync() {
     }
 }
 exports.createPrivateKeySync = createPrivateKeySync;
-__export(__webpack_require__(24));
+__export(__webpack_require__(25));
 //# sourceMappingURL=secp256k1.js.map
-
-/***/ }),
-/* 24 */
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
-
-try {
-  module.exports = __webpack_require__(25)
-} catch (err) {
-  module.exports = __webpack_require__(32)
-}
-
 
 /***/ }),
 /* 25 */
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
-const addon = __webpack_require__(26)(__dirname)
-module.exports = __webpack_require__(31)(new addon.Secp256k1())
+try {
+  module.exports = __webpack_require__(26)
+} catch (err) {
+  module.exports = __webpack_require__(33)
+}
 
 
 /***/ }),
 /* 26 */
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
-if (typeof process.addon === 'function') { // if the platform supports native resolving prefer that
-  module.exports = process.addon.bind(process)
-} else { // else use the runtime version here
-  module.exports = __webpack_require__(27)
-}
+const addon = __webpack_require__(27)(__dirname)
+module.exports = __webpack_require__(32)(new addon.Secp256k1())
 
 
 /***/ }),
 /* 27 */
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
-var fs = __webpack_require__(28)
-var path = __webpack_require__(29)
-var os = __webpack_require__(30)
+if (typeof process.addon === 'function') { // if the platform supports native resolving prefer that
+  module.exports = process.addon.bind(process)
+} else { // else use the runtime version here
+  module.exports = __webpack_require__(28)
+}
+
+
+/***/ }),
+/* 28 */
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+var fs = __webpack_require__(29)
+var path = __webpack_require__(30)
+var os = __webpack_require__(31)
 
 // Workaround to fix webpack's build warnings: 'the request of a dependency is an expression'
 var runtimeRequire =  true ? require : 0 // eslint-disable-line
@@ -5391,28 +8315,28 @@ load.compareTuples = compareTuples
 
 
 /***/ }),
-/* 28 */
+/* 29 */
 /***/ ((module) => {
 
 "use strict";
 module.exports = require("fs");
 
 /***/ }),
-/* 29 */
+/* 30 */
 /***/ ((module) => {
 
 "use strict";
 module.exports = require("path");
 
 /***/ }),
-/* 30 */
+/* 31 */
 /***/ ((module) => {
 
 "use strict";
 module.exports = require("os");
 
 /***/ }),
-/* 31 */
+/* 32 */
 /***/ ((module) => {
 
 const errors = {
@@ -5754,17 +8678,17 @@ module.exports = (secp256k1) => {
 
 
 /***/ }),
-/* 32 */
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
-
-module.exports = __webpack_require__(31)(__webpack_require__(33))
-
-
-/***/ }),
 /* 33 */
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
-const EC = (__webpack_require__(34).ec)
+module.exports = __webpack_require__(32)(__webpack_require__(34))
+
+
+/***/ }),
+/* 34 */
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+const EC = (__webpack_require__(35).ec)
 
 const ec = new EC('secp256k1')
 const ecparams = ec.curve
@@ -6169,7 +9093,7 @@ module.exports = {
 
 
 /***/ }),
-/* 34 */
+/* 35 */
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 "use strict";
@@ -6177,35 +9101,35 @@ module.exports = {
 
 var elliptic = exports;
 
-elliptic.version = (__webpack_require__(35).version);
-elliptic.utils = __webpack_require__(36);
-elliptic.rand = __webpack_require__(40);
-elliptic.curve = __webpack_require__(42);
-elliptic.curves = __webpack_require__(50);
+elliptic.version = (__webpack_require__(36).version);
+elliptic.utils = __webpack_require__(37);
+elliptic.rand = __webpack_require__(41);
+elliptic.curve = __webpack_require__(43);
+elliptic.curves = __webpack_require__(51);
 
 // Protocols
-elliptic.ec = __webpack_require__(64);
-elliptic.eddsa = __webpack_require__(68);
+elliptic.ec = __webpack_require__(65);
+elliptic.eddsa = __webpack_require__(69);
 
 
 /***/ }),
-/* 35 */
+/* 36 */
 /***/ ((module) => {
 
 "use strict";
 module.exports = JSON.parse('{"name":"elliptic","version":"6.5.4","description":"EC cryptography","main":"lib/elliptic.js","files":["lib"],"scripts":{"lint":"eslint lib test","lint:fix":"npm run lint -- --fix","unit":"istanbul test _mocha --reporter=spec test/index.js","test":"npm run lint && npm run unit","version":"grunt dist && git add dist/"},"repository":{"type":"git","url":"git@github.com:indutny/elliptic"},"keywords":["EC","Elliptic","curve","Cryptography"],"author":"Fedor Indutny <fedor@indutny.com>","license":"MIT","bugs":{"url":"https://github.com/indutny/elliptic/issues"},"homepage":"https://github.com/indutny/elliptic","devDependencies":{"brfs":"^2.0.2","coveralls":"^3.1.0","eslint":"^7.6.0","grunt":"^1.2.1","grunt-browserify":"^5.3.0","grunt-cli":"^1.3.2","grunt-contrib-connect":"^3.0.0","grunt-contrib-copy":"^1.0.0","grunt-contrib-uglify":"^5.0.0","grunt-mocha-istanbul":"^5.0.2","grunt-saucelabs":"^9.0.1","istanbul":"^0.4.5","mocha":"^8.0.1"},"dependencies":{"bn.js":"^4.11.9","brorand":"^1.1.0","hash.js":"^1.0.0","hmac-drbg":"^1.0.1","inherits":"^2.0.4","minimalistic-assert":"^1.0.1","minimalistic-crypto-utils":"^1.0.1"}}');
 
 /***/ }),
-/* 36 */
+/* 37 */
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 "use strict";
 
 
 var utils = exports;
-var BN = __webpack_require__(37);
-var minAssert = __webpack_require__(38);
-var minUtils = __webpack_require__(39);
+var BN = __webpack_require__(38);
+var minAssert = __webpack_require__(39);
+var minUtils = __webpack_require__(40);
 
 utils.assert = minAssert;
 utils.toArray = minUtils.toArray;
@@ -6322,7 +9246,7 @@ utils.intFromLE = intFromLE;
 
 
 /***/ }),
-/* 37 */
+/* 38 */
 /***/ (function(module, __unused_webpack_exports, __webpack_require__) {
 
 /* module decorator */ module = __webpack_require__.nmd(module);
@@ -6381,7 +9305,7 @@ utils.intFromLE = intFromLE;
     if (typeof window !== 'undefined' && typeof window.Buffer !== 'undefined') {
       Buffer = window.Buffer;
     } else {
-      Buffer = (__webpack_require__(17).Buffer);
+      Buffer = (__webpack_require__(18).Buffer);
     }
   } catch (e) {
   }
@@ -9775,7 +12699,7 @@ utils.intFromLE = intFromLE;
 
 
 /***/ }),
-/* 38 */
+/* 39 */
 /***/ ((module) => {
 
 module.exports = assert;
@@ -9792,7 +12716,7 @@ assert.equal = function assertEqual(l, r, msg) {
 
 
 /***/ }),
-/* 39 */
+/* 40 */
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
@@ -9857,7 +12781,7 @@ utils.encode = function encode(arr, enc) {
 
 
 /***/ }),
-/* 40 */
+/* 41 */
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 var r;
@@ -9915,7 +12839,7 @@ if (typeof self === 'object') {
 } else {
   // Node.js or Web worker with no crypto support
   try {
-    var crypto = __webpack_require__(41);
+    var crypto = __webpack_require__(42);
     if (typeof crypto.randomBytes !== 'function')
       throw new Error('Not supported');
 
@@ -9928,14 +12852,14 @@ if (typeof self === 'object') {
 
 
 /***/ }),
-/* 41 */
+/* 42 */
 /***/ ((module) => {
 
 "use strict";
 module.exports = require("crypto");
 
 /***/ }),
-/* 42 */
+/* 43 */
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 "use strict";
@@ -9943,21 +12867,21 @@ module.exports = require("crypto");
 
 var curve = exports;
 
-curve.base = __webpack_require__(43);
-curve.short = __webpack_require__(44);
-curve.mont = __webpack_require__(48);
-curve.edwards = __webpack_require__(49);
+curve.base = __webpack_require__(44);
+curve.short = __webpack_require__(45);
+curve.mont = __webpack_require__(49);
+curve.edwards = __webpack_require__(50);
 
 
 /***/ }),
-/* 43 */
+/* 44 */
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 "use strict";
 
 
-var BN = __webpack_require__(37);
-var utils = __webpack_require__(36);
+var BN = __webpack_require__(38);
+var utils = __webpack_require__(37);
 var getNAF = utils.getNAF;
 var getJSF = utils.getJSF;
 var assert = utils.assert;
@@ -10338,16 +13262,16 @@ BasePoint.prototype.dblp = function dblp(k) {
 
 
 /***/ }),
-/* 44 */
+/* 45 */
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 "use strict";
 
 
-var utils = __webpack_require__(36);
-var BN = __webpack_require__(37);
-var inherits = __webpack_require__(45);
-var Base = __webpack_require__(43);
+var utils = __webpack_require__(37);
+var BN = __webpack_require__(38);
+var inherits = __webpack_require__(46);
+var Base = __webpack_require__(44);
 
 var assert = utils.assert;
 
@@ -11283,29 +14207,29 @@ JPoint.prototype.isInfinity = function isInfinity() {
 
 
 /***/ }),
-/* 45 */
+/* 46 */
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 try {
-  var util = __webpack_require__(46);
+  var util = __webpack_require__(47);
   /* istanbul ignore next */
   if (typeof util.inherits !== 'function') throw '';
   module.exports = util.inherits;
 } catch (e) {
   /* istanbul ignore next */
-  module.exports = __webpack_require__(47);
+  module.exports = __webpack_require__(48);
 }
 
 
 /***/ }),
-/* 46 */
+/* 47 */
 /***/ ((module) => {
 
 "use strict";
 module.exports = require("util");
 
 /***/ }),
-/* 47 */
+/* 48 */
 /***/ ((module) => {
 
 if (typeof Object.create === 'function') {
@@ -11338,17 +14262,17 @@ if (typeof Object.create === 'function') {
 
 
 /***/ }),
-/* 48 */
+/* 49 */
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 "use strict";
 
 
-var BN = __webpack_require__(37);
-var inherits = __webpack_require__(45);
-var Base = __webpack_require__(43);
+var BN = __webpack_require__(38);
+var inherits = __webpack_require__(46);
+var Base = __webpack_require__(44);
 
-var utils = __webpack_require__(36);
+var utils = __webpack_require__(37);
 
 function MontCurve(conf) {
   Base.call(this, 'mont', conf);
@@ -11523,16 +14447,16 @@ Point.prototype.getX = function getX() {
 
 
 /***/ }),
-/* 49 */
+/* 50 */
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 "use strict";
 
 
-var utils = __webpack_require__(36);
-var BN = __webpack_require__(37);
-var inherits = __webpack_require__(45);
-var Base = __webpack_require__(43);
+var utils = __webpack_require__(37);
+var BN = __webpack_require__(38);
+var inherits = __webpack_require__(46);
+var Base = __webpack_require__(44);
 
 var assert = utils.assert;
 
@@ -11965,7 +14889,7 @@ Point.prototype.mixedAdd = Point.prototype.add;
 
 
 /***/ }),
-/* 50 */
+/* 51 */
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 "use strict";
@@ -11973,9 +14897,9 @@ Point.prototype.mixedAdd = Point.prototype.add;
 
 var curves = exports;
 
-var hash = __webpack_require__(51);
-var curve = __webpack_require__(42);
-var utils = __webpack_require__(36);
+var hash = __webpack_require__(52);
+var curve = __webpack_require__(43);
+var utils = __webpack_require__(37);
 
 var assert = utils.assert;
 
@@ -12139,7 +15063,7 @@ defineCurve('ed25519', {
 
 var pre;
 try {
-  pre = __webpack_require__(63);
+  pre = __webpack_require__(64);
 } catch (e) {
   pre = undefined;
 }
@@ -12178,16 +15102,16 @@ defineCurve('secp256k1', {
 
 
 /***/ }),
-/* 51 */
+/* 52 */
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 var hash = exports;
 
-hash.utils = __webpack_require__(52);
-hash.common = __webpack_require__(53);
-hash.sha = __webpack_require__(54);
-hash.ripemd = __webpack_require__(61);
-hash.hmac = __webpack_require__(62);
+hash.utils = __webpack_require__(53);
+hash.common = __webpack_require__(54);
+hash.sha = __webpack_require__(55);
+hash.ripemd = __webpack_require__(62);
+hash.hmac = __webpack_require__(63);
 
 // Proxy hash functions to the main object
 hash.sha1 = hash.sha.sha1;
@@ -12199,14 +15123,14 @@ hash.ripemd160 = hash.ripemd.ripemd160;
 
 
 /***/ }),
-/* 52 */
+/* 53 */
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 "use strict";
 
 
-var assert = __webpack_require__(38);
-var inherits = __webpack_require__(45);
+var assert = __webpack_require__(39);
+var inherits = __webpack_require__(46);
 
 exports.inherits = inherits;
 
@@ -12484,14 +15408,14 @@ exports.shr64_lo = shr64_lo;
 
 
 /***/ }),
-/* 53 */
+/* 54 */
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 "use strict";
 
 
-var utils = __webpack_require__(52);
-var assert = __webpack_require__(38);
+var utils = __webpack_require__(53);
+var assert = __webpack_require__(39);
 
 function BlockHash() {
   this.pending = null;
@@ -12583,29 +15507,29 @@ BlockHash.prototype._pad = function pad() {
 
 
 /***/ }),
-/* 54 */
+/* 55 */
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 "use strict";
 
 
-exports.sha1 = __webpack_require__(55);
-exports.sha224 = __webpack_require__(57);
-exports.sha256 = __webpack_require__(58);
-exports.sha384 = __webpack_require__(59);
-exports.sha512 = __webpack_require__(60);
+exports.sha1 = __webpack_require__(56);
+exports.sha224 = __webpack_require__(58);
+exports.sha256 = __webpack_require__(59);
+exports.sha384 = __webpack_require__(60);
+exports.sha512 = __webpack_require__(61);
 
 
 /***/ }),
-/* 55 */
+/* 56 */
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 "use strict";
 
 
-var utils = __webpack_require__(52);
-var common = __webpack_require__(53);
-var shaCommon = __webpack_require__(56);
+var utils = __webpack_require__(53);
+var common = __webpack_require__(54);
+var shaCommon = __webpack_require__(57);
 
 var rotl32 = utils.rotl32;
 var sum32 = utils.sum32;
@@ -12678,13 +15602,13 @@ SHA1.prototype._digest = function digest(enc) {
 
 
 /***/ }),
-/* 56 */
+/* 57 */
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 "use strict";
 
 
-var utils = __webpack_require__(52);
+var utils = __webpack_require__(53);
 var rotr32 = utils.rotr32;
 
 function ft_1(s, x, y, z) {
@@ -12734,14 +15658,14 @@ exports.g1_256 = g1_256;
 
 
 /***/ }),
-/* 57 */
+/* 58 */
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 "use strict";
 
 
-var utils = __webpack_require__(52);
-var SHA256 = __webpack_require__(58);
+var utils = __webpack_require__(53);
+var SHA256 = __webpack_require__(59);
 
 function SHA224() {
   if (!(this instanceof SHA224))
@@ -12771,16 +15695,16 @@ SHA224.prototype._digest = function digest(enc) {
 
 
 /***/ }),
-/* 58 */
+/* 59 */
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 "use strict";
 
 
-var utils = __webpack_require__(52);
-var common = __webpack_require__(53);
-var shaCommon = __webpack_require__(56);
-var assert = __webpack_require__(38);
+var utils = __webpack_require__(53);
+var common = __webpack_require__(54);
+var shaCommon = __webpack_require__(57);
+var assert = __webpack_require__(39);
 
 var sum32 = utils.sum32;
 var sum32_4 = utils.sum32_4;
@@ -12883,15 +15807,15 @@ SHA256.prototype._digest = function digest(enc) {
 
 
 /***/ }),
-/* 59 */
+/* 60 */
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 "use strict";
 
 
-var utils = __webpack_require__(52);
+var utils = __webpack_require__(53);
 
-var SHA512 = __webpack_require__(60);
+var SHA512 = __webpack_require__(61);
 
 function SHA384() {
   if (!(this instanceof SHA384))
@@ -12925,15 +15849,15 @@ SHA384.prototype._digest = function digest(enc) {
 
 
 /***/ }),
-/* 60 */
+/* 61 */
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 "use strict";
 
 
-var utils = __webpack_require__(52);
-var common = __webpack_require__(53);
-var assert = __webpack_require__(38);
+var utils = __webpack_require__(53);
+var common = __webpack_require__(54);
+var assert = __webpack_require__(39);
 
 var rotr64_hi = utils.rotr64_hi;
 var rotr64_lo = utils.rotr64_lo;
@@ -13262,14 +16186,14 @@ function g1_512_lo(xh, xl) {
 
 
 /***/ }),
-/* 61 */
+/* 62 */
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 "use strict";
 
 
-var utils = __webpack_require__(52);
-var common = __webpack_require__(53);
+var utils = __webpack_require__(53);
+var common = __webpack_require__(54);
 
 var rotl32 = utils.rotl32;
 var sum32 = utils.sum32;
@@ -13415,14 +16339,14 @@ var sh = [
 
 
 /***/ }),
-/* 62 */
+/* 63 */
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 "use strict";
 
 
-var utils = __webpack_require__(52);
-var assert = __webpack_require__(38);
+var utils = __webpack_require__(53);
+var assert = __webpack_require__(39);
 
 function Hmac(hash, key, enc) {
   if (!(this instanceof Hmac))
@@ -13469,7 +16393,7 @@ Hmac.prototype.digest = function digest(enc) {
 
 
 /***/ }),
-/* 63 */
+/* 64 */
 /***/ ((module) => {
 
 module.exports = {
@@ -14255,21 +17179,21 @@ module.exports = {
 
 
 /***/ }),
-/* 64 */
+/* 65 */
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 "use strict";
 
 
-var BN = __webpack_require__(37);
-var HmacDRBG = __webpack_require__(65);
-var utils = __webpack_require__(36);
-var curves = __webpack_require__(50);
-var rand = __webpack_require__(40);
+var BN = __webpack_require__(38);
+var HmacDRBG = __webpack_require__(66);
+var utils = __webpack_require__(37);
+var curves = __webpack_require__(51);
+var rand = __webpack_require__(41);
 var assert = utils.assert;
 
-var KeyPair = __webpack_require__(66);
-var Signature = __webpack_require__(67);
+var KeyPair = __webpack_require__(67);
+var Signature = __webpack_require__(68);
 
 function EC(options) {
   if (!(this instanceof EC))
@@ -14505,15 +17429,15 @@ EC.prototype.getKeyRecoveryParam = function(e, signature, Q, enc) {
 
 
 /***/ }),
-/* 65 */
+/* 66 */
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 "use strict";
 
 
-var hash = __webpack_require__(51);
-var utils = __webpack_require__(39);
-var assert = __webpack_require__(38);
+var hash = __webpack_require__(52);
+var utils = __webpack_require__(40);
+var assert = __webpack_require__(39);
 
 function HmacDRBG(options) {
   if (!(this instanceof HmacDRBG))
@@ -14625,14 +17549,14 @@ HmacDRBG.prototype.generate = function generate(len, enc, add, addEnc) {
 
 
 /***/ }),
-/* 66 */
+/* 67 */
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 "use strict";
 
 
-var BN = __webpack_require__(37);
-var utils = __webpack_require__(36);
+var BN = __webpack_require__(38);
+var utils = __webpack_require__(37);
 var assert = utils.assert;
 
 function KeyPair(ec, options) {
@@ -14753,15 +17677,15 @@ KeyPair.prototype.inspect = function inspect() {
 
 
 /***/ }),
-/* 67 */
+/* 68 */
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 "use strict";
 
 
-var BN = __webpack_require__(37);
+var BN = __webpack_require__(38);
 
-var utils = __webpack_require__(36);
+var utils = __webpack_require__(37);
 var assert = utils.assert;
 
 function Signature(options, enc) {
@@ -14926,19 +17850,19 @@ Signature.prototype.toDER = function toDER(enc) {
 
 
 /***/ }),
-/* 68 */
+/* 69 */
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 "use strict";
 
 
-var hash = __webpack_require__(51);
-var curves = __webpack_require__(50);
-var utils = __webpack_require__(36);
+var hash = __webpack_require__(52);
+var curves = __webpack_require__(51);
+var utils = __webpack_require__(37);
 var assert = utils.assert;
 var parseBytes = utils.parseBytes;
-var KeyPair = __webpack_require__(69);
-var Signature = __webpack_require__(70);
+var KeyPair = __webpack_require__(70);
+var Signature = __webpack_require__(71);
 
 function EDDSA(curve) {
   assert(curve === 'ed25519', 'only tested with ed25519 so far');
@@ -15051,13 +17975,13 @@ EDDSA.prototype.isPoint = function isPoint(val) {
 
 
 /***/ }),
-/* 69 */
+/* 70 */
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 "use strict";
 
 
-var utils = __webpack_require__(36);
+var utils = __webpack_require__(37);
 var assert = utils.assert;
 var parseBytes = utils.parseBytes;
 var cachedProperty = utils.cachedProperty;
@@ -15153,14 +18077,14 @@ module.exports = KeyPair;
 
 
 /***/ }),
-/* 70 */
+/* 71 */
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 "use strict";
 
 
-var BN = __webpack_require__(37);
-var utils = __webpack_require__(36);
+var BN = __webpack_require__(38);
+var utils = __webpack_require__(37);
 var assert = utils.assert;
 var cachedProperty = utils.cachedProperty;
 var parseBytes = utils.parseBytes;
@@ -15225,13 +18149,13 @@ module.exports = Signature;
 
 
 /***/ }),
-/* 71 */
+/* 72 */
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-var randombytes = __webpack_require__(72);
+var randombytes = __webpack_require__(73);
 function getRandomBytes(bytes) {
     return new Promise(function (resolve, reject) {
         randombytes(bytes, function (err, resp) {
@@ -15251,14 +18175,14 @@ exports.getRandomBytesSync = getRandomBytesSync;
 //# sourceMappingURL=random.js.map
 
 /***/ }),
-/* 72 */
+/* 73 */
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
-module.exports = __webpack_require__(41).randomBytes
+module.exports = __webpack_require__(42).randomBytes
 
 
 /***/ }),
-/* 73 */
+/* 74 */
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
@@ -15455,16 +18379,16 @@ exports.isHexString = isHexString;
 //# sourceMappingURL=internal.js.map
 
 /***/ }),
-/* 74 */
+/* 75 */
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.bufArrToArr = exports.arrToBufArr = exports.validateNoLeadingZeroes = exports.baToJSON = exports.toUtf8 = exports.addHexPrefix = exports.toUnsigned = exports.fromSigned = exports.bufferToHex = exports.bufferToInt = exports.toBuffer = exports.unpadHexString = exports.unpadArray = exports.unpadBuffer = exports.setLengthRight = exports.setLengthLeft = exports.zeros = exports.intToBuffer = exports.intToHex = void 0;
-const externals_1 = __webpack_require__(18);
-const internal_1 = __webpack_require__(73);
-const helpers_1 = __webpack_require__(75);
+const externals_1 = __webpack_require__(19);
+const internal_1 = __webpack_require__(74);
+const helpers_1 = __webpack_require__(76);
 /**
  * Converts a `Number` into a hex `String`
  * @param {Number} i
@@ -15756,14 +18680,14 @@ exports.bufArrToArr = bufArrToArr;
 //# sourceMappingURL=bytes.js.map
 
 /***/ }),
-/* 75 */
+/* 76 */
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.assertIsString = exports.assertIsArray = exports.assertIsBuffer = exports.assertIsHexString = void 0;
-const internal_1 = __webpack_require__(73);
+const internal_1 = __webpack_require__(74);
 /**
  * Throws if a string is not hex prefixed
  * @param {string} input string to check hex prefix of
@@ -15811,18 +18735,18 @@ exports.assertIsString = assertIsString;
 //# sourceMappingURL=helpers.js.map
 
 /***/ }),
-/* 76 */
+/* 77 */
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.rlphash = exports.ripemd160FromArray = exports.ripemd160FromString = exports.ripemd160 = exports.sha256FromArray = exports.sha256FromString = exports.sha256 = exports.keccakFromArray = exports.keccakFromHexString = exports.keccakFromString = exports.keccak256 = exports.keccak = void 0;
-const keccak_1 = __webpack_require__(77);
-const createHash = __webpack_require__(107);
-const externals_1 = __webpack_require__(18);
-const bytes_1 = __webpack_require__(74);
-const helpers_1 = __webpack_require__(75);
+const keccak_1 = __webpack_require__(78);
+const createHash = __webpack_require__(108);
+const externals_1 = __webpack_require__(19);
+const bytes_1 = __webpack_require__(75);
+const helpers_1 = __webpack_require__(76);
 /**
  * Creates Keccak hash of a Buffer input
  * @param a The input data (Buffer)
@@ -15979,14 +18903,14 @@ exports.rlphash = rlphash;
 //# sourceMappingURL=hash.js.map
 
 /***/ }),
-/* 77 */
+/* 78 */
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-var hash_utils_1 = __webpack_require__(78);
-var createKeccakHash = __webpack_require__(79);
+var hash_utils_1 = __webpack_require__(79);
+var createKeccakHash = __webpack_require__(80);
 exports.keccak224 = hash_utils_1.createHashFunction(function () {
     return createKeccakHash("keccak224");
 });
@@ -16002,7 +18926,7 @@ exports.keccak512 = hash_utils_1.createHashFunction(function () {
 //# sourceMappingURL=keccak.js.map
 
 /***/ }),
-/* 78 */
+/* 79 */
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
@@ -16019,29 +18943,29 @@ exports.createHashFunction = createHashFunction;
 //# sourceMappingURL=hash-utils.js.map
 
 /***/ }),
-/* 79 */
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
-
-try {
-  module.exports = __webpack_require__(80)
-} catch (err) {
-  module.exports = __webpack_require__(104)
-}
-
-
-/***/ }),
 /* 80 */
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
-module.exports = __webpack_require__(81)(__webpack_require__(26)(__dirname))
+try {
+  module.exports = __webpack_require__(81)
+} catch (err) {
+  module.exports = __webpack_require__(105)
+}
 
 
 /***/ }),
 /* 81 */
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
-const createKeccak = __webpack_require__(82)
-const createShake = __webpack_require__(103)
+module.exports = __webpack_require__(82)(__webpack_require__(27)(__dirname))
+
+
+/***/ }),
+/* 82 */
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+const createKeccak = __webpack_require__(83)
+const createShake = __webpack_require__(104)
 
 module.exports = function (KeccakState) {
   const Keccak = createKeccak(KeccakState)
@@ -16070,10 +18994,10 @@ module.exports = function (KeccakState) {
 
 
 /***/ }),
-/* 82 */
+/* 83 */
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
-const { Transform } = __webpack_require__(83)
+const { Transform } = __webpack_require__(84)
 
 module.exports = (KeccakState) => class Keccak extends Transform {
   constructor (rate, capacity, delimitedSuffix, hashBitLength, options) {
@@ -16153,36 +19077,36 @@ module.exports = (KeccakState) => class Keccak extends Transform {
 
 
 /***/ }),
-/* 83 */
+/* 84 */
 /***/ ((module, exports, __webpack_require__) => {
 
-var Stream = __webpack_require__(84);
+var Stream = __webpack_require__(85);
 if (process.env.READABLE_STREAM === 'disable' && Stream) {
   module.exports = Stream.Readable;
   Object.assign(module.exports, Stream);
   module.exports.Stream = Stream;
 } else {
-  exports = module.exports = __webpack_require__(85);
+  exports = module.exports = __webpack_require__(86);
   exports.Stream = Stream || exports;
   exports.Readable = exports;
-  exports.Writable = __webpack_require__(93);
-  exports.Duplex = __webpack_require__(92);
-  exports.Transform = __webpack_require__(100);
-  exports.PassThrough = __webpack_require__(101);
-  exports.finished = __webpack_require__(98);
-  exports.pipeline = __webpack_require__(102);
+  exports.Writable = __webpack_require__(94);
+  exports.Duplex = __webpack_require__(93);
+  exports.Transform = __webpack_require__(101);
+  exports.PassThrough = __webpack_require__(102);
+  exports.finished = __webpack_require__(99);
+  exports.pipeline = __webpack_require__(103);
 }
 
 
 /***/ }),
-/* 84 */
+/* 85 */
 /***/ ((module) => {
 
 "use strict";
 module.exports = require("stream");
 
 /***/ }),
-/* 85 */
+/* 86 */
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 "use strict";
@@ -16218,17 +19142,17 @@ var Duplex;
 Readable.ReadableState = ReadableState;
 
 /*<replacement>*/
-var EE = (__webpack_require__(86).EventEmitter);
+var EE = (__webpack_require__(87).EventEmitter);
 var EElistenerCount = function EElistenerCount(emitter, type) {
   return emitter.listeners(type).length;
 };
 /*</replacement>*/
 
 /*<replacement>*/
-var Stream = __webpack_require__(87);
+var Stream = __webpack_require__(88);
 /*</replacement>*/
 
-var Buffer = (__webpack_require__(17).Buffer);
+var Buffer = (__webpack_require__(18).Buffer);
 var OurUint8Array = (typeof global !== 'undefined' ? global : typeof window !== 'undefined' ? window : typeof self !== 'undefined' ? self : {}).Uint8Array || function () {};
 function _uint8ArrayToBuffer(chunk) {
   return Buffer.from(chunk);
@@ -16238,7 +19162,7 @@ function _isUint8Array(obj) {
 }
 
 /*<replacement>*/
-var debugUtil = __webpack_require__(46);
+var debugUtil = __webpack_require__(47);
 var debug;
 if (debugUtil && debugUtil.debuglog) {
   debug = debugUtil.debuglog('stream');
@@ -16247,11 +19171,11 @@ if (debugUtil && debugUtil.debuglog) {
 }
 /*</replacement>*/
 
-var BufferList = __webpack_require__(88);
-var destroyImpl = __webpack_require__(89);
-var _require = __webpack_require__(90),
+var BufferList = __webpack_require__(89);
+var destroyImpl = __webpack_require__(90);
+var _require = __webpack_require__(91),
   getHighWaterMark = _require.getHighWaterMark;
-var _require$codes = (__webpack_require__(91).codes),
+var _require$codes = (__webpack_require__(92).codes),
   ERR_INVALID_ARG_TYPE = _require$codes.ERR_INVALID_ARG_TYPE,
   ERR_STREAM_PUSH_AFTER_EOF = _require$codes.ERR_STREAM_PUSH_AFTER_EOF,
   ERR_METHOD_NOT_IMPLEMENTED = _require$codes.ERR_METHOD_NOT_IMPLEMENTED,
@@ -16261,7 +19185,7 @@ var _require$codes = (__webpack_require__(91).codes),
 var StringDecoder;
 var createReadableStreamAsyncIterator;
 var from;
-__webpack_require__(45)(Readable, Stream);
+__webpack_require__(46)(Readable, Stream);
 var errorOrDestroy = destroyImpl.errorOrDestroy;
 var kProxyEvents = ['error', 'close', 'destroy', 'pause', 'resume'];
 function prependListener(emitter, event, fn) {
@@ -16276,7 +19200,7 @@ function prependListener(emitter, event, fn) {
   if (!emitter._events || !emitter._events[event]) emitter.on(event, fn);else if (Array.isArray(emitter._events[event])) emitter._events[event].unshift(fn);else emitter._events[event] = [fn, emitter._events[event]];
 }
 function ReadableState(options, stream, isDuplex) {
-  Duplex = Duplex || __webpack_require__(92);
+  Duplex = Duplex || __webpack_require__(93);
   options = options || {};
 
   // Duplex streams are both readable and writable, but share
@@ -16343,13 +19267,13 @@ function ReadableState(options, stream, isDuplex) {
   this.decoder = null;
   this.encoding = null;
   if (options.encoding) {
-    if (!StringDecoder) StringDecoder = (__webpack_require__(95).StringDecoder);
+    if (!StringDecoder) StringDecoder = (__webpack_require__(96).StringDecoder);
     this.decoder = new StringDecoder(options.encoding);
     this.encoding = options.encoding;
   }
 }
 function Readable(options) {
-  Duplex = Duplex || __webpack_require__(92);
+  Duplex = Duplex || __webpack_require__(93);
   if (!(this instanceof Readable)) return new Readable(options);
 
   // Checking for a Stream.Duplex instance is faster here instead of inside
@@ -16486,7 +19410,7 @@ Readable.prototype.isPaused = function () {
 
 // backwards compatibility.
 Readable.prototype.setEncoding = function (enc) {
-  if (!StringDecoder) StringDecoder = (__webpack_require__(95).StringDecoder);
+  if (!StringDecoder) StringDecoder = (__webpack_require__(96).StringDecoder);
   var decoder = new StringDecoder(enc);
   this._readableState.decoder = decoder;
   // If setEncoding(null), decoder.encoding equals utf8
@@ -17105,7 +20029,7 @@ Readable.prototype.wrap = function (stream) {
 if (typeof Symbol === 'function') {
   Readable.prototype[Symbol.asyncIterator] = function () {
     if (createReadableStreamAsyncIterator === undefined) {
-      createReadableStreamAsyncIterator = __webpack_require__(97);
+      createReadableStreamAsyncIterator = __webpack_require__(98);
     }
     return createReadableStreamAsyncIterator(this);
   };
@@ -17202,7 +20126,7 @@ function endReadableNT(state, stream) {
 if (typeof Symbol === 'function') {
   Readable.from = function (iterable, opts) {
     if (from === undefined) {
-      from = __webpack_require__(99);
+      from = __webpack_require__(100);
     }
     return from(Readable, iterable, opts);
   };
@@ -17215,21 +20139,21 @@ function indexOf(xs, x) {
 }
 
 /***/ }),
-/* 86 */
+/* 87 */
 /***/ ((module) => {
 
 "use strict";
 module.exports = require("events");
 
 /***/ }),
-/* 87 */
+/* 88 */
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
-module.exports = __webpack_require__(84);
+module.exports = __webpack_require__(85);
 
 
 /***/ }),
-/* 88 */
+/* 89 */
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 "use strict";
@@ -17243,9 +20167,9 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
 function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return typeof key === "symbol" ? key : String(key); }
 function _toPrimitive(input, hint) { if (typeof input !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (typeof res !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
-var _require = __webpack_require__(17),
+var _require = __webpack_require__(18),
   Buffer = _require.Buffer;
-var _require2 = __webpack_require__(46),
+var _require2 = __webpack_require__(47),
   inspect = _require2.inspect;
 var custom = inspect && inspect.custom || 'inspect';
 function copyBuffer(src, target, offset) {
@@ -17418,7 +20342,7 @@ module.exports = /*#__PURE__*/function () {
 }();
 
 /***/ }),
-/* 89 */
+/* 90 */
 /***/ ((module) => {
 
 "use strict";
@@ -17520,13 +20444,13 @@ module.exports = {
 };
 
 /***/ }),
-/* 90 */
+/* 91 */
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 "use strict";
 
 
-var ERR_INVALID_OPT_VALUE = (__webpack_require__(91).codes.ERR_INVALID_OPT_VALUE);
+var ERR_INVALID_OPT_VALUE = (__webpack_require__(92).codes.ERR_INVALID_OPT_VALUE);
 function highWaterMarkFrom(options, isDuplex, duplexKey) {
   return options.highWaterMark != null ? options.highWaterMark : isDuplex ? options[duplexKey] : null;
 }
@@ -17548,7 +20472,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 91 */
+/* 92 */
 /***/ ((module) => {
 
 "use strict";
@@ -17671,7 +20595,7 @@ module.exports.codes = codes;
 
 
 /***/ }),
-/* 92 */
+/* 93 */
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 "use strict";
@@ -17712,9 +20636,9 @@ var objectKeys = Object.keys || function (obj) {
 /*</replacement>*/
 
 module.exports = Duplex;
-var Readable = __webpack_require__(85);
-var Writable = __webpack_require__(93);
-__webpack_require__(45)(Duplex, Readable);
+var Readable = __webpack_require__(86);
+var Writable = __webpack_require__(94);
+__webpack_require__(46)(Duplex, Readable);
 {
   // Allow the keys array to be GC'ed.
   var keys = objectKeys(Writable.prototype);
@@ -17803,7 +20727,7 @@ Object.defineProperty(Duplex.prototype, 'destroyed', {
 });
 
 /***/ }),
-/* 93 */
+/* 94 */
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 "use strict";
@@ -17864,15 +20788,15 @@ Writable.WritableState = WritableState;
 
 /*<replacement>*/
 var internalUtil = {
-  deprecate: __webpack_require__(94)
+  deprecate: __webpack_require__(95)
 };
 /*</replacement>*/
 
 /*<replacement>*/
-var Stream = __webpack_require__(87);
+var Stream = __webpack_require__(88);
 /*</replacement>*/
 
-var Buffer = (__webpack_require__(17).Buffer);
+var Buffer = (__webpack_require__(18).Buffer);
 var OurUint8Array = (typeof global !== 'undefined' ? global : typeof window !== 'undefined' ? window : typeof self !== 'undefined' ? self : {}).Uint8Array || function () {};
 function _uint8ArrayToBuffer(chunk) {
   return Buffer.from(chunk);
@@ -17880,10 +20804,10 @@ function _uint8ArrayToBuffer(chunk) {
 function _isUint8Array(obj) {
   return Buffer.isBuffer(obj) || obj instanceof OurUint8Array;
 }
-var destroyImpl = __webpack_require__(89);
-var _require = __webpack_require__(90),
+var destroyImpl = __webpack_require__(90);
+var _require = __webpack_require__(91),
   getHighWaterMark = _require.getHighWaterMark;
-var _require$codes = (__webpack_require__(91).codes),
+var _require$codes = (__webpack_require__(92).codes),
   ERR_INVALID_ARG_TYPE = _require$codes.ERR_INVALID_ARG_TYPE,
   ERR_METHOD_NOT_IMPLEMENTED = _require$codes.ERR_METHOD_NOT_IMPLEMENTED,
   ERR_MULTIPLE_CALLBACK = _require$codes.ERR_MULTIPLE_CALLBACK,
@@ -17893,10 +20817,10 @@ var _require$codes = (__webpack_require__(91).codes),
   ERR_STREAM_WRITE_AFTER_END = _require$codes.ERR_STREAM_WRITE_AFTER_END,
   ERR_UNKNOWN_ENCODING = _require$codes.ERR_UNKNOWN_ENCODING;
 var errorOrDestroy = destroyImpl.errorOrDestroy;
-__webpack_require__(45)(Writable, Stream);
+__webpack_require__(46)(Writable, Stream);
 function nop() {}
 function WritableState(options, stream, isDuplex) {
-  Duplex = Duplex || __webpack_require__(92);
+  Duplex = Duplex || __webpack_require__(93);
   options = options || {};
 
   // Duplex streams are both readable and writable, but share
@@ -18038,7 +20962,7 @@ if (typeof Symbol === 'function' && Symbol.hasInstance && typeof Function.protot
   };
 }
 function Writable(options) {
-  Duplex = Duplex || __webpack_require__(92);
+  Duplex = Duplex || __webpack_require__(93);
 
   // Writable ctor is applied to Duplexes, too.
   // `realHasInstance` is necessary because using plain `instanceof`
@@ -18450,7 +21374,7 @@ Writable.prototype._destroy = function (err, cb) {
 };
 
 /***/ }),
-/* 94 */
+/* 95 */
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 
@@ -18458,11 +21382,11 @@ Writable.prototype._destroy = function (err, cb) {
  * For Node.js, simply re-export the core `util.deprecate` function.
  */
 
-module.exports = __webpack_require__(46).deprecate;
+module.exports = __webpack_require__(47).deprecate;
 
 
 /***/ }),
-/* 95 */
+/* 96 */
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 "use strict";
@@ -18491,7 +21415,7 @@ module.exports = __webpack_require__(46).deprecate;
 
 /*<replacement>*/
 
-var Buffer = (__webpack_require__(96).Buffer);
+var Buffer = (__webpack_require__(97).Buffer);
 /*</replacement>*/
 
 var isEncoding = Buffer.isEncoding || function (encoding) {
@@ -18764,12 +21688,12 @@ function simpleEnd(buf) {
 }
 
 /***/ }),
-/* 96 */
+/* 97 */
 /***/ ((module, exports, __webpack_require__) => {
 
 /*! safe-buffer. MIT License. Feross Aboukhadijeh <https://feross.org/opensource> */
 /* eslint-disable node/no-deprecated-api */
-var buffer = __webpack_require__(17)
+var buffer = __webpack_require__(18)
 var Buffer = buffer.Buffer
 
 // alternative to using Object.keys for old browsers
@@ -18835,7 +21759,7 @@ SafeBuffer.allocUnsafeSlow = function (size) {
 
 
 /***/ }),
-/* 97 */
+/* 98 */
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 "use strict";
@@ -18845,7 +21769,7 @@ var _Object$setPrototypeO;
 function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return typeof key === "symbol" ? key : String(key); }
 function _toPrimitive(input, hint) { if (typeof input !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (typeof res !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
-var finished = __webpack_require__(98);
+var finished = __webpack_require__(99);
 var kLastResolve = Symbol('lastResolve');
 var kLastReject = Symbol('lastReject');
 var kError = Symbol('error');
@@ -19021,7 +21945,7 @@ var createReadableStreamAsyncIterator = function createReadableStreamAsyncIterat
 module.exports = createReadableStreamAsyncIterator;
 
 /***/ }),
-/* 98 */
+/* 99 */
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 "use strict";
@@ -19030,7 +21954,7 @@ module.exports = createReadableStreamAsyncIterator;
 
 
 
-var ERR_STREAM_PREMATURE_CLOSE = (__webpack_require__(91).codes.ERR_STREAM_PREMATURE_CLOSE);
+var ERR_STREAM_PREMATURE_CLOSE = (__webpack_require__(92).codes.ERR_STREAM_PREMATURE_CLOSE);
 function once(callback) {
   var called = false;
   return function () {
@@ -19113,7 +22037,7 @@ function eos(stream, opts, callback) {
 module.exports = eos;
 
 /***/ }),
-/* 99 */
+/* 100 */
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 "use strict";
@@ -19126,7 +22050,7 @@ function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { va
 function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return typeof key === "symbol" ? key : String(key); }
 function _toPrimitive(input, hint) { if (typeof input !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (typeof res !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
-var ERR_INVALID_ARG_TYPE = (__webpack_require__(91).codes.ERR_INVALID_ARG_TYPE);
+var ERR_INVALID_ARG_TYPE = (__webpack_require__(92).codes.ERR_INVALID_ARG_TYPE);
 function from(Readable, iterable, opts) {
   var iterator;
   if (iterable && typeof iterable.next === 'function') {
@@ -19172,7 +22096,7 @@ module.exports = from;
 
 
 /***/ }),
-/* 100 */
+/* 101 */
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 "use strict";
@@ -19242,13 +22166,13 @@ module.exports = from;
 
 
 module.exports = Transform;
-var _require$codes = (__webpack_require__(91).codes),
+var _require$codes = (__webpack_require__(92).codes),
   ERR_METHOD_NOT_IMPLEMENTED = _require$codes.ERR_METHOD_NOT_IMPLEMENTED,
   ERR_MULTIPLE_CALLBACK = _require$codes.ERR_MULTIPLE_CALLBACK,
   ERR_TRANSFORM_ALREADY_TRANSFORMING = _require$codes.ERR_TRANSFORM_ALREADY_TRANSFORMING,
   ERR_TRANSFORM_WITH_LENGTH_0 = _require$codes.ERR_TRANSFORM_WITH_LENGTH_0;
-var Duplex = __webpack_require__(92);
-__webpack_require__(45)(Transform, Duplex);
+var Duplex = __webpack_require__(93);
+__webpack_require__(46)(Transform, Duplex);
 function afterTransform(er, data) {
   var ts = this._transformState;
   ts.transforming = false;
@@ -19368,7 +22292,7 @@ function done(stream, er, data) {
 }
 
 /***/ }),
-/* 101 */
+/* 102 */
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 "use strict";
@@ -19400,8 +22324,8 @@ function done(stream, er, data) {
 
 
 module.exports = PassThrough;
-var Transform = __webpack_require__(100);
-__webpack_require__(45)(PassThrough, Transform);
+var Transform = __webpack_require__(101);
+__webpack_require__(46)(PassThrough, Transform);
 function PassThrough(options) {
   if (!(this instanceof PassThrough)) return new PassThrough(options);
   Transform.call(this, options);
@@ -19411,7 +22335,7 @@ PassThrough.prototype._transform = function (chunk, encoding, cb) {
 };
 
 /***/ }),
-/* 102 */
+/* 103 */
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 "use strict";
@@ -19429,7 +22353,7 @@ function once(callback) {
     callback.apply(void 0, arguments);
   };
 }
-var _require$codes = (__webpack_require__(91).codes),
+var _require$codes = (__webpack_require__(92).codes),
   ERR_MISSING_ARGS = _require$codes.ERR_MISSING_ARGS,
   ERR_STREAM_DESTROYED = _require$codes.ERR_STREAM_DESTROYED;
 function noop(err) {
@@ -19445,7 +22369,7 @@ function destroyer(stream, reading, writing, callback) {
   stream.on('close', function () {
     closed = true;
   });
-  if (eos === undefined) eos = __webpack_require__(98);
+  if (eos === undefined) eos = __webpack_require__(99);
   eos(stream, {
     readable: reading,
     writable: writing
@@ -19503,10 +22427,10 @@ function pipeline() {
 module.exports = pipeline;
 
 /***/ }),
-/* 103 */
+/* 104 */
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
-const { Transform } = __webpack_require__(83)
+const { Transform } = __webpack_require__(84)
 
 module.exports = (KeccakState) => class Shake extends Transform {
   constructor (rate, capacity, delimitedSuffix, options) {
@@ -19577,17 +22501,17 @@ module.exports = (KeccakState) => class Shake extends Transform {
 
 
 /***/ }),
-/* 104 */
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
-
-module.exports = __webpack_require__(81)(__webpack_require__(105))
-
-
-/***/ }),
 /* 105 */
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
-const keccakState = __webpack_require__(106)
+module.exports = __webpack_require__(82)(__webpack_require__(106))
+
+
+/***/ }),
+/* 106 */
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+const keccakState = __webpack_require__(107)
 
 function Keccak () {
   // much faster than `new Array(50)`
@@ -19658,7 +22582,7 @@ module.exports = Keccak
 
 
 /***/ }),
-/* 106 */
+/* 107 */
 /***/ ((__unused_webpack_module, exports) => {
 
 const P1600_ROUND_CONSTANTS = [1, 0, 32898, 0, 32906, 2147483648, 2147516416, 2147483648, 32907, 0, 2147483649, 0, 2147516545, 2147483648, 32777, 2147483648, 138, 0, 136, 0, 2147516425, 0, 2147483658, 0, 2147516555, 0, 139, 2147483648, 32905, 2147483648, 32771, 2147483648, 32770, 2147483648, 128, 2147483648, 32778, 0, 2147483658, 2147483648, 2147516545, 2147483648, 32896, 2147483648, 2147483649, 0, 2147516424, 2147483648]
@@ -19850,23 +22774,23 @@ exports.p1600 = function (s) {
 
 
 /***/ }),
-/* 107 */
+/* 108 */
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
-module.exports = __webpack_require__(41).createHash
+module.exports = __webpack_require__(42).createHash
 
 
 /***/ }),
-/* 108 */
+/* 109 */
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.toType = exports.TypeOutput = exports.bnToRlp = exports.bnToUnpaddedBuffer = exports.bnToHex = void 0;
-const externals_1 = __webpack_require__(18);
-const internal_1 = __webpack_require__(73);
-const bytes_1 = __webpack_require__(74);
+const externals_1 = __webpack_require__(19);
+const internal_1 = __webpack_require__(74);
+const bytes_1 = __webpack_require__(75);
 /**
  * Convert BN to 0x-prefixed hex string.
  */
@@ -19940,7 +22864,7 @@ exports.toType = toType;
 //# sourceMappingURL=types.js.map
 
 /***/ }),
-/* 109 */
+/* 110 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -19950,10 +22874,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.Address = void 0;
-const assert_1 = __importDefault(__webpack_require__(22));
-const externals_1 = __webpack_require__(18);
-const bytes_1 = __webpack_require__(74);
-const account_1 = __webpack_require__(21);
+const assert_1 = __importDefault(__webpack_require__(23));
+const externals_1 = __webpack_require__(19);
+const bytes_1 = __webpack_require__(75);
+const account_1 = __webpack_require__(22);
 class Address {
     constructor(buf) {
         (0, assert_1.default)(buf.length === 20, 'Invalid address length');
@@ -20050,19 +22974,19 @@ exports.Address = Address;
 //# sourceMappingURL=address.js.map
 
 /***/ }),
-/* 110 */
+/* 111 */
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.hashPersonalMessage = exports.isValidSignature = exports.fromRpcSig = exports.toCompactSig = exports.toRpcSig = exports.ecrecover = exports.ecsign = void 0;
-const secp256k1_1 = __webpack_require__(23);
-const externals_1 = __webpack_require__(18);
-const bytes_1 = __webpack_require__(74);
-const hash_1 = __webpack_require__(76);
-const helpers_1 = __webpack_require__(75);
-const types_1 = __webpack_require__(108);
+const secp256k1_1 = __webpack_require__(24);
+const externals_1 = __webpack_require__(19);
+const bytes_1 = __webpack_require__(75);
+const hash_1 = __webpack_require__(77);
+const helpers_1 = __webpack_require__(76);
+const types_1 = __webpack_require__(109);
 function ecsign(msgHash, privateKey, chainId) {
     const { signature, recid: recovery } = (0, secp256k1_1.ecdsaSign)(msgHash, privateKey);
     const r = Buffer.from(signature.slice(0, 32));
@@ -20219,7 +23143,7 @@ exports.hashPersonalMessage = hashPersonalMessage;
 //# sourceMappingURL=signature.js.map
 
 /***/ }),
-/* 111 */
+/* 112 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -20229,10 +23153,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.defineProperties = void 0;
-const assert_1 = __importDefault(__webpack_require__(22));
-const internal_1 = __webpack_require__(73);
-const externals_1 = __webpack_require__(18);
-const bytes_1 = __webpack_require__(74);
+const assert_1 = __importDefault(__webpack_require__(23));
+const internal_1 = __webpack_require__(74);
+const externals_1 = __webpack_require__(19);
+const bytes_1 = __webpack_require__(75);
 /**
  * Defines properties on a `Object`. It make the assumption that underlying data is binary.
  * @param self the `Object` to define properties on
@@ -20334,7 +23258,7 @@ exports.defineProperties = defineProperties;
 //# sourceMappingURL=object.js.map
 
 /***/ }),
-/* 112 */
+/* 113 */
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -20345,15 +23269,22 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   SimulationConvertReward: () => (/* binding */ SimulationConvertReward),
 /* harmony export */   SimulationRepay: () => (/* binding */ SimulationRepay),
 /* harmony export */   SimulationSupply: () => (/* binding */ SimulationSupply),
-/* harmony export */   SimulationWithdraw: () => (/* binding */ SimulationWithdraw)
+/* harmony export */   SimulationWithdraw: () => (/* binding */ SimulationWithdraw),
+/* harmony export */   calculateNewAvailableBorrow: () => (/* binding */ calculateNewAvailableBorrow),
+/* harmony export */   calculateNewHealFactor: () => (/* binding */ calculateNewHealFactor),
+/* harmony export */   calculateNewLTV: () => (/* binding */ calculateNewLTV),
+/* harmony export */   calculateNewLiquidThreshold: () => (/* binding */ calculateNewLiquidThreshold),
+/* harmony export */   getAmountFromBalanceUsd: () => (/* binding */ getAmountFromBalanceUsd),
+/* harmony export */   getBalanceUsdFromAmount: () => (/* binding */ getBalanceUsdFromAmount)
 /* harmony export */ });
-/* harmony import */ var _utils_oraclePrice__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(113);
-/* harmony import */ var _utils_address__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(12);
-/* harmony import */ var ethers__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(11);
-/* harmony import */ var ethers__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(ethers__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _utils_config__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(13);
-/* harmony import */ var _abis_IncentiveContract_json__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(116);
-/* harmony import */ var bignumber_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(117);
+/* harmony import */ var _utils_address__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(12);
+/* harmony import */ var ethers__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(11);
+/* harmony import */ var ethers__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(ethers__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _utils_config__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(13);
+/* harmony import */ var _abis_IncentiveContract_json__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(114);
+/* harmony import */ var bignumber_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(15);
+/* harmony import */ var _UpdateStateAccount__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(115);
+/* harmony import */ var _basic_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(9);
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
 function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
@@ -20367,6 +23298,59 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
 
 
+
+function calculateNewAvailableBorrow(newTotalCollateral, newLTV, newTotalDebt) {
+  return (0,_utils_config__WEBPACK_IMPORTED_MODULE_2__.percentMul)(newTotalCollateral.toFixed(0), newLTV.toFixed(0)).minus(newTotalDebt);
+}
+function calculateNewHealFactor(newTotalCollateral, newLiquidationThreshold, newTotalDebt) {
+  if (newTotalDebt.isZero()) {
+    return (0,bignumber_js__WEBPACK_IMPORTED_MODULE_4__.BigNumber)(_utils_config__WEBPACK_IMPORTED_MODULE_2__.MAX_UINT256);
+  }
+  return newTotalCollateral.multipliedBy(newLiquidationThreshold).multipliedBy(10 ** 14).div(newTotalDebt);
+}
+// ltv = sum(C[i] * ltv[i]) / sum(C[i]) with C[i] is colleteral of token[i] and ltv[i] is ltv of this token
+// <=> oldLtv = sum(C[i] * ltv[i]) / oldTotalColleteral
+// newLTV = (sum(C[i] * ltv[i]) + (new C'[i] * ltv[i] )) /(oldTotalColleteral + C'[i])
+// => newLTV = (oldLTV * oldTotalColleteral + new C'[i] * ltv[i]) / newTotalColleteral
+// <=> newLTV = (oldLTV * oldTotalColleteral + new amount * tokenPrice[i] / tokenDecimal[i]) / newTOtalColleteral
+// if amount == 0, LTV is unchanged
+function calculateNewLTV(oldTotalColleteral, oldLTV, newTotalCollateral, tokenLTV) {
+  var usd_changed = newTotalCollateral.minus(oldTotalColleteral);
+  if (usd_changed.isZero()) {
+    return oldLTV;
+  }
+  // console.log("usd_changed", usd_changed.toFixed(0))
+  // console.log("tokenLTV", tokenLTV.toFixed(0))
+  // console.log("newTotalCollateral", newTotalCollateral.toFixed(0))
+  var newLTV = oldTotalColleteral.multipliedBy(oldLTV).plus(usd_changed.multipliedBy(tokenLTV)).div(newTotalCollateral);
+  return newLTV;
+}
+
+//liquid threshold has a formula like LTV
+function calculateNewLiquidThreshold(oldTotalColleteral, oldLiqThres, newTotalCollateral, tokenLiqThres) {
+  if (newTotalCollateral.isZero()) {
+    return (0,bignumber_js__WEBPACK_IMPORTED_MODULE_4__.BigNumber)(0);
+  }
+  var usd_changed = newTotalCollateral.minus(oldTotalColleteral);
+  var newLTV = oldTotalColleteral.multipliedBy(oldLiqThres).plus(usd_changed.multipliedBy(tokenLiqThres)).div(newTotalCollateral);
+  return newLTV;
+}
+function getBalanceUsdFromAmount(amount, tokenInfo) {
+  //get token decimals
+  var tokenDecimal = tokenInfo.tToken.decimals;
+  var originTokenDecimal = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_4__.BigNumber)(Math.pow(10, parseInt(tokenDecimal)));
+  var tokenPrice = tokenInfo.price;
+  var balanceUSD = amount.multipliedBy(tokenPrice).div(originTokenDecimal);
+  return balanceUSD;
+}
+function getAmountFromBalanceUsd(balanceUsd, tokenInfo) {
+  //get token decimals
+  var tokenDecimal = tokenInfo.tToken.decimals;
+  var originTokenDecimal = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_4__.BigNumber)(Math.pow(10, parseInt(tokenDecimal)));
+  var tokenPrice = tokenInfo.price;
+  var amount = balanceUsd.multipliedBy(originTokenDecimal).div(tokenPrice);
+  return amount;
+}
 function SimulationSupply(_x, _x2, _x3, _x4) {
   return _SimulationSupply.apply(this, arguments);
 }
@@ -20375,178 +23359,74 @@ function SimulationSupply(_x, _x2, _x3, _x4) {
 function _SimulationSupply() {
   _SimulationSupply = _asyncToGenerator(function* (appState1, _from, _tokenAddress, _amount) {
     try {
-      var amount = _amount;
+      var amount = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_4__.BigNumber)(_amount);
       var appState = _objectSpread({}, appState1);
-      var oraclePrice = new _utils_oraclePrice__WEBPACK_IMPORTED_MODULE_0__["default"]((0,_utils_address__WEBPACK_IMPORTED_MODULE_1__.getAddr)("ORACLE_ADDRESS", appState.chainId), appState.web3);
-      var tokenAddress = (0,_utils_address__WEBPACK_IMPORTED_MODULE_1__.convertHexStringToAddress)(_tokenAddress);
-      var tokenPrice = BigInt(yield oraclePrice.getAssetPrice(tokenAddress));
       _tokenAddress = _tokenAddress.toLowerCase();
-      var tokenInfo = appState.smartWalletState.detailTokenInPool.get(_tokenAddress);
       if (_from.toLowerCase() == appState.walletState.address.toLowerCase()) {
-        // check tokenAddress is exist on reverseList
-        if (appState.smartWalletState.detailTokenInPool.has(_tokenAddress) && appState.walletState.tokenBalances.has(_tokenAddress)) {
-          var _appState$smartWallet;
-          // check tokenAddress:string is exist on appState.walletState.tokenBalances : Array<Map<string, string>>
-
-          // get token amount
-          var tokenAmount = BigInt(appState.walletState.tokenBalances.get(_tokenAddress));
-          if (amount.toString() == _utils_config__WEBPACK_IMPORTED_MODULE_3__.MAX_UINT256 || BigInt(amount) == BigInt(_utils_config__WEBPACK_IMPORTED_MODULE_3__.MAX_UINT256)) {
-            amount = appState.walletState.tokenBalances.get(_tokenAddress);
-          }
-
-          // get token decimals
-          var tokenDecimal = (_appState$smartWallet = appState.smartWalletState.detailTokenInPool.get(_tokenAddress)) === null || _appState$smartWallet === void 0 ? void 0 : _appState$smartWallet.tToken.decimals;
-          var originTokenDecimal = BigInt(Math.pow(10, parseInt(tokenDecimal)));
-          // check amount tokenName on appState is enough .Before check convert string to number
-          // if (tokenAmount >= BigInt(amount)) {
-          // update appState amount tokenName
-          var newAmount = String(tokenAmount - BigInt(amount));
-          appState.walletState.tokenBalances.set(_tokenAddress, newAmount);
-
-          // update state of smart wallet trava lp
-
-          // update availableBorrowUSD . (deposited + amount * asset.price) * ltv - borrowed
-          // appState.smartWalletState.travaLPState.availableBorrowsUSD = String(
-          //   ((BigInt(
-          //     appState.smartWalletState.travaLPState.totalCollateralUSD
-          //   ) *
-          //     BigInt(10 ** 18) +
-          //     BigInt(amount) *
-          //       tokenPrice) *
-          //     BigInt(appState.smartWalletState.travaLPState.ltv) -
-          //     BigInt(appState.smartWalletState.travaLPState.totalDebtUSD) *
-          //       BigInt(10 ** 24)) /
-          //     BigInt(10 ** 22)
-          // );
-
-          // update healthFactor .((deposited + amount * asset.price) * currentLiquidationThreshold) / borrowe
-          // if totalDebtUSD = 0  , not update healthFactor
-          if (appState.smartWalletState.travaLPState.totalDebtUSD != "0") {
-            // appState.smartWalletState.travaLPState.healthFactor = String(
-            //   ((BigInt(
-            //     appState.smartWalletState.travaLPState.totalCollateralUSD
-            //   ) *
-            //     BigInt(10 ** 18) +
-            //     BigInt(amount) *
-            //       tokenPrice) *
-            //     BigInt(
-            //       appState.smartWalletState.travaLPState
-            //         .currentLiquidationThreshold
-            //     )) /
-            //     BigInt(appState.smartWalletState.travaLPState.totalDebtUSD)
-            // );
-
-            appState.smartWalletState.travaLPState.healthFactor = String((BigInt(appState.smartWalletState.travaLPState.totalCollateralUSD) * BigInt(originTokenDecimal) + BigInt(amount) * tokenPrice) * BigInt(appState.smartWalletState.travaLPState.currentLiquidationThreshold) * BigInt(10 ** 14) / (BigInt(originTokenDecimal) * BigInt(appState.smartWalletState.travaLPState.totalDebtUSD)));
-          } else {
-            // healthFactor = MaxUint256
-            appState.smartWalletState.travaLPState.healthFactor = _utils_config__WEBPACK_IMPORTED_MODULE_3__.MAX_UINT256;
-          }
-          var oldTotalCollateralUSD = appState.smartWalletState.travaLPState.totalCollateralUSD;
-          var newTotalCollateralUSD = String(BigInt(appState.smartWalletState.travaLPState.totalCollateralUSD) + BigInt(amount) * tokenPrice / BigInt(originTokenDecimal));
-          var oldLTV = appState.smartWalletState.travaLPState.ltv;
-          var newLTV = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_5__.BigNumber)(oldTotalCollateralUSD).multipliedBy((0,bignumber_js__WEBPACK_IMPORTED_MODULE_5__.BigNumber)(oldLTV)).plus((0,bignumber_js__WEBPACK_IMPORTED_MODULE_5__.BigNumber)(amount).multipliedBy((0,bignumber_js__WEBPACK_IMPORTED_MODULE_5__.BigNumber)(tokenPrice.toString())).multipliedBy((0,bignumber_js__WEBPACK_IMPORTED_MODULE_5__.BigNumber)(tokenInfo.maxLTV)).div(originTokenDecimal.toString())).div((0,bignumber_js__WEBPACK_IMPORTED_MODULE_5__.BigNumber)(newTotalCollateralUSD)).toFixed(0);
-          appState.smartWalletState.travaLPState.totalCollateralUSD = newTotalCollateralUSD;
-          appState.smartWalletState.travaLPState.ltv = newLTV;
-          appState.smartWalletState.travaLPState.availableBorrowsUSD = String((BigInt(appState.smartWalletState.travaLPState.totalCollateralUSD) * BigInt(originTokenDecimal) * BigInt(appState.smartWalletState.travaLPState.ltv) - BigInt(appState.smartWalletState.travaLPState.totalDebtUSD) * BigInt(10 ** 4) * BigInt(originTokenDecimal)) / (BigInt(originTokenDecimal) * BigInt(10 ** 4)));
-          tokenInfo.tToken = _objectSpread(_objectSpread({}, tokenInfo.tToken), {}, {
-            balances: String(BigInt(tokenInfo.tToken.balances) + BigInt(amount))
-          });
-          appState.smartWalletState.detailTokenInPool.set(_tokenAddress, tokenInfo);
-
-          // return appState;
-        } else {
-          throw new Error("Account or LP does not have ".concat(tokenAddress, " token."));
+        // check tokenAddress:string is exist on appState.walletState.tokenBalances : Array<Map<string, string>>
+        if (appState.walletState.tokenBalances.has(_tokenAddress)) {
+          yield (0,_basic_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_6__.updateUserTokenBalance)(appState, _tokenAddress);
         }
+        if (amount.toFixed(0) == _utils_config__WEBPACK_IMPORTED_MODULE_2__.MAX_UINT256 || amount.isEqualTo(_utils_config__WEBPACK_IMPORTED_MODULE_2__.MAX_UINT256)) {
+          amount = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_4__.BigNumber)(appState.walletState.tokenBalances.get(_tokenAddress));
+        }
+
+        // get token amount
+        var tokenAmount = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_4__.BigNumber)(appState.walletState.tokenBalances.get(_tokenAddress));
+        // check amount tokenName on appState is enough .Before check convert string to number
+        // if (tokenAmount >= BigInt(amount)) {
+        // update appState amount tokenName
+        var newAmount = tokenAmount.minus(amount).toFixed(0);
+        appState.walletState.tokenBalances.set(_tokenAddress, newAmount);
       } else if (_from.toLowerCase() == appState.smartWalletState.address.toLowerCase()) {
-        // check tokenAddress is exist on reverseList
-        if (appState.smartWalletState.detailTokenInPool.has(_tokenAddress) && appState.walletState.tokenBalances.has(_tokenAddress)) {
-          var _appState$smartWallet2;
-          // check tokenAddress:string is exist on appState.walletState.tokenBalances : Array<Map<string, string>>
-
-          // get token amount
-          var _tokenAmount = BigInt(appState.smartWalletState.tokenBalances.get(_tokenAddress));
-          if (amount.toString() == _utils_config__WEBPACK_IMPORTED_MODULE_3__.MAX_UINT256 || BigInt(amount) == BigInt(_utils_config__WEBPACK_IMPORTED_MODULE_3__.MAX_UINT256)) {
-            amount = appState.walletState.tokenBalances.get(_tokenAddress);
-          }
-
-          // get token decimals
-          var _tokenDecimal = (_appState$smartWallet2 = appState.smartWalletState.detailTokenInPool.get(_tokenAddress)) === null || _appState$smartWallet2 === void 0 ? void 0 : _appState$smartWallet2.tToken.decimals;
-          var _originTokenDecimal = BigInt(Math.pow(10, parseInt(_tokenDecimal)));
-
-          // check amount tokenName on appState is enough .Before check convert string to number
-          // if (tokenAmount >= BigInt(amount)) {
-          // update appState amount tokenName
-          var _newAmount = String(_tokenAmount - BigInt(amount));
-          appState.smartWalletState.tokenBalances.set(_tokenAddress, _newAmount);
-
-          // update state of smart wallet trava lp
-
-          // update availableBorrowUSD . (deposited + amount * asset.price) * ltv - borrowed
-          // appState.smartWalletState.travaLPState.availableBorrowsUSD = String(
-          //   ((BigInt(
-          //     appState.smartWalletState.travaLPState.totalCollateralUSD
-          //   ) *
-          //     BigInt(10 ** 18) +
-          //     BigInt(amount) *
-          //       tokenPrice) *
-          //     BigInt(appState.smartWalletState.travaLPState.ltv) -
-          //     BigInt(appState.smartWalletState.travaLPState.totalDebtUSD) *
-          //       BigInt(10 ** 24)) /
-          //     BigInt(10 ** 22)
-          // );
-
-          // update healthFactor .((deposited + amount * asset.price) * currentLiquidationThreshold) / borrowe
-          // if totalDebtUSD = 0  , not update healthFactor
-          if (appState.smartWalletState.travaLPState.totalDebtUSD != "0") {
-            // appState.smartWalletState.travaLPState.healthFactor = String(
-            //   ((BigInt(
-            //     appState.smartWalletState.travaLPState.totalCollateralUSD
-            //   ) *
-            //     BigInt(10 ** 18) +
-            //     BigInt(amount) *
-            //       tokenPrice) *
-            //     BigInt(
-            //       appState.smartWalletState.travaLPState
-            //         .currentLiquidationThreshold
-            //     )) /
-            //     BigInt(appState.smartWalletState.travaLPState.totalDebtUSD)
-            // );
-
-            appState.smartWalletState.travaLPState.healthFactor = String((BigInt(appState.smartWalletState.travaLPState.totalCollateralUSD) * BigInt(_originTokenDecimal) + BigInt(amount) * tokenPrice) * BigInt(appState.smartWalletState.travaLPState.currentLiquidationThreshold) * BigInt(10 ** 14) / (BigInt(_originTokenDecimal) * BigInt(appState.smartWalletState.travaLPState.totalDebtUSD)));
-          } else {
-            // healthFactor = MaxUint256
-            appState.smartWalletState.travaLPState.healthFactor = _utils_config__WEBPACK_IMPORTED_MODULE_3__.MAX_UINT256;
-          }
-
-          // update totalCollateralUSD. deposited + amount * asset.price
-          // appState.smartWalletState.travaLPState.totalCollateralUSD = String(
-          //   BigInt(appState.smartWalletState.travaLPState.totalCollateralUSD) +
-          //     (BigInt(amount) *
-          //       tokenPrice) /
-          //       BigInt(10 ** 18)
-          // );
-          var _oldTotalCollateralUSD = appState.smartWalletState.travaLPState.totalCollateralUSD;
-          var _newTotalCollateralUSD = String(BigInt(appState.smartWalletState.travaLPState.totalCollateralUSD) + BigInt(amount) * tokenPrice / BigInt(_originTokenDecimal));
-          var _oldLTV = appState.smartWalletState.travaLPState.ltv;
-          var _newLTV = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_5__.BigNumber)(_oldTotalCollateralUSD).multipliedBy((0,bignumber_js__WEBPACK_IMPORTED_MODULE_5__.BigNumber)(_oldLTV)).plus((0,bignumber_js__WEBPACK_IMPORTED_MODULE_5__.BigNumber)(amount).multipliedBy((0,bignumber_js__WEBPACK_IMPORTED_MODULE_5__.BigNumber)(tokenPrice.toString())).multipliedBy((0,bignumber_js__WEBPACK_IMPORTED_MODULE_5__.BigNumber)(tokenInfo.maxLTV)).div(_originTokenDecimal.toString())).div((0,bignumber_js__WEBPACK_IMPORTED_MODULE_5__.BigNumber)(_newTotalCollateralUSD)).toFixed(0);
-          appState.smartWalletState.travaLPState.totalCollateralUSD = _newTotalCollateralUSD;
-          appState.smartWalletState.travaLPState.ltv = _newLTV;
-          appState.smartWalletState.travaLPState.availableBorrowsUSD = String((BigInt(_newTotalCollateralUSD) * BigInt(appState.smartWalletState.travaLPState.ltv) - BigInt(appState.smartWalletState.travaLPState.totalDebtUSD) * BigInt(10 ** 4) * BigInt(_originTokenDecimal)) / (BigInt(_originTokenDecimal) * BigInt(10 ** 4)));
-
-          // }
-
-          // add tToken to smart wallet state if not exist
-
-          tokenInfo.tToken = _objectSpread(_objectSpread({}, tokenInfo.tToken), {}, {
-            balances: String(BigInt(tokenInfo.tToken.balances) + BigInt(amount))
-          });
-          appState.smartWalletState.detailTokenInPool.set(_tokenAddress, tokenInfo);
-
-          // return appState;
-        } else {
-          throw new Error("Account or LP does not have ".concat(tokenAddress, " token."));
+        // check tokenAddress:string is exist on appState.walletState.tokenBalances : Array<Map<string, string>>
+        if (appState.smartWalletState.tokenBalances.has(_tokenAddress)) {
+          yield (0,_basic_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_6__.updateSmartWalletTokenBalance)(appState, _tokenAddress);
         }
+        if (amount.toFixed(0) == _utils_config__WEBPACK_IMPORTED_MODULE_2__.MAX_UINT256 || amount.isEqualTo(_utils_config__WEBPACK_IMPORTED_MODULE_2__.MAX_UINT256)) {
+          amount = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_4__.BigNumber)(appState.walletState.tokenBalances.get(_tokenAddress));
+        }
+        // get token amount
+        var _tokenAmount = appState.smartWalletState.tokenBalances.get(_tokenAddress);
+        // check amount tokenName on appState is enough .Before check convert string to number
+        // if (tokenAmount >= BigInt(amount)) {
+        // update appState amount tokenName
+        var _newAmount = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_4__.BigNumber)(_tokenAmount).minus(amount);
+        appState.smartWalletState.tokenBalances.set(_tokenAddress, _newAmount.toFixed(0));
       }
+
+      // check tokenAddress is exist on reverseList
+      if (!appState.smartWalletState.detailTokenInPool.has(_tokenAddress)) {
+        yield (0,_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_5__.updateLPtTokenInfo)(appState, _tokenAddress);
+      }
+
+      //Update Smart Wallet Position
+      var tokenInfo = appState.smartWalletState.detailTokenInPool.get(_tokenAddress);
+      var supplyUSD = getBalanceUsdFromAmount((0,bignumber_js__WEBPACK_IMPORTED_MODULE_4__.BigNumber)(amount), tokenInfo);
+      var oldTotalCollateralUSD = appState.smartWalletState.travaLPState.totalCollateralUSD;
+      // newTotalCollateral = oldTotalCOlletearl + amountToken * price / its decimal
+      var newTotalCollateralUSD = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_4__.BigNumber)(appState.smartWalletState.travaLPState.totalCollateralUSD).plus(supplyUSD);
+      var oldLTV = appState.smartWalletState.travaLPState.ltv;
+      var newLTV = calculateNewLTV((0,bignumber_js__WEBPACK_IMPORTED_MODULE_4__.BigNumber)(oldTotalCollateralUSD), (0,bignumber_js__WEBPACK_IMPORTED_MODULE_4__.BigNumber)(oldLTV), newTotalCollateralUSD, (0,bignumber_js__WEBPACK_IMPORTED_MODULE_4__.BigNumber)(tokenInfo.maxLTV));
+
+      //Calculate liquid threshold
+      var oldLiquidTreshold = appState.smartWalletState.travaLPState.currentLiquidationThreshold;
+      var newLiquidTreshold = calculateNewLiquidThreshold((0,bignumber_js__WEBPACK_IMPORTED_MODULE_4__.BigNumber)(oldTotalCollateralUSD), (0,bignumber_js__WEBPACK_IMPORTED_MODULE_4__.BigNumber)(oldLiquidTreshold), newTotalCollateralUSD, (0,bignumber_js__WEBPACK_IMPORTED_MODULE_4__.BigNumber)(tokenInfo.liqThres));
+
+      // update state of smart wallet trava lp
+      // update healthFactor .((deposited + amount * asset.price) * currentLiquidationThreshold) / borrowe
+      // if totalDebtUSD = 0  , not update healthFactor
+      var healthFactor = calculateNewHealFactor(newTotalCollateralUSD, newLiquidTreshold, (0,bignumber_js__WEBPACK_IMPORTED_MODULE_4__.BigNumber)(appState.smartWalletState.travaLPState.totalDebtUSD));
+      var availableBorrowsUSD = calculateNewAvailableBorrow(newTotalCollateralUSD, newLTV, (0,bignumber_js__WEBPACK_IMPORTED_MODULE_4__.BigNumber)(appState.smartWalletState.travaLPState.totalDebtUSD));
+      appState.smartWalletState.travaLPState.totalCollateralUSD = newTotalCollateralUSD.toFixed(0);
+      appState.smartWalletState.travaLPState.currentLiquidationThreshold = newLiquidTreshold.toFixed(0);
+      appState.smartWalletState.travaLPState.ltv = newLTV.toFixed(0);
+      appState.smartWalletState.travaLPState.healthFactor = healthFactor.toFixed(0);
+      appState.smartWalletState.travaLPState.availableBorrowsUSD = availableBorrowsUSD.toFixed(0);
+      tokenInfo.tToken = _objectSpread(_objectSpread({}, tokenInfo.tToken), {}, {
+        balances: (0,bignumber_js__WEBPACK_IMPORTED_MODULE_4__.BigNumber)(tokenInfo.tToken.balances).plus(amount).toFixed(0)
+      });
+      appState.smartWalletState.detailTokenInPool.set(_tokenAddress, tokenInfo);
       return appState;
     } catch (err) {
       throw err;
@@ -20562,107 +23442,64 @@ function SimulationBorrow(_x5, _x6, _x7, _x8) {
 function _SimulationBorrow() {
   _SimulationBorrow = _asyncToGenerator(function* (appState1, _to, _tokenAddress, _amount) {
     try {
-      var _appState$smartWallet3;
-      var amount = _amount;
+      var amount = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_4__.BigNumber)(_amount);
       var appState = _objectSpread({}, appState1);
-      var oraclePrice = new _utils_oraclePrice__WEBPACK_IMPORTED_MODULE_0__["default"]((0,_utils_address__WEBPACK_IMPORTED_MODULE_1__.getAddr)("ORACLE_ADDRESS", appState.chainId), appState.web3);
-      var tokenAddress = (0,_utils_address__WEBPACK_IMPORTED_MODULE_1__.convertHexStringToAddress)(_tokenAddress);
       _tokenAddress = _tokenAddress.toLowerCase();
 
-      // get token decimals
-      var tokenDecimal = (_appState$smartWallet3 = appState.smartWalletState.detailTokenInPool.get(_tokenAddress)) === null || _appState$smartWallet3 === void 0 ? void 0 : _appState$smartWallet3.dToken.decimals;
-      var originTokenDecimal = BigInt(Math.pow(10, parseInt(tokenDecimal)));
+      // add debToken to smart wallet state if not exist
+      var tokenInfo = appState.smartWalletState.detailTokenInPool.get(_tokenAddress);
+      if (typeof tokenInfo.dToken == undefined) {
+        yield (0,_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_5__.updateLPDebtTokenInfo)(appState, _tokenAddress);
+      }
+      if (typeof tokenInfo.tToken == undefined) {
+        yield (0,_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_5__.updateLPDebtTokenInfo)(appState, _tokenAddress);
+      }
+      var tTokenReserveBalance = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_4__.BigNumber)(tokenInfo.tToken.balances);
       if (_to.toLowerCase() == appState.walletState.address.toLowerCase()) {
         _to = appState.walletState.address;
-        //  check tokenAddress is exist on reverseList
-        if (appState.smartWalletState.tokenBalances.has(_tokenAddress) && appState.smartWalletState.detailTokenInPool.has(_tokenAddress)) {
-          // get tToken address
-
-          // get token price
-          var tokenPrice = BigInt(yield oraclePrice.getAssetPrice(tokenAddress));
-          var borrowUSD;
-          if (amount.toString() == _utils_config__WEBPACK_IMPORTED_MODULE_3__.MAX_UINT256 || BigInt(amount) == BigInt(_utils_config__WEBPACK_IMPORTED_MODULE_3__.MAX_UINT256)) {
-            borrowUSD = BigInt(appState.smartWalletState.travaLPState.availableBorrowsUSD);
-            var x = borrowUSD * BigInt(originTokenDecimal) % BigInt(tokenPrice);
-            amount = ((borrowUSD * BigInt(originTokenDecimal) - BigInt(x)) / BigInt(tokenPrice)).toString();
-          } else {
-            borrowUSD = BigInt(amount) * BigInt(tokenPrice) / BigInt(originTokenDecimal);
-          }
-          // check availableBorrowUSD on appState is enough .Before check convert string to number
-          // if (
-          //   BigInt(appState.smartWalletState.travaLPState.availableBorrowsUSD) >=
-          //   borrowUSD
-          // ) {
-          // console.log("hello")
-          // when borrowUSD is enough , update state for smart wallet in travaLP state ( availableBorrowUSD , totalDebtUSD , healthFactor)
-
-          // update availableBorrowUSD :  deposited * ltv - borrowed - amount * asset.price
-          appState.smartWalletState.travaLPState.availableBorrowsUSD = String(((BigInt(appState.smartWalletState.travaLPState.totalCollateralUSD) * BigInt(appState.smartWalletState.travaLPState.ltv) - BigInt(appState.smartWalletState.travaLPState.totalDebtUSD) * BigInt(10 ** 4)) * BigInt(10 ** 14) - borrowUSD * BigInt(10 ** 18)) / BigInt(10 ** 18));
-
-          // update healthFactor :(deposited * currentLiquidationThreshold) / (borrowed + amount * asset.price)
-          if ((BigInt(appState.smartWalletState.travaLPState.totalDebtUSD) + BigInt(borrowUSD)).toString() == "0") {
-            appState.smartWalletState.travaLPState.healthFactor = _utils_config__WEBPACK_IMPORTED_MODULE_3__.MAX_UINT256;
-          } else {
-            appState.smartWalletState.travaLPState.healthFactor = String(BigInt(appState.smartWalletState.travaLPState.totalCollateralUSD) * BigInt(appState.smartWalletState.travaLPState.currentLiquidationThreshold) * BigInt(10 ** 32) / (BigInt(appState.smartWalletState.travaLPState.totalDebtUSD) * BigInt(10 ** 18) + borrowUSD * BigInt(10 ** 18)));
-          }
-
-          // update totalDebtUSD : borrowed + amount * asset.price
-          appState.smartWalletState.travaLPState.totalDebtUSD = String(BigInt(appState.smartWalletState.travaLPState.totalDebtUSD) + borrowUSD);
-          // }
-
-          // add debToken to smart wallet state if not exist
-          appState.walletState.tokenBalances.set(_tokenAddress, String(BigInt(appState.walletState.tokenBalances.get(_tokenAddress)) + BigInt(amount)));
-          var tokenInfo = appState.smartWalletState.detailTokenInPool.get(_tokenAddress);
-          tokenInfo.dToken = _objectSpread(_objectSpread({}, tokenInfo.dToken), {}, {
-            balances: String(BigInt(tokenInfo.dToken.balances) + BigInt(amount))
-          });
-          appState.smartWalletState.detailTokenInPool.set(_tokenAddress, tokenInfo);
+        //  check tokenAddress is on tokenBalance of wallet
+        if (appState.walletState.tokenBalances.has(_tokenAddress)) {
+          yield (0,_basic_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_6__.updateUserTokenBalance)(appState, _tokenAddress);
         }
+        if (amount.toFixed(0) == _utils_config__WEBPACK_IMPORTED_MODULE_2__.MAX_UINT256 || amount.isEqualTo(_utils_config__WEBPACK_IMPORTED_MODULE_2__.MAX_UINT256)) {
+          amount = getAmountFromBalanceUsd((0,bignumber_js__WEBPACK_IMPORTED_MODULE_4__.BigNumber)(appState.smartWalletState.travaLPState.availableBorrowsUSD), tokenInfo);
+        }
+
+        //calculate max borrow
+        amount = bignumber_js__WEBPACK_IMPORTED_MODULE_4__.BigNumber.max(bignumber_js__WEBPACK_IMPORTED_MODULE_4__.BigNumber.min(amount, tTokenReserveBalance), 0);
+        appState.walletState.tokenBalances.set(_tokenAddress, (0,bignumber_js__WEBPACK_IMPORTED_MODULE_4__.BigNumber)(appState.walletState.tokenBalances.get(_tokenAddress)).plus(amount).toFixed(0));
       } else if (_to.toLowerCase() == appState.smartWalletState.address.toLowerCase()) {
         _to = appState.smartWalletState.address;
-        //  check tokenAddress is exist on reverseList
-        if (appState.smartWalletState.tokenBalances.has(_tokenAddress) && appState.smartWalletState.detailTokenInPool.has(_tokenAddress)) {
-          // get tToken address
 
-          // get token price
-          var _tokenPrice = BigInt(yield oraclePrice.getAssetPrice(tokenAddress));
-          var _borrowUSD;
-          if (amount.toString() == _utils_config__WEBPACK_IMPORTED_MODULE_3__.MAX_UINT256 || BigInt(amount) == BigInt(_utils_config__WEBPACK_IMPORTED_MODULE_3__.MAX_UINT256)) {
-            _borrowUSD = BigInt(appState.smartWalletState.travaLPState.availableBorrowsUSD);
-            var _x22 = _borrowUSD * BigInt(10 ** 18) % BigInt(_tokenPrice);
-            amount = ((_borrowUSD * BigInt(10 ** 18) - BigInt(_x22)) / BigInt(_tokenPrice)).toString();
-          } else {
-            _borrowUSD = BigInt(amount) * BigInt(_tokenPrice) / BigInt(10 ** 18);
-          }
-          // check availableBorrowUSD on appState is enough .Before check convert string to number
-          if (BigInt(appState.smartWalletState.travaLPState.availableBorrowsUSD) >= _borrowUSD) {
-            // when borrowUSD is enough , update state for smart wallet in travaLP state ( availableBorrowUSD , totalDebtUSD , healthFactor)
-
-            // update availableBorrowUSD :  deposited * ltv - borrowed - amount * asset.price
-            appState.smartWalletState.travaLPState.availableBorrowsUSD = String(((BigInt(appState.smartWalletState.travaLPState.totalCollateralUSD) * BigInt(appState.smartWalletState.travaLPState.ltv) - BigInt(appState.smartWalletState.travaLPState.totalDebtUSD) * BigInt(10 ** 4)) * BigInt(10 ** 14) - _borrowUSD * BigInt(10 ** 18)) / BigInt(10 ** 18));
-
-            // update healthFactor :(deposited * currentLiquidationThreshold) / (borrowed + amount * asset.price)
-            if ((BigInt(appState.smartWalletState.travaLPState.totalDebtUSD) + BigInt(_borrowUSD)).toString() == "0") {
-              appState.smartWalletState.travaLPState.healthFactor = _utils_config__WEBPACK_IMPORTED_MODULE_3__.MAX_UINT256;
-            } else {
-              appState.smartWalletState.travaLPState.healthFactor = String(BigInt(appState.smartWalletState.travaLPState.totalCollateralUSD) * BigInt(appState.smartWalletState.travaLPState.currentLiquidationThreshold) * BigInt(10 ** 32) / (BigInt(appState.smartWalletState.travaLPState.totalDebtUSD) * BigInt(10 ** 18) + _borrowUSD * BigInt(10 ** 18)));
-            }
-
-            // update totalDebtUSD : borrowed + amount * asset.price
-            appState.smartWalletState.travaLPState.totalDebtUSD = String(BigInt(appState.smartWalletState.travaLPState.totalDebtUSD) + _borrowUSD);
-          }
-
-          // add debToken to smart wallet state if not exist
-          appState.smartWalletState.tokenBalances.set(_tokenAddress, String(BigInt(appState.smartWalletState.tokenBalances.get(_tokenAddress)) + BigInt(amount)));
-          var _tokenInfo = appState.smartWalletState.detailTokenInPool.get(_tokenAddress);
-          _tokenInfo.dToken = _objectSpread(_objectSpread({}, _tokenInfo.dToken), {}, {
-            balances: String(BigInt(_tokenInfo.dToken.balances) + BigInt(amount))
-          });
-          appState.smartWalletState.detailTokenInPool.set(_tokenAddress, _tokenInfo);
-        } else {
-          throw new Error("Account or LP does not have ".concat(tokenAddress, " token or token is not exist in reverseList."));
+        //  check tokenAddress is on tokenBalance of smartWallet
+        if (appState.smartWalletState.tokenBalances.has(_tokenAddress)) {
+          yield (0,_basic_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_6__.updateSmartWalletTokenBalance)(appState, _tokenAddress);
         }
+        if (amount.toFixed(0) == _utils_config__WEBPACK_IMPORTED_MODULE_2__.MAX_UINT256 || amount.isEqualTo(_utils_config__WEBPACK_IMPORTED_MODULE_2__.MAX_UINT256)) {
+          amount = getAmountFromBalanceUsd((0,bignumber_js__WEBPACK_IMPORTED_MODULE_4__.BigNumber)(appState.smartWalletState.travaLPState.availableBorrowsUSD), tokenInfo);
+        }
+        // calculate max amount
+        amount = bignumber_js__WEBPACK_IMPORTED_MODULE_4__.BigNumber.max(bignumber_js__WEBPACK_IMPORTED_MODULE_4__.BigNumber.min(amount, tTokenReserveBalance), 0);
+        // add debToken to smart wallet state if not exist
+        appState.smartWalletState.tokenBalances.set(_tokenAddress, (0,bignumber_js__WEBPACK_IMPORTED_MODULE_4__.BigNumber)(appState.smartWalletState.tokenBalances.get(_tokenAddress)).plus(amount).toFixed(0));
       }
+
+      //Update Smart Wallet Position
+      var borrowUSD = getBalanceUsdFromAmount(amount, tokenInfo);
+
+      // update totalDebtUSD : borrowed + amount * asset.price
+      var newTotalDebtUSD = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_4__.BigNumber)(appState.smartWalletState.travaLPState.totalDebtUSD).plus(borrowUSD);
+      var newHealthFactor = calculateNewHealFactor((0,bignumber_js__WEBPACK_IMPORTED_MODULE_4__.BigNumber)(appState.smartWalletState.travaLPState.totalCollateralUSD), (0,bignumber_js__WEBPACK_IMPORTED_MODULE_4__.BigNumber)(appState.smartWalletState.travaLPState.currentLiquidationThreshold), newTotalDebtUSD);
+
+      // update availableBorrowUSD :  deposited * ltv - borrowed - amount * asset.price
+      var newAvailableBorrow = calculateNewAvailableBorrow((0,bignumber_js__WEBPACK_IMPORTED_MODULE_4__.BigNumber)(appState.smartWalletState.travaLPState.totalCollateralUSD), (0,bignumber_js__WEBPACK_IMPORTED_MODULE_4__.BigNumber)(appState.smartWalletState.travaLPState.ltv), newTotalDebtUSD);
+      appState.smartWalletState.travaLPState.totalDebtUSD = newTotalDebtUSD.toFixed(0);
+      appState.smartWalletState.travaLPState.availableBorrowsUSD = newAvailableBorrow.toFixed(0);
+      appState.smartWalletState.travaLPState.healthFactor = newHealthFactor.toFixed(0);
+      tokenInfo.dToken = _objectSpread(_objectSpread({}, tokenInfo.dToken), {}, {
+        balances: (0,bignumber_js__WEBPACK_IMPORTED_MODULE_4__.BigNumber)(tokenInfo.dToken.balances).plus(amount).toFixed(0)
+      });
+      appState.smartWalletState.detailTokenInPool.set(_tokenAddress, tokenInfo);
       return appState;
     } catch (err) {
       throw err;
@@ -20678,153 +23515,46 @@ function SimulationRepay(_x9, _x10, _x11, _x12) {
 function _SimulationRepay() {
   _SimulationRepay = _asyncToGenerator(function* (appState1, _from, _tokenAddress, _amount) {
     try {
-      var amount = _amount;
+      var amount = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_4__.BigNumber)(_amount);
       var appState = _objectSpread({}, appState1);
-      var oraclePrice = new _utils_oraclePrice__WEBPACK_IMPORTED_MODULE_0__["default"]((0,_utils_address__WEBPACK_IMPORTED_MODULE_1__.getAddr)("ORACLE_ADDRESS", appState.chainId), appState.web3);
-      var tokenAddress = (0,_utils_address__WEBPACK_IMPORTED_MODULE_1__.convertHexStringToAddress)(_tokenAddress);
       _tokenAddress = _tokenAddress.toLowerCase();
+      var tokenInfo = appState.smartWalletState.detailTokenInPool.get(_tokenAddress);
+      if (typeof tokenInfo.tToken == undefined) {
+        yield (0,_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_5__.updateLPDebtTokenInfo)(appState, _tokenAddress);
+      }
+      if (amount.toFixed(0) == _utils_config__WEBPACK_IMPORTED_MODULE_2__.MAX_UINT256 || amount.isEqualTo(_utils_config__WEBPACK_IMPORTED_MODULE_2__.MAX_UINT256)) {
+        amount = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_4__.BigNumber)(appState.smartWalletState.detailTokenInPool.get(_tokenAddress).dToken.balances);
+      }
       if (_from.toLowerCase() == appState.walletState.address.toLowerCase()) {
         // check tokenAddress is exist on reverseList
-        if (appState.smartWalletState.tokenBalances.has(_tokenAddress) && appState.smartWalletState.detailTokenInPool.has(_tokenAddress)) {
-          var _appState$smartWallet4;
-          if (amount.toString() == _utils_config__WEBPACK_IMPORTED_MODULE_3__.MAX_UINT256 || BigInt(amount) == BigInt(_utils_config__WEBPACK_IMPORTED_MODULE_3__.MAX_UINT256)) {
-            amount = appState.smartWalletState.detailTokenInPool.get(_tokenAddress).dToken.balances;
-          }
-          var debtTokenSmartWalletBalance = appState.smartWalletState.detailTokenInPool.get(_tokenAddress).dToken.balances;
-
-          // get token decimals
-          var tokenDecimal = (_appState$smartWallet4 = appState.smartWalletState.detailTokenInPool.get(_tokenAddress)) === null || _appState$smartWallet4 === void 0 ? void 0 : _appState$smartWallet4.dToken.decimals;
-          var originTokenDecimal = BigInt(Math.pow(10, parseInt(tokenDecimal)));
-          if (BigInt(debtTokenSmartWalletBalance) > BigInt(amount)) {
-            // repay piece of borrowed token
-
-            // update state for smart wallet in travaLP state ( availableBorrowUSD , totalDebtUSD , healthFactor)
-
-            // update healthFactor :(deposited * currentLiquidationThreshold) / (borrowed - amount * asset.price)
-            // appState.smartWalletState.travaLPState.healthFactor = String(
-            //   (BigInt(appState.smartWalletState.travaLPState.totalCollateralUSD) *
-            //     BigInt(
-            //       appState.smartWalletState.travaLPState
-            //         .currentLiquidationThreshold
-            //     ) *
-            //     BigInt(10 ** 32)) /
-            //     (BigInt(appState.smartWalletState.travaLPState.totalDebtUSD) *
-            //       BigInt(10 ** 18) -
-            //       BigInt(amount) *
-            //         BigInt(await oraclePrice.getAssetPrice(tokenAddress)))
-            // );
-
-            appState.smartWalletState.travaLPState.healthFactor = String(BigInt(appState.smartWalletState.travaLPState.totalCollateralUSD) * BigInt(appState.smartWalletState.travaLPState.currentLiquidationThreshold) * BigInt(originTokenDecimal) * BigInt(10 * 14) / (BigInt(appState.smartWalletState.travaLPState.totalDebtUSD) * BigInt(originTokenDecimal) - BigInt(amount) * BigInt(yield oraclePrice.getAssetPrice(tokenAddress))));
-
-            // update availableBorrowUSD :  availableBorrowsUSD + amount * asset.price
-            appState.smartWalletState.travaLPState.availableBorrowsUSD = String((BigInt(appState.smartWalletState.travaLPState.availableBorrowsUSD) * BigInt(originTokenDecimal) + BigInt(amount) * BigInt(yield oraclePrice.getAssetPrice(tokenAddress))) / BigInt(originTokenDecimal));
-
-            // update totalDebtUSD : borrowed - amount * asset.price
-            appState.smartWalletState.travaLPState.totalDebtUSD = String((BigInt(appState.smartWalletState.travaLPState.totalDebtUSD) * BigInt(originTokenDecimal) - BigInt(amount) * BigInt(yield oraclePrice.getAssetPrice(tokenAddress))) / BigInt(originTokenDecimal));
-
-            // set debt token balance to debtTokenSmartWalletBalance - amount
-            appState.walletState.tokenBalances.set(_tokenAddress, String(BigInt(appState.walletState.tokenBalances.get(_tokenAddress)) - BigInt(amount)));
-            var tokenInfo = appState.smartWalletState.detailTokenInPool.get(_tokenAddress);
-            tokenInfo.dToken.balances = String(BigInt(tokenInfo.dToken.balances) - BigInt(amount));
-            appState.smartWalletState.detailTokenInPool.set(_tokenAddress, tokenInfo);
-          } else if (BigInt(amount) >= BigInt(debtTokenSmartWalletBalance)) {
-            // repay all borrowed token
-
-            // update state for smart wallet in travaLP state ( availableBorrowUSD , totalDebtUSD , healthFactor)
-
-            // update availableBorrowUSD :  availableBorrowsUSD + debtTokenBalance * asset.price
-            // appState.smartWalletState.travaLPState.availableBorrowsUSD = String(
-            //   (BigInt(
-            //     appState.smartWalletState.travaLPState.availableBorrowsUSD
-            //   ) *
-            //     BigInt(10 ** 18) +
-            //     BigInt(debtTokenSmartWalletBalance) *
-            //       BigInt(await oraclePrice.getAssetPrice(tokenAddress))) /
-            //     BigInt(10 ** 18)
-            // );
-            appState.smartWalletState.travaLPState.availableBorrowsUSD = String((BigInt(appState.smartWalletState.travaLPState.availableBorrowsUSD) * BigInt(originTokenDecimal) + BigInt(debtTokenSmartWalletBalance) * BigInt(yield oraclePrice.getAssetPrice(tokenAddress))) / BigInt(originTokenDecimal));
-
-            // update healthFactor :(deposited * currentLiquidationThreshold) / (borrowed - debtTokenBalance * asset.price)
-
-            appState.smartWalletState.travaLPState.healthFactor = String(_utils_config__WEBPACK_IMPORTED_MODULE_3__.MAX_UINT256);
-
-            // update totalDebtUSD : borrowed - debtTokenBalance * asset.price
-            appState.smartWalletState.travaLPState.totalDebtUSD = String((BigInt(appState.smartWalletState.travaLPState.totalDebtUSD) * BigInt(originTokenDecimal) - BigInt(debtTokenSmartWalletBalance) * BigInt(yield oraclePrice.getAssetPrice(tokenAddress))) / BigInt(originTokenDecimal));
-
-            // set debt token balance to <= 0
-            appState.walletState.tokenBalances.set(_tokenAddress, String(BigInt(appState.walletState.tokenBalances.get(_tokenAddress)) - BigInt(amount)));
-            var _tokenInfo2 = appState.smartWalletState.detailTokenInPool.get(_tokenAddress);
-            _tokenInfo2.dToken = _objectSpread(_objectSpread({}, _tokenInfo2.dToken), {}, {
-              balances: (BigInt(debtTokenSmartWalletBalance) - BigInt(amount)).toString()
-            });
-            appState.smartWalletState.detailTokenInPool.set(_tokenAddress, _tokenInfo2);
-          }
+        if (appState.walletState.tokenBalances.has(_tokenAddress)) {
+          yield (0,_basic_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_6__.updateUserTokenBalance)(appState, _tokenAddress);
         }
+        // set debt token balance to debtTokenSmartWalletBalance - amount
+        appState.walletState.tokenBalances.set(_tokenAddress, (0,bignumber_js__WEBPACK_IMPORTED_MODULE_4__.BigNumber)(appState.walletState.tokenBalances.get(_tokenAddress)).minus(amount).toFixed(0));
       } else if (_from.toLowerCase() == appState.smartWalletState.address.toLowerCase()) {
         // check tokenAddress is exist on reverseList
-        if (appState.smartWalletState.tokenBalances.has(_tokenAddress) && appState.smartWalletState.detailTokenInPool.has(_tokenAddress)) {
-          var _appState$smartWallet5;
-          if (amount.toString() == _utils_config__WEBPACK_IMPORTED_MODULE_3__.MAX_UINT256 || BigInt(amount) == BigInt(_utils_config__WEBPACK_IMPORTED_MODULE_3__.MAX_UINT256)) {
-            amount = appState.smartWalletState.detailTokenInPool.get(_tokenAddress).dToken.balances;
-          }
-          var _debtTokenSmartWalletBalance = appState.smartWalletState.detailTokenInPool.get(_tokenAddress).dToken.balances;
-
-          // get token decimals
-          var _tokenDecimal2 = (_appState$smartWallet5 = appState.smartWalletState.detailTokenInPool.get(_tokenAddress)) === null || _appState$smartWallet5 === void 0 ? void 0 : _appState$smartWallet5.dToken.decimals;
-          var _originTokenDecimal2 = BigInt(Math.pow(10, parseInt(_tokenDecimal2)));
-          if (BigInt(_debtTokenSmartWalletBalance) > BigInt(amount)) {
-            // repay piece of borrowed token
-
-            // update state for smart wallet in travaLP state ( availableBorrowUSD , totalDebtUSD , healthFactor)
-
-            // update healthFactor :(deposited * currentLiquidationThreshold) / (borrowed - amount * asset.price)
-            // appState.smartWalletState.travaLPState.healthFactor = String(
-            //   (BigInt(appState.smartWalletState.travaLPState.totalCollateralUSD) *
-            //     BigInt(
-            //       appState.smartWalletState.travaLPState
-            //         .currentLiquidationThreshold
-            //     ) *
-            //     BigInt(10 ** 32)) /
-            //     (BigInt(appState.smartWalletState.travaLPState.totalDebtUSD) *
-            //       BigInt(10 ** 18) -
-            //       BigInt(amount) *
-            //         BigInt(await oraclePrice.getAssetPrice(tokenAddress)))
-            // );
-            appState.smartWalletState.travaLPState.healthFactor = String(BigInt(appState.smartWalletState.travaLPState.totalCollateralUSD) * BigInt(appState.smartWalletState.travaLPState.currentLiquidationThreshold) * BigInt(_originTokenDecimal2) * BigInt(10 * 14) / (BigInt(appState.smartWalletState.travaLPState.totalDebtUSD) * BigInt(_originTokenDecimal2) - BigInt(amount) * BigInt(yield oraclePrice.getAssetPrice(tokenAddress))));
-
-            // update availableBorrowUSD :  availableBorrowsUSD + amount * asset.price
-            appState.smartWalletState.travaLPState.availableBorrowsUSD = String((BigInt(appState.smartWalletState.travaLPState.availableBorrowsUSD) * BigInt(_originTokenDecimal2) + BigInt(amount) * BigInt(yield oraclePrice.getAssetPrice(tokenAddress))) / BigInt(_originTokenDecimal2));
-
-            // update totalDebtUSD : borrowed - amount * asset.price
-            appState.smartWalletState.travaLPState.totalDebtUSD = String((BigInt(appState.smartWalletState.travaLPState.totalDebtUSD) * BigInt(_originTokenDecimal2) - BigInt(amount) * BigInt(yield oraclePrice.getAssetPrice(tokenAddress))) / BigInt(_originTokenDecimal2));
-
-            // set debt token balance to debtTokenSmartWalletBalance - amount
-            appState.smartWalletState.tokenBalances.set(_tokenAddress, String(BigInt(appState.smartWalletState.tokenBalances.get(_tokenAddress)) - BigInt(amount)));
-            var _tokenInfo3 = appState.smartWalletState.detailTokenInPool.get(_tokenAddress);
-            _tokenInfo3.dToken.balances = String(BigInt(_tokenInfo3.dToken.balances) - BigInt(amount));
-            appState.smartWalletState.detailTokenInPool.set(_tokenAddress, _tokenInfo3);
-          } else if (BigInt(amount) >= BigInt(_debtTokenSmartWalletBalance)) {
-            // repay all borrowed token
-
-            // update state for smart wallet in travaLP state ( availableBorrowUSD , totalDebtUSD , healthFactor)
-
-            // update healthFactor :(deposited * currentLiquidationThreshold) / (borrowed - debtTokenBalance * asset.price)
-
-            appState.smartWalletState.travaLPState.healthFactor = String(_utils_config__WEBPACK_IMPORTED_MODULE_3__.MAX_UINT256);
-
-            // update totalDebtUSD : borrowed - debtTokenBalance * asset.price
-            appState.smartWalletState.travaLPState.totalDebtUSD = String((BigInt(appState.smartWalletState.travaLPState.totalDebtUSD) * BigInt(_originTokenDecimal2) - BigInt(_debtTokenSmartWalletBalance) * BigInt(yield oraclePrice.getAssetPrice(tokenAddress))) / BigInt(_originTokenDecimal2));
-
-            // set debt token balance to <= 0
-            appState.smartWalletState.tokenBalances.set(_tokenAddress, String(BigInt(appState.smartWalletState.tokenBalances.get(_tokenAddress)) - BigInt(amount)));
-            var _tokenInfo4 = appState.smartWalletState.detailTokenInPool.get(_tokenAddress);
-            _tokenInfo4.dToken = _objectSpread(_objectSpread({}, _tokenInfo4.dToken), {}, {
-              balances: (BigInt(_debtTokenSmartWalletBalance) - BigInt(amount)).toString()
-            });
-            appState.smartWalletState.detailTokenInPool.set(_tokenAddress, _tokenInfo4);
-          }
+        if (appState.smartWalletState.tokenBalances.has(_tokenAddress)) {
+          yield (0,_basic_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_6__.updateSmartWalletTokenBalance)(appState, _tokenAddress);
         }
+        // set debt token balance to debtTokenSmartWalletBalance - amount
+        appState.smartWalletState.tokenBalances.set(_tokenAddress, (0,bignumber_js__WEBPACK_IMPORTED_MODULE_4__.BigNumber)(appState.smartWalletState.tokenBalances.get(_tokenAddress)).minus(amount).toFixed(0));
       }
+
+      // repay piece of borrowed token = amount * asset.price
+      var repayUSD = getBalanceUsdFromAmount(amount, tokenInfo);
+
+      // update totalDebtUSD : borrowed - amount * asset.price
+      var newTotalDebt = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_4__.BigNumber)(appState.smartWalletState.travaLPState.totalDebtUSD).minus(repayUSD);
+      var healthFactor = calculateNewHealFactor((0,bignumber_js__WEBPACK_IMPORTED_MODULE_4__.BigNumber)(appState.smartWalletState.travaLPState.totalCollateralUSD), (0,bignumber_js__WEBPACK_IMPORTED_MODULE_4__.BigNumber)(appState.smartWalletState.travaLPState.currentLiquidationThreshold), newTotalDebt);
+
+      // update availableBorrowUSD :  availableBorrowsUSD + amount * asset.price
+      var availableBorrowsUSD = calculateNewAvailableBorrow((0,bignumber_js__WEBPACK_IMPORTED_MODULE_4__.BigNumber)(appState.smartWalletState.travaLPState.totalCollateralUSD), (0,bignumber_js__WEBPACK_IMPORTED_MODULE_4__.BigNumber)(appState.smartWalletState.travaLPState.ltv), newTotalDebt);
+      appState.smartWalletState.travaLPState.availableBorrowsUSD = availableBorrowsUSD.toFixed(0);
+      appState.smartWalletState.travaLPState.totalDebtUSD = newTotalDebt.toFixed(0);
+      appState.smartWalletState.travaLPState.healthFactor = healthFactor.toFixed(0);
+      tokenInfo.dToken.balances = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_4__.BigNumber)(tokenInfo.dToken.balances).minus(amount).toFixed(0);
+      appState.smartWalletState.detailTokenInPool.set(_tokenAddress, tokenInfo);
       return appState;
     } catch (err) {
       throw err;
@@ -20838,156 +23568,57 @@ function SimulationWithdraw(_x13, _x14, _x15, _x16) {
 function _SimulationWithdraw() {
   _SimulationWithdraw = _asyncToGenerator(function* (appState1, _to, _tokenAddress, _amount) {
     try {
-      var _appState$smartWallet6;
-      var amount = _amount;
+      var amount = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_4__.BigNumber)(_amount);
       var appState = _objectSpread({}, appState1);
-      var oraclePrice = new _utils_oraclePrice__WEBPACK_IMPORTED_MODULE_0__["default"]((0,_utils_address__WEBPACK_IMPORTED_MODULE_1__.getAddr)("ORACLE_ADDRESS", appState.chainId), appState.web3);
-      var tokenAddress = (0,_utils_address__WEBPACK_IMPORTED_MODULE_1__.convertHexStringToAddress)(_tokenAddress);
-      var tokenPrice = BigInt(yield oraclePrice.getAssetPrice(tokenAddress));
       _tokenAddress = _tokenAddress.toLowerCase();
       var tokenInfo = appState.smartWalletState.detailTokenInPool.get(_tokenAddress);
-      // get token decimals
-      var tokenDecimal = (_appState$smartWallet6 = appState.smartWalletState.detailTokenInPool.get(_tokenAddress)) === null || _appState$smartWallet6 === void 0 ? void 0 : _appState$smartWallet6.tToken.decimals;
-      var originTokenDecimal = BigInt(Math.pow(10, parseInt(tokenDecimal)));
+      if (typeof tokenInfo.tToken == undefined) {
+        yield (0,_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_5__.updateLPDebtTokenInfo)(appState, _tokenAddress);
+      }
+      if (amount.toFixed(0) == _utils_config__WEBPACK_IMPORTED_MODULE_2__.MAX_UINT256 || amount.isEqualTo(_utils_config__WEBPACK_IMPORTED_MODULE_2__.MAX_UINT256)) {
+        amount = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_4__.BigNumber)(appState.smartWalletState.detailTokenInPool.get(_tokenAddress).tToken.balances);
+      }
       if (_to.toLowerCase() == appState.walletState.address.toLowerCase()) {
         _to = appState.walletState.address.toLowerCase();
-        // check tokenAddress is exist on reverseList
-        if (appState.smartWalletState.detailTokenInPool.has(_tokenAddress) && appState.smartWalletState.tokenBalances.has(_tokenAddress)) {
-          if (amount.toString() == _utils_config__WEBPACK_IMPORTED_MODULE_3__.MAX_UINT256 || BigInt(amount) == BigInt(_utils_config__WEBPACK_IMPORTED_MODULE_3__.MAX_UINT256)) {
-            amount = appState.smartWalletState.detailTokenInPool.get(_tokenAddress).tToken.balances;
-          }
-          if (BigInt(appState.smartWalletState.detailTokenInPool.get(_tokenAddress).tToken.balances) > BigInt(amount)) {
-            console.log("Withdraw piece of supplied token");
-            // withdraw piece of supplied token
-
-            // update state for smart wallet in travaLP state ( availableBorrowUSD , totalDebtUSD , healthFactor)
-
-            // update healthFactor :((deposited - amount * asset.price) * currentLiquidationThreshold) / borrowed
-            if (appState.smartWalletState.travaLPState.totalDebtUSD != "0") {
-              appState.smartWalletState.travaLPState.healthFactor = String(appState.smartWalletState.travaLPState.healthFactor = String((BigInt(appState.smartWalletState.travaLPState.totalCollateralUSD) * BigInt(10 ** 18) - BigInt(amount) * tokenPrice) * BigInt(appState.smartWalletState.travaLPState.currentLiquidationThreshold) / BigInt(appState.smartWalletState.travaLPState.totalDebtUSD)));
-            } else {
-              // healthFactor = MaxUint256
-              // need check this
-              appState.smartWalletState.travaLPState.healthFactor = _utils_config__WEBPACK_IMPORTED_MODULE_3__.MAX_UINT256;
-            }
-
-            // update totalCollateralUSD. deposited - amount * asset.price
-            var oldTotalCollateralUSD = appState.smartWalletState.travaLPState.totalCollateralUSD;
-            var newTotalCollateralUSD = String(BigInt(appState.smartWalletState.travaLPState.totalCollateralUSD) - BigInt(amount) * tokenPrice / BigInt(10 ** 18));
-            var oldLTV = appState.smartWalletState.travaLPState.ltv;
-            var newLTV = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_5__.BigNumber)(oldTotalCollateralUSD).multipliedBy((0,bignumber_js__WEBPACK_IMPORTED_MODULE_5__.BigNumber)(oldLTV)).minus((0,bignumber_js__WEBPACK_IMPORTED_MODULE_5__.BigNumber)(amount).multipliedBy((0,bignumber_js__WEBPACK_IMPORTED_MODULE_5__.BigNumber)(tokenPrice.toString())).multipliedBy((0,bignumber_js__WEBPACK_IMPORTED_MODULE_5__.BigNumber)(tokenInfo.maxLTV)).div(originTokenDecimal.toString())).div((0,bignumber_js__WEBPACK_IMPORTED_MODULE_5__.BigNumber)(newTotalCollateralUSD)).toFixed(0);
-            appState.smartWalletState.travaLPState.totalCollateralUSD = newTotalCollateralUSD;
-            appState.smartWalletState.travaLPState.ltv = newLTV;
-
-            // update availableBorrowUSD : (deposited - amount * asset.price) * ltv - borrowed
-            appState.smartWalletState.travaLPState.availableBorrowsUSD = String((BigInt(newTotalCollateralUSD) * BigInt(appState.smartWalletState.travaLPState.ltv) - BigInt(appState.smartWalletState.travaLPState.totalDebtUSD) * BigInt(10 ** 24)) / BigInt(10 ** 22));
-
-            // update token balances
-            appState.walletState.tokenBalances.set(_tokenAddress, String(BigInt(appState.walletState.tokenBalances.get(_tokenAddress)) + BigInt(amount)));
-            tokenInfo.tToken = _objectSpread(_objectSpread({}, tokenInfo.tToken), {}, {
-              balances: String(BigInt(tokenInfo.tToken.balances) - BigInt(amount))
-            });
-            appState.smartWalletState.detailTokenInPool.set(_tokenAddress, tokenInfo);
-          } else if (BigInt(amount) >= BigInt(appState.smartWalletState.detailTokenInPool.get(_tokenAddress).tToken.balances)) {
-            console.log("withdraw all supplied token");
-            // withdraw all supplied token
-
-            // update state for smart wallet in travaLP state ( availableBorrowUSD , totalDebtUSD , healthFactor)
-
-            // update availableBorrowUSD : (deposited - amount * asset.price) * ltv - borrowed
-            appState.smartWalletState.travaLPState.availableBorrowsUSD = String(((BigInt(appState.smartWalletState.travaLPState.totalCollateralUSD) * BigInt(10 ** 18) - BigInt(amount) * tokenPrice) * BigInt(appState.smartWalletState.travaLPState.ltv) - BigInt(appState.smartWalletState.travaLPState.totalDebtUSD) * BigInt(10 ** 24)) / BigInt(10 ** 22));
-
-            // update healthFactor :((deposited - amount * asset.price) * currentLiquidationThreshold) / borrowed
-            if (appState.smartWalletState.travaLPState.totalDebtUSD != "0") {
-              appState.smartWalletState.travaLPState.healthFactor = String(appState.smartWalletState.travaLPState.healthFactor = String((BigInt(appState.smartWalletState.travaLPState.totalCollateralUSD) * BigInt(10 ** 18) - BigInt(amount) * tokenPrice) * BigInt(appState.smartWalletState.travaLPState.currentLiquidationThreshold) / BigInt(appState.smartWalletState.travaLPState.totalDebtUSD)));
-            } else {
-              // healthFactor = MaxUint256
-              // need check this
-              appState.smartWalletState.travaLPState.healthFactor = _utils_config__WEBPACK_IMPORTED_MODULE_3__.MAX_UINT256;
-            }
-
-            // update totalCollateralUSD. deposited - amount * asset.price
-            appState.smartWalletState.travaLPState.totalCollateralUSD = String(BigInt(appState.smartWalletState.travaLPState.totalCollateralUSD) - BigInt(amount) * tokenPrice / BigInt(10 ** 18));
-
-            // set tToken balance to 0
-            appState.walletState.tokenBalances.set(_tokenAddress, String(BigInt(appState.walletState.tokenBalances.get(_tokenAddress)) + BigInt(amount)));
-            var _tokenInfo5 = appState.smartWalletState.detailTokenInPool.get(_tokenAddress);
-            _tokenInfo5.tToken = _objectSpread(_objectSpread({}, _tokenInfo5.tToken), {}, {
-              balances: (BigInt(appState.smartWalletState.detailTokenInPool.get(_tokenAddress).tToken.balances) - BigInt(amount)).toString()
-            });
-            appState.smartWalletState.detailTokenInPool.set(_tokenAddress, _tokenInfo5);
-          }
+        // check tokenAddress:string is exist on appState.walletState.tokenBalances : Array<Map<string, string>>
+        if (appState.walletState.tokenBalances.has(_tokenAddress)) {
+          yield (0,_basic_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_6__.updateUserTokenBalance)(appState, _tokenAddress);
         }
+        // update token balances
+        appState.walletState.tokenBalances.set(_tokenAddress, (0,bignumber_js__WEBPACK_IMPORTED_MODULE_4__.BigNumber)(appState.walletState.tokenBalances.get(_tokenAddress)).plus(amount).toFixed(0));
       } else if (_to.toLowerCase() == appState.smartWalletState.address.toLowerCase()) {
         _to = appState.smartWalletState.address.toLowerCase();
-        // check tokenAddress is exist on reverseList
-        if (appState.smartWalletState.detailTokenInPool.has(_tokenAddress) && appState.smartWalletState.tokenBalances.has(_tokenAddress)) {
-          if (amount.toString() == _utils_config__WEBPACK_IMPORTED_MODULE_3__.MAX_UINT256 || BigInt(amount) == BigInt(_utils_config__WEBPACK_IMPORTED_MODULE_3__.MAX_UINT256)) {
-            amount = appState.smartWalletState.detailTokenInPool.get(_tokenAddress).tToken.balances;
-          }
-          if (BigInt(appState.smartWalletState.detailTokenInPool.get(_tokenAddress).tToken.balances) > BigInt(amount)) {
-            console.log("Withdraw piece of supplied token");
-            // withdraw piece of supplied token
-
-            // update state for smart wallet in travaLP state ( availableBorrowUSD , totalDebtUSD , healthFactor)
-
-            // update availableBorrowUSD : (deposited - amount * asset.price) * ltv - borrowed
-            appState.smartWalletState.travaLPState.availableBorrowsUSD = String(((BigInt(appState.smartWalletState.travaLPState.totalCollateralUSD) * BigInt(10 ** 18) - BigInt(amount) * tokenPrice) * BigInt(appState.smartWalletState.travaLPState.ltv) - BigInt(appState.smartWalletState.travaLPState.totalDebtUSD) * BigInt(10 ** 24)) / BigInt(10 ** 22));
-
-            // update healthFactor :((deposited - amount * asset.price) * currentLiquidationThreshold) / borrowed
-            if (appState.smartWalletState.travaLPState.totalDebtUSD != "0") {
-              appState.smartWalletState.travaLPState.healthFactor = String(appState.smartWalletState.travaLPState.healthFactor = String((BigInt(appState.smartWalletState.travaLPState.totalCollateralUSD) * BigInt(10 ** 18) - BigInt(amount) * tokenPrice) * BigInt(appState.smartWalletState.travaLPState.currentLiquidationThreshold) / BigInt(appState.smartWalletState.travaLPState.totalDebtUSD)));
-            } else {
-              // healthFactor = MaxUint256
-              // need check this
-              appState.smartWalletState.travaLPState.healthFactor = _utils_config__WEBPACK_IMPORTED_MODULE_3__.MAX_UINT256;
-            }
-
-            // update totalCollateralUSD. deposited - amount * asset.price
-            appState.smartWalletState.travaLPState.totalCollateralUSD = String(BigInt(appState.smartWalletState.travaLPState.totalCollateralUSD) - BigInt(amount) * tokenPrice / BigInt(10 ** 18));
-
-            // update token balances
-            appState.smartWalletState.tokenBalances.set(_tokenAddress, String(BigInt(appState.smartWalletState.tokenBalances.get(_tokenAddress)) + BigInt(amount)));
-            var _tokenInfo6 = appState.smartWalletState.detailTokenInPool.get(_tokenAddress);
-            _tokenInfo6.tToken = _objectSpread(_objectSpread({}, _tokenInfo6.tToken), {}, {
-              balances: String(BigInt(_tokenInfo6.tToken.balances) - BigInt(amount))
-            });
-            appState.smartWalletState.detailTokenInPool.set(_tokenAddress, _tokenInfo6);
-          } else if (BigInt(amount) >= BigInt(appState.smartWalletState.detailTokenInPool.get(_tokenAddress).tToken.balances)) {
-            console.log("withdraw all supplied token");
-            // withdraw all supplied token
-
-            // update state for smart wallet in travaLP state ( availableBorrowUSD , totalDebtUSD , healthFactor)
-
-            // update healthFactor :((deposited - amount * asset.price) * currentLiquidationThreshold) / borrowed
-            if (appState.smartWalletState.travaLPState.totalDebtUSD != "0") {
-              appState.smartWalletState.travaLPState.healthFactor = String(appState.smartWalletState.travaLPState.healthFactor = String((BigInt(appState.smartWalletState.travaLPState.totalCollateralUSD) * BigInt(10 ** 18) - BigInt(amount) * tokenPrice) * BigInt(appState.smartWalletState.travaLPState.currentLiquidationThreshold) / BigInt(appState.smartWalletState.travaLPState.totalDebtUSD)));
-            } else {
-              // healthFactor = MaxUint256
-              // need check this
-              appState.smartWalletState.travaLPState.healthFactor = _utils_config__WEBPACK_IMPORTED_MODULE_3__.MAX_UINT256;
-            }
-
-            // update totalCollateralUSD. deposited - amount * asset.price
-            var _oldTotalCollateralUSD2 = appState.smartWalletState.travaLPState.totalCollateralUSD;
-            var _newTotalCollateralUSD2 = String(BigInt(appState.smartWalletState.travaLPState.totalCollateralUSD) - BigInt(amount) * tokenPrice / BigInt(10 ** 18));
-            var _oldLTV2 = appState.smartWalletState.travaLPState.ltv;
-            var _newLTV2 = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_5__.BigNumber)(_oldTotalCollateralUSD2).multipliedBy((0,bignumber_js__WEBPACK_IMPORTED_MODULE_5__.BigNumber)(_oldLTV2)).minus((0,bignumber_js__WEBPACK_IMPORTED_MODULE_5__.BigNumber)(amount).multipliedBy((0,bignumber_js__WEBPACK_IMPORTED_MODULE_5__.BigNumber)(tokenPrice.toString())).multipliedBy((0,bignumber_js__WEBPACK_IMPORTED_MODULE_5__.BigNumber)(tokenInfo.maxLTV)).div(originTokenDecimal.toString())).div((0,bignumber_js__WEBPACK_IMPORTED_MODULE_5__.BigNumber)(_newTotalCollateralUSD2)).toFixed(0);
-            appState.smartWalletState.travaLPState.totalCollateralUSD = _newTotalCollateralUSD2;
-            appState.smartWalletState.travaLPState.ltv = _newLTV2;
-
-            // update availableBorrowUSD : (deposited - amount * asset.price) * ltv - borrowed
-            appState.smartWalletState.travaLPState.availableBorrowsUSD = String((BigInt(_newTotalCollateralUSD2) * BigInt(appState.smartWalletState.travaLPState.ltv) - BigInt(appState.smartWalletState.travaLPState.totalDebtUSD) * BigInt(10 ** 24)) / BigInt(10 ** 22));
-
-            // set tToken balance to 0
-            appState.smartWalletState.tokenBalances.set(_tokenAddress, String(BigInt(appState.smartWalletState.tokenBalances.get(_tokenAddress)) + BigInt(amount)));
-            tokenInfo.tToken = _objectSpread(_objectSpread({}, tokenInfo.tToken), {}, {
-              balances: (BigInt(appState.smartWalletState.detailTokenInPool.get(_tokenAddress).tToken.balances) - BigInt(amount)).toString()
-            });
-            appState.smartWalletState.detailTokenInPool.set(_tokenAddress, tokenInfo);
-          }
+        // check tokenAddress:string is exist on appState.walletState.tokenBalances : Array<Map<string, string>>
+        if (appState.smartWalletState.tokenBalances.has(_tokenAddress)) {
+          yield (0,_basic_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_6__.updateSmartWalletTokenBalance)(appState, _tokenAddress);
         }
+        // update token balances
+        appState.smartWalletState.tokenBalances.set(_tokenAddress, (0,bignumber_js__WEBPACK_IMPORTED_MODULE_4__.BigNumber)(appState.smartWalletState.tokenBalances.get(_tokenAddress)).plus(amount).toFixed(0));
       }
+      var withdrawUSD = getBalanceUsdFromAmount(amount, tokenInfo);
+      var oldTotalCollateralUSD = appState.smartWalletState.travaLPState.totalCollateralUSD;
+      var newTotalCollateralUSD = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_4__.BigNumber)(appState.smartWalletState.travaLPState.totalCollateralUSD).minus(withdrawUSD);
+      // update state for smart wallet in travaLP state ( availableBorrowUSD , totalDebtUSD , healthFactor)
+
+      var oldLTV = appState.smartWalletState.travaLPState.ltv;
+      var newLTV = calculateNewLTV((0,bignumber_js__WEBPACK_IMPORTED_MODULE_4__.BigNumber)(oldTotalCollateralUSD), (0,bignumber_js__WEBPACK_IMPORTED_MODULE_4__.BigNumber)(oldLTV), newTotalCollateralUSD, (0,bignumber_js__WEBPACK_IMPORTED_MODULE_4__.BigNumber)(tokenInfo.maxLTV));
+
+      //Calculate liquid threshold
+      var oldLiquidTreshold = appState.smartWalletState.travaLPState.currentLiquidationThreshold;
+      var newLiquidTreshold = calculateNewLiquidThreshold((0,bignumber_js__WEBPACK_IMPORTED_MODULE_4__.BigNumber)(oldTotalCollateralUSD), (0,bignumber_js__WEBPACK_IMPORTED_MODULE_4__.BigNumber)(oldLiquidTreshold), newTotalCollateralUSD, (0,bignumber_js__WEBPACK_IMPORTED_MODULE_4__.BigNumber)(tokenInfo.liqThres));
+
+      // if totalDebtUSD = 0  , not update healthFactor
+      var healthFactor = calculateNewHealFactor(newTotalCollateralUSD, newLiquidTreshold, (0,bignumber_js__WEBPACK_IMPORTED_MODULE_4__.BigNumber)(appState.smartWalletState.travaLPState.totalDebtUSD));
+      var availableBorrowsUSD = calculateNewAvailableBorrow(newTotalCollateralUSD, newLTV, (0,bignumber_js__WEBPACK_IMPORTED_MODULE_4__.BigNumber)(appState.smartWalletState.travaLPState.totalDebtUSD));
+      appState.smartWalletState.travaLPState.totalCollateralUSD = newTotalCollateralUSD.toFixed(0);
+      appState.smartWalletState.travaLPState.currentLiquidationThreshold = newLiquidTreshold.toFixed(0);
+      appState.smartWalletState.travaLPState.ltv = newLTV.toFixed(0);
+      appState.smartWalletState.travaLPState.healthFactor = healthFactor.toFixed(0);
+      appState.smartWalletState.travaLPState.availableBorrowsUSD = availableBorrowsUSD.toFixed(0);
+      tokenInfo.tToken = _objectSpread(_objectSpread({}, tokenInfo.tToken), {}, {
+        balances: (0,bignumber_js__WEBPACK_IMPORTED_MODULE_4__.BigNumber)(tokenInfo.tToken.balances).minus(amount).toFixed(0)
+      });
+      appState.smartWalletState.detailTokenInPool.set(_tokenAddress, tokenInfo);
       return appState;
     } catch (err) {
       throw err;
@@ -21002,7 +23633,7 @@ function _SimulationClaimReward() {
   _SimulationClaimReward = _asyncToGenerator(function* (appState1, amount) {
     try {
       var appState = _objectSpread({}, appState1);
-      var incentiveContract = new ethers__WEBPACK_IMPORTED_MODULE_2__.Contract((0,_utils_address__WEBPACK_IMPORTED_MODULE_1__.getAddr)("INCENTIVE_CONTRACT", appState.chainId), _abis_IncentiveContract_json__WEBPACK_IMPORTED_MODULE_4__, appState.web3);
+      var incentiveContract = new ethers__WEBPACK_IMPORTED_MODULE_1__.Contract((0,_utils_address__WEBPACK_IMPORTED_MODULE_0__.getAddr)("INCENTIVE_CONTRACT", appState.chainId), _abis_IncentiveContract_json__WEBPACK_IMPORTED_MODULE_3__, appState.web3);
       var rTravaAddress = String(yield incentiveContract.REWARD_TOKEN()).toLowerCase();
       var currentReward = appState.smartWalletState.maxRewardCanClaim;
       appState.smartWalletState.maxRewardCanClaim = (BigInt(currentReward) - BigInt(amount)).toString();
@@ -21026,7 +23657,7 @@ function _SimulationConvertReward() {
   _SimulationConvertReward = _asyncToGenerator(function* (appState1, to, amount) {
     try {
       var appState = _objectSpread({}, appState1);
-      var incentiveContract = new ethers__WEBPACK_IMPORTED_MODULE_2__.Contract((0,_utils_address__WEBPACK_IMPORTED_MODULE_1__.getAddr)("INCENTIVE_CONTRACT", appState.chainId), _abis_IncentiveContract_json__WEBPACK_IMPORTED_MODULE_4__, appState.web3);
+      var incentiveContract = new ethers__WEBPACK_IMPORTED_MODULE_1__.Contract((0,_utils_address__WEBPACK_IMPORTED_MODULE_0__.getAddr)("INCENTIVE_CONTRACT", appState.chainId), _abis_IncentiveContract_json__WEBPACK_IMPORTED_MODULE_3__, appState.web3);
       var rTravaAddress = (yield incentiveContract.REWARD_TOKEN()).toLowerCase();
       var rTravaBalance = appState.smartWalletState.tokenBalances.get(rTravaAddress);
       if (rTravaBalance) {
@@ -21035,7 +23666,7 @@ function _SimulationConvertReward() {
           realAmount = rTravaBalance;
         }
         appState.smartWalletState.tokenBalances.set(rTravaAddress, (BigInt(rTravaBalance) - BigInt(realAmount)).toString());
-        var travaAddress = (0,_utils_address__WEBPACK_IMPORTED_MODULE_1__.getAddr)("TRAVA_TOKEN_IN_MARKET", appState.chainId);
+        var travaAddress = (0,_utils_address__WEBPACK_IMPORTED_MODULE_0__.getAddr)("TRAVA_TOKEN_IN_MARKET", appState.chainId);
         if (to.toLowerCase() == appState.smartWalletState.address.toLowerCase()) {
           to = appState.smartWalletState.address;
           var travaBalance = appState.smartWalletState.tokenBalances.get(travaAddress);
@@ -21065,2985 +23696,14 @@ function _SimulationConvertReward() {
 }
 
 /***/ }),
-/* 113 */
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (/* binding */ OraclePrice)
-/* harmony export */ });
-/* harmony import */ var _abis_AaveOracle_json__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(114);
-/* harmony import */ var _contract__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(115);
-/* harmony import */ var _address__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(12);
-function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
-function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
-
-
-
-class OraclePrice extends _contract__WEBPACK_IMPORTED_MODULE_1__["default"] {
-  constructor(address, web3Reader) {
-    super(address, _abis_AaveOracle_json__WEBPACK_IMPORTED_MODULE_0__, web3Reader);
-  }
-  getAssetPrice(_assetAddress) {
-    var _this = this;
-    return _asyncToGenerator(function* () {
-      var assetAddress = (0,_address__WEBPACK_IMPORTED_MODULE_2__.convertHexStringToAddress)(_assetAddress);
-      return yield _this.contractUtil.getAssetPrice(assetAddress);
-    })();
-  }
-}
-
-// const oracleContract = new OracleContract(process.env.ORACLE_ADDRESS!);
-// oracleContract.getAssetPrice(process.env.TRAVA_TOKEN_IN_MARKET!).then((res) => {
-//   console.log(res.toString());
-// });
-
-/***/ }),
 /* 114 */
-/***/ ((module) => {
-
-"use strict";
-module.exports = JSON.parse('[{"inputs":[{"internalType":"address[]","name":"assets","type":"address[]"},{"internalType":"address[]","name":"sources","type":"address[]"},{"internalType":"address","name":"fallbackOracle","type":"address"},{"internalType":"address","name":"weth","type":"address"}],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"asset","type":"address"},{"indexed":true,"internalType":"address","name":"source","type":"address"}],"name":"AssetSourceUpdated","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"fallbackOracle","type":"address"}],"name":"FallbackOracleUpdated","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"previousOwner","type":"address"},{"indexed":true,"internalType":"address","name":"newOwner","type":"address"}],"name":"OwnershipTransferred","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"weth","type":"address"}],"name":"WethSet","type":"event"},{"inputs":[],"name":"WETH","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"asset","type":"address"}],"name":"getAssetPrice","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address[]","name":"assets","type":"address[]"}],"name":"getAssetsPrices","outputs":[{"internalType":"uint256[]","name":"","type":"uint256[]"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"getFallbackOracle","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"asset","type":"address"}],"name":"getSourceOfAsset","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"owner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"renounceOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address[]","name":"assets","type":"address[]"},{"internalType":"address[]","name":"sources","type":"address[]"}],"name":"setAssetSources","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"fallbackOracle","type":"address"}],"name":"setFallbackOracle","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"}]');
-
-/***/ }),
-/* 115 */
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (/* binding */ BaseReadContract)
-/* harmony export */ });
-/* harmony import */ var ethers__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(11);
-/* harmony import */ var ethers__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(ethers__WEBPACK_IMPORTED_MODULE_0__);
-function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return typeof key === "symbol" ? key : String(key); }
-function _toPrimitive(input, hint) { if (typeof input !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (typeof res !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
-
-class BaseReadContract {
-  constructor(contractAddress, abi, web3Reader) {
-    _defineProperty(this, "contractAddress", void 0);
-    _defineProperty(this, "web3Reader", void 0);
-    _defineProperty(this, "abi", void 0);
-    _defineProperty(this, "contractUtil", void 0);
-    this.contractAddress = contractAddress;
-    this.web3Reader = web3Reader;
-    this.abi = abi;
-    this.contractUtil = new ethers__WEBPACK_IMPORTED_MODULE_0__.Contract(contractAddress, abi, web3Reader);
-  }
-}
-
-/***/ }),
-/* 116 */
 /***/ ((module) => {
 
 "use strict";
 module.exports = JSON.parse('[{"inputs":[{"internalType":"contract IStakedTokenWithConfig","name":"stakeToken","type":"address"},{"internalType":"address","name":"emissionManager","type":"address"}],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"asset","type":"address"},{"indexed":false,"internalType":"uint256","name":"emission","type":"uint256"}],"name":"AssetConfigUpdated","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"asset","type":"address"},{"indexed":false,"internalType":"uint256","name":"index","type":"uint256"}],"name":"AssetIndexUpdated","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"user","type":"address"},{"indexed":true,"internalType":"address","name":"claimer","type":"address"}],"name":"ClaimerSet","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"uint256","name":"newDistributionEnd","type":"uint256"}],"name":"DistributionEndUpdated","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"user","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"}],"name":"RewardsAccrued","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"user","type":"address"},{"indexed":true,"internalType":"address","name":"to","type":"address"},{"indexed":true,"internalType":"address","name":"claimer","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"}],"name":"RewardsClaimed","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"user","type":"address"},{"indexed":true,"internalType":"address","name":"asset","type":"address"},{"indexed":false,"internalType":"uint256","name":"index","type":"uint256"}],"name":"UserIndexUpdated","type":"event"},{"inputs":[],"name":"DISTRIBUTION_END","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"EMISSION_MANAGER","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"PRECISION","outputs":[{"internalType":"uint8","name":"","type":"uint8"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"REVISION","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"REWARD_TOKEN","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"STAKE_TOKEN","outputs":[{"internalType":"contract IStakedTokenWithConfig","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"assets","outputs":[{"internalType":"uint104","name":"emissionPerSecond","type":"uint104"},{"internalType":"uint104","name":"index","type":"uint104"},{"internalType":"uint40","name":"lastUpdateTimestamp","type":"uint40"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address[]","name":"assets","type":"address[]"},{"internalType":"uint256","name":"amount","type":"uint256"},{"internalType":"address","name":"to","type":"address"}],"name":"claimRewards","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address[]","name":"assets","type":"address[]"},{"internalType":"uint256","name":"amount","type":"uint256"},{"internalType":"address","name":"user","type":"address"},{"internalType":"address","name":"to","type":"address"}],"name":"claimRewardsOnBehalf","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address[]","name":"assets","type":"address[]"},{"internalType":"uint256[]","name":"emissionsPerSecond","type":"uint256[]"}],"name":"configureAssets","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"asset","type":"address"}],"name":"getAssetData","outputs":[{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"user","type":"address"}],"name":"getClaimer","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"getDistributionEnd","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address[]","name":"assets","type":"address[]"},{"internalType":"address","name":"user","type":"address"}],"name":"getRewardsBalance","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"user","type":"address"},{"internalType":"address","name":"asset","type":"address"}],"name":"getUserAssetData","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"_user","type":"address"}],"name":"getUserUnclaimedRewards","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"user","type":"address"},{"internalType":"uint256","name":"totalSupply","type":"uint256"},{"internalType":"uint256","name":"userBalance","type":"uint256"}],"name":"handleAction","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"addressesProvider","type":"address"}],"name":"initialize","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"user","type":"address"},{"internalType":"address","name":"caller","type":"address"}],"name":"setClaimer","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"distributionEnd","type":"uint256"}],"name":"setDistributionEnd","outputs":[],"stateMutability":"nonpayable","type":"function"}]');
 
 /***/ }),
-/* 117 */
-/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   BigNumber: () => (/* binding */ BigNumber),
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/*
- *      bignumber.js v9.1.1
- *      A JavaScript library for arbitrary-precision arithmetic.
- *      https://github.com/MikeMcl/bignumber.js
- *      Copyright (c) 2022 Michael Mclaughlin <M8ch88l@gmail.com>
- *      MIT Licensed.
- *
- *      BigNumber.prototype methods     |  BigNumber methods
- *                                      |
- *      absoluteValue            abs    |  clone
- *      comparedTo                      |  config               set
- *      decimalPlaces            dp     |      DECIMAL_PLACES
- *      dividedBy                div    |      ROUNDING_MODE
- *      dividedToIntegerBy       idiv   |      EXPONENTIAL_AT
- *      exponentiatedBy          pow    |      RANGE
- *      integerValue                    |      CRYPTO
- *      isEqualTo                eq     |      MODULO_MODE
- *      isFinite                        |      POW_PRECISION
- *      isGreaterThan            gt     |      FORMAT
- *      isGreaterThanOrEqualTo   gte    |      ALPHABET
- *      isInteger                       |  isBigNumber
- *      isLessThan               lt     |  maximum              max
- *      isLessThanOrEqualTo      lte    |  minimum              min
- *      isNaN                           |  random
- *      isNegative                      |  sum
- *      isPositive                      |
- *      isZero                          |
- *      minus                           |
- *      modulo                   mod    |
- *      multipliedBy             times  |
- *      negated                         |
- *      plus                            |
- *      precision                sd     |
- *      shiftedBy                       |
- *      squareRoot               sqrt   |
- *      toExponential                   |
- *      toFixed                         |
- *      toFormat                        |
- *      toFraction                      |
- *      toJSON                          |
- *      toNumber                        |
- *      toPrecision                     |
- *      toString                        |
- *      valueOf                         |
- *
- */
-
-
-var
-  isNumeric = /^-?(?:\d+(?:\.\d*)?|\.\d+)(?:e[+-]?\d+)?$/i,
-  mathceil = Math.ceil,
-  mathfloor = Math.floor,
-
-  bignumberError = '[BigNumber Error] ',
-  tooManyDigits = bignumberError + 'Number primitive has more than 15 significant digits: ',
-
-  BASE = 1e14,
-  LOG_BASE = 14,
-  MAX_SAFE_INTEGER = 0x1fffffffffffff,         // 2^53 - 1
-  // MAX_INT32 = 0x7fffffff,                   // 2^31 - 1
-  POWS_TEN = [1, 10, 100, 1e3, 1e4, 1e5, 1e6, 1e7, 1e8, 1e9, 1e10, 1e11, 1e12, 1e13],
-  SQRT_BASE = 1e7,
-
-  // EDITABLE
-  // The limit on the value of DECIMAL_PLACES, TO_EXP_NEG, TO_EXP_POS, MIN_EXP, MAX_EXP, and
-  // the arguments to toExponential, toFixed, toFormat, and toPrecision.
-  MAX = 1E9;                                   // 0 to MAX_INT32
-
-
-/*
- * Create and return a BigNumber constructor.
- */
-function clone(configObject) {
-  var div, convertBase, parseNumeric,
-    P = BigNumber.prototype = { constructor: BigNumber, toString: null, valueOf: null },
-    ONE = new BigNumber(1),
-
-
-    //----------------------------- EDITABLE CONFIG DEFAULTS -------------------------------
-
-
-    // The default values below must be integers within the inclusive ranges stated.
-    // The values can also be changed at run-time using BigNumber.set.
-
-    // The maximum number of decimal places for operations involving division.
-    DECIMAL_PLACES = 20,                     // 0 to MAX
-
-    // The rounding mode used when rounding to the above decimal places, and when using
-    // toExponential, toFixed, toFormat and toPrecision, and round (default value).
-    // UP         0 Away from zero.
-    // DOWN       1 Towards zero.
-    // CEIL       2 Towards +Infinity.
-    // FLOOR      3 Towards -Infinity.
-    // HALF_UP    4 Towards nearest neighbour. If equidistant, up.
-    // HALF_DOWN  5 Towards nearest neighbour. If equidistant, down.
-    // HALF_EVEN  6 Towards nearest neighbour. If equidistant, towards even neighbour.
-    // HALF_CEIL  7 Towards nearest neighbour. If equidistant, towards +Infinity.
-    // HALF_FLOOR 8 Towards nearest neighbour. If equidistant, towards -Infinity.
-    ROUNDING_MODE = 4,                       // 0 to 8
-
-    // EXPONENTIAL_AT : [TO_EXP_NEG , TO_EXP_POS]
-
-    // The exponent value at and beneath which toString returns exponential notation.
-    // Number type: -7
-    TO_EXP_NEG = -7,                         // 0 to -MAX
-
-    // The exponent value at and above which toString returns exponential notation.
-    // Number type: 21
-    TO_EXP_POS = 21,                         // 0 to MAX
-
-    // RANGE : [MIN_EXP, MAX_EXP]
-
-    // The minimum exponent value, beneath which underflow to zero occurs.
-    // Number type: -324  (5e-324)
-    MIN_EXP = -1e7,                          // -1 to -MAX
-
-    // The maximum exponent value, above which overflow to Infinity occurs.
-    // Number type:  308  (1.7976931348623157e+308)
-    // For MAX_EXP > 1e7, e.g. new BigNumber('1e100000000').plus(1) may be slow.
-    MAX_EXP = 1e7,                           // 1 to MAX
-
-    // Whether to use cryptographically-secure random number generation, if available.
-    CRYPTO = false,                          // true or false
-
-    // The modulo mode used when calculating the modulus: a mod n.
-    // The quotient (q = a / n) is calculated according to the corresponding rounding mode.
-    // The remainder (r) is calculated as: r = a - n * q.
-    //
-    // UP        0 The remainder is positive if the dividend is negative, else is negative.
-    // DOWN      1 The remainder has the same sign as the dividend.
-    //             This modulo mode is commonly known as 'truncated division' and is
-    //             equivalent to (a % n) in JavaScript.
-    // FLOOR     3 The remainder has the same sign as the divisor (Python %).
-    // HALF_EVEN 6 This modulo mode implements the IEEE 754 remainder function.
-    // EUCLID    9 Euclidian division. q = sign(n) * floor(a / abs(n)).
-    //             The remainder is always positive.
-    //
-    // The truncated division, floored division, Euclidian division and IEEE 754 remainder
-    // modes are commonly used for the modulus operation.
-    // Although the other rounding modes can also be used, they may not give useful results.
-    MODULO_MODE = 1,                         // 0 to 9
-
-    // The maximum number of significant digits of the result of the exponentiatedBy operation.
-    // If POW_PRECISION is 0, there will be unlimited significant digits.
-    POW_PRECISION = 0,                       // 0 to MAX
-
-    // The format specification used by the BigNumber.prototype.toFormat method.
-    FORMAT = {
-      prefix: '',
-      groupSize: 3,
-      secondaryGroupSize: 0,
-      groupSeparator: ',',
-      decimalSeparator: '.',
-      fractionGroupSize: 0,
-      fractionGroupSeparator: '\xA0',        // non-breaking space
-      suffix: ''
-    },
-
-    // The alphabet used for base conversion. It must be at least 2 characters long, with no '+',
-    // '-', '.', whitespace, or repeated character.
-    // '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ$_'
-    ALPHABET = '0123456789abcdefghijklmnopqrstuvwxyz',
-    alphabetHasNormalDecimalDigits = true;
-
-
-  //------------------------------------------------------------------------------------------
-
-
-  // CONSTRUCTOR
-
-
-  /*
-   * The BigNumber constructor and exported function.
-   * Create and return a new instance of a BigNumber object.
-   *
-   * v {number|string|BigNumber} A numeric value.
-   * [b] {number} The base of v. Integer, 2 to ALPHABET.length inclusive.
-   */
-  function BigNumber(v, b) {
-    var alphabet, c, caseChanged, e, i, isNum, len, str,
-      x = this;
-
-    // Enable constructor call without `new`.
-    if (!(x instanceof BigNumber)) return new BigNumber(v, b);
-
-    if (b == null) {
-
-      if (v && v._isBigNumber === true) {
-        x.s = v.s;
-
-        if (!v.c || v.e > MAX_EXP) {
-          x.c = x.e = null;
-        } else if (v.e < MIN_EXP) {
-          x.c = [x.e = 0];
-        } else {
-          x.e = v.e;
-          x.c = v.c.slice();
-        }
-
-        return;
-      }
-
-      if ((isNum = typeof v == 'number') && v * 0 == 0) {
-
-        // Use `1 / n` to handle minus zero also.
-        x.s = 1 / v < 0 ? (v = -v, -1) : 1;
-
-        // Fast path for integers, where n < 2147483648 (2**31).
-        if (v === ~~v) {
-          for (e = 0, i = v; i >= 10; i /= 10, e++);
-
-          if (e > MAX_EXP) {
-            x.c = x.e = null;
-          } else {
-            x.e = e;
-            x.c = [v];
-          }
-
-          return;
-        }
-
-        str = String(v);
-      } else {
-
-        if (!isNumeric.test(str = String(v))) return parseNumeric(x, str, isNum);
-
-        x.s = str.charCodeAt(0) == 45 ? (str = str.slice(1), -1) : 1;
-      }
-
-      // Decimal point?
-      if ((e = str.indexOf('.')) > -1) str = str.replace('.', '');
-
-      // Exponential form?
-      if ((i = str.search(/e/i)) > 0) {
-
-        // Determine exponent.
-        if (e < 0) e = i;
-        e += +str.slice(i + 1);
-        str = str.substring(0, i);
-      } else if (e < 0) {
-
-        // Integer.
-        e = str.length;
-      }
-
-    } else {
-
-      // '[BigNumber Error] Base {not a primitive number|not an integer|out of range}: {b}'
-      intCheck(b, 2, ALPHABET.length, 'Base');
-
-      // Allow exponential notation to be used with base 10 argument, while
-      // also rounding to DECIMAL_PLACES as with other bases.
-      if (b == 10 && alphabetHasNormalDecimalDigits) {
-        x = new BigNumber(v);
-        return round(x, DECIMAL_PLACES + x.e + 1, ROUNDING_MODE);
-      }
-
-      str = String(v);
-
-      if (isNum = typeof v == 'number') {
-
-        // Avoid potential interpretation of Infinity and NaN as base 44+ values.
-        if (v * 0 != 0) return parseNumeric(x, str, isNum, b);
-
-        x.s = 1 / v < 0 ? (str = str.slice(1), -1) : 1;
-
-        // '[BigNumber Error] Number primitive has more than 15 significant digits: {n}'
-        if (BigNumber.DEBUG && str.replace(/^0\.0*|\./, '').length > 15) {
-          throw Error
-           (tooManyDigits + v);
-        }
-      } else {
-        x.s = str.charCodeAt(0) === 45 ? (str = str.slice(1), -1) : 1;
-      }
-
-      alphabet = ALPHABET.slice(0, b);
-      e = i = 0;
-
-      // Check that str is a valid base b number.
-      // Don't use RegExp, so alphabet can contain special characters.
-      for (len = str.length; i < len; i++) {
-        if (alphabet.indexOf(c = str.charAt(i)) < 0) {
-          if (c == '.') {
-
-            // If '.' is not the first character and it has not be found before.
-            if (i > e) {
-              e = len;
-              continue;
-            }
-          } else if (!caseChanged) {
-
-            // Allow e.g. hexadecimal 'FF' as well as 'ff'.
-            if (str == str.toUpperCase() && (str = str.toLowerCase()) ||
-                str == str.toLowerCase() && (str = str.toUpperCase())) {
-              caseChanged = true;
-              i = -1;
-              e = 0;
-              continue;
-            }
-          }
-
-          return parseNumeric(x, String(v), isNum, b);
-        }
-      }
-
-      // Prevent later check for length on converted number.
-      isNum = false;
-      str = convertBase(str, b, 10, x.s);
-
-      // Decimal point?
-      if ((e = str.indexOf('.')) > -1) str = str.replace('.', '');
-      else e = str.length;
-    }
-
-    // Determine leading zeros.
-    for (i = 0; str.charCodeAt(i) === 48; i++);
-
-    // Determine trailing zeros.
-    for (len = str.length; str.charCodeAt(--len) === 48;);
-
-    if (str = str.slice(i, ++len)) {
-      len -= i;
-
-      // '[BigNumber Error] Number primitive has more than 15 significant digits: {n}'
-      if (isNum && BigNumber.DEBUG &&
-        len > 15 && (v > MAX_SAFE_INTEGER || v !== mathfloor(v))) {
-          throw Error
-           (tooManyDigits + (x.s * v));
-      }
-
-       // Overflow?
-      if ((e = e - i - 1) > MAX_EXP) {
-
-        // Infinity.
-        x.c = x.e = null;
-
-      // Underflow?
-      } else if (e < MIN_EXP) {
-
-        // Zero.
-        x.c = [x.e = 0];
-      } else {
-        x.e = e;
-        x.c = [];
-
-        // Transform base
-
-        // e is the base 10 exponent.
-        // i is where to slice str to get the first element of the coefficient array.
-        i = (e + 1) % LOG_BASE;
-        if (e < 0) i += LOG_BASE;  // i < 1
-
-        if (i < len) {
-          if (i) x.c.push(+str.slice(0, i));
-
-          for (len -= LOG_BASE; i < len;) {
-            x.c.push(+str.slice(i, i += LOG_BASE));
-          }
-
-          i = LOG_BASE - (str = str.slice(i)).length;
-        } else {
-          i -= len;
-        }
-
-        for (; i--; str += '0');
-        x.c.push(+str);
-      }
-    } else {
-
-      // Zero.
-      x.c = [x.e = 0];
-    }
-  }
-
-
-  // CONSTRUCTOR PROPERTIES
-
-
-  BigNumber.clone = clone;
-
-  BigNumber.ROUND_UP = 0;
-  BigNumber.ROUND_DOWN = 1;
-  BigNumber.ROUND_CEIL = 2;
-  BigNumber.ROUND_FLOOR = 3;
-  BigNumber.ROUND_HALF_UP = 4;
-  BigNumber.ROUND_HALF_DOWN = 5;
-  BigNumber.ROUND_HALF_EVEN = 6;
-  BigNumber.ROUND_HALF_CEIL = 7;
-  BigNumber.ROUND_HALF_FLOOR = 8;
-  BigNumber.EUCLID = 9;
-
-
-  /*
-   * Configure infrequently-changing library-wide settings.
-   *
-   * Accept an object with the following optional properties (if the value of a property is
-   * a number, it must be an integer within the inclusive range stated):
-   *
-   *   DECIMAL_PLACES   {number}           0 to MAX
-   *   ROUNDING_MODE    {number}           0 to 8
-   *   EXPONENTIAL_AT   {number|number[]}  -MAX to MAX  or  [-MAX to 0, 0 to MAX]
-   *   RANGE            {number|number[]}  -MAX to MAX (not zero)  or  [-MAX to -1, 1 to MAX]
-   *   CRYPTO           {boolean}          true or false
-   *   MODULO_MODE      {number}           0 to 9
-   *   POW_PRECISION       {number}           0 to MAX
-   *   ALPHABET         {string}           A string of two or more unique characters which does
-   *                                       not contain '.'.
-   *   FORMAT           {object}           An object with some of the following properties:
-   *     prefix                 {string}
-   *     groupSize              {number}
-   *     secondaryGroupSize     {number}
-   *     groupSeparator         {string}
-   *     decimalSeparator       {string}
-   *     fractionGroupSize      {number}
-   *     fractionGroupSeparator {string}
-   *     suffix                 {string}
-   *
-   * (The values assigned to the above FORMAT object properties are not checked for validity.)
-   *
-   * E.g.
-   * BigNumber.config({ DECIMAL_PLACES : 20, ROUNDING_MODE : 4 })
-   *
-   * Ignore properties/parameters set to null or undefined, except for ALPHABET.
-   *
-   * Return an object with the properties current values.
-   */
-  BigNumber.config = BigNumber.set = function (obj) {
-    var p, v;
-
-    if (obj != null) {
-
-      if (typeof obj == 'object') {
-
-        // DECIMAL_PLACES {number} Integer, 0 to MAX inclusive.
-        // '[BigNumber Error] DECIMAL_PLACES {not a primitive number|not an integer|out of range}: {v}'
-        if (obj.hasOwnProperty(p = 'DECIMAL_PLACES')) {
-          v = obj[p];
-          intCheck(v, 0, MAX, p);
-          DECIMAL_PLACES = v;
-        }
-
-        // ROUNDING_MODE {number} Integer, 0 to 8 inclusive.
-        // '[BigNumber Error] ROUNDING_MODE {not a primitive number|not an integer|out of range}: {v}'
-        if (obj.hasOwnProperty(p = 'ROUNDING_MODE')) {
-          v = obj[p];
-          intCheck(v, 0, 8, p);
-          ROUNDING_MODE = v;
-        }
-
-        // EXPONENTIAL_AT {number|number[]}
-        // Integer, -MAX to MAX inclusive or
-        // [integer -MAX to 0 inclusive, 0 to MAX inclusive].
-        // '[BigNumber Error] EXPONENTIAL_AT {not a primitive number|not an integer|out of range}: {v}'
-        if (obj.hasOwnProperty(p = 'EXPONENTIAL_AT')) {
-          v = obj[p];
-          if (v && v.pop) {
-            intCheck(v[0], -MAX, 0, p);
-            intCheck(v[1], 0, MAX, p);
-            TO_EXP_NEG = v[0];
-            TO_EXP_POS = v[1];
-          } else {
-            intCheck(v, -MAX, MAX, p);
-            TO_EXP_NEG = -(TO_EXP_POS = v < 0 ? -v : v);
-          }
-        }
-
-        // RANGE {number|number[]} Non-zero integer, -MAX to MAX inclusive or
-        // [integer -MAX to -1 inclusive, integer 1 to MAX inclusive].
-        // '[BigNumber Error] RANGE {not a primitive number|not an integer|out of range|cannot be zero}: {v}'
-        if (obj.hasOwnProperty(p = 'RANGE')) {
-          v = obj[p];
-          if (v && v.pop) {
-            intCheck(v[0], -MAX, -1, p);
-            intCheck(v[1], 1, MAX, p);
-            MIN_EXP = v[0];
-            MAX_EXP = v[1];
-          } else {
-            intCheck(v, -MAX, MAX, p);
-            if (v) {
-              MIN_EXP = -(MAX_EXP = v < 0 ? -v : v);
-            } else {
-              throw Error
-               (bignumberError + p + ' cannot be zero: ' + v);
-            }
-          }
-        }
-
-        // CRYPTO {boolean} true or false.
-        // '[BigNumber Error] CRYPTO not true or false: {v}'
-        // '[BigNumber Error] crypto unavailable'
-        if (obj.hasOwnProperty(p = 'CRYPTO')) {
-          v = obj[p];
-          if (v === !!v) {
-            if (v) {
-              if (typeof crypto != 'undefined' && crypto &&
-               (crypto.getRandomValues || crypto.randomBytes)) {
-                CRYPTO = v;
-              } else {
-                CRYPTO = !v;
-                throw Error
-                 (bignumberError + 'crypto unavailable');
-              }
-            } else {
-              CRYPTO = v;
-            }
-          } else {
-            throw Error
-             (bignumberError + p + ' not true or false: ' + v);
-          }
-        }
-
-        // MODULO_MODE {number} Integer, 0 to 9 inclusive.
-        // '[BigNumber Error] MODULO_MODE {not a primitive number|not an integer|out of range}: {v}'
-        if (obj.hasOwnProperty(p = 'MODULO_MODE')) {
-          v = obj[p];
-          intCheck(v, 0, 9, p);
-          MODULO_MODE = v;
-        }
-
-        // POW_PRECISION {number} Integer, 0 to MAX inclusive.
-        // '[BigNumber Error] POW_PRECISION {not a primitive number|not an integer|out of range}: {v}'
-        if (obj.hasOwnProperty(p = 'POW_PRECISION')) {
-          v = obj[p];
-          intCheck(v, 0, MAX, p);
-          POW_PRECISION = v;
-        }
-
-        // FORMAT {object}
-        // '[BigNumber Error] FORMAT not an object: {v}'
-        if (obj.hasOwnProperty(p = 'FORMAT')) {
-          v = obj[p];
-          if (typeof v == 'object') FORMAT = v;
-          else throw Error
-           (bignumberError + p + ' not an object: ' + v);
-        }
-
-        // ALPHABET {string}
-        // '[BigNumber Error] ALPHABET invalid: {v}'
-        if (obj.hasOwnProperty(p = 'ALPHABET')) {
-          v = obj[p];
-
-          // Disallow if less than two characters,
-          // or if it contains '+', '-', '.', whitespace, or a repeated character.
-          if (typeof v == 'string' && !/^.?$|[+\-.\s]|(.).*\1/.test(v)) {
-            alphabetHasNormalDecimalDigits = v.slice(0, 10) == '0123456789';
-            ALPHABET = v;
-          } else {
-            throw Error
-             (bignumberError + p + ' invalid: ' + v);
-          }
-        }
-
-      } else {
-
-        // '[BigNumber Error] Object expected: {v}'
-        throw Error
-         (bignumberError + 'Object expected: ' + obj);
-      }
-    }
-
-    return {
-      DECIMAL_PLACES: DECIMAL_PLACES,
-      ROUNDING_MODE: ROUNDING_MODE,
-      EXPONENTIAL_AT: [TO_EXP_NEG, TO_EXP_POS],
-      RANGE: [MIN_EXP, MAX_EXP],
-      CRYPTO: CRYPTO,
-      MODULO_MODE: MODULO_MODE,
-      POW_PRECISION: POW_PRECISION,
-      FORMAT: FORMAT,
-      ALPHABET: ALPHABET
-    };
-  };
-
-
-  /*
-   * Return true if v is a BigNumber instance, otherwise return false.
-   *
-   * If BigNumber.DEBUG is true, throw if a BigNumber instance is not well-formed.
-   *
-   * v {any}
-   *
-   * '[BigNumber Error] Invalid BigNumber: {v}'
-   */
-  BigNumber.isBigNumber = function (v) {
-    if (!v || v._isBigNumber !== true) return false;
-    if (!BigNumber.DEBUG) return true;
-
-    var i, n,
-      c = v.c,
-      e = v.e,
-      s = v.s;
-
-    out: if ({}.toString.call(c) == '[object Array]') {
-
-      if ((s === 1 || s === -1) && e >= -MAX && e <= MAX && e === mathfloor(e)) {
-
-        // If the first element is zero, the BigNumber value must be zero.
-        if (c[0] === 0) {
-          if (e === 0 && c.length === 1) return true;
-          break out;
-        }
-
-        // Calculate number of digits that c[0] should have, based on the exponent.
-        i = (e + 1) % LOG_BASE;
-        if (i < 1) i += LOG_BASE;
-
-        // Calculate number of digits of c[0].
-        //if (Math.ceil(Math.log(c[0] + 1) / Math.LN10) == i) {
-        if (String(c[0]).length == i) {
-
-          for (i = 0; i < c.length; i++) {
-            n = c[i];
-            if (n < 0 || n >= BASE || n !== mathfloor(n)) break out;
-          }
-
-          // Last element cannot be zero, unless it is the only element.
-          if (n !== 0) return true;
-        }
-      }
-
-    // Infinity/NaN
-    } else if (c === null && e === null && (s === null || s === 1 || s === -1)) {
-      return true;
-    }
-
-    throw Error
-      (bignumberError + 'Invalid BigNumber: ' + v);
-  };
-
-
-  /*
-   * Return a new BigNumber whose value is the maximum of the arguments.
-   *
-   * arguments {number|string|BigNumber}
-   */
-  BigNumber.maximum = BigNumber.max = function () {
-    return maxOrMin(arguments, P.lt);
-  };
-
-
-  /*
-   * Return a new BigNumber whose value is the minimum of the arguments.
-   *
-   * arguments {number|string|BigNumber}
-   */
-  BigNumber.minimum = BigNumber.min = function () {
-    return maxOrMin(arguments, P.gt);
-  };
-
-
-  /*
-   * Return a new BigNumber with a random value equal to or greater than 0 and less than 1,
-   * and with dp, or DECIMAL_PLACES if dp is omitted, decimal places (or less if trailing
-   * zeros are produced).
-   *
-   * [dp] {number} Decimal places. Integer, 0 to MAX inclusive.
-   *
-   * '[BigNumber Error] Argument {not a primitive number|not an integer|out of range}: {dp}'
-   * '[BigNumber Error] crypto unavailable'
-   */
-  BigNumber.random = (function () {
-    var pow2_53 = 0x20000000000000;
-
-    // Return a 53 bit integer n, where 0 <= n < 9007199254740992.
-    // Check if Math.random() produces more than 32 bits of randomness.
-    // If it does, assume at least 53 bits are produced, otherwise assume at least 30 bits.
-    // 0x40000000 is 2^30, 0x800000 is 2^23, 0x1fffff is 2^21 - 1.
-    var random53bitInt = (Math.random() * pow2_53) & 0x1fffff
-     ? function () { return mathfloor(Math.random() * pow2_53); }
-     : function () { return ((Math.random() * 0x40000000 | 0) * 0x800000) +
-       (Math.random() * 0x800000 | 0); };
-
-    return function (dp) {
-      var a, b, e, k, v,
-        i = 0,
-        c = [],
-        rand = new BigNumber(ONE);
-
-      if (dp == null) dp = DECIMAL_PLACES;
-      else intCheck(dp, 0, MAX);
-
-      k = mathceil(dp / LOG_BASE);
-
-      if (CRYPTO) {
-
-        // Browsers supporting crypto.getRandomValues.
-        if (crypto.getRandomValues) {
-
-          a = crypto.getRandomValues(new Uint32Array(k *= 2));
-
-          for (; i < k;) {
-
-            // 53 bits:
-            // ((Math.pow(2, 32) - 1) * Math.pow(2, 21)).toString(2)
-            // 11111 11111111 11111111 11111111 11100000 00000000 00000000
-            // ((Math.pow(2, 32) - 1) >>> 11).toString(2)
-            //                                     11111 11111111 11111111
-            // 0x20000 is 2^21.
-            v = a[i] * 0x20000 + (a[i + 1] >>> 11);
-
-            // Rejection sampling:
-            // 0 <= v < 9007199254740992
-            // Probability that v >= 9e15, is
-            // 7199254740992 / 9007199254740992 ~= 0.0008, i.e. 1 in 1251
-            if (v >= 9e15) {
-              b = crypto.getRandomValues(new Uint32Array(2));
-              a[i] = b[0];
-              a[i + 1] = b[1];
-            } else {
-
-              // 0 <= v <= 8999999999999999
-              // 0 <= (v % 1e14) <= 99999999999999
-              c.push(v % 1e14);
-              i += 2;
-            }
-          }
-          i = k / 2;
-
-        // Node.js supporting crypto.randomBytes.
-        } else if (crypto.randomBytes) {
-
-          // buffer
-          a = crypto.randomBytes(k *= 7);
-
-          for (; i < k;) {
-
-            // 0x1000000000000 is 2^48, 0x10000000000 is 2^40
-            // 0x100000000 is 2^32, 0x1000000 is 2^24
-            // 11111 11111111 11111111 11111111 11111111 11111111 11111111
-            // 0 <= v < 9007199254740992
-            v = ((a[i] & 31) * 0x1000000000000) + (a[i + 1] * 0x10000000000) +
-               (a[i + 2] * 0x100000000) + (a[i + 3] * 0x1000000) +
-               (a[i + 4] << 16) + (a[i + 5] << 8) + a[i + 6];
-
-            if (v >= 9e15) {
-              crypto.randomBytes(7).copy(a, i);
-            } else {
-
-              // 0 <= (v % 1e14) <= 99999999999999
-              c.push(v % 1e14);
-              i += 7;
-            }
-          }
-          i = k / 7;
-        } else {
-          CRYPTO = false;
-          throw Error
-           (bignumberError + 'crypto unavailable');
-        }
-      }
-
-      // Use Math.random.
-      if (!CRYPTO) {
-
-        for (; i < k;) {
-          v = random53bitInt();
-          if (v < 9e15) c[i++] = v % 1e14;
-        }
-      }
-
-      k = c[--i];
-      dp %= LOG_BASE;
-
-      // Convert trailing digits to zeros according to dp.
-      if (k && dp) {
-        v = POWS_TEN[LOG_BASE - dp];
-        c[i] = mathfloor(k / v) * v;
-      }
-
-      // Remove trailing elements which are zero.
-      for (; c[i] === 0; c.pop(), i--);
-
-      // Zero?
-      if (i < 0) {
-        c = [e = 0];
-      } else {
-
-        // Remove leading elements which are zero and adjust exponent accordingly.
-        for (e = -1 ; c[0] === 0; c.splice(0, 1), e -= LOG_BASE);
-
-        // Count the digits of the first element of c to determine leading zeros, and...
-        for (i = 1, v = c[0]; v >= 10; v /= 10, i++);
-
-        // adjust the exponent accordingly.
-        if (i < LOG_BASE) e -= LOG_BASE - i;
-      }
-
-      rand.e = e;
-      rand.c = c;
-      return rand;
-    };
-  })();
-
-
-   /*
-   * Return a BigNumber whose value is the sum of the arguments.
-   *
-   * arguments {number|string|BigNumber}
-   */
-  BigNumber.sum = function () {
-    var i = 1,
-      args = arguments,
-      sum = new BigNumber(args[0]);
-    for (; i < args.length;) sum = sum.plus(args[i++]);
-    return sum;
-  };
-
-
-  // PRIVATE FUNCTIONS
-
-
-  // Called by BigNumber and BigNumber.prototype.toString.
-  convertBase = (function () {
-    var decimal = '0123456789';
-
-    /*
-     * Convert string of baseIn to an array of numbers of baseOut.
-     * Eg. toBaseOut('255', 10, 16) returns [15, 15].
-     * Eg. toBaseOut('ff', 16, 10) returns [2, 5, 5].
-     */
-    function toBaseOut(str, baseIn, baseOut, alphabet) {
-      var j,
-        arr = [0],
-        arrL,
-        i = 0,
-        len = str.length;
-
-      for (; i < len;) {
-        for (arrL = arr.length; arrL--; arr[arrL] *= baseIn);
-
-        arr[0] += alphabet.indexOf(str.charAt(i++));
-
-        for (j = 0; j < arr.length; j++) {
-
-          if (arr[j] > baseOut - 1) {
-            if (arr[j + 1] == null) arr[j + 1] = 0;
-            arr[j + 1] += arr[j] / baseOut | 0;
-            arr[j] %= baseOut;
-          }
-        }
-      }
-
-      return arr.reverse();
-    }
-
-    // Convert a numeric string of baseIn to a numeric string of baseOut.
-    // If the caller is toString, we are converting from base 10 to baseOut.
-    // If the caller is BigNumber, we are converting from baseIn to base 10.
-    return function (str, baseIn, baseOut, sign, callerIsToString) {
-      var alphabet, d, e, k, r, x, xc, y,
-        i = str.indexOf('.'),
-        dp = DECIMAL_PLACES,
-        rm = ROUNDING_MODE;
-
-      // Non-integer.
-      if (i >= 0) {
-        k = POW_PRECISION;
-
-        // Unlimited precision.
-        POW_PRECISION = 0;
-        str = str.replace('.', '');
-        y = new BigNumber(baseIn);
-        x = y.pow(str.length - i);
-        POW_PRECISION = k;
-
-        // Convert str as if an integer, then restore the fraction part by dividing the
-        // result by its base raised to a power.
-
-        y.c = toBaseOut(toFixedPoint(coeffToString(x.c), x.e, '0'),
-         10, baseOut, decimal);
-        y.e = y.c.length;
-      }
-
-      // Convert the number as integer.
-
-      xc = toBaseOut(str, baseIn, baseOut, callerIsToString
-       ? (alphabet = ALPHABET, decimal)
-       : (alphabet = decimal, ALPHABET));
-
-      // xc now represents str as an integer and converted to baseOut. e is the exponent.
-      e = k = xc.length;
-
-      // Remove trailing zeros.
-      for (; xc[--k] == 0; xc.pop());
-
-      // Zero?
-      if (!xc[0]) return alphabet.charAt(0);
-
-      // Does str represent an integer? If so, no need for the division.
-      if (i < 0) {
-        --e;
-      } else {
-        x.c = xc;
-        x.e = e;
-
-        // The sign is needed for correct rounding.
-        x.s = sign;
-        x = div(x, y, dp, rm, baseOut);
-        xc = x.c;
-        r = x.r;
-        e = x.e;
-      }
-
-      // xc now represents str converted to baseOut.
-
-      // THe index of the rounding digit.
-      d = e + dp + 1;
-
-      // The rounding digit: the digit to the right of the digit that may be rounded up.
-      i = xc[d];
-
-      // Look at the rounding digits and mode to determine whether to round up.
-
-      k = baseOut / 2;
-      r = r || d < 0 || xc[d + 1] != null;
-
-      r = rm < 4 ? (i != null || r) && (rm == 0 || rm == (x.s < 0 ? 3 : 2))
-            : i > k || i == k &&(rm == 4 || r || rm == 6 && xc[d - 1] & 1 ||
-             rm == (x.s < 0 ? 8 : 7));
-
-      // If the index of the rounding digit is not greater than zero, or xc represents
-      // zero, then the result of the base conversion is zero or, if rounding up, a value
-      // such as 0.00001.
-      if (d < 1 || !xc[0]) {
-
-        // 1^-dp or 0
-        str = r ? toFixedPoint(alphabet.charAt(1), -dp, alphabet.charAt(0)) : alphabet.charAt(0);
-      } else {
-
-        // Truncate xc to the required number of decimal places.
-        xc.length = d;
-
-        // Round up?
-        if (r) {
-
-          // Rounding up may mean the previous digit has to be rounded up and so on.
-          for (--baseOut; ++xc[--d] > baseOut;) {
-            xc[d] = 0;
-
-            if (!d) {
-              ++e;
-              xc = [1].concat(xc);
-            }
-          }
-        }
-
-        // Determine trailing zeros.
-        for (k = xc.length; !xc[--k];);
-
-        // E.g. [4, 11, 15] becomes 4bf.
-        for (i = 0, str = ''; i <= k; str += alphabet.charAt(xc[i++]));
-
-        // Add leading zeros, decimal point and trailing zeros as required.
-        str = toFixedPoint(str, e, alphabet.charAt(0));
-      }
-
-      // The caller will add the sign.
-      return str;
-    };
-  })();
-
-
-  // Perform division in the specified base. Called by div and convertBase.
-  div = (function () {
-
-    // Assume non-zero x and k.
-    function multiply(x, k, base) {
-      var m, temp, xlo, xhi,
-        carry = 0,
-        i = x.length,
-        klo = k % SQRT_BASE,
-        khi = k / SQRT_BASE | 0;
-
-      for (x = x.slice(); i--;) {
-        xlo = x[i] % SQRT_BASE;
-        xhi = x[i] / SQRT_BASE | 0;
-        m = khi * xlo + xhi * klo;
-        temp = klo * xlo + ((m % SQRT_BASE) * SQRT_BASE) + carry;
-        carry = (temp / base | 0) + (m / SQRT_BASE | 0) + khi * xhi;
-        x[i] = temp % base;
-      }
-
-      if (carry) x = [carry].concat(x);
-
-      return x;
-    }
-
-    function compare(a, b, aL, bL) {
-      var i, cmp;
-
-      if (aL != bL) {
-        cmp = aL > bL ? 1 : -1;
-      } else {
-
-        for (i = cmp = 0; i < aL; i++) {
-
-          if (a[i] != b[i]) {
-            cmp = a[i] > b[i] ? 1 : -1;
-            break;
-          }
-        }
-      }
-
-      return cmp;
-    }
-
-    function subtract(a, b, aL, base) {
-      var i = 0;
-
-      // Subtract b from a.
-      for (; aL--;) {
-        a[aL] -= i;
-        i = a[aL] < b[aL] ? 1 : 0;
-        a[aL] = i * base + a[aL] - b[aL];
-      }
-
-      // Remove leading zeros.
-      for (; !a[0] && a.length > 1; a.splice(0, 1));
-    }
-
-    // x: dividend, y: divisor.
-    return function (x, y, dp, rm, base) {
-      var cmp, e, i, more, n, prod, prodL, q, qc, rem, remL, rem0, xi, xL, yc0,
-        yL, yz,
-        s = x.s == y.s ? 1 : -1,
-        xc = x.c,
-        yc = y.c;
-
-      // Either NaN, Infinity or 0?
-      if (!xc || !xc[0] || !yc || !yc[0]) {
-
-        return new BigNumber(
-
-         // Return NaN if either NaN, or both Infinity or 0.
-         !x.s || !y.s || (xc ? yc && xc[0] == yc[0] : !yc) ? NaN :
-
-          // Return ±0 if x is ±0 or y is ±Infinity, or return ±Infinity as y is ±0.
-          xc && xc[0] == 0 || !yc ? s * 0 : s / 0
-       );
-      }
-
-      q = new BigNumber(s);
-      qc = q.c = [];
-      e = x.e - y.e;
-      s = dp + e + 1;
-
-      if (!base) {
-        base = BASE;
-        e = bitFloor(x.e / LOG_BASE) - bitFloor(y.e / LOG_BASE);
-        s = s / LOG_BASE | 0;
-      }
-
-      // Result exponent may be one less then the current value of e.
-      // The coefficients of the BigNumbers from convertBase may have trailing zeros.
-      for (i = 0; yc[i] == (xc[i] || 0); i++);
-
-      if (yc[i] > (xc[i] || 0)) e--;
-
-      if (s < 0) {
-        qc.push(1);
-        more = true;
-      } else {
-        xL = xc.length;
-        yL = yc.length;
-        i = 0;
-        s += 2;
-
-        // Normalise xc and yc so highest order digit of yc is >= base / 2.
-
-        n = mathfloor(base / (yc[0] + 1));
-
-        // Not necessary, but to handle odd bases where yc[0] == (base / 2) - 1.
-        // if (n > 1 || n++ == 1 && yc[0] < base / 2) {
-        if (n > 1) {
-          yc = multiply(yc, n, base);
-          xc = multiply(xc, n, base);
-          yL = yc.length;
-          xL = xc.length;
-        }
-
-        xi = yL;
-        rem = xc.slice(0, yL);
-        remL = rem.length;
-
-        // Add zeros to make remainder as long as divisor.
-        for (; remL < yL; rem[remL++] = 0);
-        yz = yc.slice();
-        yz = [0].concat(yz);
-        yc0 = yc[0];
-        if (yc[1] >= base / 2) yc0++;
-        // Not necessary, but to prevent trial digit n > base, when using base 3.
-        // else if (base == 3 && yc0 == 1) yc0 = 1 + 1e-15;
-
-        do {
-          n = 0;
-
-          // Compare divisor and remainder.
-          cmp = compare(yc, rem, yL, remL);
-
-          // If divisor < remainder.
-          if (cmp < 0) {
-
-            // Calculate trial digit, n.
-
-            rem0 = rem[0];
-            if (yL != remL) rem0 = rem0 * base + (rem[1] || 0);
-
-            // n is how many times the divisor goes into the current remainder.
-            n = mathfloor(rem0 / yc0);
-
-            //  Algorithm:
-            //  product = divisor multiplied by trial digit (n).
-            //  Compare product and remainder.
-            //  If product is greater than remainder:
-            //    Subtract divisor from product, decrement trial digit.
-            //  Subtract product from remainder.
-            //  If product was less than remainder at the last compare:
-            //    Compare new remainder and divisor.
-            //    If remainder is greater than divisor:
-            //      Subtract divisor from remainder, increment trial digit.
-
-            if (n > 1) {
-
-              // n may be > base only when base is 3.
-              if (n >= base) n = base - 1;
-
-              // product = divisor * trial digit.
-              prod = multiply(yc, n, base);
-              prodL = prod.length;
-              remL = rem.length;
-
-              // Compare product and remainder.
-              // If product > remainder then trial digit n too high.
-              // n is 1 too high about 5% of the time, and is not known to have
-              // ever been more than 1 too high.
-              while (compare(prod, rem, prodL, remL) == 1) {
-                n--;
-
-                // Subtract divisor from product.
-                subtract(prod, yL < prodL ? yz : yc, prodL, base);
-                prodL = prod.length;
-                cmp = 1;
-              }
-            } else {
-
-              // n is 0 or 1, cmp is -1.
-              // If n is 0, there is no need to compare yc and rem again below,
-              // so change cmp to 1 to avoid it.
-              // If n is 1, leave cmp as -1, so yc and rem are compared again.
-              if (n == 0) {
-
-                // divisor < remainder, so n must be at least 1.
-                cmp = n = 1;
-              }
-
-              // product = divisor
-              prod = yc.slice();
-              prodL = prod.length;
-            }
-
-            if (prodL < remL) prod = [0].concat(prod);
-
-            // Subtract product from remainder.
-            subtract(rem, prod, remL, base);
-            remL = rem.length;
-
-             // If product was < remainder.
-            if (cmp == -1) {
-
-              // Compare divisor and new remainder.
-              // If divisor < new remainder, subtract divisor from remainder.
-              // Trial digit n too low.
-              // n is 1 too low about 5% of the time, and very rarely 2 too low.
-              while (compare(yc, rem, yL, remL) < 1) {
-                n++;
-
-                // Subtract divisor from remainder.
-                subtract(rem, yL < remL ? yz : yc, remL, base);
-                remL = rem.length;
-              }
-            }
-          } else if (cmp === 0) {
-            n++;
-            rem = [0];
-          } // else cmp === 1 and n will be 0
-
-          // Add the next digit, n, to the result array.
-          qc[i++] = n;
-
-          // Update the remainder.
-          if (rem[0]) {
-            rem[remL++] = xc[xi] || 0;
-          } else {
-            rem = [xc[xi]];
-            remL = 1;
-          }
-        } while ((xi++ < xL || rem[0] != null) && s--);
-
-        more = rem[0] != null;
-
-        // Leading zero?
-        if (!qc[0]) qc.splice(0, 1);
-      }
-
-      if (base == BASE) {
-
-        // To calculate q.e, first get the number of digits of qc[0].
-        for (i = 1, s = qc[0]; s >= 10; s /= 10, i++);
-
-        round(q, dp + (q.e = i + e * LOG_BASE - 1) + 1, rm, more);
-
-      // Caller is convertBase.
-      } else {
-        q.e = e;
-        q.r = +more;
-      }
-
-      return q;
-    };
-  })();
-
-
-  /*
-   * Return a string representing the value of BigNumber n in fixed-point or exponential
-   * notation rounded to the specified decimal places or significant digits.
-   *
-   * n: a BigNumber.
-   * i: the index of the last digit required (i.e. the digit that may be rounded up).
-   * rm: the rounding mode.
-   * id: 1 (toExponential) or 2 (toPrecision).
-   */
-  function format(n, i, rm, id) {
-    var c0, e, ne, len, str;
-
-    if (rm == null) rm = ROUNDING_MODE;
-    else intCheck(rm, 0, 8);
-
-    if (!n.c) return n.toString();
-
-    c0 = n.c[0];
-    ne = n.e;
-
-    if (i == null) {
-      str = coeffToString(n.c);
-      str = id == 1 || id == 2 && (ne <= TO_EXP_NEG || ne >= TO_EXP_POS)
-       ? toExponential(str, ne)
-       : toFixedPoint(str, ne, '0');
-    } else {
-      n = round(new BigNumber(n), i, rm);
-
-      // n.e may have changed if the value was rounded up.
-      e = n.e;
-
-      str = coeffToString(n.c);
-      len = str.length;
-
-      // toPrecision returns exponential notation if the number of significant digits
-      // specified is less than the number of digits necessary to represent the integer
-      // part of the value in fixed-point notation.
-
-      // Exponential notation.
-      if (id == 1 || id == 2 && (i <= e || e <= TO_EXP_NEG)) {
-
-        // Append zeros?
-        for (; len < i; str += '0', len++);
-        str = toExponential(str, e);
-
-      // Fixed-point notation.
-      } else {
-        i -= ne;
-        str = toFixedPoint(str, e, '0');
-
-        // Append zeros?
-        if (e + 1 > len) {
-          if (--i > 0) for (str += '.'; i--; str += '0');
-        } else {
-          i += e - len;
-          if (i > 0) {
-            if (e + 1 == len) str += '.';
-            for (; i--; str += '0');
-          }
-        }
-      }
-    }
-
-    return n.s < 0 && c0 ? '-' + str : str;
-  }
-
-
-  // Handle BigNumber.max and BigNumber.min.
-  function maxOrMin(args, method) {
-    var n,
-      i = 1,
-      m = new BigNumber(args[0]);
-
-    for (; i < args.length; i++) {
-      n = new BigNumber(args[i]);
-
-      // If any number is NaN, return NaN.
-      if (!n.s) {
-        m = n;
-        break;
-      } else if (method.call(m, n)) {
-        m = n;
-      }
-    }
-
-    return m;
-  }
-
-
-  /*
-   * Strip trailing zeros, calculate base 10 exponent and check against MIN_EXP and MAX_EXP.
-   * Called by minus, plus and times.
-   */
-  function normalise(n, c, e) {
-    var i = 1,
-      j = c.length;
-
-     // Remove trailing zeros.
-    for (; !c[--j]; c.pop());
-
-    // Calculate the base 10 exponent. First get the number of digits of c[0].
-    for (j = c[0]; j >= 10; j /= 10, i++);
-
-    // Overflow?
-    if ((e = i + e * LOG_BASE - 1) > MAX_EXP) {
-
-      // Infinity.
-      n.c = n.e = null;
-
-    // Underflow?
-    } else if (e < MIN_EXP) {
-
-      // Zero.
-      n.c = [n.e = 0];
-    } else {
-      n.e = e;
-      n.c = c;
-    }
-
-    return n;
-  }
-
-
-  // Handle values that fail the validity test in BigNumber.
-  parseNumeric = (function () {
-    var basePrefix = /^(-?)0([xbo])(?=\w[\w.]*$)/i,
-      dotAfter = /^([^.]+)\.$/,
-      dotBefore = /^\.([^.]+)$/,
-      isInfinityOrNaN = /^-?(Infinity|NaN)$/,
-      whitespaceOrPlus = /^\s*\+(?=[\w.])|^\s+|\s+$/g;
-
-    return function (x, str, isNum, b) {
-      var base,
-        s = isNum ? str : str.replace(whitespaceOrPlus, '');
-
-      // No exception on ±Infinity or NaN.
-      if (isInfinityOrNaN.test(s)) {
-        x.s = isNaN(s) ? null : s < 0 ? -1 : 1;
-      } else {
-        if (!isNum) {
-
-          // basePrefix = /^(-?)0([xbo])(?=\w[\w.]*$)/i
-          s = s.replace(basePrefix, function (m, p1, p2) {
-            base = (p2 = p2.toLowerCase()) == 'x' ? 16 : p2 == 'b' ? 2 : 8;
-            return !b || b == base ? p1 : m;
-          });
-
-          if (b) {
-            base = b;
-
-            // E.g. '1.' to '1', '.1' to '0.1'
-            s = s.replace(dotAfter, '$1').replace(dotBefore, '0.$1');
-          }
-
-          if (str != s) return new BigNumber(s, base);
-        }
-
-        // '[BigNumber Error] Not a number: {n}'
-        // '[BigNumber Error] Not a base {b} number: {n}'
-        if (BigNumber.DEBUG) {
-          throw Error
-            (bignumberError + 'Not a' + (b ? ' base ' + b : '') + ' number: ' + str);
-        }
-
-        // NaN
-        x.s = null;
-      }
-
-      x.c = x.e = null;
-    }
-  })();
-
-
-  /*
-   * Round x to sd significant digits using rounding mode rm. Check for over/under-flow.
-   * If r is truthy, it is known that there are more digits after the rounding digit.
-   */
-  function round(x, sd, rm, r) {
-    var d, i, j, k, n, ni, rd,
-      xc = x.c,
-      pows10 = POWS_TEN;
-
-    // if x is not Infinity or NaN...
-    if (xc) {
-
-      // rd is the rounding digit, i.e. the digit after the digit that may be rounded up.
-      // n is a base 1e14 number, the value of the element of array x.c containing rd.
-      // ni is the index of n within x.c.
-      // d is the number of digits of n.
-      // i is the index of rd within n including leading zeros.
-      // j is the actual index of rd within n (if < 0, rd is a leading zero).
-      out: {
-
-        // Get the number of digits of the first element of xc.
-        for (d = 1, k = xc[0]; k >= 10; k /= 10, d++);
-        i = sd - d;
-
-        // If the rounding digit is in the first element of xc...
-        if (i < 0) {
-          i += LOG_BASE;
-          j = sd;
-          n = xc[ni = 0];
-
-          // Get the rounding digit at index j of n.
-          rd = n / pows10[d - j - 1] % 10 | 0;
-        } else {
-          ni = mathceil((i + 1) / LOG_BASE);
-
-          if (ni >= xc.length) {
-
-            if (r) {
-
-              // Needed by sqrt.
-              for (; xc.length <= ni; xc.push(0));
-              n = rd = 0;
-              d = 1;
-              i %= LOG_BASE;
-              j = i - LOG_BASE + 1;
-            } else {
-              break out;
-            }
-          } else {
-            n = k = xc[ni];
-
-            // Get the number of digits of n.
-            for (d = 1; k >= 10; k /= 10, d++);
-
-            // Get the index of rd within n.
-            i %= LOG_BASE;
-
-            // Get the index of rd within n, adjusted for leading zeros.
-            // The number of leading zeros of n is given by LOG_BASE - d.
-            j = i - LOG_BASE + d;
-
-            // Get the rounding digit at index j of n.
-            rd = j < 0 ? 0 : n / pows10[d - j - 1] % 10 | 0;
-          }
-        }
-
-        r = r || sd < 0 ||
-
-        // Are there any non-zero digits after the rounding digit?
-        // The expression  n % pows10[d - j - 1]  returns all digits of n to the right
-        // of the digit at j, e.g. if n is 908714 and j is 2, the expression gives 714.
-         xc[ni + 1] != null || (j < 0 ? n : n % pows10[d - j - 1]);
-
-        r = rm < 4
-         ? (rd || r) && (rm == 0 || rm == (x.s < 0 ? 3 : 2))
-         : rd > 5 || rd == 5 && (rm == 4 || r || rm == 6 &&
-
-          // Check whether the digit to the left of the rounding digit is odd.
-          ((i > 0 ? j > 0 ? n / pows10[d - j] : 0 : xc[ni - 1]) % 10) & 1 ||
-           rm == (x.s < 0 ? 8 : 7));
-
-        if (sd < 1 || !xc[0]) {
-          xc.length = 0;
-
-          if (r) {
-
-            // Convert sd to decimal places.
-            sd -= x.e + 1;
-
-            // 1, 0.1, 0.01, 0.001, 0.0001 etc.
-            xc[0] = pows10[(LOG_BASE - sd % LOG_BASE) % LOG_BASE];
-            x.e = -sd || 0;
-          } else {
-
-            // Zero.
-            xc[0] = x.e = 0;
-          }
-
-          return x;
-        }
-
-        // Remove excess digits.
-        if (i == 0) {
-          xc.length = ni;
-          k = 1;
-          ni--;
-        } else {
-          xc.length = ni + 1;
-          k = pows10[LOG_BASE - i];
-
-          // E.g. 56700 becomes 56000 if 7 is the rounding digit.
-          // j > 0 means i > number of leading zeros of n.
-          xc[ni] = j > 0 ? mathfloor(n / pows10[d - j] % pows10[j]) * k : 0;
-        }
-
-        // Round up?
-        if (r) {
-
-          for (; ;) {
-
-            // If the digit to be rounded up is in the first element of xc...
-            if (ni == 0) {
-
-              // i will be the length of xc[0] before k is added.
-              for (i = 1, j = xc[0]; j >= 10; j /= 10, i++);
-              j = xc[0] += k;
-              for (k = 1; j >= 10; j /= 10, k++);
-
-              // if i != k the length has increased.
-              if (i != k) {
-                x.e++;
-                if (xc[0] == BASE) xc[0] = 1;
-              }
-
-              break;
-            } else {
-              xc[ni] += k;
-              if (xc[ni] != BASE) break;
-              xc[ni--] = 0;
-              k = 1;
-            }
-          }
-        }
-
-        // Remove trailing zeros.
-        for (i = xc.length; xc[--i] === 0; xc.pop());
-      }
-
-      // Overflow? Infinity.
-      if (x.e > MAX_EXP) {
-        x.c = x.e = null;
-
-      // Underflow? Zero.
-      } else if (x.e < MIN_EXP) {
-        x.c = [x.e = 0];
-      }
-    }
-
-    return x;
-  }
-
-
-  function valueOf(n) {
-    var str,
-      e = n.e;
-
-    if (e === null) return n.toString();
-
-    str = coeffToString(n.c);
-
-    str = e <= TO_EXP_NEG || e >= TO_EXP_POS
-      ? toExponential(str, e)
-      : toFixedPoint(str, e, '0');
-
-    return n.s < 0 ? '-' + str : str;
-  }
-
-
-  // PROTOTYPE/INSTANCE METHODS
-
-
-  /*
-   * Return a new BigNumber whose value is the absolute value of this BigNumber.
-   */
-  P.absoluteValue = P.abs = function () {
-    var x = new BigNumber(this);
-    if (x.s < 0) x.s = 1;
-    return x;
-  };
-
-
-  /*
-   * Return
-   *   1 if the value of this BigNumber is greater than the value of BigNumber(y, b),
-   *   -1 if the value of this BigNumber is less than the value of BigNumber(y, b),
-   *   0 if they have the same value,
-   *   or null if the value of either is NaN.
-   */
-  P.comparedTo = function (y, b) {
-    return compare(this, new BigNumber(y, b));
-  };
-
-
-  /*
-   * If dp is undefined or null or true or false, return the number of decimal places of the
-   * value of this BigNumber, or null if the value of this BigNumber is ±Infinity or NaN.
-   *
-   * Otherwise, if dp is a number, return a new BigNumber whose value is the value of this
-   * BigNumber rounded to a maximum of dp decimal places using rounding mode rm, or
-   * ROUNDING_MODE if rm is omitted.
-   *
-   * [dp] {number} Decimal places: integer, 0 to MAX inclusive.
-   * [rm] {number} Rounding mode. Integer, 0 to 8 inclusive.
-   *
-   * '[BigNumber Error] Argument {not a primitive number|not an integer|out of range}: {dp|rm}'
-   */
-  P.decimalPlaces = P.dp = function (dp, rm) {
-    var c, n, v,
-      x = this;
-
-    if (dp != null) {
-      intCheck(dp, 0, MAX);
-      if (rm == null) rm = ROUNDING_MODE;
-      else intCheck(rm, 0, 8);
-
-      return round(new BigNumber(x), dp + x.e + 1, rm);
-    }
-
-    if (!(c = x.c)) return null;
-    n = ((v = c.length - 1) - bitFloor(this.e / LOG_BASE)) * LOG_BASE;
-
-    // Subtract the number of trailing zeros of the last number.
-    if (v = c[v]) for (; v % 10 == 0; v /= 10, n--);
-    if (n < 0) n = 0;
-
-    return n;
-  };
-
-
-  /*
-   *  n / 0 = I
-   *  n / N = N
-   *  n / I = 0
-   *  0 / n = 0
-   *  0 / 0 = N
-   *  0 / N = N
-   *  0 / I = 0
-   *  N / n = N
-   *  N / 0 = N
-   *  N / N = N
-   *  N / I = N
-   *  I / n = I
-   *  I / 0 = I
-   *  I / N = N
-   *  I / I = N
-   *
-   * Return a new BigNumber whose value is the value of this BigNumber divided by the value of
-   * BigNumber(y, b), rounded according to DECIMAL_PLACES and ROUNDING_MODE.
-   */
-  P.dividedBy = P.div = function (y, b) {
-    return div(this, new BigNumber(y, b), DECIMAL_PLACES, ROUNDING_MODE);
-  };
-
-
-  /*
-   * Return a new BigNumber whose value is the integer part of dividing the value of this
-   * BigNumber by the value of BigNumber(y, b).
-   */
-  P.dividedToIntegerBy = P.idiv = function (y, b) {
-    return div(this, new BigNumber(y, b), 0, 1);
-  };
-
-
-  /*
-   * Return a BigNumber whose value is the value of this BigNumber exponentiated by n.
-   *
-   * If m is present, return the result modulo m.
-   * If n is negative round according to DECIMAL_PLACES and ROUNDING_MODE.
-   * If POW_PRECISION is non-zero and m is not present, round to POW_PRECISION using ROUNDING_MODE.
-   *
-   * The modular power operation works efficiently when x, n, and m are integers, otherwise it
-   * is equivalent to calculating x.exponentiatedBy(n).modulo(m) with a POW_PRECISION of 0.
-   *
-   * n {number|string|BigNumber} The exponent. An integer.
-   * [m] {number|string|BigNumber} The modulus.
-   *
-   * '[BigNumber Error] Exponent not an integer: {n}'
-   */
-  P.exponentiatedBy = P.pow = function (n, m) {
-    var half, isModExp, i, k, more, nIsBig, nIsNeg, nIsOdd, y,
-      x = this;
-
-    n = new BigNumber(n);
-
-    // Allow NaN and ±Infinity, but not other non-integers.
-    if (n.c && !n.isInteger()) {
-      throw Error
-        (bignumberError + 'Exponent not an integer: ' + valueOf(n));
-    }
-
-    if (m != null) m = new BigNumber(m);
-
-    // Exponent of MAX_SAFE_INTEGER is 15.
-    nIsBig = n.e > 14;
-
-    // If x is NaN, ±Infinity, ±0 or ±1, or n is ±Infinity, NaN or ±0.
-    if (!x.c || !x.c[0] || x.c[0] == 1 && !x.e && x.c.length == 1 || !n.c || !n.c[0]) {
-
-      // The sign of the result of pow when x is negative depends on the evenness of n.
-      // If +n overflows to ±Infinity, the evenness of n would be not be known.
-      y = new BigNumber(Math.pow(+valueOf(x), nIsBig ? n.s * (2 - isOdd(n)) : +valueOf(n)));
-      return m ? y.mod(m) : y;
-    }
-
-    nIsNeg = n.s < 0;
-
-    if (m) {
-
-      // x % m returns NaN if abs(m) is zero, or m is NaN.
-      if (m.c ? !m.c[0] : !m.s) return new BigNumber(NaN);
-
-      isModExp = !nIsNeg && x.isInteger() && m.isInteger();
-
-      if (isModExp) x = x.mod(m);
-
-    // Overflow to ±Infinity: >=2**1e10 or >=1.0000024**1e15.
-    // Underflow to ±0: <=0.79**1e10 or <=0.9999975**1e15.
-    } else if (n.e > 9 && (x.e > 0 || x.e < -1 || (x.e == 0
-      // [1, 240000000]
-      ? x.c[0] > 1 || nIsBig && x.c[1] >= 24e7
-      // [80000000000000]  [99999750000000]
-      : x.c[0] < 8e13 || nIsBig && x.c[0] <= 9999975e7))) {
-
-      // If x is negative and n is odd, k = -0, else k = 0.
-      k = x.s < 0 && isOdd(n) ? -0 : 0;
-
-      // If x >= 1, k = ±Infinity.
-      if (x.e > -1) k = 1 / k;
-
-      // If n is negative return ±0, else return ±Infinity.
-      return new BigNumber(nIsNeg ? 1 / k : k);
-
-    } else if (POW_PRECISION) {
-
-      // Truncating each coefficient array to a length of k after each multiplication
-      // equates to truncating significant digits to POW_PRECISION + [28, 41],
-      // i.e. there will be a minimum of 28 guard digits retained.
-      k = mathceil(POW_PRECISION / LOG_BASE + 2);
-    }
-
-    if (nIsBig) {
-      half = new BigNumber(0.5);
-      if (nIsNeg) n.s = 1;
-      nIsOdd = isOdd(n);
-    } else {
-      i = Math.abs(+valueOf(n));
-      nIsOdd = i % 2;
-    }
-
-    y = new BigNumber(ONE);
-
-    // Performs 54 loop iterations for n of 9007199254740991.
-    for (; ;) {
-
-      if (nIsOdd) {
-        y = y.times(x);
-        if (!y.c) break;
-
-        if (k) {
-          if (y.c.length > k) y.c.length = k;
-        } else if (isModExp) {
-          y = y.mod(m);    //y = y.minus(div(y, m, 0, MODULO_MODE).times(m));
-        }
-      }
-
-      if (i) {
-        i = mathfloor(i / 2);
-        if (i === 0) break;
-        nIsOdd = i % 2;
-      } else {
-        n = n.times(half);
-        round(n, n.e + 1, 1);
-
-        if (n.e > 14) {
-          nIsOdd = isOdd(n);
-        } else {
-          i = +valueOf(n);
-          if (i === 0) break;
-          nIsOdd = i % 2;
-        }
-      }
-
-      x = x.times(x);
-
-      if (k) {
-        if (x.c && x.c.length > k) x.c.length = k;
-      } else if (isModExp) {
-        x = x.mod(m);    //x = x.minus(div(x, m, 0, MODULO_MODE).times(m));
-      }
-    }
-
-    if (isModExp) return y;
-    if (nIsNeg) y = ONE.div(y);
-
-    return m ? y.mod(m) : k ? round(y, POW_PRECISION, ROUNDING_MODE, more) : y;
-  };
-
-
-  /*
-   * Return a new BigNumber whose value is the value of this BigNumber rounded to an integer
-   * using rounding mode rm, or ROUNDING_MODE if rm is omitted.
-   *
-   * [rm] {number} Rounding mode. Integer, 0 to 8 inclusive.
-   *
-   * '[BigNumber Error] Argument {not a primitive number|not an integer|out of range}: {rm}'
-   */
-  P.integerValue = function (rm) {
-    var n = new BigNumber(this);
-    if (rm == null) rm = ROUNDING_MODE;
-    else intCheck(rm, 0, 8);
-    return round(n, n.e + 1, rm);
-  };
-
-
-  /*
-   * Return true if the value of this BigNumber is equal to the value of BigNumber(y, b),
-   * otherwise return false.
-   */
-  P.isEqualTo = P.eq = function (y, b) {
-    return compare(this, new BigNumber(y, b)) === 0;
-  };
-
-
-  /*
-   * Return true if the value of this BigNumber is a finite number, otherwise return false.
-   */
-  P.isFinite = function () {
-    return !!this.c;
-  };
-
-
-  /*
-   * Return true if the value of this BigNumber is greater than the value of BigNumber(y, b),
-   * otherwise return false.
-   */
-  P.isGreaterThan = P.gt = function (y, b) {
-    return compare(this, new BigNumber(y, b)) > 0;
-  };
-
-
-  /*
-   * Return true if the value of this BigNumber is greater than or equal to the value of
-   * BigNumber(y, b), otherwise return false.
-   */
-  P.isGreaterThanOrEqualTo = P.gte = function (y, b) {
-    return (b = compare(this, new BigNumber(y, b))) === 1 || b === 0;
-
-  };
-
-
-  /*
-   * Return true if the value of this BigNumber is an integer, otherwise return false.
-   */
-  P.isInteger = function () {
-    return !!this.c && bitFloor(this.e / LOG_BASE) > this.c.length - 2;
-  };
-
-
-  /*
-   * Return true if the value of this BigNumber is less than the value of BigNumber(y, b),
-   * otherwise return false.
-   */
-  P.isLessThan = P.lt = function (y, b) {
-    return compare(this, new BigNumber(y, b)) < 0;
-  };
-
-
-  /*
-   * Return true if the value of this BigNumber is less than or equal to the value of
-   * BigNumber(y, b), otherwise return false.
-   */
-  P.isLessThanOrEqualTo = P.lte = function (y, b) {
-    return (b = compare(this, new BigNumber(y, b))) === -1 || b === 0;
-  };
-
-
-  /*
-   * Return true if the value of this BigNumber is NaN, otherwise return false.
-   */
-  P.isNaN = function () {
-    return !this.s;
-  };
-
-
-  /*
-   * Return true if the value of this BigNumber is negative, otherwise return false.
-   */
-  P.isNegative = function () {
-    return this.s < 0;
-  };
-
-
-  /*
-   * Return true if the value of this BigNumber is positive, otherwise return false.
-   */
-  P.isPositive = function () {
-    return this.s > 0;
-  };
-
-
-  /*
-   * Return true if the value of this BigNumber is 0 or -0, otherwise return false.
-   */
-  P.isZero = function () {
-    return !!this.c && this.c[0] == 0;
-  };
-
-
-  /*
-   *  n - 0 = n
-   *  n - N = N
-   *  n - I = -I
-   *  0 - n = -n
-   *  0 - 0 = 0
-   *  0 - N = N
-   *  0 - I = -I
-   *  N - n = N
-   *  N - 0 = N
-   *  N - N = N
-   *  N - I = N
-   *  I - n = I
-   *  I - 0 = I
-   *  I - N = N
-   *  I - I = N
-   *
-   * Return a new BigNumber whose value is the value of this BigNumber minus the value of
-   * BigNumber(y, b).
-   */
-  P.minus = function (y, b) {
-    var i, j, t, xLTy,
-      x = this,
-      a = x.s;
-
-    y = new BigNumber(y, b);
-    b = y.s;
-
-    // Either NaN?
-    if (!a || !b) return new BigNumber(NaN);
-
-    // Signs differ?
-    if (a != b) {
-      y.s = -b;
-      return x.plus(y);
-    }
-
-    var xe = x.e / LOG_BASE,
-      ye = y.e / LOG_BASE,
-      xc = x.c,
-      yc = y.c;
-
-    if (!xe || !ye) {
-
-      // Either Infinity?
-      if (!xc || !yc) return xc ? (y.s = -b, y) : new BigNumber(yc ? x : NaN);
-
-      // Either zero?
-      if (!xc[0] || !yc[0]) {
-
-        // Return y if y is non-zero, x if x is non-zero, or zero if both are zero.
-        return yc[0] ? (y.s = -b, y) : new BigNumber(xc[0] ? x :
-
-         // IEEE 754 (2008) 6.3: n - n = -0 when rounding to -Infinity
-         ROUNDING_MODE == 3 ? -0 : 0);
-      }
-    }
-
-    xe = bitFloor(xe);
-    ye = bitFloor(ye);
-    xc = xc.slice();
-
-    // Determine which is the bigger number.
-    if (a = xe - ye) {
-
-      if (xLTy = a < 0) {
-        a = -a;
-        t = xc;
-      } else {
-        ye = xe;
-        t = yc;
-      }
-
-      t.reverse();
-
-      // Prepend zeros to equalise exponents.
-      for (b = a; b--; t.push(0));
-      t.reverse();
-    } else {
-
-      // Exponents equal. Check digit by digit.
-      j = (xLTy = (a = xc.length) < (b = yc.length)) ? a : b;
-
-      for (a = b = 0; b < j; b++) {
-
-        if (xc[b] != yc[b]) {
-          xLTy = xc[b] < yc[b];
-          break;
-        }
-      }
-    }
-
-    // x < y? Point xc to the array of the bigger number.
-    if (xLTy) t = xc, xc = yc, yc = t, y.s = -y.s;
-
-    b = (j = yc.length) - (i = xc.length);
-
-    // Append zeros to xc if shorter.
-    // No need to add zeros to yc if shorter as subtract only needs to start at yc.length.
-    if (b > 0) for (; b--; xc[i++] = 0);
-    b = BASE - 1;
-
-    // Subtract yc from xc.
-    for (; j > a;) {
-
-      if (xc[--j] < yc[j]) {
-        for (i = j; i && !xc[--i]; xc[i] = b);
-        --xc[i];
-        xc[j] += BASE;
-      }
-
-      xc[j] -= yc[j];
-    }
-
-    // Remove leading zeros and adjust exponent accordingly.
-    for (; xc[0] == 0; xc.splice(0, 1), --ye);
-
-    // Zero?
-    if (!xc[0]) {
-
-      // Following IEEE 754 (2008) 6.3,
-      // n - n = +0  but  n - n = -0  when rounding towards -Infinity.
-      y.s = ROUNDING_MODE == 3 ? -1 : 1;
-      y.c = [y.e = 0];
-      return y;
-    }
-
-    // No need to check for Infinity as +x - +y != Infinity && -x - -y != Infinity
-    // for finite x and y.
-    return normalise(y, xc, ye);
-  };
-
-
-  /*
-   *   n % 0 =  N
-   *   n % N =  N
-   *   n % I =  n
-   *   0 % n =  0
-   *  -0 % n = -0
-   *   0 % 0 =  N
-   *   0 % N =  N
-   *   0 % I =  0
-   *   N % n =  N
-   *   N % 0 =  N
-   *   N % N =  N
-   *   N % I =  N
-   *   I % n =  N
-   *   I % 0 =  N
-   *   I % N =  N
-   *   I % I =  N
-   *
-   * Return a new BigNumber whose value is the value of this BigNumber modulo the value of
-   * BigNumber(y, b). The result depends on the value of MODULO_MODE.
-   */
-  P.modulo = P.mod = function (y, b) {
-    var q, s,
-      x = this;
-
-    y = new BigNumber(y, b);
-
-    // Return NaN if x is Infinity or NaN, or y is NaN or zero.
-    if (!x.c || !y.s || y.c && !y.c[0]) {
-      return new BigNumber(NaN);
-
-    // Return x if y is Infinity or x is zero.
-    } else if (!y.c || x.c && !x.c[0]) {
-      return new BigNumber(x);
-    }
-
-    if (MODULO_MODE == 9) {
-
-      // Euclidian division: q = sign(y) * floor(x / abs(y))
-      // r = x - qy    where  0 <= r < abs(y)
-      s = y.s;
-      y.s = 1;
-      q = div(x, y, 0, 3);
-      y.s = s;
-      q.s *= s;
-    } else {
-      q = div(x, y, 0, MODULO_MODE);
-    }
-
-    y = x.minus(q.times(y));
-
-    // To match JavaScript %, ensure sign of zero is sign of dividend.
-    if (!y.c[0] && MODULO_MODE == 1) y.s = x.s;
-
-    return y;
-  };
-
-
-  /*
-   *  n * 0 = 0
-   *  n * N = N
-   *  n * I = I
-   *  0 * n = 0
-   *  0 * 0 = 0
-   *  0 * N = N
-   *  0 * I = N
-   *  N * n = N
-   *  N * 0 = N
-   *  N * N = N
-   *  N * I = N
-   *  I * n = I
-   *  I * 0 = N
-   *  I * N = N
-   *  I * I = I
-   *
-   * Return a new BigNumber whose value is the value of this BigNumber multiplied by the value
-   * of BigNumber(y, b).
-   */
-  P.multipliedBy = P.times = function (y, b) {
-    var c, e, i, j, k, m, xcL, xlo, xhi, ycL, ylo, yhi, zc,
-      base, sqrtBase,
-      x = this,
-      xc = x.c,
-      yc = (y = new BigNumber(y, b)).c;
-
-    // Either NaN, ±Infinity or ±0?
-    if (!xc || !yc || !xc[0] || !yc[0]) {
-
-      // Return NaN if either is NaN, or one is 0 and the other is Infinity.
-      if (!x.s || !y.s || xc && !xc[0] && !yc || yc && !yc[0] && !xc) {
-        y.c = y.e = y.s = null;
-      } else {
-        y.s *= x.s;
-
-        // Return ±Infinity if either is ±Infinity.
-        if (!xc || !yc) {
-          y.c = y.e = null;
-
-        // Return ±0 if either is ±0.
-        } else {
-          y.c = [0];
-          y.e = 0;
-        }
-      }
-
-      return y;
-    }
-
-    e = bitFloor(x.e / LOG_BASE) + bitFloor(y.e / LOG_BASE);
-    y.s *= x.s;
-    xcL = xc.length;
-    ycL = yc.length;
-
-    // Ensure xc points to longer array and xcL to its length.
-    if (xcL < ycL) zc = xc, xc = yc, yc = zc, i = xcL, xcL = ycL, ycL = i;
-
-    // Initialise the result array with zeros.
-    for (i = xcL + ycL, zc = []; i--; zc.push(0));
-
-    base = BASE;
-    sqrtBase = SQRT_BASE;
-
-    for (i = ycL; --i >= 0;) {
-      c = 0;
-      ylo = yc[i] % sqrtBase;
-      yhi = yc[i] / sqrtBase | 0;
-
-      for (k = xcL, j = i + k; j > i;) {
-        xlo = xc[--k] % sqrtBase;
-        xhi = xc[k] / sqrtBase | 0;
-        m = yhi * xlo + xhi * ylo;
-        xlo = ylo * xlo + ((m % sqrtBase) * sqrtBase) + zc[j] + c;
-        c = (xlo / base | 0) + (m / sqrtBase | 0) + yhi * xhi;
-        zc[j--] = xlo % base;
-      }
-
-      zc[j] = c;
-    }
-
-    if (c) {
-      ++e;
-    } else {
-      zc.splice(0, 1);
-    }
-
-    return normalise(y, zc, e);
-  };
-
-
-  /*
-   * Return a new BigNumber whose value is the value of this BigNumber negated,
-   * i.e. multiplied by -1.
-   */
-  P.negated = function () {
-    var x = new BigNumber(this);
-    x.s = -x.s || null;
-    return x;
-  };
-
-
-  /*
-   *  n + 0 = n
-   *  n + N = N
-   *  n + I = I
-   *  0 + n = n
-   *  0 + 0 = 0
-   *  0 + N = N
-   *  0 + I = I
-   *  N + n = N
-   *  N + 0 = N
-   *  N + N = N
-   *  N + I = N
-   *  I + n = I
-   *  I + 0 = I
-   *  I + N = N
-   *  I + I = I
-   *
-   * Return a new BigNumber whose value is the value of this BigNumber plus the value of
-   * BigNumber(y, b).
-   */
-  P.plus = function (y, b) {
-    var t,
-      x = this,
-      a = x.s;
-
-    y = new BigNumber(y, b);
-    b = y.s;
-
-    // Either NaN?
-    if (!a || !b) return new BigNumber(NaN);
-
-    // Signs differ?
-     if (a != b) {
-      y.s = -b;
-      return x.minus(y);
-    }
-
-    var xe = x.e / LOG_BASE,
-      ye = y.e / LOG_BASE,
-      xc = x.c,
-      yc = y.c;
-
-    if (!xe || !ye) {
-
-      // Return ±Infinity if either ±Infinity.
-      if (!xc || !yc) return new BigNumber(a / 0);
-
-      // Either zero?
-      // Return y if y is non-zero, x if x is non-zero, or zero if both are zero.
-      if (!xc[0] || !yc[0]) return yc[0] ? y : new BigNumber(xc[0] ? x : a * 0);
-    }
-
-    xe = bitFloor(xe);
-    ye = bitFloor(ye);
-    xc = xc.slice();
-
-    // Prepend zeros to equalise exponents. Faster to use reverse then do unshifts.
-    if (a = xe - ye) {
-      if (a > 0) {
-        ye = xe;
-        t = yc;
-      } else {
-        a = -a;
-        t = xc;
-      }
-
-      t.reverse();
-      for (; a--; t.push(0));
-      t.reverse();
-    }
-
-    a = xc.length;
-    b = yc.length;
-
-    // Point xc to the longer array, and b to the shorter length.
-    if (a - b < 0) t = yc, yc = xc, xc = t, b = a;
-
-    // Only start adding at yc.length - 1 as the further digits of xc can be ignored.
-    for (a = 0; b;) {
-      a = (xc[--b] = xc[b] + yc[b] + a) / BASE | 0;
-      xc[b] = BASE === xc[b] ? 0 : xc[b] % BASE;
-    }
-
-    if (a) {
-      xc = [a].concat(xc);
-      ++ye;
-    }
-
-    // No need to check for zero, as +x + +y != 0 && -x + -y != 0
-    // ye = MAX_EXP + 1 possible
-    return normalise(y, xc, ye);
-  };
-
-
-  /*
-   * If sd is undefined or null or true or false, return the number of significant digits of
-   * the value of this BigNumber, or null if the value of this BigNumber is ±Infinity or NaN.
-   * If sd is true include integer-part trailing zeros in the count.
-   *
-   * Otherwise, if sd is a number, return a new BigNumber whose value is the value of this
-   * BigNumber rounded to a maximum of sd significant digits using rounding mode rm, or
-   * ROUNDING_MODE if rm is omitted.
-   *
-   * sd {number|boolean} number: significant digits: integer, 1 to MAX inclusive.
-   *                     boolean: whether to count integer-part trailing zeros: true or false.
-   * [rm] {number} Rounding mode. Integer, 0 to 8 inclusive.
-   *
-   * '[BigNumber Error] Argument {not a primitive number|not an integer|out of range}: {sd|rm}'
-   */
-  P.precision = P.sd = function (sd, rm) {
-    var c, n, v,
-      x = this;
-
-    if (sd != null && sd !== !!sd) {
-      intCheck(sd, 1, MAX);
-      if (rm == null) rm = ROUNDING_MODE;
-      else intCheck(rm, 0, 8);
-
-      return round(new BigNumber(x), sd, rm);
-    }
-
-    if (!(c = x.c)) return null;
-    v = c.length - 1;
-    n = v * LOG_BASE + 1;
-
-    if (v = c[v]) {
-
-      // Subtract the number of trailing zeros of the last element.
-      for (; v % 10 == 0; v /= 10, n--);
-
-      // Add the number of digits of the first element.
-      for (v = c[0]; v >= 10; v /= 10, n++);
-    }
-
-    if (sd && x.e + 1 > n) n = x.e + 1;
-
-    return n;
-  };
-
-
-  /*
-   * Return a new BigNumber whose value is the value of this BigNumber shifted by k places
-   * (powers of 10). Shift to the right if n > 0, and to the left if n < 0.
-   *
-   * k {number} Integer, -MAX_SAFE_INTEGER to MAX_SAFE_INTEGER inclusive.
-   *
-   * '[BigNumber Error] Argument {not a primitive number|not an integer|out of range}: {k}'
-   */
-  P.shiftedBy = function (k) {
-    intCheck(k, -MAX_SAFE_INTEGER, MAX_SAFE_INTEGER);
-    return this.times('1e' + k);
-  };
-
-
-  /*
-   *  sqrt(-n) =  N
-   *  sqrt(N) =  N
-   *  sqrt(-I) =  N
-   *  sqrt(I) =  I
-   *  sqrt(0) =  0
-   *  sqrt(-0) = -0
-   *
-   * Return a new BigNumber whose value is the square root of the value of this BigNumber,
-   * rounded according to DECIMAL_PLACES and ROUNDING_MODE.
-   */
-  P.squareRoot = P.sqrt = function () {
-    var m, n, r, rep, t,
-      x = this,
-      c = x.c,
-      s = x.s,
-      e = x.e,
-      dp = DECIMAL_PLACES + 4,
-      half = new BigNumber('0.5');
-
-    // Negative/NaN/Infinity/zero?
-    if (s !== 1 || !c || !c[0]) {
-      return new BigNumber(!s || s < 0 && (!c || c[0]) ? NaN : c ? x : 1 / 0);
-    }
-
-    // Initial estimate.
-    s = Math.sqrt(+valueOf(x));
-
-    // Math.sqrt underflow/overflow?
-    // Pass x to Math.sqrt as integer, then adjust the exponent of the result.
-    if (s == 0 || s == 1 / 0) {
-      n = coeffToString(c);
-      if ((n.length + e) % 2 == 0) n += '0';
-      s = Math.sqrt(+n);
-      e = bitFloor((e + 1) / 2) - (e < 0 || e % 2);
-
-      if (s == 1 / 0) {
-        n = '5e' + e;
-      } else {
-        n = s.toExponential();
-        n = n.slice(0, n.indexOf('e') + 1) + e;
-      }
-
-      r = new BigNumber(n);
-    } else {
-      r = new BigNumber(s + '');
-    }
-
-    // Check for zero.
-    // r could be zero if MIN_EXP is changed after the this value was created.
-    // This would cause a division by zero (x/t) and hence Infinity below, which would cause
-    // coeffToString to throw.
-    if (r.c[0]) {
-      e = r.e;
-      s = e + dp;
-      if (s < 3) s = 0;
-
-      // Newton-Raphson iteration.
-      for (; ;) {
-        t = r;
-        r = half.times(t.plus(div(x, t, dp, 1)));
-
-        if (coeffToString(t.c).slice(0, s) === (n = coeffToString(r.c)).slice(0, s)) {
-
-          // The exponent of r may here be one less than the final result exponent,
-          // e.g 0.0009999 (e-4) --> 0.001 (e-3), so adjust s so the rounding digits
-          // are indexed correctly.
-          if (r.e < e) --s;
-          n = n.slice(s - 3, s + 1);
-
-          // The 4th rounding digit may be in error by -1 so if the 4 rounding digits
-          // are 9999 or 4999 (i.e. approaching a rounding boundary) continue the
-          // iteration.
-          if (n == '9999' || !rep && n == '4999') {
-
-            // On the first iteration only, check to see if rounding up gives the
-            // exact result as the nines may infinitely repeat.
-            if (!rep) {
-              round(t, t.e + DECIMAL_PLACES + 2, 0);
-
-              if (t.times(t).eq(x)) {
-                r = t;
-                break;
-              }
-            }
-
-            dp += 4;
-            s += 4;
-            rep = 1;
-          } else {
-
-            // If rounding digits are null, 0{0,4} or 50{0,3}, check for exact
-            // result. If not, then there are further digits and m will be truthy.
-            if (!+n || !+n.slice(1) && n.charAt(0) == '5') {
-
-              // Truncate to the first rounding digit.
-              round(r, r.e + DECIMAL_PLACES + 2, 1);
-              m = !r.times(r).eq(x);
-            }
-
-            break;
-          }
-        }
-      }
-    }
-
-    return round(r, r.e + DECIMAL_PLACES + 1, ROUNDING_MODE, m);
-  };
-
-
-  /*
-   * Return a string representing the value of this BigNumber in exponential notation and
-   * rounded using ROUNDING_MODE to dp fixed decimal places.
-   *
-   * [dp] {number} Decimal places. Integer, 0 to MAX inclusive.
-   * [rm] {number} Rounding mode. Integer, 0 to 8 inclusive.
-   *
-   * '[BigNumber Error] Argument {not a primitive number|not an integer|out of range}: {dp|rm}'
-   */
-  P.toExponential = function (dp, rm) {
-    if (dp != null) {
-      intCheck(dp, 0, MAX);
-      dp++;
-    }
-    return format(this, dp, rm, 1);
-  };
-
-
-  /*
-   * Return a string representing the value of this BigNumber in fixed-point notation rounding
-   * to dp fixed decimal places using rounding mode rm, or ROUNDING_MODE if rm is omitted.
-   *
-   * Note: as with JavaScript's number type, (-0).toFixed(0) is '0',
-   * but e.g. (-0.00001).toFixed(0) is '-0'.
-   *
-   * [dp] {number} Decimal places. Integer, 0 to MAX inclusive.
-   * [rm] {number} Rounding mode. Integer, 0 to 8 inclusive.
-   *
-   * '[BigNumber Error] Argument {not a primitive number|not an integer|out of range}: {dp|rm}'
-   */
-  P.toFixed = function (dp, rm) {
-    if (dp != null) {
-      intCheck(dp, 0, MAX);
-      dp = dp + this.e + 1;
-    }
-    return format(this, dp, rm);
-  };
-
-
-  /*
-   * Return a string representing the value of this BigNumber in fixed-point notation rounded
-   * using rm or ROUNDING_MODE to dp decimal places, and formatted according to the properties
-   * of the format or FORMAT object (see BigNumber.set).
-   *
-   * The formatting object may contain some or all of the properties shown below.
-   *
-   * FORMAT = {
-   *   prefix: '',
-   *   groupSize: 3,
-   *   secondaryGroupSize: 0,
-   *   groupSeparator: ',',
-   *   decimalSeparator: '.',
-   *   fractionGroupSize: 0,
-   *   fractionGroupSeparator: '\xA0',      // non-breaking space
-   *   suffix: ''
-   * };
-   *
-   * [dp] {number} Decimal places. Integer, 0 to MAX inclusive.
-   * [rm] {number} Rounding mode. Integer, 0 to 8 inclusive.
-   * [format] {object} Formatting options. See FORMAT pbject above.
-   *
-   * '[BigNumber Error] Argument {not a primitive number|not an integer|out of range}: {dp|rm}'
-   * '[BigNumber Error] Argument not an object: {format}'
-   */
-  P.toFormat = function (dp, rm, format) {
-    var str,
-      x = this;
-
-    if (format == null) {
-      if (dp != null && rm && typeof rm == 'object') {
-        format = rm;
-        rm = null;
-      } else if (dp && typeof dp == 'object') {
-        format = dp;
-        dp = rm = null;
-      } else {
-        format = FORMAT;
-      }
-    } else if (typeof format != 'object') {
-      throw Error
-        (bignumberError + 'Argument not an object: ' + format);
-    }
-
-    str = x.toFixed(dp, rm);
-
-    if (x.c) {
-      var i,
-        arr = str.split('.'),
-        g1 = +format.groupSize,
-        g2 = +format.secondaryGroupSize,
-        groupSeparator = format.groupSeparator || '',
-        intPart = arr[0],
-        fractionPart = arr[1],
-        isNeg = x.s < 0,
-        intDigits = isNeg ? intPart.slice(1) : intPart,
-        len = intDigits.length;
-
-      if (g2) i = g1, g1 = g2, g2 = i, len -= i;
-
-      if (g1 > 0 && len > 0) {
-        i = len % g1 || g1;
-        intPart = intDigits.substr(0, i);
-        for (; i < len; i += g1) intPart += groupSeparator + intDigits.substr(i, g1);
-        if (g2 > 0) intPart += groupSeparator + intDigits.slice(i);
-        if (isNeg) intPart = '-' + intPart;
-      }
-
-      str = fractionPart
-       ? intPart + (format.decimalSeparator || '') + ((g2 = +format.fractionGroupSize)
-        ? fractionPart.replace(new RegExp('\\d{' + g2 + '}\\B', 'g'),
-         '$&' + (format.fractionGroupSeparator || ''))
-        : fractionPart)
-       : intPart;
-    }
-
-    return (format.prefix || '') + str + (format.suffix || '');
-  };
-
-
-  /*
-   * Return an array of two BigNumbers representing the value of this BigNumber as a simple
-   * fraction with an integer numerator and an integer denominator.
-   * The denominator will be a positive non-zero value less than or equal to the specified
-   * maximum denominator. If a maximum denominator is not specified, the denominator will be
-   * the lowest value necessary to represent the number exactly.
-   *
-   * [md] {number|string|BigNumber} Integer >= 1, or Infinity. The maximum denominator.
-   *
-   * '[BigNumber Error] Argument {not an integer|out of range} : {md}'
-   */
-  P.toFraction = function (md) {
-    var d, d0, d1, d2, e, exp, n, n0, n1, q, r, s,
-      x = this,
-      xc = x.c;
-
-    if (md != null) {
-      n = new BigNumber(md);
-
-      // Throw if md is less than one or is not an integer, unless it is Infinity.
-      if (!n.isInteger() && (n.c || n.s !== 1) || n.lt(ONE)) {
-        throw Error
-          (bignumberError + 'Argument ' +
-            (n.isInteger() ? 'out of range: ' : 'not an integer: ') + valueOf(n));
-      }
-    }
-
-    if (!xc) return new BigNumber(x);
-
-    d = new BigNumber(ONE);
-    n1 = d0 = new BigNumber(ONE);
-    d1 = n0 = new BigNumber(ONE);
-    s = coeffToString(xc);
-
-    // Determine initial denominator.
-    // d is a power of 10 and the minimum max denominator that specifies the value exactly.
-    e = d.e = s.length - x.e - 1;
-    d.c[0] = POWS_TEN[(exp = e % LOG_BASE) < 0 ? LOG_BASE + exp : exp];
-    md = !md || n.comparedTo(d) > 0 ? (e > 0 ? d : n1) : n;
-
-    exp = MAX_EXP;
-    MAX_EXP = 1 / 0;
-    n = new BigNumber(s);
-
-    // n0 = d1 = 0
-    n0.c[0] = 0;
-
-    for (; ;)  {
-      q = div(n, d, 0, 1);
-      d2 = d0.plus(q.times(d1));
-      if (d2.comparedTo(md) == 1) break;
-      d0 = d1;
-      d1 = d2;
-      n1 = n0.plus(q.times(d2 = n1));
-      n0 = d2;
-      d = n.minus(q.times(d2 = d));
-      n = d2;
-    }
-
-    d2 = div(md.minus(d0), d1, 0, 1);
-    n0 = n0.plus(d2.times(n1));
-    d0 = d0.plus(d2.times(d1));
-    n0.s = n1.s = x.s;
-    e = e * 2;
-
-    // Determine which fraction is closer to x, n0/d0 or n1/d1
-    r = div(n1, d1, e, ROUNDING_MODE).minus(x).abs().comparedTo(
-        div(n0, d0, e, ROUNDING_MODE).minus(x).abs()) < 1 ? [n1, d1] : [n0, d0];
-
-    MAX_EXP = exp;
-
-    return r;
-  };
-
-
-  /*
-   * Return the value of this BigNumber converted to a number primitive.
-   */
-  P.toNumber = function () {
-    return +valueOf(this);
-  };
-
-
-  /*
-   * Return a string representing the value of this BigNumber rounded to sd significant digits
-   * using rounding mode rm or ROUNDING_MODE. If sd is less than the number of digits
-   * necessary to represent the integer part of the value in fixed-point notation, then use
-   * exponential notation.
-   *
-   * [sd] {number} Significant digits. Integer, 1 to MAX inclusive.
-   * [rm] {number} Rounding mode. Integer, 0 to 8 inclusive.
-   *
-   * '[BigNumber Error] Argument {not a primitive number|not an integer|out of range}: {sd|rm}'
-   */
-  P.toPrecision = function (sd, rm) {
-    if (sd != null) intCheck(sd, 1, MAX);
-    return format(this, sd, rm, 2);
-  };
-
-
-  /*
-   * Return a string representing the value of this BigNumber in base b, or base 10 if b is
-   * omitted. If a base is specified, including base 10, round according to DECIMAL_PLACES and
-   * ROUNDING_MODE. If a base is not specified, and this BigNumber has a positive exponent
-   * that is equal to or greater than TO_EXP_POS, or a negative exponent equal to or less than
-   * TO_EXP_NEG, return exponential notation.
-   *
-   * [b] {number} Integer, 2 to ALPHABET.length inclusive.
-   *
-   * '[BigNumber Error] Base {not a primitive number|not an integer|out of range}: {b}'
-   */
-  P.toString = function (b) {
-    var str,
-      n = this,
-      s = n.s,
-      e = n.e;
-
-    // Infinity or NaN?
-    if (e === null) {
-      if (s) {
-        str = 'Infinity';
-        if (s < 0) str = '-' + str;
-      } else {
-        str = 'NaN';
-      }
-    } else {
-      if (b == null) {
-        str = e <= TO_EXP_NEG || e >= TO_EXP_POS
-         ? toExponential(coeffToString(n.c), e)
-         : toFixedPoint(coeffToString(n.c), e, '0');
-      } else if (b === 10 && alphabetHasNormalDecimalDigits) {
-        n = round(new BigNumber(n), DECIMAL_PLACES + e + 1, ROUNDING_MODE);
-        str = toFixedPoint(coeffToString(n.c), n.e, '0');
-      } else {
-        intCheck(b, 2, ALPHABET.length, 'Base');
-        str = convertBase(toFixedPoint(coeffToString(n.c), e, '0'), 10, b, s, true);
-      }
-
-      if (s < 0 && n.c[0]) str = '-' + str;
-    }
-
-    return str;
-  };
-
-
-  /*
-   * Return as toString, but do not accept a base argument, and include the minus sign for
-   * negative zero.
-   */
-  P.valueOf = P.toJSON = function () {
-    return valueOf(this);
-  };
-
-
-  P._isBigNumber = true;
-
-  P[Symbol.toStringTag] = 'BigNumber';
-
-  // Node.js v10.12.0+
-  P[Symbol.for('nodejs.util.inspect.custom')] = P.valueOf;
-
-  if (configObject != null) BigNumber.set(configObject);
-
-  return BigNumber;
-}
-
-
-// PRIVATE HELPER FUNCTIONS
-
-// These functions don't need access to variables,
-// e.g. DECIMAL_PLACES, in the scope of the `clone` function above.
-
-
-function bitFloor(n) {
-  var i = n | 0;
-  return n > 0 || n === i ? i : i - 1;
-}
-
-
-// Return a coefficient array as a string of base 10 digits.
-function coeffToString(a) {
-  var s, z,
-    i = 1,
-    j = a.length,
-    r = a[0] + '';
-
-  for (; i < j;) {
-    s = a[i++] + '';
-    z = LOG_BASE - s.length;
-    for (; z--; s = '0' + s);
-    r += s;
-  }
-
-  // Determine trailing zeros.
-  for (j = r.length; r.charCodeAt(--j) === 48;);
-
-  return r.slice(0, j + 1 || 1);
-}
-
-
-// Compare the value of BigNumbers x and y.
-function compare(x, y) {
-  var a, b,
-    xc = x.c,
-    yc = y.c,
-    i = x.s,
-    j = y.s,
-    k = x.e,
-    l = y.e;
-
-  // Either NaN?
-  if (!i || !j) return null;
-
-  a = xc && !xc[0];
-  b = yc && !yc[0];
-
-  // Either zero?
-  if (a || b) return a ? b ? 0 : -j : i;
-
-  // Signs differ?
-  if (i != j) return i;
-
-  a = i < 0;
-  b = k == l;
-
-  // Either Infinity?
-  if (!xc || !yc) return b ? 0 : !xc ^ a ? 1 : -1;
-
-  // Compare exponents.
-  if (!b) return k > l ^ a ? 1 : -1;
-
-  j = (k = xc.length) < (l = yc.length) ? k : l;
-
-  // Compare digit by digit.
-  for (i = 0; i < j; i++) if (xc[i] != yc[i]) return xc[i] > yc[i] ^ a ? 1 : -1;
-
-  // Compare lengths.
-  return k == l ? 0 : k > l ^ a ? 1 : -1;
-}
-
-
-/*
- * Check that n is a primitive number, an integer, and in range, otherwise throw.
- */
-function intCheck(n, min, max, name) {
-  if (n < min || n > max || n !== mathfloor(n)) {
-    throw Error
-     (bignumberError + (name || 'Argument') + (typeof n == 'number'
-       ? n < min || n > max ? ' out of range: ' : ' not an integer: '
-       : ' not a primitive number: ') + String(n));
-  }
-}
-
-
-// Assumes finite n.
-function isOdd(n) {
-  var k = n.c.length - 1;
-  return bitFloor(n.e / LOG_BASE) == k && n.c[k] % 2 != 0;
-}
-
-
-function toExponential(str, e) {
-  return (str.length > 1 ? str.charAt(0) + '.' + str.slice(1) : str) +
-   (e < 0 ? 'e' : 'e+') + e;
-}
-
-
-function toFixedPoint(str, e, z) {
-  var len, zs;
-
-  // Negative exponent?
-  if (e < 0) {
-
-    // Prepend zeros.
-    for (zs = z + '.'; ++e; zs += z);
-    str = zs + str;
-
-  // Positive exponent
-  } else {
-    len = str.length;
-
-    // Append zeros.
-    if (++e > len) {
-      for (zs = z, e -= len; --e; zs += z);
-      str += zs;
-    } else if (e < len) {
-      str = str.slice(0, e) + '.' + str.slice(e);
-    }
-  }
-
-  return str;
-}
-
-
-// EXPORT
-
-
-var BigNumber = clone();
-
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (BigNumber);
-
-
-/***/ }),
-/* 118 */
+/* 115 */
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -24058,12 +23718,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var ethers__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(11);
 /* harmony import */ var ethers__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(ethers__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _abis_TravaLendingPool_json__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(119);
-/* harmony import */ var _abis_IncentiveContract_json__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(116);
-/* harmony import */ var _abis_BEP20_json__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(120);
-/* harmony import */ var _utils_address__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(12);
-/* harmony import */ var _abis_Multicall_json__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(121);
-/* harmony import */ var bignumber_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(117);
+/* harmony import */ var _abis_TravaLendingPool_json__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(116);
+/* harmony import */ var _abis_IncentiveContract_json__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(114);
+/* harmony import */ var _abis_BEP20_json__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(117);
+/* harmony import */ var _abis_AaveOracle_json__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(118);
+/* harmony import */ var _utils_address__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(12);
+/* harmony import */ var _abis_Multicall_json__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(119);
+/* harmony import */ var bignumber_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(15);
+/* harmony import */ var _utils_oraclePrice__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(120);
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
 function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
@@ -24071,6 +23733,8 @@ function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return typ
 function _toPrimitive(input, hint) { if (typeof input !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (typeof res !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
+
+
 
 
 
@@ -24101,58 +23765,52 @@ function _updateLPtTokenInfo() {
   _updateLPtTokenInfo = _asyncToGenerator(function* (appState1, _tokenAddress) {
     try {
       var appState = _objectSpread({}, appState1);
-      var travaLP = new ethers__WEBPACK_IMPORTED_MODULE_0__.Contract((0,_utils_address__WEBPACK_IMPORTED_MODULE_4__.getAddr)("TRAVA_LENDING_POOL_MARKET", appState.chainId), _abis_TravaLendingPool_json__WEBPACK_IMPORTED_MODULE_1__, appState.web3);
-      var reverseList = yield travaLP.getReservesList();
-      var tokenAddress = (0,_utils_address__WEBPACK_IMPORTED_MODULE_4__.convertHexStringToAddress)(_tokenAddress);
+      var tokenAddress = (0,_utils_address__WEBPACK_IMPORTED_MODULE_5__.convertHexStringToAddress)(_tokenAddress);
       var tokenAddressState = tokenAddress.toLowerCase();
-      if (reverseList.includes(tokenAddress) && !appState.smartWalletState.detailTokenInPool.has(tokenAddressState)) {
-        // get reserve data
-        var reserveData = yield travaLP.getReserveData(tokenAddress);
-
-        // token address
-        var tTokenAddress = String(reserveData[6]).toLowerCase();
-
-        // get amount
-        var tTokenContract = new ethers__WEBPACK_IMPORTED_MODULE_0__.Contract(tTokenAddress, _abis_BEP20_json__WEBPACK_IMPORTED_MODULE_3__, appState.web3);
-        var tTokenBalance = yield tTokenContract.balanceOf(appState.smartWalletState.address);
-        var tokenDecimal = yield tTokenContract.decimals();
-        var binaryAssetConfig = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_6__["default"])(reserveData[0]).toString(2);
-        if (binaryAssetConfig.length < 80) {
-          binaryAssetConfig = "0".repeat(80 - binaryAssetConfig.length) + binaryAssetConfig;
+      if (!appState.smartWalletState.detailTokenInPool.has(tokenAddressState) && appState.smartWalletState.detailTokenInPool.get(tokenAddressState).tToken == undefined) {
+        var _appState$smartWallet;
+        var tokenPrice = (_appState$smartWallet = appState.smartWalletState.detailTokenInPool.get(tokenAddressState)) === null || _appState$smartWallet === void 0 ? void 0 : _appState$smartWallet.price;
+        if (tokenPrice == undefined) {
+          var oraclePrice = new _utils_oraclePrice__WEBPACK_IMPORTED_MODULE_8__["default"]((0,_utils_address__WEBPACK_IMPORTED_MODULE_5__.getAddr)("ORACLE_ADDRESS", appState.chainId), appState.web3);
+          tokenPrice = String(yield oraclePrice.getAssetPrice(tokenAddress));
         }
-        var maxLTV = parseInt(binaryAssetConfig.slice(-15), 2) / 100;
-        appState.smartWalletState.detailTokenInPool = appState.smartWalletState.detailTokenInPool.set(tokenAddressState, {
-          tToken: {
-            address: tTokenAddress.toLowerCase(),
-            balances: tTokenBalance.toString(),
-            decimals: tokenDecimal.toString()
-          },
-          dToken: {
-            address: "",
-            balances: "",
-            decimals: ""
-          },
-          maxLTV: maxLTV.toString()
-        });
-      } else if (reverseList.includes(tokenAddress) && appState.smartWalletState.detailTokenInPool.has(tokenAddressState)) {
-        var _reserveData = yield travaLP.getReserveData(tokenAddress);
+        var travaLP = new ethers__WEBPACK_IMPORTED_MODULE_0__.Contract((0,_utils_address__WEBPACK_IMPORTED_MODULE_5__.getAddr)("TRAVA_LENDING_POOL_MARKET", appState.chainId), _abis_TravaLendingPool_json__WEBPACK_IMPORTED_MODULE_1__, appState.web3);
+        var reverseList = yield travaLP.getReservesList();
+        if (reverseList.includes(tokenAddress)) {
+          // get reserve data
+          var reserveData = yield travaLP.getReserveData(tokenAddress);
 
-        // token address
-        var _tTokenAddress = String(_reserveData[6]).toLowerCase();
+          // token address
+          var tTokenAddress = String(reserveData[6]).toLowerCase();
 
-        // get amount
-        var _tTokenContract = new ethers__WEBPACK_IMPORTED_MODULE_0__.Contract(_tTokenAddress, _abis_BEP20_json__WEBPACK_IMPORTED_MODULE_3__, appState.web3);
-        var _tTokenBalance = yield _tTokenContract.balanceOf(appState.smartWalletState.address);
-        var _tokenDecimal = yield _tTokenContract.decimals();
-        var tokenInfo = appState.smartWalletState.detailTokenInPool.get(tokenAddressState);
-        tokenInfo.tToken = {
-          address: _tTokenAddress.toLowerCase(),
-          balances: _tTokenBalance.toString(),
-          decimals: _tokenDecimal.toString()
-        };
-        appState.smartWalletState.detailTokenInPool.set(tokenAddressState, tokenInfo);
-      } else {
-        throw new Error("Can't update info of LP tToken ".concat(tokenAddress));
+          // get amount
+          var tTokenContract = new ethers__WEBPACK_IMPORTED_MODULE_0__.Contract(tTokenAddress, _abis_BEP20_json__WEBPACK_IMPORTED_MODULE_3__, appState.web3);
+          var tTokenBalance = yield tTokenContract.balanceOf(appState.smartWalletState.address);
+          var tokenDecimal = yield tTokenContract.decimals();
+          var binaryAssetConfig = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_7__["default"])(reserveData[0]).toString(2);
+          if (binaryAssetConfig.length < 80) {
+            binaryAssetConfig = "0".repeat(80 - binaryAssetConfig.length) + binaryAssetConfig;
+          }
+          var maxLTV = parseInt(binaryAssetConfig.slice(-15), 2) / 100;
+          var liqThres = parseInt(binaryAssetConfig.slice(-31, -16), 2) / 100 / 100;
+          appState.smartWalletState.detailTokenInPool = appState.smartWalletState.detailTokenInPool.set(tokenAddressState, {
+            tToken: {
+              address: tTokenAddress.toLowerCase(),
+              balances: tTokenBalance.toString(),
+              decimals: tokenDecimal.toString()
+            },
+            dToken: {
+              address: "",
+              balances: "",
+              decimals: ""
+            },
+            maxLTV: maxLTV.toFixed(0),
+            liqThres: liqThres.toFixed(0),
+            price: tokenPrice
+          });
+        } else {
+          throw new Error("Can't update info of LP tToken ".concat(tokenAddress));
+        }
       }
       return appState;
     } catch (error) {
@@ -24168,58 +23826,53 @@ function _updateLPDebtTokenInfo() {
   _updateLPDebtTokenInfo = _asyncToGenerator(function* (appState1, _tokenAddress) {
     try {
       var appState = _objectSpread({}, appState1);
-      var travaLP = new ethers__WEBPACK_IMPORTED_MODULE_0__.Contract((0,_utils_address__WEBPACK_IMPORTED_MODULE_4__.getAddr)("TRAVA_LENDING_POOL_MARKET", appState.chainId), _abis_TravaLendingPool_json__WEBPACK_IMPORTED_MODULE_1__, appState.web3);
-      var reverseList = yield travaLP.getReservesList();
-      var tokenAddress = (0,_utils_address__WEBPACK_IMPORTED_MODULE_4__.convertHexStringToAddress)(_tokenAddress);
+      var tokenAddress = (0,_utils_address__WEBPACK_IMPORTED_MODULE_5__.convertHexStringToAddress)(_tokenAddress);
       var tokenAddressState = tokenAddress.toLowerCase();
-      if (reverseList.includes(tokenAddress) && !appState.smartWalletState.detailTokenInPool.has(tokenAddressState)) {
-        // get reserve data
-        var reserveData = yield travaLP.getReserveData(tokenAddress);
-
-        // token address
-        var variableDebtTokenAddress = String(reserveData[7]).toLowerCase();
-
-        // get amount
-        var debtTokenContract = new ethers__WEBPACK_IMPORTED_MODULE_0__.Contract(variableDebtTokenAddress, _abis_BEP20_json__WEBPACK_IMPORTED_MODULE_3__, appState.web3);
-        var debtTokenBalance = yield debtTokenContract.balanceOf(appState.smartWalletState.address);
-        var tokenDecimal = yield debtTokenContract.decimals();
-        var binaryAssetConfig = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_6__["default"])(reserveData[0]).toString(2);
-        if (binaryAssetConfig.length < 80) {
-          binaryAssetConfig = "0".repeat(80 - binaryAssetConfig.length) + binaryAssetConfig;
+      if (!appState.smartWalletState.detailTokenInPool.has(tokenAddressState) && appState.smartWalletState.detailTokenInPool.get(tokenAddressState).dToken == undefined) {
+        var _appState$smartWallet2;
+        var tokenPrice = (_appState$smartWallet2 = appState.smartWalletState.detailTokenInPool.get(tokenAddressState)) === null || _appState$smartWallet2 === void 0 ? void 0 : _appState$smartWallet2.price;
+        if (tokenPrice == undefined) {
+          var oraclePrice = new _utils_oraclePrice__WEBPACK_IMPORTED_MODULE_8__["default"]((0,_utils_address__WEBPACK_IMPORTED_MODULE_5__.getAddr)("ORACLE_ADDRESS", appState.chainId), appState.web3);
+          tokenPrice = String(yield oraclePrice.getAssetPrice(tokenAddress));
         }
-        var maxLTV = parseInt(binaryAssetConfig.slice(-15), 2) / 100;
-        appState.smartWalletState.detailTokenInPool = appState.smartWalletState.detailTokenInPool.set(tokenAddressState, {
-          dToken: {
-            address: variableDebtTokenAddress.toLowerCase(),
-            balances: debtTokenBalance.toString(),
-            decimals: tokenDecimal.toString()
-          },
-          tToken: {
-            address: "",
-            balances: "",
-            decimals: ""
-          },
-          maxLTV: maxLTV.toString()
-        });
-      } else if (reverseList.includes(tokenAddress) && appState.smartWalletState.detailTokenInPool.has(tokenAddressState)) {
-        var _reserveData2 = yield travaLP.getReserveData(tokenAddress);
+        var travaLP = new ethers__WEBPACK_IMPORTED_MODULE_0__.Contract((0,_utils_address__WEBPACK_IMPORTED_MODULE_5__.getAddr)("TRAVA_LENDING_POOL_MARKET", appState.chainId), _abis_TravaLendingPool_json__WEBPACK_IMPORTED_MODULE_1__, appState.web3);
+        var reverseList = yield travaLP.getReservesList();
+        if (reverseList.includes(tokenAddress)) {
+          // get reserve data
+          var reserveData = yield travaLP.getReserveData(tokenAddress);
 
-        // token address
-        var _variableDebtTokenAddress = String(_reserveData2[7]).toLowerCase();
+          // token address
+          var variableDebtTokenAddress = String(reserveData[7]).toLowerCase();
 
-        // get amount
-        var _debtTokenContract = new ethers__WEBPACK_IMPORTED_MODULE_0__.Contract(_variableDebtTokenAddress, _abis_BEP20_json__WEBPACK_IMPORTED_MODULE_3__, appState.web3);
-        var _debtTokenBalance = yield _debtTokenContract.balanceOf(appState.smartWalletState.address);
-        var _tokenDecimal2 = yield _debtTokenContract.decimals();
-        var tokenInfo = appState.smartWalletState.detailTokenInPool.get(tokenAddressState);
-        tokenInfo.dToken = {
-          address: _variableDebtTokenAddress.toLowerCase(),
-          balances: _debtTokenBalance.toString(),
-          decimals: _tokenDecimal2.toString()
-        };
-        appState.smartWalletState.detailTokenInPool.set(tokenAddressState, tokenInfo);
-      } else {
-        throw new Error("Can't update info of LP Debt Token ".concat(tokenAddress));
+          // get amount
+          var debtTokenContract = new ethers__WEBPACK_IMPORTED_MODULE_0__.Contract(variableDebtTokenAddress, _abis_BEP20_json__WEBPACK_IMPORTED_MODULE_3__, appState.web3);
+          var debtTokenBalance = yield debtTokenContract.balanceOf(appState.smartWalletState.address);
+          var tokenDecimal = yield debtTokenContract.decimals();
+          var binaryAssetConfig = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_7__["default"])(reserveData[0]).toString(2);
+          if (binaryAssetConfig.length < 80) {
+            binaryAssetConfig = "0".repeat(80 - binaryAssetConfig.length) + binaryAssetConfig;
+          }
+          var maxLTV = parseInt(binaryAssetConfig.slice(-15), 2) / 100;
+          var liqThres = parseInt(binaryAssetConfig.slice(-31, -16), 2) / 100 / 100;
+          ;
+          appState.smartWalletState.detailTokenInPool = appState.smartWalletState.detailTokenInPool.set(tokenAddressState, {
+            dToken: {
+              address: variableDebtTokenAddress.toLowerCase(),
+              balances: debtTokenBalance.toString(),
+              decimals: tokenDecimal.toString()
+            },
+            tToken: {
+              address: "",
+              balances: "",
+              decimals: ""
+            },
+            maxLTV: maxLTV.toFixed(0),
+            liqThres: liqThres.toFixed(0),
+            price: tokenPrice
+          });
+        } else {
+          throw new Error("Can't update info of LP Debt Token ".concat(tokenAddress));
+        }
       }
       return appState;
     } catch (error) {
@@ -24234,12 +23887,16 @@ function updateTokenInPoolInfo(_x7) {
 function _updateTokenInPoolInfo() {
   _updateTokenInPoolInfo = _asyncToGenerator(function* (appState) {
     // const appState = { ...appState1 };
-    var travaLP = new ethers__WEBPACK_IMPORTED_MODULE_0__.Contract((0,_utils_address__WEBPACK_IMPORTED_MODULE_4__.getAddr)("TRAVA_LENDING_POOL_MARKET", appState.chainId), _abis_TravaLendingPool_json__WEBPACK_IMPORTED_MODULE_1__, appState.web3);
+    var travaLP = new ethers__WEBPACK_IMPORTED_MODULE_0__.Contract((0,_utils_address__WEBPACK_IMPORTED_MODULE_5__.getAddr)("TRAVA_LENDING_POOL_MARKET", appState.chainId), _abis_TravaLendingPool_json__WEBPACK_IMPORTED_MODULE_1__, appState.web3);
     var reverseList = yield travaLP.getReservesList();
     reverseList = reverseList.map(e => e.toLowerCase());
-    var [reserveData] = yield Promise.all([multiCall(_abis_TravaLendingPool_json__WEBPACK_IMPORTED_MODULE_1__, reverseList.map((address, _) => ({
-      address: (0,_utils_address__WEBPACK_IMPORTED_MODULE_4__.getAddr)("TRAVA_LENDING_POOL_MARKET", appState.chainId),
+    var [reserveData, tokenPriceData] = yield Promise.all([multiCall(_abis_TravaLendingPool_json__WEBPACK_IMPORTED_MODULE_1__, reverseList.map((address, _) => ({
+      address: (0,_utils_address__WEBPACK_IMPORTED_MODULE_5__.getAddr)("TRAVA_LENDING_POOL_MARKET", appState.chainId),
       name: "getReserveData",
+      params: [address]
+    })), appState.web3, appState.chainId), multiCall(_abis_AaveOracle_json__WEBPACK_IMPORTED_MODULE_4__, reverseList.map((address, _) => ({
+      address: (0,_utils_address__WEBPACK_IMPORTED_MODULE_5__.getAddr)("ORACLE_ADDRESS", appState.chainId),
+      name: "getAssetPrice",
       params: [address]
     })), appState.web3, appState.chainId)]);
     reserveData = reserveData.flat();
@@ -24268,25 +23925,40 @@ function _updateTokenInPoolInfo() {
     })), appState.web3, appState.chainId)]);
     var binaryAssetConfig;
     var maxLTV;
+    var liqThres;
+    var tToken;
+    var dToken;
     for (var i = 0; i < reverseList.length; i++) {
       if (!appState.smartWalletState.detailTokenInPool.has(reverseList[i].toString().toLowerCase())) {
-        binaryAssetConfig = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_6__["default"])(reserveData[i][0]).toString(2);
+        var tokenInPool = appState.smartWalletState.detailTokenInPool.get(reverseList[i].toString().toLowerCase());
+        binaryAssetConfig = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_7__["default"])(reserveData[i][0]).toString(2);
         if (binaryAssetConfig.length < 80) {
           binaryAssetConfig = "0".repeat(80 - binaryAssetConfig.length) + binaryAssetConfig;
         }
         maxLTV = parseInt(binaryAssetConfig.slice(-15), 2) / 100;
+        liqThres = parseInt(binaryAssetConfig.slice(-31, -16), 2) / 100 / 100;
+        tToken = {
+          address: tTokenList[i].toString().toLowerCase(),
+          balances: tTokenBalance[i].toString(),
+          decimals: tTokenDecimal[i].toString()
+        };
+        dToken = {
+          address: dTokenList[i].toString().toLowerCase(),
+          balances: dTokenBalance[i].toString(),
+          decimals: dTokenDecimal[i].toString()
+        };
+        if (tokenInPool !== null && tokenInPool !== void 0 && tokenInPool.tToken) {
+          tToken = tokenInPool.tToken;
+        }
+        if (tokenInPool !== null && tokenInPool !== void 0 && tokenInPool.dToken) {
+          dToken = tokenInPool.dToken;
+        }
         appState.smartWalletState.detailTokenInPool.set(reverseList[i].toString().toLowerCase(), {
-          tToken: {
-            address: tTokenList[i].toString().toLowerCase(),
-            balances: tTokenBalance[i].toString(),
-            decimals: tTokenDecimal[i].toString()
-          },
-          dToken: {
-            address: dTokenList[i].toString().toLowerCase(),
-            balances: dTokenBalance[i].toString(),
-            decimals: dTokenDecimal[i].toString()
-          },
-          maxLTV: maxLTV.toString()
+          tToken: tToken,
+          dToken: dToken,
+          maxLTV: maxLTV.toFixed(0),
+          liqThres: liqThres.toFixed(0),
+          price: tokenPriceData[i].toString()
         });
       }
     }
@@ -24302,7 +23974,7 @@ function _updateTravaLPInfo() {
     var appState = _objectSpread({}, appState1);
     try {
       // first update token in pool balances
-      var TravaLendingPool = new ethers__WEBPACK_IMPORTED_MODULE_0__.Contract((0,_utils_address__WEBPACK_IMPORTED_MODULE_4__.getAddr)("TRAVA_LENDING_POOL_MARKET", appState.chainId), _abis_TravaLendingPool_json__WEBPACK_IMPORTED_MODULE_1__, appState.web3);
+      var TravaLendingPool = new ethers__WEBPACK_IMPORTED_MODULE_0__.Contract((0,_utils_address__WEBPACK_IMPORTED_MODULE_5__.getAddr)("TRAVA_LENDING_POOL_MARKET", appState.chainId), _abis_TravaLendingPool_json__WEBPACK_IMPORTED_MODULE_1__, appState.web3);
       var reserveAddressList = yield TravaLendingPool.getReservesList();
       var [userTokenInPoolBalance, smartWalletTokenInPoolBalance] = yield Promise.all([multiCall(_abis_BEP20_json__WEBPACK_IMPORTED_MODULE_3__, reserveAddressList.map((address, _) => ({
         address: address,
@@ -24363,7 +24035,7 @@ function _updateTravaLPInfo() {
 var multiCall = /*#__PURE__*/function () {
   var _ref = _asyncToGenerator(function* (abi, calls, provider, chainId) {
     var _provider = provider;
-    var multi = new ethers__WEBPACK_IMPORTED_MODULE_0__.Contract((0,_utils_address__WEBPACK_IMPORTED_MODULE_4__.getAddr)("MULTI_CALL_ADDRESS", chainId), _abis_Multicall_json__WEBPACK_IMPORTED_MODULE_5__, _provider);
+    var multi = new ethers__WEBPACK_IMPORTED_MODULE_0__.Contract((0,_utils_address__WEBPACK_IMPORTED_MODULE_5__.getAddr)("MULTI_CALL_ADDRESS", chainId), _abis_Multicall_json__WEBPACK_IMPORTED_MODULE_6__, _provider);
     var itf = new ethers__WEBPACK_IMPORTED_MODULE_0__.Interface(abi);
     var callData = calls.map(call => [call.address.toLowerCase(), itf.encodeFunctionData(call.name, call.params)]);
     var {
@@ -24382,11 +24054,11 @@ function _updateMaxRewardCanClaims() {
   _updateMaxRewardCanClaims = _asyncToGenerator(function* (appState1) {
     try {
       var appState = _objectSpread({}, appState1);
-      var travaLP = new ethers__WEBPACK_IMPORTED_MODULE_0__.Contract((0,_utils_address__WEBPACK_IMPORTED_MODULE_4__.getAddr)("TRAVA_LENDING_POOL_MARKET", appState.chainId), _abis_TravaLendingPool_json__WEBPACK_IMPORTED_MODULE_1__, appState.web3);
+      var travaLP = new ethers__WEBPACK_IMPORTED_MODULE_0__.Contract((0,_utils_address__WEBPACK_IMPORTED_MODULE_5__.getAddr)("TRAVA_LENDING_POOL_MARKET", appState.chainId), _abis_TravaLendingPool_json__WEBPACK_IMPORTED_MODULE_1__, appState.web3);
       var reverseList = yield travaLP.getReservesList();
       reverseList = reverseList.map(e => e.toLowerCase());
       var [reserveData] = yield Promise.all([multiCall(_abis_TravaLendingPool_json__WEBPACK_IMPORTED_MODULE_1__, reverseList.map((address, _) => ({
-        address: (0,_utils_address__WEBPACK_IMPORTED_MODULE_4__.getAddr)("TRAVA_LENDING_POOL_MARKET", appState.chainId),
+        address: (0,_utils_address__WEBPACK_IMPORTED_MODULE_5__.getAddr)("TRAVA_LENDING_POOL_MARKET", appState.chainId),
         name: "getReserveData",
         params: [address]
       })), appState.web3, appState.chainId)]);
@@ -24442,7 +24114,7 @@ function _updateMaxRewardCanClaims() {
       // ]);
       // maxRewardCanGets = maxRewardCanGets.flat();
 
-      var travaIncentiveContract = new ethers__WEBPACK_IMPORTED_MODULE_0__.Contract((0,_utils_address__WEBPACK_IMPORTED_MODULE_4__.getAddr)("INCENTIVE_CONTRACT", appState.chainId), _abis_IncentiveContract_json__WEBPACK_IMPORTED_MODULE_2__, appState.web3);
+      var travaIncentiveContract = new ethers__WEBPACK_IMPORTED_MODULE_0__.Contract((0,_utils_address__WEBPACK_IMPORTED_MODULE_5__.getAddr)("INCENTIVE_CONTRACT", appState.chainId), _abis_IncentiveContract_json__WEBPACK_IMPORTED_MODULE_2__, appState.web3);
       var maxRewardCanGet = yield travaIncentiveContract.getRewardsBalance(tTokenList.concat(dTokenList), appState.smartWalletState.address);
       appState.smartWalletState.maxRewardCanClaim = maxRewardCanGet.toString();
 
@@ -24481,16 +24153,16 @@ function _updateRTravaAndTravaForReward() {
   _updateRTravaAndTravaForReward = _asyncToGenerator(function* (appState1) {
     try {
       var appState = _objectSpread({}, appState1);
-      var incentiveContract = new ethers__WEBPACK_IMPORTED_MODULE_0__.Contract((0,_utils_address__WEBPACK_IMPORTED_MODULE_4__.getAddr)("INCENTIVE_CONTRACT", appState.chainId), _abis_IncentiveContract_json__WEBPACK_IMPORTED_MODULE_2__, appState.web3);
+      var incentiveContract = new ethers__WEBPACK_IMPORTED_MODULE_0__.Contract((0,_utils_address__WEBPACK_IMPORTED_MODULE_5__.getAddr)("INCENTIVE_CONTRACT", appState.chainId), _abis_IncentiveContract_json__WEBPACK_IMPORTED_MODULE_2__, appState.web3);
       var rTravaAddress = yield incentiveContract.REWARD_TOKEN();
       var rTravaContract = new ethers__WEBPACK_IMPORTED_MODULE_0__.Contract(rTravaAddress, _abis_BEP20_json__WEBPACK_IMPORTED_MODULE_3__, appState.web3);
       var rTravaBalance = yield rTravaContract.balanceOf(appState.smartWalletState.address);
       var rTravaBalance2 = yield rTravaContract.balanceOf(appState.walletState.address);
-      var travaContract = new ethers__WEBPACK_IMPORTED_MODULE_0__.Contract((0,_utils_address__WEBPACK_IMPORTED_MODULE_4__.getAddr)("TRAVA_TOKEN_IN_MARKET", appState.chainId), _abis_BEP20_json__WEBPACK_IMPORTED_MODULE_3__, appState.web3);
+      var travaContract = new ethers__WEBPACK_IMPORTED_MODULE_0__.Contract((0,_utils_address__WEBPACK_IMPORTED_MODULE_5__.getAddr)("TRAVA_TOKEN_IN_MARKET", appState.chainId), _abis_BEP20_json__WEBPACK_IMPORTED_MODULE_3__, appState.web3);
       var travaBalance = yield travaContract.balanceOf(appState.smartWalletState.address);
       var travaBalance2 = yield travaContract.balanceOf(appState.walletState.address);
-      appState.smartWalletState.tokenBalances.set((0,_utils_address__WEBPACK_IMPORTED_MODULE_4__.getAddr)("TRAVA_TOKEN_IN_MARKET", appState.chainId).toLowerCase(), travaBalance.toString());
-      appState.walletState.tokenBalances.set((0,_utils_address__WEBPACK_IMPORTED_MODULE_4__.getAddr)("TRAVA_TOKEN_IN_MARKET", appState.chainId).toLowerCase(), travaBalance2.toString());
+      appState.smartWalletState.tokenBalances.set((0,_utils_address__WEBPACK_IMPORTED_MODULE_5__.getAddr)("TRAVA_TOKEN_IN_MARKET", appState.chainId).toLowerCase(), travaBalance.toString());
+      appState.walletState.tokenBalances.set((0,_utils_address__WEBPACK_IMPORTED_MODULE_5__.getAddr)("TRAVA_TOKEN_IN_MARKET", appState.chainId).toLowerCase(), travaBalance2.toString());
       appState.smartWalletState.tokenBalances.set(String(rTravaAddress).toLowerCase(), rTravaBalance.toString());
       appState.walletState.tokenBalances.set(String(rTravaAddress).toLowerCase(), rTravaBalance2.toString());
       return appState;
@@ -24502,25 +24174,95 @@ function _updateRTravaAndTravaForReward() {
 }
 
 /***/ }),
-/* 119 */
+/* 116 */
 /***/ ((module) => {
 
 "use strict";
 module.exports = JSON.parse('[{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"reserve","type":"address"},{"indexed":false,"internalType":"address","name":"user","type":"address"},{"indexed":true,"internalType":"address","name":"onBehalfOf","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"borrowRate","type":"uint256"},{"indexed":true,"internalType":"uint16","name":"referral","type":"uint16"}],"name":"Borrow","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"reserve","type":"address"},{"indexed":false,"internalType":"address","name":"user","type":"address"},{"indexed":true,"internalType":"address","name":"onBehalfOf","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"},{"indexed":true,"internalType":"uint16","name":"referral","type":"uint16"}],"name":"Deposit","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"collateralAsset","type":"address"},{"indexed":true,"internalType":"address","name":"debtAsset","type":"address"},{"indexed":true,"internalType":"address","name":"user","type":"address"},{"indexed":false,"internalType":"uint256","name":"debtToCover","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"liquidatedCollateralAmount","type":"uint256"},{"indexed":false,"internalType":"address","name":"liquidator","type":"address"},{"indexed":false,"internalType":"bool","name":"receiveTToken","type":"bool"}],"name":"LiquidationCall","type":"event"},{"anonymous":false,"inputs":[],"name":"Paused","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"reserve","type":"address"},{"indexed":true,"internalType":"address","name":"user","type":"address"},{"indexed":true,"internalType":"address","name":"repayer","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"}],"name":"Repay","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"reserve","type":"address"},{"indexed":false,"internalType":"uint256","name":"liquidityRate","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"stableBorrowRate","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"variableBorrowRate","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"liquidityIndex","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"variableBorrowIndex","type":"uint256"}],"name":"ReserveDataUpdated","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"reserve","type":"address"},{"indexed":true,"internalType":"address","name":"user","type":"address"}],"name":"ReserveUsedAsCollateralDisabled","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"reserve","type":"address"},{"indexed":true,"internalType":"address","name":"user","type":"address"}],"name":"ReserveUsedAsCollateralEnabled","type":"event"},{"anonymous":false,"inputs":[],"name":"Unpaused","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"reserve","type":"address"},{"indexed":true,"internalType":"address","name":"user","type":"address"},{"indexed":true,"internalType":"address","name":"to","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"}],"name":"Withdraw","type":"event"},{"inputs":[{"internalType":"address","name":"asset","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"},{"internalType":"uint16","name":"referralCode","type":"uint16"},{"internalType":"address","name":"onBehalfOf","type":"address"}],"name":"borrow","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"asset","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"},{"internalType":"address","name":"onBehalfOf","type":"address"},{"internalType":"uint16","name":"referralCode","type":"uint16"}],"name":"deposit","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"asset","type":"address"},{"internalType":"address","name":"from","type":"address"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"},{"internalType":"uint256","name":"balanceFromBefore","type":"uint256"},{"internalType":"uint256","name":"balanceToBefore","type":"uint256"}],"name":"finalizeTransfer","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"getAddressesProvider","outputs":[{"internalType":"contract IAddressesProviderFactory","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"asset","type":"address"}],"name":"getConfiguration","outputs":[{"components":[{"internalType":"uint256","name":"data","type":"uint256"}],"internalType":"struct DataTypes.ReserveConfigurationMap","name":"","type":"tuple"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"asset","type":"address"}],"name":"getReserveData","outputs":[{"components":[{"components":[{"internalType":"uint256","name":"data","type":"uint256"}],"internalType":"struct DataTypes.ReserveConfigurationMap","name":"configuration","type":"tuple"},{"internalType":"uint128","name":"liquidityIndex","type":"uint128"},{"internalType":"uint128","name":"variableBorrowIndex","type":"uint128"},{"internalType":"uint128","name":"currentLiquidityRate","type":"uint128"},{"internalType":"uint128","name":"currentVariableBorrowRate","type":"uint128"},{"internalType":"uint40","name":"lastUpdateTimestamp","type":"uint40"},{"internalType":"address","name":"tTokenAddress","type":"address"},{"internalType":"address","name":"variableDebtTokenAddress","type":"address"},{"internalType":"address","name":"interestRateStrategyAddress","type":"address"},{"internalType":"uint8","name":"id","type":"uint8"}],"internalType":"struct DataTypes.ReserveData","name":"","type":"tuple"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"asset","type":"address"}],"name":"getReserveNormalizedIncome","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"asset","type":"address"}],"name":"getReserveNormalizedVariableDebt","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"getReservesList","outputs":[{"internalType":"address[]","name":"","type":"address[]"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"user","type":"address"}],"name":"getUserAccountData","outputs":[{"internalType":"uint256","name":"totalCollateralUSD","type":"uint256"},{"internalType":"uint256","name":"totalDebtUSD","type":"uint256"},{"internalType":"uint256","name":"availableBorrowsUSD","type":"uint256"},{"internalType":"uint256","name":"currentLiquidationThreshold","type":"uint256"},{"internalType":"uint256","name":"ltv","type":"uint256"},{"internalType":"uint256","name":"healthFactor","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"asset","type":"address"},{"internalType":"address","name":"tTokenAddress","type":"address"},{"internalType":"address","name":"variableDebtTokenAddress","type":"address"},{"internalType":"address","name":"reserveInterestRateStrategyAddress","type":"address"}],"name":"initReserve","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"contract IAddressesProviderFactory","name":"provider","type":"address"},{"internalType":"uint256","name":"providerId","type":"uint256"}],"name":"initialize","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"collateralAsset","type":"address"},{"internalType":"address","name":"debtAsset","type":"address"},{"internalType":"address","name":"user","type":"address"},{"internalType":"uint256","name":"debtToCover","type":"uint256"},{"internalType":"bool","name":"receiveTToken","type":"bool"}],"name":"liquidationCall","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"paused","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"asset","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"},{"internalType":"address","name":"onBehalfOf","type":"address"}],"name":"repay","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"asset","type":"address"},{"internalType":"uint256","name":"configuration","type":"uint256"}],"name":"setConfiguration","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"bool","name":"val","type":"bool"}],"name":"setPause","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"asset","type":"address"},{"internalType":"address","name":"rateStrategyAddress","type":"address"}],"name":"setReserveInterestRateStrategyAddress","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"asset","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"},{"internalType":"address","name":"to","type":"address"}],"name":"withdraw","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"nonpayable","type":"function"}]');
 
 /***/ }),
-/* 120 */
+/* 117 */
 /***/ ((module) => {
 
 "use strict";
 module.exports = JSON.parse('[{"inputs":[{"internalType":"string","name":"name","type":"string"},{"internalType":"string","name":"symbol","type":"string"}],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":true,"internalType":"address","name":"spender","type":"address"},{"indexed":false,"internalType":"uint256","name":"value","type":"uint256"}],"name":"Approval","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"previousOwner","type":"address"},{"indexed":true,"internalType":"address","name":"newOwner","type":"address"}],"name":"OwnershipTransferred","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"from","type":"address"},{"indexed":true,"internalType":"address","name":"to","type":"address"},{"indexed":false,"internalType":"uint256","name":"value","type":"uint256"}],"name":"Transfer","type":"event"},{"inputs":[{"internalType":"address","name":"owner","type":"address"},{"internalType":"address","name":"spender","type":"address"}],"name":"allowance","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"spender","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"approve","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"account","type":"address"}],"name":"balanceOf","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"decimals","outputs":[{"internalType":"uint8","name":"","type":"uint8"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"spender","type":"address"},{"internalType":"uint256","name":"subtractedValue","type":"uint256"}],"name":"decreaseAllowance","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"getOwner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"spender","type":"address"},{"internalType":"uint256","name":"addedValue","type":"uint256"}],"name":"increaseAllowance","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"mint","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"name","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"owner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"renounceOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"symbol","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"totalSupply","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"recipient","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"transfer","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"sender","type":"address"},{"internalType":"address","name":"recipient","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"transferFrom","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"}]');
 
 /***/ }),
-/* 121 */
+/* 118 */
+/***/ ((module) => {
+
+"use strict";
+module.exports = JSON.parse('[{"inputs":[{"internalType":"address[]","name":"assets","type":"address[]"},{"internalType":"address[]","name":"sources","type":"address[]"},{"internalType":"address","name":"fallbackOracle","type":"address"},{"internalType":"address","name":"weth","type":"address"}],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"asset","type":"address"},{"indexed":true,"internalType":"address","name":"source","type":"address"}],"name":"AssetSourceUpdated","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"fallbackOracle","type":"address"}],"name":"FallbackOracleUpdated","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"previousOwner","type":"address"},{"indexed":true,"internalType":"address","name":"newOwner","type":"address"}],"name":"OwnershipTransferred","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"weth","type":"address"}],"name":"WethSet","type":"event"},{"inputs":[],"name":"WETH","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"asset","type":"address"}],"name":"getAssetPrice","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address[]","name":"assets","type":"address[]"}],"name":"getAssetsPrices","outputs":[{"internalType":"uint256[]","name":"","type":"uint256[]"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"getFallbackOracle","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"asset","type":"address"}],"name":"getSourceOfAsset","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"owner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"renounceOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address[]","name":"assets","type":"address[]"},{"internalType":"address[]","name":"sources","type":"address[]"}],"name":"setAssetSources","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"fallbackOracle","type":"address"}],"name":"setFallbackOracle","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"}]');
+
+/***/ }),
+/* 119 */
 /***/ ((module) => {
 
 "use strict";
 module.exports = JSON.parse('[{"constant":true,"inputs":[{"components":[{"name":"target","type":"address"},{"name":"callData","type":"bytes"}],"name":"calls","type":"tuple[]"}],"name":"aggregate","outputs":[{"name":"blockNumber","type":"uint256"},{"name":"returnData","type":"bytes[]"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"addr","type":"address"}],"name":"getEthBalance","outputs":[{"name":"balance","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"}]');
+
+/***/ }),
+/* 120 */
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ OraclePrice)
+/* harmony export */ });
+/* harmony import */ var _abis_AaveOracle_json__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(118);
+/* harmony import */ var _contract__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(121);
+/* harmony import */ var _address__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(12);
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
+function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
+
+
+
+class OraclePrice extends _contract__WEBPACK_IMPORTED_MODULE_1__["default"] {
+  constructor(address, web3Reader) {
+    super(address, _abis_AaveOracle_json__WEBPACK_IMPORTED_MODULE_0__, web3Reader);
+  }
+  getAssetPrice(_assetAddress) {
+    var _this = this;
+    return _asyncToGenerator(function* () {
+      var assetAddress = (0,_address__WEBPACK_IMPORTED_MODULE_2__.convertHexStringToAddress)(_assetAddress);
+      return yield _this.contractUtil.getAssetPrice(assetAddress);
+    })();
+  }
+}
+
+// const oracleContract = new OracleContract(process.env.ORACLE_ADDRESS!);
+// oracleContract.getAssetPrice(process.env.TRAVA_TOKEN_IN_MARKET!).then((res) => {
+//   console.log(res.toString());
+// });
+
+/***/ }),
+/* 121 */
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ BaseReadContract)
+/* harmony export */ });
+/* harmony import */ var ethers__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(11);
+/* harmony import */ var ethers__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(ethers__WEBPACK_IMPORTED_MODULE_0__);
+function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return typeof key === "symbol" ? key : String(key); }
+function _toPrimitive(input, hint) { if (typeof input !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (typeof res !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
+
+class BaseReadContract {
+  constructor(contractAddress, abi, web3Reader) {
+    _defineProperty(this, "contractAddress", void 0);
+    _defineProperty(this, "web3Reader", void 0);
+    _defineProperty(this, "abi", void 0);
+    _defineProperty(this, "contractUtil", void 0);
+    this.contractAddress = contractAddress;
+    this.web3Reader = web3Reader;
+    this.abi = abi;
+    this.contractUtil = new ethers__WEBPACK_IMPORTED_MODULE_0__.Contract(contractAddress, abi, web3Reader);
+  }
+}
 
 /***/ }),
 /* 122 */
@@ -24784,7 +24526,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   updateTravaBalance: () => (/* binding */ updateTravaBalance)
 /* harmony export */ });
 /* harmony import */ var _abis_ERC20Mock_json__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(10);
-/* harmony import */ var _abis_Multicall_json__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(121);
+/* harmony import */ var _abis_Multicall_json__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(119);
 /* harmony import */ var _abis_TravaNFTCore_json__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(125);
 /* harmony import */ var _abis_NFTCollection_json__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(126);
 /* harmony import */ var _abis_TravaNFTSell_json__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(127);
@@ -24793,7 +24535,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var ethers__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(ethers__WEBPACK_IMPORTED_MODULE_6__);
 /* harmony import */ var _utils_address__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(12);
 /* harmony import */ var _KnightConfig__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(123);
-/* harmony import */ var bignumber_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(117);
+/* harmony import */ var bignumber_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(15);
 /* harmony import */ var _SellGraphQuery__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(129);
 /* harmony import */ var _CollectionOwnedGraphQuery__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(215);
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
@@ -25340,7 +25082,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ SellGraphQuery)
 /* harmony export */ });
-/* harmony import */ var bignumber_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(117);
+/* harmony import */ var bignumber_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(15);
 /* harmony import */ var _KnightConfig__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(123);
 /* harmony import */ var _graphindex__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(130);
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
@@ -27936,13 +27678,13 @@ __webpack_require__.r(__webpack_exports__);
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 var CombinedStream = __webpack_require__(155);
-var util = __webpack_require__(46);
-var path = __webpack_require__(29);
+var util = __webpack_require__(47);
+var path = __webpack_require__(30);
 var http = __webpack_require__(157);
 var https = __webpack_require__(158);
 var parseUrl = (__webpack_require__(152).parse);
-var fs = __webpack_require__(28);
-var Stream = (__webpack_require__(84).Stream);
+var fs = __webpack_require__(29);
+var Stream = (__webpack_require__(85).Stream);
 var mime = __webpack_require__(159);
 var asynckit = __webpack_require__(162);
 var populate = __webpack_require__(172);
@@ -28442,8 +28184,8 @@ FormData.prototype.toString = function () {
 /* 155 */
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
-var util = __webpack_require__(46);
-var Stream = (__webpack_require__(84).Stream);
+var util = __webpack_require__(47);
+var Stream = (__webpack_require__(85).Stream);
 var DelayedStream = __webpack_require__(156);
 
 module.exports = CombinedStream;
@@ -28656,8 +28398,8 @@ CombinedStream.prototype._emitError = function(err) {
 /* 156 */
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
-var Stream = (__webpack_require__(84).Stream);
-var util = __webpack_require__(46);
+var Stream = (__webpack_require__(85).Stream);
+var util = __webpack_require__(47);
 
 module.exports = DelayedStream;
 function DelayedStream() {
@@ -28799,7 +28541,7 @@ module.exports = require("https");
  */
 
 var db = __webpack_require__(160)
-var extname = (__webpack_require__(29).extname)
+var extname = (__webpack_require__(30).extname)
 
 /**
  * Module variables.
@@ -29906,7 +29648,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var proxy_from_env__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(178);
 /* harmony import */ var http__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(157);
 /* harmony import */ var https__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(158);
-/* harmony import */ var util__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(46);
+/* harmony import */ var util__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(47);
 /* harmony import */ var follow_redirects__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(179);
 /* harmony import */ var zlib__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(189);
 /* harmony import */ var _env_data_js__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(137);
@@ -29915,10 +29657,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _cancel_CanceledError_js__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(146);
 /* harmony import */ var _platform_index_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(150);
 /* harmony import */ var _helpers_fromDataURI_js__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(195);
-/* harmony import */ var stream__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(84);
+/* harmony import */ var stream__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(85);
 /* harmony import */ var _core_AxiosHeaders_js__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(143);
 /* harmony import */ var _helpers_AxiosTransformStream_js__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(199);
-/* harmony import */ var events__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(86);
+/* harmony import */ var events__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(87);
 /* harmony import */ var _helpers_formDataToStream_js__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(197);
 /* harmony import */ var _helpers_readBlob_js__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(198);
 /* harmony import */ var _helpers_ZlibHeaderTransformStream_js__WEBPACK_IMPORTED_MODULE_22__ = __webpack_require__(204);
@@ -30716,8 +30458,8 @@ var url = __webpack_require__(152);
 var URL = url.URL;
 var http = __webpack_require__(157);
 var https = __webpack_require__(158);
-var Writable = (__webpack_require__(84).Writable);
-var assert = __webpack_require__(22);
+var Writable = (__webpack_require__(85).Writable);
+var assert = __webpack_require__(23);
 var debug = __webpack_require__(180);
 
 // Create handlers that pass events from native requests
@@ -32104,7 +31846,7 @@ function plural(ms, msAbs, n, name) {
  */
 
 const tty = __webpack_require__(186);
-const util = __webpack_require__(46);
+const util = __webpack_require__(47);
 
 /**
  * This is the Node.js implementation of `debug()`.
@@ -32377,7 +32119,7 @@ module.exports = require("tty");
 
 "use strict";
 
-const os = __webpack_require__(30);
+const os = __webpack_require__(31);
 const hasFlag = __webpack_require__(188);
 
 const env = process.env;
@@ -32777,8 +32519,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var util__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(46);
-/* harmony import */ var stream__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(84);
+/* harmony import */ var util__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(47);
+/* harmony import */ var stream__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(85);
 /* harmony import */ var _utils_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(139);
 /* harmony import */ var _readBlob_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(198);
 
@@ -32929,7 +32671,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var stream__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(84);
+/* harmony import */ var stream__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(85);
 /* harmony import */ var _utils_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(139);
 /* harmony import */ var _throttle_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(201);
 /* harmony import */ var _speedometer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(200);
@@ -33391,7 +33133,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var stream__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(84);
+/* harmony import */ var stream__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(85);
 
 
 
@@ -34426,7 +34168,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ SellGraphQuery)
 /* harmony export */ });
-/* harmony import */ var bignumber_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(117);
+/* harmony import */ var bignumber_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(15);
 /* harmony import */ var _KnightConfig__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(123);
 /* harmony import */ var _graphindex__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(130);
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
@@ -34693,17 +34435,26 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   ApplicationState: () => (/* reexport safe */ _State__WEBPACK_IMPORTED_MODULE_0__.ApplicationState),
 /* harmony export */   CONFIG: () => (/* reexport safe */ _utils_config__WEBPACK_IMPORTED_MODULE_3__.CONFIG),
 /* harmony export */   CONTRACT_NETWORK: () => (/* reexport safe */ _utils_config__WEBPACK_IMPORTED_MODULE_3__.CONTRACT_NETWORK),
+/* harmony export */   HALF_PERCENT: () => (/* reexport safe */ _utils_config__WEBPACK_IMPORTED_MODULE_3__.HALF_PERCENT),
 /* harmony export */   MAX_UINT256: () => (/* reexport safe */ _utils_config__WEBPACK_IMPORTED_MODULE_3__.MAX_UINT256),
 /* harmony export */   NETWORKS: () => (/* reexport safe */ _utils_config__WEBPACK_IMPORTED_MODULE_3__.NETWORKS),
+/* harmony export */   PERCENTAGE_FACTOR: () => (/* reexport safe */ _utils_config__WEBPACK_IMPORTED_MODULE_3__.PERCENTAGE_FACTOR),
 /* harmony export */   SimulationBorrow: () => (/* reexport safe */ _Simulation__WEBPACK_IMPORTED_MODULE_1__.SimulationBorrow),
 /* harmony export */   SimulationClaimReward: () => (/* reexport safe */ _Simulation__WEBPACK_IMPORTED_MODULE_1__.SimulationClaimReward),
 /* harmony export */   SimulationConvertReward: () => (/* reexport safe */ _Simulation__WEBPACK_IMPORTED_MODULE_1__.SimulationConvertReward),
 /* harmony export */   SimulationRepay: () => (/* reexport safe */ _Simulation__WEBPACK_IMPORTED_MODULE_1__.SimulationRepay),
 /* harmony export */   SimulationSupply: () => (/* reexport safe */ _Simulation__WEBPACK_IMPORTED_MODULE_1__.SimulationSupply),
 /* harmony export */   SimulationWithdraw: () => (/* reexport safe */ _Simulation__WEBPACK_IMPORTED_MODULE_1__.SimulationWithdraw),
+/* harmony export */   calculateNewAvailableBorrow: () => (/* reexport safe */ _Simulation__WEBPACK_IMPORTED_MODULE_1__.calculateNewAvailableBorrow),
+/* harmony export */   calculateNewHealFactor: () => (/* reexport safe */ _Simulation__WEBPACK_IMPORTED_MODULE_1__.calculateNewHealFactor),
+/* harmony export */   calculateNewLTV: () => (/* reexport safe */ _Simulation__WEBPACK_IMPORTED_MODULE_1__.calculateNewLTV),
+/* harmony export */   calculateNewLiquidThreshold: () => (/* reexport safe */ _Simulation__WEBPACK_IMPORTED_MODULE_1__.calculateNewLiquidThreshold),
 /* harmony export */   configure: () => (/* reexport safe */ _utils_config__WEBPACK_IMPORTED_MODULE_3__.configure),
+/* harmony export */   getAmountFromBalanceUsd: () => (/* reexport safe */ _Simulation__WEBPACK_IMPORTED_MODULE_1__.getAmountFromBalanceUsd),
+/* harmony export */   getBalanceUsdFromAmount: () => (/* reexport safe */ _Simulation__WEBPACK_IMPORTED_MODULE_1__.getBalanceUsdFromAmount),
 /* harmony export */   getNetworkData: () => (/* reexport safe */ _utils_config__WEBPACK_IMPORTED_MODULE_3__.getNetworkData),
 /* harmony export */   getTokenBalance: () => (/* reexport safe */ _Simulation__WEBPACK_IMPORTED_MODULE_1__.getTokenBalance),
+/* harmony export */   percentMul: () => (/* reexport safe */ _utils_config__WEBPACK_IMPORTED_MODULE_3__.percentMul),
 /* harmony export */   simulateSendToken: () => (/* reexport safe */ _Simulation__WEBPACK_IMPORTED_MODULE_1__.simulateSendToken),
 /* harmony export */   simulateSwap: () => (/* reexport safe */ _Simulation__WEBPACK_IMPORTED_MODULE_1__.simulateSwap),
 /* harmony export */   simulateTravaNFTBuy: () => (/* reexport safe */ _Simulation__WEBPACK_IMPORTED_MODULE_1__.simulateTravaNFTBuy),
@@ -34732,7 +34483,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _State__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(1);
 /* harmony import */ var _Simulation__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(7);
-/* harmony import */ var _utils_oraclePrice__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(113);
+/* harmony import */ var _utils_oraclePrice__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(120);
 /* harmony import */ var _utils_config__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(13);
 /* harmony import */ var _global__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(217);
 

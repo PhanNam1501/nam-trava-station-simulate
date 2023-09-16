@@ -11,6 +11,8 @@ export interface DetailTokenInPool {
     dToken: TokenData;
     tToken: TokenData;
     maxLTV: string;
+    liqThres: string;
+    price: string;
 }
 export declare class SmartWalletState {
     address: EthAddress;

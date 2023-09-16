@@ -11,9 +11,11 @@ import { Contract, Interface } from "ethers";
 import ABITravaLP from "../../abis/TravaLendingPool.json";
 import IncentiveContractABI from "../../abis/IncentiveContract.json";
 import BEP20ABI from "../../abis/BEP20.json";
+import OracleABI from "../../abis/AaveOracle.json";
 import { convertHexStringToAddress, getAddr } from "../../utils/address";
 import MultiCallABI from "../../abis/Multicall.json";
 import BigNumber from "bignumber.js";
+import OraclePrice from "../../utils/oraclePrice";
 export function getTokenBalance(appState, tokenAddress) {
     return __awaiter(this, void 0, void 0, function* () {
         const tokenContract = new Contract(tokenAddress, BEP20ABI, appState.web3);
@@ -27,62 +29,56 @@ export function getTokenBalance(appState, tokenAddress) {
     });
 }
 export function updateLPtTokenInfo(appState1, _tokenAddress) {
+    var _a;
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const appState = Object.assign({}, appState1);
-            const travaLP = new Contract(getAddr("TRAVA_LENDING_POOL_MARKET", appState.chainId), ABITravaLP, appState.web3);
-            let reverseList = yield travaLP.getReservesList();
             let tokenAddress = convertHexStringToAddress(_tokenAddress);
             let tokenAddressState = tokenAddress.toLowerCase();
-            if (reverseList.includes(tokenAddress) &&
-                !appState.smartWalletState.detailTokenInPool.has(tokenAddressState)) {
-                // get reserve data
-                const reserveData = yield travaLP.getReserveData(tokenAddress);
-                // token address
-                const tTokenAddress = String(reserveData[6]).toLowerCase();
-                // get amount
-                const tTokenContract = new Contract(tTokenAddress, BEP20ABI, appState.web3);
-                const tTokenBalance = yield tTokenContract.balanceOf(appState.smartWalletState.address);
-                const tokenDecimal = yield tTokenContract.decimals();
-                let binaryAssetConfig = BigNumber(reserveData[0]).toString(2);
-                if (binaryAssetConfig.length < 80) {
-                    binaryAssetConfig = "0".repeat(80 - binaryAssetConfig.length) + binaryAssetConfig;
+            if (!appState.smartWalletState.detailTokenInPool.has(tokenAddressState)
+                && appState.smartWalletState.detailTokenInPool.get(tokenAddressState).tToken == undefined) {
+                let tokenPrice = (_a = appState.smartWalletState.detailTokenInPool.get(tokenAddressState)) === null || _a === void 0 ? void 0 : _a.price;
+                if (tokenPrice == undefined) {
+                    const oraclePrice = new OraclePrice(getAddr("ORACLE_ADDRESS", appState.chainId), appState.web3);
+                    tokenPrice = String(yield oraclePrice.getAssetPrice(tokenAddress));
                 }
-                const maxLTV = parseInt(binaryAssetConfig.slice(-15), 2) / 100;
-                appState.smartWalletState.detailTokenInPool =
-                    appState.smartWalletState.detailTokenInPool.set(tokenAddressState, {
-                        tToken: {
-                            address: tTokenAddress.toLowerCase(),
-                            balances: tTokenBalance.toString(),
-                            decimals: tokenDecimal.toString(),
-                        },
-                        dToken: {
-                            address: "",
-                            balances: "",
-                            decimals: "",
-                        },
-                        maxLTV: maxLTV.toString()
-                    });
-            }
-            else if (reverseList.includes(tokenAddress) &&
-                appState.smartWalletState.detailTokenInPool.has(tokenAddressState)) {
-                const reserveData = yield travaLP.getReserveData(tokenAddress);
-                // token address
-                const tTokenAddress = String(reserveData[6]).toLowerCase();
-                // get amount
-                const tTokenContract = new Contract(tTokenAddress, BEP20ABI, appState.web3);
-                const tTokenBalance = yield tTokenContract.balanceOf(appState.smartWalletState.address);
-                const tokenDecimal = yield tTokenContract.decimals();
-                let tokenInfo = appState.smartWalletState.detailTokenInPool.get(tokenAddressState);
-                tokenInfo.tToken = {
-                    address: tTokenAddress.toLowerCase(),
-                    balances: tTokenBalance.toString(),
-                    decimals: tokenDecimal.toString(),
-                };
-                appState.smartWalletState.detailTokenInPool.set(tokenAddressState, tokenInfo);
-            }
-            else {
-                throw new Error(`Can't update info of LP tToken ${tokenAddress}`);
+                const travaLP = new Contract(getAddr("TRAVA_LENDING_POOL_MARKET", appState.chainId), ABITravaLP, appState.web3);
+                let reverseList = yield travaLP.getReservesList();
+                if (reverseList.includes(tokenAddress)) {
+                    // get reserve data
+                    const reserveData = yield travaLP.getReserveData(tokenAddress);
+                    // token address
+                    const tTokenAddress = String(reserveData[6]).toLowerCase();
+                    // get amount
+                    const tTokenContract = new Contract(tTokenAddress, BEP20ABI, appState.web3);
+                    const tTokenBalance = yield tTokenContract.balanceOf(appState.smartWalletState.address);
+                    const tokenDecimal = yield tTokenContract.decimals();
+                    let binaryAssetConfig = BigNumber(reserveData[0]).toString(2);
+                    if (binaryAssetConfig.length < 80) {
+                        binaryAssetConfig = "0".repeat(80 - binaryAssetConfig.length) + binaryAssetConfig;
+                    }
+                    const maxLTV = parseInt(binaryAssetConfig.slice(-15), 2) / 100;
+                    const liqThres = parseInt(binaryAssetConfig.slice(-31, -16), 2) / 100 / 100;
+                    appState.smartWalletState.detailTokenInPool =
+                        appState.smartWalletState.detailTokenInPool.set(tokenAddressState, {
+                            tToken: {
+                                address: tTokenAddress.toLowerCase(),
+                                balances: tTokenBalance.toString(),
+                                decimals: tokenDecimal.toString(),
+                            },
+                            dToken: {
+                                address: "",
+                                balances: "",
+                                decimals: "",
+                            },
+                            maxLTV: maxLTV.toFixed(0),
+                            liqThres: liqThres.toFixed(0),
+                            price: tokenPrice
+                        });
+                }
+                else {
+                    throw new Error(`Can't update info of LP tToken ${tokenAddress}`);
+                }
             }
             return appState;
         }
@@ -92,62 +88,57 @@ export function updateLPtTokenInfo(appState1, _tokenAddress) {
     });
 }
 export function updateLPDebtTokenInfo(appState1, _tokenAddress) {
+    var _a;
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const appState = Object.assign({}, appState1);
-            const travaLP = new Contract(getAddr("TRAVA_LENDING_POOL_MARKET", appState.chainId), ABITravaLP, appState.web3);
-            let reverseList = yield travaLP.getReservesList();
             let tokenAddress = convertHexStringToAddress(_tokenAddress);
             let tokenAddressState = tokenAddress.toLowerCase();
-            if (reverseList.includes(tokenAddress) &&
-                !appState.smartWalletState.detailTokenInPool.has(tokenAddressState)) {
-                // get reserve data
-                const reserveData = yield travaLP.getReserveData(tokenAddress);
-                // token address
-                const variableDebtTokenAddress = String(reserveData[7]).toLowerCase();
-                // get amount
-                const debtTokenContract = new Contract(variableDebtTokenAddress, BEP20ABI, appState.web3);
-                const debtTokenBalance = yield debtTokenContract.balanceOf(appState.smartWalletState.address);
-                const tokenDecimal = yield debtTokenContract.decimals();
-                let binaryAssetConfig = BigNumber(reserveData[0]).toString(2);
-                if (binaryAssetConfig.length < 80) {
-                    binaryAssetConfig = "0".repeat(80 - binaryAssetConfig.length) + binaryAssetConfig;
+            if (!appState.smartWalletState.detailTokenInPool.has(tokenAddressState)
+                && appState.smartWalletState.detailTokenInPool.get(tokenAddressState).dToken == undefined) {
+                let tokenPrice = (_a = appState.smartWalletState.detailTokenInPool.get(tokenAddressState)) === null || _a === void 0 ? void 0 : _a.price;
+                if (tokenPrice == undefined) {
+                    const oraclePrice = new OraclePrice(getAddr("ORACLE_ADDRESS", appState.chainId), appState.web3);
+                    tokenPrice = String(yield oraclePrice.getAssetPrice(tokenAddress));
                 }
-                const maxLTV = parseInt(binaryAssetConfig.slice(-15), 2) / 100;
-                appState.smartWalletState.detailTokenInPool =
-                    appState.smartWalletState.detailTokenInPool.set(tokenAddressState, {
-                        dToken: {
-                            address: variableDebtTokenAddress.toLowerCase(),
-                            balances: debtTokenBalance.toString(),
-                            decimals: tokenDecimal.toString(),
-                        },
-                        tToken: {
-                            address: "",
-                            balances: "",
-                            decimals: "",
-                        },
-                        maxLTV: maxLTV.toString()
-                    });
-            }
-            else if (reverseList.includes(tokenAddress) &&
-                appState.smartWalletState.detailTokenInPool.has(tokenAddressState)) {
-                const reserveData = yield travaLP.getReserveData(tokenAddress);
-                // token address
-                const variableDebtTokenAddress = String(reserveData[7]).toLowerCase();
-                // get amount
-                const debtTokenContract = new Contract(variableDebtTokenAddress, BEP20ABI, appState.web3);
-                const debtTokenBalance = yield debtTokenContract.balanceOf(appState.smartWalletState.address);
-                const tokenDecimal = yield debtTokenContract.decimals();
-                let tokenInfo = appState.smartWalletState.detailTokenInPool.get(tokenAddressState);
-                tokenInfo.dToken = {
-                    address: variableDebtTokenAddress.toLowerCase(),
-                    balances: debtTokenBalance.toString(),
-                    decimals: tokenDecimal.toString(),
-                };
-                appState.smartWalletState.detailTokenInPool.set(tokenAddressState, tokenInfo);
-            }
-            else {
-                throw new Error(`Can't update info of LP Debt Token ${tokenAddress}`);
+                const travaLP = new Contract(getAddr("TRAVA_LENDING_POOL_MARKET", appState.chainId), ABITravaLP, appState.web3);
+                let reverseList = yield travaLP.getReservesList();
+                if (reverseList.includes(tokenAddress)) {
+                    // get reserve data
+                    const reserveData = yield travaLP.getReserveData(tokenAddress);
+                    // token address
+                    const variableDebtTokenAddress = String(reserveData[7]).toLowerCase();
+                    // get amount
+                    const debtTokenContract = new Contract(variableDebtTokenAddress, BEP20ABI, appState.web3);
+                    const debtTokenBalance = yield debtTokenContract.balanceOf(appState.smartWalletState.address);
+                    const tokenDecimal = yield debtTokenContract.decimals();
+                    let binaryAssetConfig = BigNumber(reserveData[0]).toString(2);
+                    if (binaryAssetConfig.length < 80) {
+                        binaryAssetConfig = "0".repeat(80 - binaryAssetConfig.length) + binaryAssetConfig;
+                    }
+                    const maxLTV = parseInt(binaryAssetConfig.slice(-15), 2) / 100;
+                    let liqThres = parseInt(binaryAssetConfig.slice(-31, -16), 2) / 100 / 100;
+                    ;
+                    appState.smartWalletState.detailTokenInPool =
+                        appState.smartWalletState.detailTokenInPool.set(tokenAddressState, {
+                            dToken: {
+                                address: variableDebtTokenAddress.toLowerCase(),
+                                balances: debtTokenBalance.toString(),
+                                decimals: tokenDecimal.toString(),
+                            },
+                            tToken: {
+                                address: "",
+                                balances: "",
+                                decimals: "",
+                            },
+                            maxLTV: maxLTV.toFixed(0),
+                            liqThres: liqThres.toFixed(0),
+                            price: tokenPrice
+                        });
+                }
+                else {
+                    throw new Error(`Can't update info of LP Debt Token ${tokenAddress}`);
+                }
             }
             return appState;
         }
@@ -162,10 +153,15 @@ function updateTokenInPoolInfo(appState) {
         const travaLP = new Contract(getAddr("TRAVA_LENDING_POOL_MARKET", appState.chainId), ABITravaLP, appState.web3);
         let reverseList = yield travaLP.getReservesList();
         reverseList = reverseList.map((e) => e.toLowerCase());
-        let [reserveData] = yield Promise.all([
+        let [reserveData, tokenPriceData] = yield Promise.all([
             multiCall(ABITravaLP, reverseList.map((address, _) => ({
                 address: getAddr("TRAVA_LENDING_POOL_MARKET", appState.chainId),
                 name: "getReserveData",
+                params: [address],
+            })), appState.web3, appState.chainId),
+            multiCall(OracleABI, reverseList.map((address, _) => ({
+                address: getAddr("ORACLE_ADDRESS", appState.chainId),
+                name: "getAssetPrice",
                 params: [address],
             })), appState.web3, appState.chainId),
         ]);
@@ -200,25 +196,40 @@ function updateTokenInPoolInfo(appState) {
         ]);
         let binaryAssetConfig;
         let maxLTV;
+        let liqThres;
+        let tToken;
+        let dToken;
         for (let i = 0; i < reverseList.length; i++) {
             if (!appState.smartWalletState.detailTokenInPool.has(reverseList[i].toString().toLowerCase())) {
+                let tokenInPool = appState.smartWalletState.detailTokenInPool.get(reverseList[i].toString().toLowerCase());
                 binaryAssetConfig = BigNumber(reserveData[i][0]).toString(2);
                 if (binaryAssetConfig.length < 80) {
                     binaryAssetConfig = "0".repeat(80 - binaryAssetConfig.length) + binaryAssetConfig;
                 }
                 maxLTV = parseInt(binaryAssetConfig.slice(-15), 2) / 100;
+                liqThres = parseInt(binaryAssetConfig.slice(-31, -16), 2) / 100 / 100;
+                tToken = {
+                    address: tTokenList[i].toString().toLowerCase(),
+                    balances: tTokenBalance[i].toString(),
+                    decimals: tTokenDecimal[i].toString(),
+                };
+                dToken = {
+                    address: dTokenList[i].toString().toLowerCase(),
+                    balances: dTokenBalance[i].toString(),
+                    decimals: dTokenDecimal[i].toString(),
+                };
+                if (tokenInPool === null || tokenInPool === void 0 ? void 0 : tokenInPool.tToken) {
+                    tToken = tokenInPool.tToken;
+                }
+                if (tokenInPool === null || tokenInPool === void 0 ? void 0 : tokenInPool.dToken) {
+                    dToken = tokenInPool.dToken;
+                }
                 appState.smartWalletState.detailTokenInPool.set(reverseList[i].toString().toLowerCase(), {
-                    tToken: {
-                        address: tTokenList[i].toString().toLowerCase(),
-                        balances: tTokenBalance[i].toString(),
-                        decimals: tTokenDecimal[i].toString(),
-                    },
-                    dToken: {
-                        address: dTokenList[i].toString().toLowerCase(),
-                        balances: dTokenBalance[i].toString(),
-                        decimals: dTokenDecimal[i].toString(),
-                    },
-                    maxLTV: maxLTV.toString()
+                    tToken: tToken,
+                    dToken: dToken,
+                    maxLTV: maxLTV.toFixed(0),
+                    liqThres: liqThres.toFixed(0),
+                    price: tokenPriceData[i].toString()
                 });
             }
         }

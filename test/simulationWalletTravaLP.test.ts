@@ -17,7 +17,7 @@ import { Contract, JsonRpcProvider } from "ethers";
 import { getAddr } from "../src/utils/address";
 import ABITravaLP from "../src/abis/TravaLendingPool.json";
 import { MAX_UINT256 } from "../src/utils/config";
-// start test
+// start 
 
 const test = async () => {
   const provider = new JsonRpcProvider("https://bsc-testnet.publicnode.com");
@@ -32,7 +32,7 @@ const test = async () => {
   const userAddress = "0xCC8FdfC90Ed30aB2Da9b53302C1ba5E976210281";
   const proxyAddress = "0x3E66FF926474Ceaa438E8ba87F36c4D69FA4792D";
   const tokenAddress = "0xE1F005623934D3D8C724EC68Cc9bFD95498D4435";
-  const amount = BigInt(0).toString()
+  const amount = BigInt(1000).toString()
   // second update TravaLP state for wallet
   const userData = await TravaLendingPool.getUserAccountData(userAddress);
   console.log("userData", userData.totalCollateralUSD, userData.healthFactor);
@@ -93,7 +93,7 @@ const test = async () => {
   //   "smartWalletState before phase1 : ",
   //   appState.smartWalletState.travaLPState
   // );
-  console.log("Started: ", appState1.smartWalletState.travaLPState.availableBorrowsUSD)
+  console.log("Started: ", appState1.smartWalletState.detailTokenInPool.get(tokenAddress.toLowerCase()))
   console.log("================= PHASE 2 Supply ==========================");
   const appState4 = await SimulationSupply(
     appState1,
@@ -102,7 +102,7 @@ const test = async () => {
     amount
   );
 
-  console.log("ahuhu", appState4.smartWalletState.travaLPState);
+  console.log("ahuhu", appState4.smartWalletState.detailTokenInPool.get(tokenAddress.toLowerCase()));
 
   // // console.log(
   // //   "banlances after phase1 : ",
@@ -117,15 +117,15 @@ const test = async () => {
   // //   appState.smartWalletState.tokenBalances
   // // );
 
-  console.log("================= PHASE 2 Borrow ==========================");
-  const appState5 = await SimulationBorrow(
-    appState4,
-    proxyAddress,
-    tokenAddress,
-    amount
-  );
-  // // console.log("ahuhu", appState5.smartWalletState.detailTokenInPool);
-  console.log("ahuhu1", appState5.smartWalletState.travaLPState);
+  // console.log("================= PHASE 2 Borrow ==========================");
+  // const appState5 = await SimulationBorrow(
+  //   appState4,
+  //   proxyAddress,
+  //   tokenAddress,
+  //   amount
+  // );
+  // // // console.log("ahuhu", appState5.smartWalletState.detailTokenInPool);
+  // console.log("ahuhu1", appState5.smartWalletState.travaLPState);
   // console.log(
   //   "smartWalletState TravaLP after phase2 : ",
   //   appState.smartWalletState.travaLPState
