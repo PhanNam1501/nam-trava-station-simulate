@@ -21,6 +21,8 @@ export declare const getNetworkData: (chainId: number) => Network;
 export declare const configure: (config: Config) => void;
 export declare const CONTRACT_NETWORK: ContractNetwork;
 export declare const percentMul: (_value: string, percentage: string) => BigNumber;
+export declare const wadDiv: (_a: string, _b: string) => BigNumber;
 export declare const MAX_UINT256: string;
 export declare const PERCENTAGE_FACTOR: BigNumber;
 export declare const HALF_PERCENT: BigNumber;
+export declare const WAD: BigNumber;

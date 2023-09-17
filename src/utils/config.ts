@@ -85,11 +85,27 @@ export const percentMul = (_value: string, percentage: string): BigNumber => {
     return BigNumber(0);
   }
   if (value.isGreaterThanOrEqualTo(BigNumber(MAX_UINT256).minus(HALF_PERCENT))) {
-    new Error("MATH_MULTIPLICATION_OVERFLOW")
+    throw new Error("MATH_MULTIPLICATION_OVERFLOW")
   }
   return BigNumber(value.multipliedBy(percentage).plus(HALF_PERCENT).div(PERCENTAGE_FACTOR).toFixed(0))
+}
+
+export const wadDiv = (_a: string, _b: string): BigNumber => {
+  let a = BigNumber(_a);
+  let b = BigNumber(_b);
+
+  if(a.isZero()) {
+    throw new Error("MATH_DIVISION_BY_ZERO")
+  }
+  let halfB = b.div(2);
+
+  if(a.isGreaterThan(BigNumber(MAX_UINT256).minus(halfB).div(WAD))) {
+    throw new Error("MATH_MULTIPLICATION_OVERFLOW")
+  }
+  return a.multipliedBy(WAD).plus(halfB).div(b)
 }
 
 export const MAX_UINT256: string = ethers.MaxUint256.toString()
 export const PERCENTAGE_FACTOR: BigNumber = BigNumber(1e4)
 export const HALF_PERCENT: BigNumber = PERCENTAGE_FACTOR.div(2)
+export const WAD: BigNumber = BigNumber(1e18)

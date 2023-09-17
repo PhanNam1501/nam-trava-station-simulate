@@ -6,7 +6,7 @@ import BEP20ABI from "../../abis/BEP20.json";
 import { convertHexStringToAddress, getAddr } from "../../utils/address";
 import { Contract } from "ethers";
 import _, { bind, multiply, update } from "lodash";
-import { MAX_UINT256, percentMul } from "../../utils/config";
+import { MAX_UINT256, percentMul, wadDiv } from "../../utils/config";
 import IncentiveContractABI from "../../abis/IncentiveContract.json";
 import { BigNumber } from "bignumber.js";
 import { updateLPDebtTokenInfo, updateLPtTokenInfo } from "./UpdateStateAccount";
@@ -25,10 +25,13 @@ export function calculateNewHealFactor(newTotalCollateral: BigNumber, newLiquida
     return BigNumber(MAX_UINT256)
   }
 
-  return newTotalCollateral
-    .multipliedBy(newLiquidationThreshold)
-    .multipliedBy(10 ** 14)
-    .div(newTotalDebt)
+  return wadDiv(
+            percentMul(
+              newTotalCollateral.toFixed(0), 
+              newLiquidationThreshold.toFixed(0)
+            ).toFixed(0), 
+            newTotalDebt.toFixed(0)
+          )
 }
 // ltv = sum(C[i] * ltv[i]) / sum(C[i]) with C[i] is colleteral of token[i] and ltv[i] is ltv of this token
 // <=> oldLtv = sum(C[i] * ltv[i]) / oldTotalColleteral
@@ -41,9 +44,6 @@ export function calculateNewLTV(oldTotalColleteral: BigNumber, oldLTV: BigNumber
   if (usd_changed.isZero()) {
     return oldLTV;
   }
-  // console.log("usd_changed", usd_changed.toFixed(0))
-  // console.log("tokenLTV", tokenLTV.toFixed(0))
-  // console.log("newTotalCollateral", newTotalCollateral.toFixed(0))
   let newLTV = oldTotalColleteral
     .multipliedBy(oldLTV)
     .plus(usd_changed.multipliedBy(tokenLTV))
@@ -208,6 +208,7 @@ export async function SimulationBorrow(
   _amount: string
 ): Promise<ApplicationState> {
   try {
+    // console.log("amount", _amount)
     let amount = BigNumber(_amount);
 
     const appState = { ...appState1 };

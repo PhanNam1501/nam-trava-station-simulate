@@ -709,9 +709,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   MAX_UINT256: () => (/* binding */ MAX_UINT256),
 /* harmony export */   NETWORKS: () => (/* binding */ NETWORKS),
 /* harmony export */   PERCENTAGE_FACTOR: () => (/* binding */ PERCENTAGE_FACTOR),
+/* harmony export */   WAD: () => (/* binding */ WAD),
 /* harmony export */   configure: () => (/* binding */ configure),
 /* harmony export */   getNetworkData: () => (/* binding */ getNetworkData),
-/* harmony export */   percentMul: () => (/* binding */ percentMul)
+/* harmony export */   percentMul: () => (/* binding */ percentMul),
+/* harmony export */   wadDiv: () => (/* binding */ wadDiv)
 /* harmony export */ });
 /* harmony import */ var _zennomi_tokens__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(14);
 /* harmony import */ var _zennomi_tokens__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_zennomi_tokens__WEBPACK_IMPORTED_MODULE_0__);
@@ -803,13 +805,26 @@ var percentMul = (_value, percentage) => {
     return (0,bignumber_js__WEBPACK_IMPORTED_MODULE_2__["default"])(0);
   }
   if (value.isGreaterThanOrEqualTo((0,bignumber_js__WEBPACK_IMPORTED_MODULE_2__["default"])(MAX_UINT256).minus(HALF_PERCENT))) {
-    new Error("MATH_MULTIPLICATION_OVERFLOW");
+    throw new Error("MATH_MULTIPLICATION_OVERFLOW");
   }
   return (0,bignumber_js__WEBPACK_IMPORTED_MODULE_2__["default"])(value.multipliedBy(percentage).plus(HALF_PERCENT).div(PERCENTAGE_FACTOR).toFixed(0));
+};
+var wadDiv = (_a, _b) => {
+  var a = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_2__["default"])(_a);
+  var b = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_2__["default"])(_b);
+  if (a.isZero()) {
+    throw new Error("MATH_DIVISION_BY_ZERO");
+  }
+  var halfB = b.div(2);
+  if (a.isGreaterThan((0,bignumber_js__WEBPACK_IMPORTED_MODULE_2__["default"])(MAX_UINT256).minus(halfB).div(WAD))) {
+    throw new Error("MATH_MULTIPLICATION_OVERFLOW");
+  }
+  return a.multipliedBy(WAD).plus(halfB).div(b);
 };
 var MAX_UINT256 = ethers__WEBPACK_IMPORTED_MODULE_1__.ethers.MaxUint256.toString();
 var PERCENTAGE_FACTOR = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_2__["default"])(1e4);
 var HALF_PERCENT = PERCENTAGE_FACTOR.div(2);
+var WAD = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_2__["default"])(1e18);
 
 /***/ }),
 /* 14 */
@@ -23306,7 +23321,7 @@ function calculateNewHealFactor(newTotalCollateral, newLiquidationThreshold, new
   if (newTotalDebt.isZero()) {
     return (0,bignumber_js__WEBPACK_IMPORTED_MODULE_4__.BigNumber)(_utils_config__WEBPACK_IMPORTED_MODULE_2__.MAX_UINT256);
   }
-  return newTotalCollateral.multipliedBy(newLiquidationThreshold).multipliedBy(10 ** 14).div(newTotalDebt);
+  return (0,_utils_config__WEBPACK_IMPORTED_MODULE_2__.wadDiv)((0,_utils_config__WEBPACK_IMPORTED_MODULE_2__.percentMul)(newTotalCollateral.toFixed(0), newLiquidationThreshold.toFixed(0)).toFixed(0), newTotalDebt.toFixed(0));
 }
 // ltv = sum(C[i] * ltv[i]) / sum(C[i]) with C[i] is colleteral of token[i] and ltv[i] is ltv of this token
 // <=> oldLtv = sum(C[i] * ltv[i]) / oldTotalColleteral
@@ -23442,6 +23457,7 @@ function SimulationBorrow(_x5, _x6, _x7, _x8) {
 function _SimulationBorrow() {
   _SimulationBorrow = _asyncToGenerator(function* (appState1, _to, _tokenAddress, _amount) {
     try {
+      // console.log("amount", _amount)
       var amount = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_4__.BigNumber)(_amount);
       var appState = _objectSpread({}, appState1);
       _tokenAddress = _tokenAddress.toLowerCase();
@@ -23791,8 +23807,8 @@ function _updateLPtTokenInfo() {
           if (binaryAssetConfig.length < 80) {
             binaryAssetConfig = "0".repeat(80 - binaryAssetConfig.length) + binaryAssetConfig;
           }
-          var maxLTV = parseInt(binaryAssetConfig.slice(-15), 2) / 100;
-          var liqThres = parseInt(binaryAssetConfig.slice(-31, -16), 2) / 100 / 100;
+          var maxLTV = parseInt(binaryAssetConfig.slice(-15), 2);
+          var liqThres = parseInt(binaryAssetConfig.slice(-31, -16), 2);
           appState.smartWalletState.detailTokenInPool = appState.smartWalletState.detailTokenInPool.set(tokenAddressState, {
             tToken: {
               address: tTokenAddress.toLowerCase(),
@@ -23852,9 +23868,8 @@ function _updateLPDebtTokenInfo() {
           if (binaryAssetConfig.length < 80) {
             binaryAssetConfig = "0".repeat(80 - binaryAssetConfig.length) + binaryAssetConfig;
           }
-          var maxLTV = parseInt(binaryAssetConfig.slice(-15), 2) / 100;
-          var liqThres = parseInt(binaryAssetConfig.slice(-31, -16), 2) / 100 / 100;
-          ;
+          var maxLTV = parseInt(binaryAssetConfig.slice(-15), 2);
+          var liqThres = parseInt(binaryAssetConfig.slice(-31, -16), 2);
           appState.smartWalletState.detailTokenInPool = appState.smartWalletState.detailTokenInPool.set(tokenAddressState, {
             dToken: {
               address: variableDebtTokenAddress.toLowerCase(),
@@ -23935,8 +23950,8 @@ function _updateTokenInPoolInfo() {
         if (binaryAssetConfig.length < 80) {
           binaryAssetConfig = "0".repeat(80 - binaryAssetConfig.length) + binaryAssetConfig;
         }
-        maxLTV = parseInt(binaryAssetConfig.slice(-15), 2) / 100;
-        liqThres = parseInt(binaryAssetConfig.slice(-31, -16), 2) / 100 / 100;
+        maxLTV = parseInt(binaryAssetConfig.slice(-15), 2);
+        liqThres = parseInt(binaryAssetConfig.slice(-31, -16), 2);
         tToken = {
           address: tTokenList[i].toString().toLowerCase(),
           balances: tTokenBalance[i].toString(),
@@ -34445,6 +34460,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   SimulationRepay: () => (/* reexport safe */ _Simulation__WEBPACK_IMPORTED_MODULE_1__.SimulationRepay),
 /* harmony export */   SimulationSupply: () => (/* reexport safe */ _Simulation__WEBPACK_IMPORTED_MODULE_1__.SimulationSupply),
 /* harmony export */   SimulationWithdraw: () => (/* reexport safe */ _Simulation__WEBPACK_IMPORTED_MODULE_1__.SimulationWithdraw),
+/* harmony export */   WAD: () => (/* reexport safe */ _utils_config__WEBPACK_IMPORTED_MODULE_3__.WAD),
 /* harmony export */   calculateNewAvailableBorrow: () => (/* reexport safe */ _Simulation__WEBPACK_IMPORTED_MODULE_1__.calculateNewAvailableBorrow),
 /* harmony export */   calculateNewHealFactor: () => (/* reexport safe */ _Simulation__WEBPACK_IMPORTED_MODULE_1__.calculateNewHealFactor),
 /* harmony export */   calculateNewLTV: () => (/* reexport safe */ _Simulation__WEBPACK_IMPORTED_MODULE_1__.calculateNewLTV),
@@ -34479,7 +34495,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   updateTravaBalance: () => (/* reexport safe */ _Simulation__WEBPACK_IMPORTED_MODULE_1__.updateTravaBalance),
 /* harmony export */   updateTravaLPInfo: () => (/* reexport safe */ _Simulation__WEBPACK_IMPORTED_MODULE_1__.updateTravaLPInfo),
 /* harmony export */   updateUserEthBalance: () => (/* reexport safe */ _Simulation__WEBPACK_IMPORTED_MODULE_1__.updateUserEthBalance),
-/* harmony export */   updateUserTokenBalance: () => (/* reexport safe */ _Simulation__WEBPACK_IMPORTED_MODULE_1__.updateUserTokenBalance)
+/* harmony export */   updateUserTokenBalance: () => (/* reexport safe */ _Simulation__WEBPACK_IMPORTED_MODULE_1__.updateUserTokenBalance),
+/* harmony export */   wadDiv: () => (/* reexport safe */ _utils_config__WEBPACK_IMPORTED_MODULE_3__.wadDiv)
 /* harmony export */ });
 /* harmony import */ var _State__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(1);
 /* harmony import */ var _Simulation__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(7);

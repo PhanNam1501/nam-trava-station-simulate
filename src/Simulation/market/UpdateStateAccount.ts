@@ -88,8 +88,8 @@ export async function updateLPtTokenInfo(
         if (binaryAssetConfig.length < 80) {
           binaryAssetConfig = "0".repeat(80 - binaryAssetConfig.length) + binaryAssetConfig;
         }
-        const maxLTV = parseInt(binaryAssetConfig.slice(-15), 2) / 100;
-        const liqThres = parseInt(binaryAssetConfig.slice(-31, -16), 2) / 100 / 100;
+        const maxLTV = parseInt(binaryAssetConfig.slice(-15), 2);
+        const liqThres = parseInt(binaryAssetConfig.slice(-31, -16), 2);
 
         appState.smartWalletState.detailTokenInPool =
           appState.smartWalletState.detailTokenInPool.set(tokenAddressState, {
@@ -171,8 +171,8 @@ export async function updateLPDebtTokenInfo(
         if (binaryAssetConfig.length < 80) {
           binaryAssetConfig = "0".repeat(80 - binaryAssetConfig.length) + binaryAssetConfig;
         }
-        const maxLTV = parseInt(binaryAssetConfig.slice(-15), 2) / 100;
-        let liqThres = parseInt(binaryAssetConfig.slice(-31, -16), 2) / 100 / 100;;
+        const maxLTV = parseInt(binaryAssetConfig.slice(-15), 2);
+        let liqThres = parseInt(binaryAssetConfig.slice(-31, -16), 2);
         appState.smartWalletState.detailTokenInPool =
           appState.smartWalletState.detailTokenInPool.set(tokenAddressState, {
             dToken: {
@@ -302,8 +302,8 @@ async function updateTokenInPoolInfo(
       if (binaryAssetConfig.length < 80) {
         binaryAssetConfig = "0".repeat(80 - binaryAssetConfig.length) + binaryAssetConfig;
       }
-      maxLTV = parseInt(binaryAssetConfig.slice(-15), 2) / 100;
-      liqThres = parseInt(binaryAssetConfig.slice(-31, -16), 2) / 100 / 100;
+      maxLTV = parseInt(binaryAssetConfig.slice(-15), 2);
+      liqThres = parseInt(binaryAssetConfig.slice(-31, -16), 2);
 
       tToken = {
         address: tTokenList[i].toString().toLowerCase(),

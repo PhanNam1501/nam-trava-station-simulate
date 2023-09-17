@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 import { getAddr } from "../../utils/address";
 import { Contract } from "ethers";
-import { MAX_UINT256, percentMul } from "../../utils/config";
+import { MAX_UINT256, percentMul, wadDiv } from "../../utils/config";
 import IncentiveContractABI from "../../abis/IncentiveContract.json";
 import { BigNumber } from "bignumber.js";
 import { updateLPDebtTokenInfo, updateLPtTokenInfo } from "./UpdateStateAccount";
@@ -22,10 +22,7 @@ export function calculateNewHealFactor(newTotalCollateral, newLiquidationThresho
     if (newTotalDebt.isZero()) {
         return BigNumber(MAX_UINT256);
     }
-    return newTotalCollateral
-        .multipliedBy(newLiquidationThreshold)
-        .multipliedBy(Math.pow(10, 14))
-        .div(newTotalDebt);
+    return wadDiv(percentMul(newTotalCollateral.toFixed(0), newLiquidationThreshold.toFixed(0)).toFixed(0), newTotalDebt.toFixed(0));
 }
 // ltv = sum(C[i] * ltv[i]) / sum(C[i]) with C[i] is colleteral of token[i] and ltv[i] is ltv of this token
 // <=> oldLtv = sum(C[i] * ltv[i]) / oldTotalColleteral
@@ -156,6 +153,7 @@ export function SimulationSupply(appState1, _from, _tokenAddress, _amount) {
 export function SimulationBorrow(appState1, _to, _tokenAddress, _amount) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
+            // console.log("amount", _amount)
             let amount = BigNumber(_amount);
             const appState = Object.assign({}, appState1);
             _tokenAddress = _tokenAddress.toLowerCase();
