@@ -6,6 +6,7 @@ type Config = {
 
 type ContractNetwork = {
   bscTestnet: Contract;
+  bscMainnet: Contract;
 };
 
 type Contract = {

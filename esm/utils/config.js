@@ -1,6 +1,7 @@
 import { set as dfsTokensSetConfig } from "@zennomi/tokens";
 import { ethers } from "ethers";
 import BigNumber from "bignumber.js";
+import { DivisionByZeroError, MultiplicationOverflowError } from "./error";
 /**
  *
  * @type {Networks}
@@ -68,25 +69,22 @@ export const CONTRACT_NETWORK = {
         TRAVA_TOKEN: "0x4ABEf176F22B9a71B45ddc6c4A115095d8761b37",
     },
 };
-export const percentMul = (_value, percentage) => {
-    let value = BigNumber(_value);
-    if (value.toString() == "0" || percentage == "0") {
+export const percentMul = (value, percentage) => {
+    if (value.toFixed(0) == "0" || percentage.isZero()) {
         return BigNumber(0);
     }
     if (value.isGreaterThanOrEqualTo(BigNumber(MAX_UINT256).minus(HALF_PERCENT))) {
-        throw new Error("MATH_MULTIPLICATION_OVERFLOW");
+        throw new MultiplicationOverflowError("MATH_MULTIPLICATION_OVERFLOW");
     }
     return BigNumber(value.multipliedBy(percentage).plus(HALF_PERCENT).div(PERCENTAGE_FACTOR).toFixed(0));
 };
-export const wadDiv = (_a, _b) => {
-    let a = BigNumber(_a);
-    let b = BigNumber(_b);
-    if (a.isZero()) {
-        throw new Error("MATH_DIVISION_BY_ZERO");
+export const wadDiv = (a, b) => {
+    if (a.toFixed(0) == "0") {
+        throw new DivisionByZeroError("MATH_DIVISION_BY_ZERO");
     }
     let halfB = b.div(2);
     if (a.isGreaterThan(BigNumber(MAX_UINT256).minus(halfB).div(WAD))) {
-        throw new Error("MATH_MULTIPLICATION_OVERFLOW");
+        throw new MultiplicationOverflowError("MATH_MULTIPLICATION_OVERFLOW");
     }
     return a.multipliedBy(WAD).plus(halfB).div(b);
 };

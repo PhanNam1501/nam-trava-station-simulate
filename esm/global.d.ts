@@ -17,8 +17,10 @@ export type ArmouryType = {
     tokenId: number;
     version: string;
     set: number;
-    rarity: number;
-    type: number;
+    nRarity: number;
+    nType: number;
+    rarity: string;
+    type: string;
     exp: number;
 };
 export interface BaseKnight {

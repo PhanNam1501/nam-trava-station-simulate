@@ -14,15 +14,69 @@ import IncentiveContractABI from "../../abis/IncentiveContract.json";
 import { BigNumber } from "bignumber.js";
 import { updateLPDebtTokenInfo, updateLPtTokenInfo } from "./UpdateStateAccount";
 import { updateSmartWalletTokenBalance, updateUserTokenBalance } from "../basic/UpdateStateAccount";
+export function calculateMaxAmountSupply(appState, _tokenAddress, mode) {
+    let tokenAddress = _tokenAddress.toLowerCase();
+    const walletBalance = appState[mode].tokenBalances.get(tokenAddress);
+    if (typeof walletBalance == undefined) {
+        throw new Error("Token is not init in " + mode + " state!");
+    }
+    let tokenInfo = appState.smartWalletState.detailTokenInPool.get(tokenAddress);
+    if (typeof tokenInfo == undefined) {
+        throw new Error("Token is not init in smart wallet lending pool state!");
+    }
+    return BigNumber(appState[mode].tokenBalances.get(tokenAddress)).div(BigNumber("10").pow(tokenInfo.tToken.decimals));
+}
+export function calculateMaxAmountBorrow(appState, _tokenAddress) {
+    let tokenAddress = _tokenAddress.toLowerCase();
+    let tokenInfo = appState.smartWalletState.detailTokenInPool.get(tokenAddress);
+    if (typeof tokenInfo == undefined) {
+        throw new Error("Token is not init in smart wallet lending pool state!");
+    }
+    const tTokenReserveBalanceRaw = BigNumber(tokenInfo.tToken.originToken.balances);
+    const tTokenReserveBalance = BigNumber(tTokenReserveBalanceRaw).div(BigNumber("10").pow(tokenInfo.tToken.decimals));
+    const availableBorrowsUSD = BigNumber(appState.smartWalletState.travaLPState.availableBorrowsUSD);
+    const nativeAvailableBorrow = availableBorrowsUSD.div(tokenInfo.price);
+    return BigNumber.max(BigNumber.min(nativeAvailableBorrow, tTokenReserveBalance), 0);
+}
+export function calculateMaxAmountRepay(appState, _tokenAddress, mode) {
+    let tokenAddress = _tokenAddress.toLowerCase();
+    const walletBalance = appState[mode].tokenBalances.get(tokenAddress);
+    if (typeof walletBalance == undefined) {
+        throw new Error("Token is not init in " + mode + " state!");
+    }
+    let tokenInfo = appState.smartWalletState.detailTokenInPool.get(tokenAddress.toLowerCase());
+    if (typeof tokenInfo == undefined) {
+        throw new Error("Token is not init in smart wallet lending pool state!");
+    }
+    let dTokenBalance = tokenInfo.dToken.balances;
+    const borrowed = new BigNumber(dTokenBalance).dividedBy(BigNumber("10").pow(tokenInfo.dToken.decimals));
+    return BigNumber.max(BigNumber.min(walletBalance, borrowed), 0);
+}
+export function calculateMaxAmountWithdraw(appState, _tokenAddress) {
+    let tokenAddress = _tokenAddress.toLowerCase();
+    let tokenInfo = appState.smartWalletState.detailTokenInPool.get(tokenAddress.toLowerCase());
+    if (typeof tokenInfo == undefined) {
+        throw new Error("Token is not init in smart wallet lending pool state!");
+    }
+    const depositedRaw = tokenInfo.tToken.balances;
+    const deposited = BigNumber(depositedRaw).dividedBy(BigNumber("10").pow(tokenInfo.tToken.decimals));
+    const tTokenReserveBalanceRaw = tokenInfo.tToken.originToken.balances;
+    const tTokenReserveBalance = BigNumber(tTokenReserveBalanceRaw).dividedBy(BigNumber("10").pow(tokenInfo.tToken.decimals));
+    const nativeAvailableWithdraw = BigNumber(appState.smartWalletState.travaLPState.totalCollateralUSD)
+        .minus(BigNumber(appState.smartWalletState.travaLPState.totalDebtUSD).div(BigNumber(appState.smartWalletState.travaLPState.ltv)))
+        .div(tokenInfo.price);
+    const available = BigNumber(tokenInfo.tToken.totalSupply).minus(tokenInfo.dToken.totalSupply).div(tokenInfo.price);
+    return BigNumber.max(BigNumber.min(deposited, nativeAvailableWithdraw, tTokenReserveBalance, BigNumber(available)), 0);
+}
 export function calculateNewAvailableBorrow(newTotalCollateral, newLTV, newTotalDebt) {
-    return percentMul(newTotalCollateral.toFixed(0), newLTV.toFixed(0))
+    return percentMul(newTotalCollateral, newLTV)
         .minus(newTotalDebt);
 }
 export function calculateNewHealFactor(newTotalCollateral, newLiquidationThreshold, newTotalDebt) {
-    if (newTotalDebt.isZero()) {
+    if (newTotalDebt.toFixed(0) == "0") {
         return BigNumber(MAX_UINT256);
     }
-    return wadDiv(percentMul(newTotalCollateral.toFixed(0), newLiquidationThreshold.toFixed(0)).toFixed(0), newTotalDebt.toFixed(0));
+    return wadDiv(percentMul(newTotalCollateral, newLiquidationThreshold), newTotalDebt);
 }
 // ltv = sum(C[i] * ltv[i]) / sum(C[i]) with C[i] is colleteral of token[i] and ltv[i] is ltv of this token
 // <=> oldLtv = sum(C[i] * ltv[i]) / oldTotalColleteral
@@ -32,12 +86,9 @@ export function calculateNewHealFactor(newTotalCollateral, newLiquidationThresho
 // if amount == 0, LTV is unchanged
 export function calculateNewLTV(oldTotalColleteral, oldLTV, newTotalCollateral, tokenLTV) {
     let usd_changed = newTotalCollateral.minus(oldTotalColleteral);
-    if (usd_changed.isZero()) {
+    if (usd_changed.toFixed(0) == "0") {
         return oldLTV;
     }
-    // console.log("usd_changed", usd_changed.toFixed(0))
-    // console.log("tokenLTV", tokenLTV.toFixed(0))
-    // console.log("newTotalCollateral", newTotalCollateral.toFixed(0))
     let newLTV = oldTotalColleteral
         .multipliedBy(oldLTV)
         .plus(usd_changed.multipliedBy(tokenLTV))
@@ -46,7 +97,7 @@ export function calculateNewLTV(oldTotalColleteral, oldLTV, newTotalCollateral, 
 }
 //liquid threshold has a formula like LTV
 export function calculateNewLiquidThreshold(oldTotalColleteral, oldLiqThres, newTotalCollateral, tokenLiqThres) {
-    if (newTotalCollateral.isZero()) {
+    if (newTotalCollateral.toFixed(0) == "0") {
         return BigNumber(0);
     }
     let usd_changed = newTotalCollateral.minus(oldTotalColleteral);
@@ -84,11 +135,11 @@ export function SimulationSupply(appState1, _from, _tokenAddress, _amount) {
             _tokenAddress = _tokenAddress.toLowerCase();
             if (_from.toLowerCase() == appState.walletState.address.toLowerCase()) {
                 // check tokenAddress:string is exist on appState.walletState.tokenBalances : Array<Map<string, string>>
-                if (appState.walletState.tokenBalances.has(_tokenAddress)) {
+                if (!appState.walletState.tokenBalances.has(_tokenAddress)) {
                     yield updateUserTokenBalance(appState, _tokenAddress);
                 }
                 if (amount.toFixed(0) == MAX_UINT256 || amount.isEqualTo(MAX_UINT256)) {
-                    amount = BigNumber(appState.walletState.tokenBalances.get(_tokenAddress));
+                    amount = calculateMaxAmountSupply(appState, _tokenAddress, "walletState");
                 }
                 // get token amount
                 const tokenAmount = BigNumber(appState.walletState.tokenBalances.get(_tokenAddress));
@@ -99,12 +150,13 @@ export function SimulationSupply(appState1, _from, _tokenAddress, _amount) {
                 appState.walletState.tokenBalances.set(_tokenAddress, newAmount);
             }
             else if (_from.toLowerCase() == appState.smartWalletState.address.toLowerCase()) {
+                // console.log("amount", amount.toFixed(0))
                 // check tokenAddress:string is exist on appState.walletState.tokenBalances : Array<Map<string, string>>
-                if (appState.smartWalletState.tokenBalances.has(_tokenAddress)) {
+                if (!appState.smartWalletState.tokenBalances.has(_tokenAddress)) {
                     yield updateSmartWalletTokenBalance(appState, _tokenAddress);
                 }
                 if (amount.toFixed(0) == MAX_UINT256 || amount.isEqualTo(MAX_UINT256)) {
-                    amount = BigNumber(appState.walletState.tokenBalances.get(_tokenAddress));
+                    amount = calculateMaxAmountSupply(appState, _tokenAddress, "smartWalletState");
                 }
                 // get token amount
                 const tokenAmount = appState.smartWalletState.tokenBalances.get(_tokenAddress);
@@ -140,7 +192,15 @@ export function SimulationSupply(appState1, _from, _tokenAddress, _amount) {
             appState.smartWalletState.travaLPState.ltv = newLTV.toFixed(0);
             appState.smartWalletState.travaLPState.healthFactor = healthFactor.toFixed(0);
             appState.smartWalletState.travaLPState.availableBorrowsUSD = availableBorrowsUSD.toFixed(0);
-            tokenInfo.tToken = Object.assign(Object.assign({}, tokenInfo.tToken), { balances: BigNumber(tokenInfo.tToken.balances).plus(amount).toFixed(0) });
+            tokenInfo.tToken = {
+                address: tokenInfo.tToken.address,
+                decimals: tokenInfo.tToken.decimals,
+                balances: BigNumber(tokenInfo.tToken.balances).plus(amount).toFixed(0),
+                totalSupply: BigNumber(tokenInfo.tToken.totalSupply).plus(supplyUSD).toFixed(0),
+                originToken: {
+                    balances: BigNumber(tokenInfo.tToken.originToken.balances).plus(amount).toFixed(0)
+                }
+            };
             appState.smartWalletState.detailTokenInPool.set(_tokenAddress, tokenInfo);
             return appState;
         }
@@ -165,18 +225,15 @@ export function SimulationBorrow(appState1, _to, _tokenAddress, _amount) {
             if (typeof tokenInfo.tToken == undefined) {
                 yield updateLPDebtTokenInfo(appState, _tokenAddress);
             }
-            let tTokenReserveBalance = BigNumber(tokenInfo.tToken.balances);
+            if (amount.toFixed(0) == MAX_UINT256 || amount.isEqualTo(MAX_UINT256)) {
+                amount = calculateMaxAmountBorrow(appState, _tokenAddress);
+            }
             if (_to.toLowerCase() == appState.walletState.address.toLowerCase()) {
                 _to = appState.walletState.address;
                 //  check tokenAddress is on tokenBalance of wallet
-                if (appState.walletState.tokenBalances.has(_tokenAddress)) {
+                if (!appState.walletState.tokenBalances.has(_tokenAddress)) {
                     yield updateUserTokenBalance(appState, _tokenAddress);
                 }
-                if (amount.toFixed(0) == MAX_UINT256 || amount.isEqualTo(MAX_UINT256)) {
-                    amount = getAmountFromBalanceUsd(BigNumber(appState.smartWalletState.travaLPState.availableBorrowsUSD), tokenInfo);
-                }
-                //calculate max borrow
-                amount = BigNumber.max(BigNumber.min(amount, tTokenReserveBalance), 0);
                 appState.walletState.tokenBalances.set(_tokenAddress, BigNumber(appState.walletState.tokenBalances.get(_tokenAddress))
                     .plus(amount)
                     .toFixed(0));
@@ -184,14 +241,9 @@ export function SimulationBorrow(appState1, _to, _tokenAddress, _amount) {
             else if (_to.toLowerCase() == appState.smartWalletState.address.toLowerCase()) {
                 _to = appState.smartWalletState.address;
                 //  check tokenAddress is on tokenBalance of smartWallet
-                if (appState.smartWalletState.tokenBalances.has(_tokenAddress)) {
+                if (!appState.smartWalletState.tokenBalances.has(_tokenAddress)) {
                     yield updateSmartWalletTokenBalance(appState, _tokenAddress);
                 }
-                if (amount.toFixed(0) == MAX_UINT256 || amount.isEqualTo(MAX_UINT256)) {
-                    amount = getAmountFromBalanceUsd(BigNumber(appState.smartWalletState.travaLPState.availableBorrowsUSD), tokenInfo);
-                }
-                // calculate max amount
-                amount = BigNumber.max(BigNumber.min(amount, tTokenReserveBalance), 0);
                 // add debToken to smart wallet state if not exist
                 appState.smartWalletState.tokenBalances.set(_tokenAddress, BigNumber(appState.smartWalletState.tokenBalances.get(_tokenAddress))
                     .plus(amount)
@@ -208,7 +260,15 @@ export function SimulationBorrow(appState1, _to, _tokenAddress, _amount) {
             appState.smartWalletState.travaLPState.totalDebtUSD = newTotalDebtUSD.toFixed(0);
             appState.smartWalletState.travaLPState.availableBorrowsUSD = newAvailableBorrow.toFixed(0);
             appState.smartWalletState.travaLPState.healthFactor = newHealthFactor.toFixed(0);
-            tokenInfo.dToken = Object.assign(Object.assign({}, tokenInfo.dToken), { balances: BigNumber(tokenInfo.dToken.balances).plus(amount).toFixed(0) });
+            tokenInfo.dToken = {
+                address: tokenInfo.dToken.address,
+                decimals: tokenInfo.dToken.decimals,
+                balances: BigNumber(tokenInfo.dToken.balances).plus(amount).toFixed(0),
+                totalSupply: BigNumber(tokenInfo.dToken.totalSupply).plus(borrowUSD).toFixed(0),
+                originToken: {
+                    balances: BigNumber(tokenInfo.dToken.originToken.balances).minus(amount).toFixed(0)
+                }
+            };
             appState.smartWalletState.detailTokenInPool.set(_tokenAddress, tokenInfo);
             return appState;
         }
@@ -228,12 +288,12 @@ export function SimulationRepay(appState1, _from, _tokenAddress, _amount) {
             if (typeof tokenInfo.tToken == undefined) {
                 yield updateLPDebtTokenInfo(appState, _tokenAddress);
             }
-            if (amount.toFixed(0) == MAX_UINT256 || amount.isEqualTo(MAX_UINT256)) {
-                amount = BigNumber(appState.smartWalletState.detailTokenInPool.get(_tokenAddress).dToken.balances);
-            }
             if (_from.toLowerCase() == appState.walletState.address.toLowerCase()) {
+                if (amount.toFixed(0) == MAX_UINT256 || amount.isEqualTo(MAX_UINT256)) {
+                    amount = calculateMaxAmountRepay(appState, _tokenAddress, "walletState");
+                }
                 // check tokenAddress is exist on reverseList
-                if (appState.walletState.tokenBalances.has(_tokenAddress)) {
+                if (!appState.walletState.tokenBalances.has(_tokenAddress)) {
                     yield updateUserTokenBalance(appState, _tokenAddress);
                 }
                 // set debt token balance to debtTokenSmartWalletBalance - amount
@@ -242,8 +302,11 @@ export function SimulationRepay(appState1, _from, _tokenAddress, _amount) {
                     .toFixed(0));
             }
             else if (_from.toLowerCase() == appState.smartWalletState.address.toLowerCase()) {
+                if (amount.toFixed(0) == MAX_UINT256 || amount.isEqualTo(MAX_UINT256)) {
+                    amount = calculateMaxAmountRepay(appState, _tokenAddress, "smartWalletState");
+                }
                 // check tokenAddress is exist on reverseList
-                if (appState.smartWalletState.tokenBalances.has(_tokenAddress)) {
+                if (!appState.smartWalletState.tokenBalances.has(_tokenAddress)) {
                     yield updateSmartWalletTokenBalance(appState, _tokenAddress);
                 }
                 // set debt token balance to debtTokenSmartWalletBalance - amount
@@ -261,7 +324,15 @@ export function SimulationRepay(appState1, _from, _tokenAddress, _amount) {
             appState.smartWalletState.travaLPState.availableBorrowsUSD = availableBorrowsUSD.toFixed(0);
             appState.smartWalletState.travaLPState.totalDebtUSD = newTotalDebt.toFixed(0);
             appState.smartWalletState.travaLPState.healthFactor = healthFactor.toFixed(0);
-            tokenInfo.dToken.balances = BigNumber(tokenInfo.dToken.balances).minus(amount).toFixed(0);
+            tokenInfo.dToken = {
+                address: tokenInfo.dToken.address,
+                decimals: tokenInfo.dToken.decimals,
+                balances: BigNumber(tokenInfo.dToken.balances).minus(amount).toFixed(0),
+                totalSupply: BigNumber(tokenInfo.dToken.totalSupply).minus(repayUSD).toFixed(0),
+                originToken: {
+                    balances: BigNumber(tokenInfo.dToken.originToken.balances).plus(amount).toFixed(0)
+                }
+            };
             appState.smartWalletState.detailTokenInPool.set(_tokenAddress, tokenInfo);
             return appState;
         }
@@ -282,12 +353,12 @@ export function SimulationWithdraw(appState1, _to, _tokenAddress, _amount) {
                 yield updateLPDebtTokenInfo(appState, _tokenAddress);
             }
             if (amount.toFixed(0) == MAX_UINT256 || amount.isEqualTo(MAX_UINT256)) {
-                amount = BigNumber(appState.smartWalletState.detailTokenInPool.get(_tokenAddress).tToken.balances);
+                amount = calculateMaxAmountWithdraw(appState, _tokenAddress);
             }
             if (_to.toLowerCase() == appState.walletState.address.toLowerCase()) {
                 _to = appState.walletState.address.toLowerCase();
                 // check tokenAddress:string is exist on appState.walletState.tokenBalances : Array<Map<string, string>>
-                if (appState.walletState.tokenBalances.has(_tokenAddress)) {
+                if (!appState.walletState.tokenBalances.has(_tokenAddress)) {
                     yield updateUserTokenBalance(appState, _tokenAddress);
                 }
                 // update token balances
@@ -298,7 +369,7 @@ export function SimulationWithdraw(appState1, _to, _tokenAddress, _amount) {
             else if (_to.toLowerCase() == appState.smartWalletState.address.toLowerCase()) {
                 _to = appState.smartWalletState.address.toLowerCase();
                 // check tokenAddress:string is exist on appState.walletState.tokenBalances : Array<Map<string, string>>
-                if (appState.smartWalletState.tokenBalances.has(_tokenAddress)) {
+                if (!appState.smartWalletState.tokenBalances.has(_tokenAddress)) {
                     yield updateSmartWalletTokenBalance(appState, _tokenAddress);
                 }
                 // update token balances
@@ -321,7 +392,15 @@ export function SimulationWithdraw(appState1, _to, _tokenAddress, _amount) {
             appState.smartWalletState.travaLPState.ltv = newLTV.toFixed(0);
             appState.smartWalletState.travaLPState.healthFactor = healthFactor.toFixed(0);
             appState.smartWalletState.travaLPState.availableBorrowsUSD = availableBorrowsUSD.toFixed(0);
-            tokenInfo.tToken = Object.assign(Object.assign({}, tokenInfo.tToken), { balances: BigNumber(tokenInfo.tToken.balances).minus(amount).toFixed(0) });
+            tokenInfo.tToken = {
+                address: tokenInfo.tToken.address,
+                decimals: tokenInfo.tToken.decimals,
+                balances: BigNumber(tokenInfo.tToken.balances).minus(amount).toFixed(0),
+                totalSupply: BigNumber(tokenInfo.tToken.totalSupply).minus(withdrawUSD).toFixed(0),
+                originToken: {
+                    balances: BigNumber(tokenInfo.tToken.originToken.balances).minus(amount).toFixed(0)
+                }
+            };
             appState.smartWalletState.detailTokenInPool.set(_tokenAddress, tokenInfo);
             return appState;
         }

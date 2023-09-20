@@ -133,8 +133,10 @@ export async function updateNFTBalanceFromContract(
           tokenId: parseInt(item.tokenId),
           version: item.version,
           set: parseInt(item[3]),
-          rarity: parseInt(item[1]),
-          type: parseInt(item[2]),
+          nRarity: parseInt(item[1]),
+          nType: parseInt(item[2]),
+          rarity: RarityMapping[parseInt(item[1]) - 1],
+          type: TypeMapping[parseInt(item[2]) - 1],
           exp: parseInt(item[4]),
         };
         if (item.version == 1) appState[mode].nfts.v1[item.tokenId] = data;
@@ -421,7 +423,7 @@ async function _fetchNormal(
       const tRarity = RarityMapping[rarity - 1];
       const id = parseInt(tokenIds[counter]);
       const exp = parseInt(tokenData.experiencePoint);
-      const price = BigNumber(tokenOrders[counter].price).toString();
+      const price = BigNumber(tokenOrders[counter].price).toFixed(0);
       const seller = tokenOrders[counter].nftSeller;
       const data: SellingArmouryType = {
         id,
@@ -593,7 +595,7 @@ export async function updateOwnedSellingNFTFromContract(
         const exp = parseInt(tokenData[4]);
         const tRarity = RarityMapping[rarity - 1];
         const tType = TypeMapping[type - 1];
-        const price = BigNumber(ordersMetadataFlattened[counter][1]).toString();
+        const price = BigNumber(ordersMetadataFlattened[counter][1]).toFixed(0);
         const data: SellingArmouryType = {
           id,
           collectionName,

@@ -19,6 +19,24 @@ export const TRAVA_TVL_BSC = {
     FTM: "75", // %
     TRAVA: "75", // %
   },
+  [NETWORKS.bscMainnet.chainId]: {
+    DAI: "77", // %
+    USDC: "80", // %
+    USDT: "75", // %
+    ETH: "82,5", // %
+    BNB: "75", // %
+    BTCB: "70", // %
+    BUSD: "75", // %
+    AAVE: "70", // %
+    ADA: "70", // %
+    CAKE: "70", // %
+    XRP: "70", // %
+    DOGE: "55", // %
+    DOT: "70", // %
+    XVS: "60", // %
+    FTM: "75", // %
+    TRAVA: "75", // %
+  },
 };
 
 export const TOKEN_NAME_TO_ADDRESS = {
@@ -30,6 +48,24 @@ export const TOKEN_NAME_TO_ADDRESS = {
     BNB: "0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c", // fake address
     BTCB: "0x7130d2a12b9bcbfae4f2634d864a1ee1ce3ead9c", // fake address
     BUSD: "0xe9e7cea3dedca5984780bafc599bd69add087d56", // fake address
+    AAVE: "0xfb6115445bff7b52feb98650c87f44907e58f802", // fake address
+    ADA: "0x3ee2200efb3400fabb9aacf31297cbdd1d435d47", // fake address
+    CAKE: "0x0e09fabb73bd3ade0a17ecc321fd13a19e81ce82", // fake address
+    XRP: "0x1d2f0da169ceb9fc7b3144628db156f3f6c60dbe", // fake address
+    DOGE: "0xba2ae424d960c26247dd6c32edc70b295c744c43", // fake address
+    DOT: "0x7083609fce4d1d8dc0c979aab8c869ea2c873402", // fake address
+    XVS: "0xcf6bb5389c92bdda8a3747ddb454cb7a64626c63", // fake address
+    FTM: "0x21be370d5312f44cb42ce377bc9b8a0cef1a4c83", // fake address
+    TRAVA: "0xE1F005623934D3D8C724EC68Cc9bFD95498D4435", // address in bsc testnet
+  },
+  [NETWORKS.bscMainnet.chainId]: {
+    DAI: "0x1af3f329e8be154074d8769d1ffa4ee058b1dbc3", // fake address
+    USDC: "0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d", // fake address
+    USDT: "0x55d398326f99059ff775485246999027b3197955", // fake address
+    ETH: "0x2170ed0880ac9a755fd29b2688956bd959f933f8", // fake address
+    BNB: "0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c", // fake address
+    BTCB: "0x7130d2a12b9bcbfae4f2634d864a1ee1ce3ead9c", // fake address
+    BUSD: "0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56", // fake address
     AAVE: "0xfb6115445bff7b52feb98650c87f44907e58f802", // fake address
     ADA: "0x3ee2200efb3400fabb9aacf31297cbdd1d435d47", // fake address
     CAKE: "0x0e09fabb73bd3ade0a17ecc321fd13a19e81ce82", // fake address

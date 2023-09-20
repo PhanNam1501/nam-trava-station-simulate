@@ -8,7 +8,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 import { getAddr } from "../../utils/address";
-import { CollectionName } from "./KnightConfig";
+import { CollectionName, RarityMapping, TypeMapping } from "./KnightConfig";
+import BigNumber from "bignumber.js";
 export function simulateTravaNFTBuy(appState1, tokenId, from, to) {
     var _a, _b;
     return __awaiter(this, void 0, void 0, function* () {
@@ -26,18 +27,20 @@ export function simulateTravaNFTBuy(appState1, tokenId, from, to) {
             const travaAddress = getAddr("TRAVA_TOKEN", appState1.chainId).toLowerCase();
             if (from == appState.walletState.address) {
                 let travaBalance = (_a = appState.walletState.tokenBalances.get(travaAddress)) !== null && _a !== void 0 ? _a : "0";
-                appState.walletState.tokenBalances.set(travaAddress, (BigInt(travaBalance) - BigInt(currentNFT.price)).toString());
+                appState.walletState.tokenBalances.set(travaAddress, BigNumber(travaBalance).minus(currentNFT.price).toFixed(0));
             }
             if (from == appState.smartWalletState.address) {
                 let travaBalance = (_b = appState.smartWalletState.tokenBalances.get(travaAddress)) !== null && _b !== void 0 ? _b : 0;
-                appState.smartWalletState.tokenBalances.set(travaAddress, (BigInt(travaBalance) - BigInt(currentNFT.price)).toString());
+                appState.smartWalletState.tokenBalances.set(travaAddress, BigNumber(travaBalance).minus(currentNFT.price).toFixed(0));
             }
             const data = {
                 tokenId: currentNFT.id,
                 version: currentNFT.collectionId.toString(),
                 set: currentNFT.collectionId,
-                rarity: currentNFT.nRarity,
-                type: currentNFT.nType,
+                nRarity: currentNFT.nRarity,
+                nType: currentNFT.nType,
+                rarity: RarityMapping[currentNFT.nRarity - 1],
+                type: TypeMapping[currentNFT.nType - 1],
                 exp: currentNFT.exp,
             };
             if (to.toLowerCase() == appState.walletState.address.toLowerCase()) {
@@ -83,8 +86,8 @@ export function simulateTravaNFTSell(appState1, tokenId, price, from) {
                 id: currentNFT.tokenId,
                 collectionName,
                 collectionId,
-                nRarity: currentNFT.rarity,
-                nType: currentNFT.type,
+                nRarity: currentNFT.nRarity,
+                nType: currentNFT.nType,
                 rarity: currentNFT.rarity.toString(),
                 type: currentNFT.type.toString(),
                 exp: currentNFT.exp,
@@ -116,8 +119,10 @@ export function simulateTravaNFTCancelSale(appState1, to, tokenId) {
                 tokenId: tokenId,
                 version: currentVersion,
                 set: currentNFT.collectionId,
-                rarity: currentNFT.nRarity,
-                type: currentNFT.nType,
+                nRarity: currentNFT.nRarity,
+                nType: currentNFT.nType,
+                rarity: currentNFT.rarity,
+                type: currentNFT.type,
                 exp: currentNFT.exp
             };
             if (to.toLowerCase() == appState.smartWalletState.address.toLowerCase()) {

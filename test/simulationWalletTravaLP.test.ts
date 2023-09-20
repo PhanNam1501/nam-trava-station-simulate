@@ -10,7 +10,13 @@ import {
   SimulationBorrow,
   SimulationRepay,
   SimulationWithdraw,
+  calculateMaxAmountBorrow,
+  calculateMaxAmountWithdraw,
 } from "../src/Simulation/market/SimulationWalletTravaLP";
+
+import {
+  simulateSendToken
+} from "../src/Simulation/basic/SimulationBasic";
 import { ApplicationState } from "../src/State/ApplicationState";
 import { expect } from "chai";
 import { Contract, JsonRpcProvider } from "ethers";
@@ -32,8 +38,8 @@ const test = async () => {
   );
   const userAddress = "0xCC8FdfC90Ed30aB2Da9b53302C1ba5E976210281";
   const proxyAddress = "0x3E66FF926474Ceaa438E8ba87F36c4D69FA4792D";
-  const tokenAddress = "0x780397E17dBF97259F3b697Ca3a394fa483A1419";
-  const amount = BigInt(2*10**8).toString()
+  const tokenAddress = "0xFCcB260C9074faBB69702C1972aa747aAC6e654F";
+  const amount = BigNumber(0)
   // second update TravaLP state for wallet
   const userData = await TravaLendingPool.getUserAccountData(userAddress);
   console.log("userData", userData.totalCollateralUSD, userData.healthFactor);
@@ -95,15 +101,23 @@ const test = async () => {
   //   appState.smartWalletState.travaLPState
   // );
   console.log("Started: ", appState1.smartWalletState.detailTokenInPool.get(tokenAddress.toLowerCase()))
+  // const appState31 = await simulateSendToken(
+  //   appState1,
+  //   tokenAddress,
+  //   userAddress,
+  //   proxyAddress,
+  //   amount.multipliedBy(2).toFixed(0)
+  // )
+  // console.log("ahuhu", appState31.smartWalletState.tokenBalances.get(tokenAddress.toLowerCase()));
   console.log("================= PHASE 2 Supply ==========================");
   const appState4 = await SimulationSupply(
     appState1,
     proxyAddress,
     tokenAddress,
-    amount
+    BigNumber(1e23).toFixed(0)
   );
 
-  console.log("ahuhu", appState4.smartWalletState.travaLPState);
+  console.log("ahuhu1", appState4.smartWalletState.travaLPState, calculateMaxAmountBorrow(appState4, tokenAddress).toFixed(0));
 
   // // console.log(
   // //   "banlances after phase1 : ",
@@ -119,13 +133,13 @@ const test = async () => {
   // // );
 
   // console.log("================= PHASE 2 Borrow ==========================");
-  const appState5 = await SimulationBorrow(
-    appState4,
-    proxyAddress,
-    tokenAddress,
-    BigNumber( BigInt(2*10**8).toString()).multipliedBy(3).div(5).toFixed(0)
-  );
-  console.log("ahuhu", appState5.smartWalletState.travaLPState);
+  // const appState5 = await SimulationBorrow(
+  //   appState4,
+  //   proxyAddress,
+  //   tokenAddress,
+  //   BigNumber(10).toFixed(0)
+  // );
+  // console.log("ahuhu", appState5.smartWalletState.travaLPState);
   // console.log("ahuhu1", appState5.smartWalletState.travaLPState);
   // console.log(
   //   "smartWalletState TravaLP after phase2 : ",
@@ -149,30 +163,31 @@ const test = async () => {
   // console.log("ahuhu2", appState6.smartWalletState.travaLPState);
 
   // const simulationRepay = await SimulationRepay(
-  //   appState,
+  //   appState4,
+  //   userAddress,
   //   tokenAddress,
-  //   "100000000000000000"
+  //   BigNumber(1e9).toFixed(0)
   // );
   // console.log(
   //   "smartWalletState TravaLP after phase3 : ",
-  //   appState.smartWalletState.travaLPState
+  //   simulationRepay.smartWalletState.travaLPState
   // );
   // console.log(
   //   "smartWalletState tokens after phase3 : ",
   //   appState.smartWalletState.tokenBalances
   // );
 
-  // console.log(
-  //   "================= PHASE 4 Withdraw =========================="
-  // );
-  // const appState7 = await SimulationWithdraw(
-  //   appState6,
-  //   "0x0d7a757EECAbfe8daa06E9ab8F106911d846D8a1",
-  //   tokenAddress,
-  //   "1000000000000000000"
-  // );
+  console.log(
+    "================= PHASE 4 Withdraw =========================="
+  );
+  const appState7 = await SimulationWithdraw(
+    appState4,
+    "0x0d7a757EECAbfe8daa06E9ab8F106911d846D8a1",
+    tokenAddress,
+    BigNumber(1e23).div(3).toFixed(0)
+  );
 
-  // // console.log("ahuhu", appState7.smartWalletState.detailTokenInPool);
+  console.log("ahuhu", appState7.smartWalletState.travaLPState, calculateMaxAmountWithdraw(appState7, tokenAddress).toFixed(0));
   // console.log("ahuhu3", appState7.smartWalletState.travaLPState);
 
   // console.log(

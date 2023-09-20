@@ -4,8 +4,9 @@ import TravaNFTSellABI from "../../abis/TravaNFTSell.json";
 import { getAddr } from "../../utils/address";
 import _ from "lodash";
 import { ArmouryObject, ArmouryType, NormalKnight, SellingArmouryType, SpecialKnight } from "../../global";
-import { CollectionName } from "./KnightConfig";
+import { CollectionName, RarityMapping, TypeMapping } from "./KnightConfig";
 import { NFTOwned } from "../../State/WalletState";
+import BigNumber from "bignumber.js";
 
 export async function simulateTravaNFTBuy(
   appState1: ApplicationState,
@@ -29,7 +30,7 @@ export async function simulateTravaNFTBuy(
       let travaBalance = appState.walletState.tokenBalances.get(travaAddress) ?? "0";
       appState.walletState.tokenBalances.set(
         travaAddress,
-        (BigInt(travaBalance) - BigInt(currentNFT.price)).toString()
+        BigNumber(travaBalance).minus(currentNFT.price).toFixed(0)
       );
     }
     if (from == appState.smartWalletState.address) {
@@ -37,15 +38,17 @@ export async function simulateTravaNFTBuy(
         appState.smartWalletState.tokenBalances.get(travaAddress) ?? 0;
       appState.smartWalletState.tokenBalances.set(
         travaAddress,
-        (BigInt(travaBalance) - BigInt(currentNFT.price)).toString()
+        BigNumber(travaBalance).minus(currentNFT.price).toFixed(0)
       );
     }
     const data: ArmouryType = {
       tokenId: currentNFT.id,
       version: currentNFT.collectionId.toString(),
       set: currentNFT.collectionId,
-      rarity: currentNFT.nRarity,
-      type: currentNFT.nType,
+      nRarity: currentNFT.nRarity,
+      nType: currentNFT.nType,
+      rarity: RarityMapping[currentNFT.nRarity - 1],
+      type: TypeMapping[currentNFT.nType - 1],
       exp: currentNFT.exp,
     };
     if (to.toLowerCase() == appState.walletState.address.toLowerCase()) {
@@ -96,8 +99,8 @@ export async function simulateTravaNFTSell(
       id: currentNFT.tokenId,
       collectionName,
       collectionId,
-      nRarity: currentNFT.rarity,
-      nType: currentNFT.type,
+      nRarity: currentNFT.nRarity,
+      nType: currentNFT.nType,
       rarity: currentNFT.rarity.toString(),
       type: currentNFT.type.toString(),
       exp: currentNFT.exp,
@@ -131,8 +134,10 @@ export async function simulateTravaNFTCancelSale(
       tokenId: tokenId as number,
       version: currentVersion,
       set: (currentNFT as SellingArmouryType).collectionId,
-      rarity: (currentNFT as SellingArmouryType).nRarity,
-      type: (currentNFT as SellingArmouryType).nType,
+      nRarity: (currentNFT as SellingArmouryType).nRarity,
+      nType: (currentNFT as SellingArmouryType).nType,
+      rarity: (currentNFT as SellingArmouryType).rarity,
+      type: (currentNFT as SellingArmouryType).type,
       exp: (currentNFT as SellingArmouryType).exp
     }
     if(to.toLowerCase() == appState.smartWalletState.address.toLowerCase()) {

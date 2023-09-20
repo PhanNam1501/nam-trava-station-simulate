@@ -71,6 +71,17 @@ export async function updateLPtTokenInfo(
         // token address
         const tTokenAddress = String(reserveData[6]).toLowerCase();
 
+        const originTokenContract = new Contract(
+          tokenAddress,
+          BEP20ABI,
+          appState.web3
+        );
+
+        const originTokenDecimal = await originTokenContract.decimals();
+        const originBalanceInTToken = await originTokenContract.balanceOf(
+          tTokenAddress
+        );
+
         // get amount
         const tTokenContract = new Contract(
           tTokenAddress,
@@ -83,6 +94,7 @@ export async function updateLPtTokenInfo(
         );
 
         const tokenDecimal = await tTokenContract.decimals();
+        const tTokenTotalSupply = await tTokenContract.totalSupply();
 
         let binaryAssetConfig = BigNumber(reserveData[0]).toString(2);
         if (binaryAssetConfig.length < 80) {
@@ -93,15 +105,24 @@ export async function updateLPtTokenInfo(
 
         appState.smartWalletState.detailTokenInPool =
           appState.smartWalletState.detailTokenInPool.set(tokenAddressState, {
+            decimals: originTokenDecimal,
             tToken: {
               address: tTokenAddress.toLowerCase(),
               balances: tTokenBalance.toString(),
               decimals: tokenDecimal.toString(),
+              totalSupply: tTokenTotalSupply.toString(),
+              originToken: {
+                balances: originBalanceInTToken.toString()
+              }
             },
             dToken: {
               address: "",
               balances: "",
               decimals: "",
+              totalSupply: "",
+              originToken: {
+                balances: "",
+              }
             },
             maxLTV: maxLTV.toFixed(0),
             liqThres: liqThres.toFixed(0),
@@ -151,9 +172,20 @@ export async function updateLPDebtTokenInfo(
         // get reserve data
         const reserveData = await travaLP.getReserveData(tokenAddress);
 
+
         // token address
         const variableDebtTokenAddress = String(reserveData[7]).toLowerCase();
 
+        const originTokenContract = new Contract(
+          tokenAddress,
+          BEP20ABI,
+          appState.web3
+        );
+
+        const originTokenDecimal = await originTokenContract.decimals();
+        const originBalanceInDToken = await originTokenContract.balanceOf(
+          variableDebtTokenAddress
+        );
         // get amount
         const debtTokenContract = new Contract(
           variableDebtTokenAddress,
@@ -166,6 +198,7 @@ export async function updateLPDebtTokenInfo(
         );
 
         const tokenDecimal = await debtTokenContract.decimals();
+        const dTokenTotalSupply = await debtTokenContract.totalSupply();
 
         let binaryAssetConfig = BigNumber(reserveData[0]).toString(2);
         if (binaryAssetConfig.length < 80) {
@@ -175,15 +208,24 @@ export async function updateLPDebtTokenInfo(
         let liqThres = parseInt(binaryAssetConfig.slice(-31, -16), 2);
         appState.smartWalletState.detailTokenInPool =
           appState.smartWalletState.detailTokenInPool.set(tokenAddressState, {
+            decimals: originTokenDecimal,
             dToken: {
               address: variableDebtTokenAddress.toLowerCase(),
               balances: debtTokenBalance.toString(),
               decimals: tokenDecimal.toString(),
+              totalSupply: dTokenTotalSupply.toString(),
+              originToken: {
+                balances: originBalanceInDToken.toString(),
+              }
             },
             tToken: {
               address: "",
               balances: "",
               decimals: "",
+              totalSupply: "",
+              originToken: {
+                balances: ""
+              }
             },
             maxLTV: maxLTV.toFixed(0),
             liqThres: liqThres.toFixed(0),
@@ -211,7 +253,7 @@ async function updateTokenInPoolInfo(
   );
   let reverseList = await travaLP.getReservesList();
   reverseList = reverseList.map((e: string) => e.toLowerCase());
-  let [reserveData, tokenPriceData] = await Promise.all([
+  let [reserveData, tokenPriceData, tokenDecimal] = await Promise.all([
     multiCall(
       ABITravaLP,
       reverseList.map((address: string, _: number) => ({
@@ -232,6 +274,16 @@ async function updateTokenInPoolInfo(
       appState.web3,
       appState.chainId
     ),
+    multiCall(
+      BEP20ABI,
+      reverseList.map((address: string, _: number) => ({
+        address: address,
+        name: "decimals",
+        params: [],
+      })),
+      appState.web3,
+      appState.chainId
+    ),
   ]);
   reserveData = reserveData.flat();
 
@@ -244,7 +296,7 @@ async function updateTokenInPoolInfo(
     dTokenList.push(r[7]);
   }
 
-  let [tTokenBalance, tTokenDecimal, dTokenBalance, dTokenDecimal] = await Promise.all([
+  let [tTokenBalance, tTokenDecimal, tTokenTotalSupply, originInTTokenBalance, dTokenBalance, dTokenDecimal, dTokenTotalSupply, originInDTokenBalance] = await Promise.all([
     multiCall(
       BEP20ABI,
       tTokenList.map((address: string, _: number) => ({
@@ -267,6 +319,26 @@ async function updateTokenInPoolInfo(
     ),
     multiCall(
       BEP20ABI,
+      tTokenList.map((address: string, _: number) => ({
+        address: address,
+        name: "totalSupply",
+        params: [],
+      })),
+      appState.web3,
+      appState.chainId
+    ),
+    multiCall(
+      BEP20ABI,
+      reverseList.map((address: string, index: number) => ({
+        address: address,
+        name: "balanceOf",
+        params: [tTokenList[index]],
+      })),
+      appState.web3,
+      appState.chainId
+    ),
+    multiCall(
+      BEP20ABI,
       dTokenList.map((address: string, _: number) => ({
         address: address,
         name: "balanceOf",
@@ -281,6 +353,26 @@ async function updateTokenInPoolInfo(
         address: address,
         name: "decimals",
         params: [],
+      })),
+      appState.web3,
+      appState.chainId
+    ),
+    multiCall(
+      BEP20ABI,
+      dTokenList.map((address: string, _: number) => ({
+        address: address,
+        name: "totalSupply",
+        params: [],
+      })),
+      appState.web3,
+      appState.chainId
+    ),
+    multiCall(
+      BEP20ABI,
+      reverseList.map((address: string, index: number) => ({
+        address: address,
+        name: "balanceOf",
+        params: [dTokenList[index]],
       })),
       appState.web3,
       appState.chainId
@@ -309,12 +401,20 @@ async function updateTokenInPoolInfo(
         address: tTokenList[i].toString().toLowerCase(),
         balances: tTokenBalance[i].toString(),
         decimals: tTokenDecimal[i].toString(),
+        totalSupply: tTokenTotalSupply[i].toString(),
+        originToken: {
+          balances: originInTTokenBalance[i].toString(),
+        }
       }
 
       dToken = {
         address: dTokenList[i].toString().toLowerCase(),
         balances: dTokenBalance[i].toString(),
         decimals: dTokenDecimal[i].toString(),
+        totalSupply: dTokenTotalSupply[i].toString(),
+        originToken: {
+          balances: originInDTokenBalance[i].toString(),
+        }
       }
 
       if (tokenInPool?.tToken) {
@@ -326,6 +426,7 @@ async function updateTokenInPoolInfo(
       }
 
       appState.smartWalletState.detailTokenInPool.set(reverseList[i].toString().toLowerCase(), {
+        decimals: tokenDecimal[i].toString(),
         tToken: tToken,
         dToken: dToken,
         maxLTV: maxLTV.toFixed(0),
@@ -353,7 +454,7 @@ export async function updateTravaLPInfo(
 
     const reserveAddressList = await TravaLendingPool.getReservesList();
 
-    let [userTokenInPoolBalance, smartWalletTokenInPoolBalance] = await Promise.all([
+    let [userTokenInPoolBalance, smartWalletTokenInPoolBalance,] = await Promise.all([
       multiCall(
         BEP20ABI,
         reserveAddressList.map((address: string, _: number) => ({
@@ -373,7 +474,8 @@ export async function updateTravaLPInfo(
         })),
         appState.web3,
         appState.chainId
-      ),
+      )
+
     ]);
 
     if (reserveAddressList.length == 0) {

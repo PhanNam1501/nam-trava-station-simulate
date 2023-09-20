@@ -7,13 +7,20 @@ import {
 } from "./TravaDeFiState";
 import { CollectionOwned, NFTOwned } from "./WalletState";
 
+export interface OriginTokenData {
+  balances: string;
+}
+
 export interface TokenData {
   address: string;
   balances: string;
   decimals: string;
+  totalSupply: string;
+  originToken: OriginTokenData;
 }
 
 export interface DetailTokenInPool {
+  decimals: string;
   dToken: TokenData;
   tToken: TokenData;
   maxLTV: string;

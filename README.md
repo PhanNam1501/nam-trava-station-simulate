@@ -1,14 +1,34 @@
 # TRAVA SIMULATION ROUTE
 # Table of contents
-1. [Initialize state](#Initialize-state)
-    + [Các action liên quan đến token](#các-action-liên-quan-đến-token)
-    + [Các action liên quan đến Pools](#các-action-liên-quan-đến-pools-deposit-borrow-withdraw-repay)
-    + [Các action liên quan đến NFT](#các-action-liên-qua-đến-nft)
-2. [Simulate state](#Simulate-state)
-    + [Simulate Utilities Actions](#simulate-utilities-actions)
-    + [Simulate Trava Pools Actions](#simulate-trava-pools-actions)
-    + [Simulate TravaNFT MarketPlace Actions](#simulate-trava-nft-marketplace)
-    + [Simulate TravaNFT Utilities Actions](#simulate-trava-nft-utilities)
+- [TRAVA SIMULATION ROUTE](#trava-simulation-route)
+- [Table of contents](#table-of-contents)
+- [Initialize state](#initialize-state)
+  - [Các action liên quan đến token](#các-action-liên-quan-đến-token)
+  - [Các action liên quan đến pools: deposit, borrow, withdraw, repay](#các-action-liên-quan-đến-pools-deposit-borrow-withdraw-repay)
+  - [Các action liên qua đến nft](#các-action-liên-qua-đến-nft)
+    - [Tương tác với các mảnh armouries](#tương-tác-với-các-mảnh-armouries)
+    - [Tương tác với các Knight](#tương-tác-với-các-knight)
+    - [Tương tác với các Marketplace](#tương-tác-với-các-marketplace)
+- [Simulate state](#simulate-state)
+  - [Simulate Utilities actions](#simulate-utilities-actions)
+  - [Pull token](#pull-token)
+  - [Sendtoken](#sendtoken)
+  - [Wrap](#wrap)
+  - [Unwrap](#unwrap)
+  - [Swap](#swap)
+- [Simulate Trava Pools actions](#simulate-trava-pools-actions)
+  - [Deposit](#deposit)
+  - [Borrow](#borrow)
+  - [Repay](#repay)
+  - [Withdraw](#withdraw)
+- [Simulate Trava NFT Marketplace](#simulate-trava-nft-marketplace)
+  - [Buy NFT](#buy-nft)
+  - [Sell NFT](#sell-nft)
+  - [Cancel order](#cancel-order)
+- [Simulate Trava NFT Utilities](#simulate-trava-nft-utilities)
+  - [Transfer armoury](#transfer-armoury)
+  - [Transfer collection](#transfer-collection)
+- [Get Max amount in Trava Lending Pool](#get-max-amount-in-trava-lending-pool)
 ```
 import { ApplicationState } from "../State/ApplicationState";
 
@@ -253,4 +273,32 @@ appState19 = await simulateTravaNFTTransfer(
     tokenId: nummber | string
     contract: NFT_COLLECTION address
 )
+```
+# Get Max amount in Trava Lending Pool
+```
+const maxSupply = calculateMaxAmountSupply(
+    appState: ApplicationState, 
+    _tokenAddress: string, 
+    mode: "walletState" | "smartWalletState"
+    ).toFixed()
+```
+```
+const maxBorrow = calculateMaxAmountBorrow(
+    appState: ApplicationState, 
+    _tokenAddress: string
+    ).toFixed()
+```
+```
+const maxRepay = calculateMaxAmountRepay(
+    appState: ApplicationState, 
+    _tokenAddress: string, 
+    mode: "walletState" | "smartWalletState"
+    ).toFixed()
+```
+```
+const maxWithdraw = calculateMaxAmountWithdraw(
+    appState: ApplicationState, 
+    _tokenAddress: string, 
+    mode: "walletState" | "smartWalletState"
+    ).toFixed()
 ```

@@ -1,7 +1,7 @@
 import { ApplicationState } from "../src/State/ApplicationState";
 import { JsonRpcProvider } from "ethers";
-import { updateOwnedSellingNFTFromContract } from "../src/Simulation/nft/UpdateStateAccount"
-import { simulateTravaNFTCancelSale } from "../src/Simulation/nft/SimulationTravaNFT";
+import { updateNFTBalanceFromContract, updateOwnedSellingNFTFromContract, updateSellingNFTFromContract } from "../src/Simulation/nft/UpdateStateAccount"
+import { simulateTravaNFTBuy, simulateTravaNFTCancelSale } from "../src/Simulation/nft/SimulationTravaNFT";
 import {SwapUtil} from "trava-station-sdk";
 const testBuy =async () => {
   // let a = actions.NAC()
@@ -15,24 +15,28 @@ const testBuy =async () => {
   //   "10000000"
   // );
   // console.log(res)
+  const userAddress = "0xCC8FdfC90Ed30aB2Da9b53302C1ba5E976210281";
+  const proxyAddress = "0x3E66FF926474Ceaa438E8ba87F36c4D69FA4792D";
   const chainId = Number((await provider.getNetwork()).chainId)
+  console.log(chainId)
   const appState = new ApplicationState(
-    "0x595622cBd0Fc4727DF476a1172AdA30A9dDf8F43",
-    "0x826D824BE55A403859A6Db67D5EeC5aC386307fE",
+    userAddress,
+    proxyAddress,
     new JsonRpcProvider("https://bsc-testnet.publicnode.com"),
     chainId
   );
-  let oldState = await updateOwnedSellingNFTFromContract(appState, "walletState");
-  oldState = await updateOwnedSellingNFTFromContract(appState, "smartWalletState");
-  console.log(JSON.stringify(oldState.smartWalletState.sellingNFT));
+  let oldState = await updateSellingNFTFromContract(appState);
+  oldState = await updateNFTBalanceFromContract(oldState, "smartWalletState");
+  console.log(JSON.stringify(oldState.NFTSellingState));
+  oldState = await simulateTravaNFTBuy(oldState, "4296", userAddress, proxyAddress);
   
-  let newState = await simulateTravaNFTCancelSale(
-    oldState,
-    oldState.walletState.address,
-    "4625" // k test đươc vì k bán gì cả
-  );
+  // let newState = await simulateTravaNFTCancelSale(
+  //   oldState,
+  //   oldState.walletState.address,
+  //   "4296" // k test đươc vì k bán gì cả
+  // );
 
   console.log("=================AFTER==========================");
-  // console.log(JSON.stringify(newState));
+  console.log(JSON.stringify(oldState.smartWalletState.nfts));
 };
 testBuy()
