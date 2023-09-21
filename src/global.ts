@@ -66,6 +66,7 @@ export type NFTMarketplaceType = {
   status: string;
   token: Token;
 };
+
 export type CollectionOwnedMarketplaceType = {
   id: string;
   exp: string | null;

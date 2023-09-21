@@ -14,23 +14,27 @@ function armourySort(item1: SellingArmouryType, item2: SellingArmouryType) {
 export default class SellGraphQuery {
   private static _rewriteData(data: NFTMarketplaceType) {
     const setId = Number(data.token.setId) <= 1 ? 1 : 2;
+    const id = Number(data.id);
     const collectionName = CollectionName[setId - 1];
     const nRarity = data.token.rarity;
     const nType = data.token.type;
-    const rawPrice = data.price as string;
-    const price = BigNumber(rawPrice).div(BASE18).toString();
+    const rarity = RarityMapping[nRarity - 1];
+    const type = TypeMapping[nType - 1];
+    const exp = data.token.exp ?? 0
+    const price = BigNumber(data.price as string).div(BASE18).toString();
+    const seller = data.seller
     return {
       rawData: data,
-      id: Number(data.id),
-      collectionName,
+      id: id,
+      collectionName: collectionName,
       collectionId: setId,
-      nRarity,
-      nType,
-      rarity: RarityMapping[nRarity - 1],
-      exp: data.token.exp ?? 0,
-      type: TypeMapping[nType - 1],
-      price,
-      seller: data.seller,
+      nRarity: nRarity,
+      nType: nType,
+      rarity: rarity,
+      exp: exp,
+      type: type,
+      price: price,
+      seller: seller,
     } as SellingArmouryType & { rawData: NFTMarketplaceType };
   }
 

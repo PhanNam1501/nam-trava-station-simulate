@@ -26,7 +26,7 @@ export function calculateMaxAmountSupply(appState: ApplicationState, _tokenAddre
     throw new Error("Token is not init in smart wallet lending pool state!")
   }
 
-  return BigNumber(appState[mode].tokenBalances.get(tokenAddress)!).div(BigNumber("10").pow(tokenInfo.tToken.decimals));
+  return BigNumber(appState[mode].tokenBalances.get(tokenAddress)!);
 }
 
 export function calculateMaxAmountBorrow(appState: ApplicationState, _tokenAddress: string): BigNumber {
@@ -40,7 +40,7 @@ export function calculateMaxAmountBorrow(appState: ApplicationState, _tokenAddre
   const tTokenReserveBalance = BigNumber(tTokenReserveBalanceRaw).div(BigNumber("10").pow(tokenInfo.tToken.decimals));
   const availableBorrowsUSD = BigNumber(appState.smartWalletState.travaLPState.availableBorrowsUSD);
   const nativeAvailableBorrow = availableBorrowsUSD.div(tokenInfo.price);
-  return BigNumber.max(BigNumber.min(nativeAvailableBorrow, tTokenReserveBalance), 0)
+  return BigNumber.max(BigNumber.min(nativeAvailableBorrow, tTokenReserveBalance), 0).multipliedBy(BigNumber("10").pow(tokenInfo.tToken.decimals));
 }
 
 export function calculateMaxAmountRepay(appState: ApplicationState, _tokenAddress: string, mode: "walletState" | "smartWalletState"): BigNumber {
@@ -56,7 +56,7 @@ export function calculateMaxAmountRepay(appState: ApplicationState, _tokenAddres
     throw new Error("Token is not init in smart wallet lending pool state!")
   }
   let dTokenBalance = tokenInfo.dToken.balances;
-  const borrowed = new BigNumber(dTokenBalance).dividedBy(BigNumber("10").pow(tokenInfo.dToken.decimals));
+  const borrowed = new BigNumber(dTokenBalance);
 
   return BigNumber.max(BigNumber.min(walletBalance, borrowed), 0);
 }
@@ -82,7 +82,7 @@ export function calculateMaxAmountWithdraw(appState: ApplicationState, _tokenAdd
   return BigNumber.max(
     BigNumber.min(deposited, nativeAvailableWithdraw, tTokenReserveBalance, BigNumber(available)),
     0
-  )
+  ).multipliedBy(BigNumber("10").pow(tokenInfo.tToken.decimals))
 }
 
 
@@ -187,6 +187,7 @@ export async function SimulationSupply(
         amount.toFixed(0) == MAX_UINT256 || amount.isEqualTo(MAX_UINT256)
       ) {
         amount = calculateMaxAmountSupply(appState, _tokenAddress, "walletState")
+        
       }
 
       // get token amount

@@ -245,6 +245,7 @@ export async function updateLPDebtTokenInfo(
 async function updateTokenInPoolInfo(
   appState: ApplicationState
 ) {
+  // console.log("???? ")
   // const appState = { ...appState1 };
   const travaLP = new Contract(
     getAddr("TRAVA_LENDING_POOL_MARKET", appState.chainId),
@@ -295,6 +296,8 @@ async function updateTokenInPoolInfo(
     tTokenList.push(r[6]);
     dTokenList.push(r[7]);
   }
+  console.log("tTokenList", tTokenList)
+  console.log("dTokenList", dTokenList)
 
   let [tTokenBalance, tTokenDecimal, tTokenTotalSupply, originInTTokenBalance, dTokenBalance, dTokenDecimal, dTokenTotalSupply, originInDTokenBalance] = await Promise.all([
     multiCall(
@@ -599,49 +602,7 @@ export async function updateMaxRewardCanClaims(appState1: ApplicationState) {
       tTokenList.push(r[6]);
       dTokenList.push(r[7]);
     }
-
-    // let [balanceTList] = await Promise.all([
-    //   multiCall(
-    //     BEP20ABI,
-    //     tTokenList.map((address: string, _: number) => ({
-    //       address: address,
-    //       name: 'balanceOf',
-    //       params: [appState.smartWalletState.address],
-    //     })),
-    //     appState.web3,
-    //     appState.chainId
-    //   ),
-    // ]);
-    // balanceTList = balanceTList.flat();
-
-    // let [balanceDList] = await Promise.all([
-    //   multiCall(
-    //     BEP20ABI,
-    //     dTokenList.map((address: string, _: number) => ({
-    //       address: address,
-    //       name: 'balanceOf',
-    //       params: [appState.smartWalletState.address],
-    //     })),
-    //     appState.web3,
-    //     appState.chainId
-    //   ),
-    // ]);
-    // balanceDList = balanceDList.flat();
-
-    // let [maxRewardCanGets] = await Promise.all([
-    //   multiCall(
-    //     IncentiveContractABI,
-    //     reverseList.map((address: string, index: number) => ({
-    //       address: getAddr("INCENTIVE_CONTRACT", appState.chainId),
-    //       name: 'getRewardsBalance',
-    //       params: [[tTokenList[index], dTokenList[index]], appState.smartWalletState.address],
-    //     })),
-    //     appState.web3,
-    //     appState.chainId
-    //   ),
-    // ]);
-    // maxRewardCanGets = maxRewardCanGets.flat();
-
+    
     const travaIncentiveContract = new Contract(
       getAddr("INCENTIVE_CONTRACT", appState.chainId),
       IncentiveContractABI,
@@ -652,28 +613,6 @@ export async function updateMaxRewardCanClaims(appState1: ApplicationState) {
       appState.smartWalletState.address
     );
     appState.smartWalletState.maxRewardCanClaim = maxRewardCanGet.toString();
-
-    // appState.smartWalletState.detailTokenInPool = new Map();
-    // let counter = 0;
-    // for(const token of reverseList) {
-    //   if(balanceDList[counter] > 0 || balanceTList[counter] > 0) {
-    //     appState.smartWalletState.detailTokenInPool = appState.smartWalletState.detailTokenInPool.set(
-    //       token,
-    //       {
-    //         tToken: {
-    //           address: tTokenList[counter].toLowerCase(),
-    //           balances: balanceTList[counter].toString(),
-    //         },
-    //         dToken: {
-    //           address: dTokenList[counter].toLowerCase(),
-    //           balances: balanceDList[counter].toString(),
-    //         },
-    //         maxRewardCanGet: maxRewardCanGets[counter].toString()
-    //       }
-    //     );
-    //   }
-    //   counter++;
-    // }
     return appState;
   } catch (error) {
     throw new Error("Can't update LP tToken info !");

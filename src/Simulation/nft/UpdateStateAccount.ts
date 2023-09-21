@@ -525,7 +525,7 @@ export async function updateCollectionBalanceFromGraph(
 ): Promise<ApplicationState> {
   const appState = { ...appState1 };
   try {
-    const a = await CollectionOwnedGraphQuery.fetchData("0xc715bbe707d39524173c0635611cd69c250c59cb");
+    const a = await CollectionOwnedGraphQuery.fetchData(appState[mode].address);
     console.log(a);
   } catch (e) {
     console.log(e);
