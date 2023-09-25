@@ -2,6 +2,8 @@ import { EthAddress } from "../../utils/types";
 import { ApplicationState } from "../../State/ApplicationState";
 import { BigNumber } from "bignumber.js";
 import { DetailTokenInPool } from "../../State/SmartWalletState";
+export declare function calculateMaxRewards(appState: ApplicationState): Promise<string>;
+export declare function getListTDTokenRewardsAddress(appState: ApplicationState): Array<EthAddress>;
 export declare function calculateMaxAmountSupply(appState: ApplicationState, _tokenAddress: string, mode: "walletState" | "smartWalletState"): BigNumber;
 export declare function calculateMaxAmountBorrow(appState: ApplicationState, _tokenAddress: string): BigNumber;
 export declare function calculateMaxAmountRepay(appState: ApplicationState, _tokenAddress: string, mode: "walletState" | "smartWalletState"): BigNumber;

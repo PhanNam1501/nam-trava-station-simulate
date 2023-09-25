@@ -1,6 +1,6 @@
 import { updateMaxRewardCanClaims, updateRTravaAndTravaForReward, updateTravaLPInfo } from "../src/Simulation/market/UpdateStateAccount";
 import { ApplicationState } from "../src/State/ApplicationState";
-import { SimulationClaimReward, SimulationConvertReward } from "../src/Simulation/market/SimulationWalletTravaLP";
+import { SimulationClaimReward, SimulationConvertReward, getListTDTokenRewardsAddress } from "../src/Simulation/market/SimulationWalletTravaLP";
 import { Contract, JsonRpcProvider } from "ethers";
 import BigNumber from "bignumber.js";
 import { getAddr } from "../src/utils/address";
@@ -34,7 +34,7 @@ const test = async () => {
   // oldState = await updateMaxRewardCanClaims(oldState);
   // console.log(oldState.smartWalletState.tokenBalances);
   console.log(JSON.stringify(oldState.smartWalletState.travaLPState));
-  console.log(JSON.stringify(oldState.smartWalletState.tokenBalances.get(getAddr("TRAVA_TOKEN_IN_MARKET", chainId).toLowerCase())));
+  console.log(getListTDTokenRewardsAddress(oldState));
   console.log("=================START==========================");
 
   let newState = await SimulationClaimReward(

@@ -13,6 +13,34 @@ import { updateLPDebtTokenInfo, updateLPtTokenInfo, updateTravaLPInfo } from "./
 import { updateSmartWalletTokenBalance, updateUserTokenBalance } from "../basic/UpdateStateAccount";
 import { DetailTokenInPool } from "../../State/SmartWalletState";
 
+export async function calculateMaxRewards(appState: ApplicationState): Promise<string> {
+  let listTDTokenRewardsAddress = getListTDTokenRewardsAddress(appState);
+  const travaIncentiveContract = new Contract(
+    getAddr("INCENTIVE_CONTRACT", appState.chainId),
+    IncentiveContractABI,
+    appState.web3!
+  );
+  let maxRewardCanGet = await travaIncentiveContract.getRewardsBalance(
+    listTDTokenRewardsAddress,
+    appState.smartWalletState.address
+  );
+  return maxRewardCanGet;
+}
+
+export function getListTDTokenRewardsAddress(appState: ApplicationState): Array<EthAddress> {
+  let detailTokenInPool = appState.smartWalletState.detailTokenInPool;
+  let listTDTokenRewardsAddress = new Array();
+  detailTokenInPool.forEach(token => {
+    if(BigNumber(token.tToken.balances).isGreaterThan(0)) {
+      listTDTokenRewardsAddress.push(token.tToken.address);
+    }
+    if(BigNumber(token.dToken.balances).isGreaterThan(0.00001)){
+      listTDTokenRewardsAddress.push(token.dToken.address);
+    }
+  })
+  return listTDTokenRewardsAddress;
+}
+
 export function calculateMaxAmountSupply(appState: ApplicationState, _tokenAddress: string, mode: "walletState" | "smartWalletState"): BigNumber {
   let tokenAddress = _tokenAddress.toLowerCase();
 
@@ -601,14 +629,15 @@ export async function SimulationClaimReward(
     let amount = BigNumber(_amount);
 
     const rTravaAddress = appState.smartWalletState.travaLPState.lpReward.tokenAddress;
-    const currentReward = appState.smartWalletState.travaLPState.lpReward.claimableReward;
+
+    let maxReward = await calculateMaxRewards(appState);
 
     if (amount.toFixed(0) == MAX_UINT256 || amount.isEqualTo(MAX_UINT256)) {
-      amount = BigNumber(currentReward);
+      amount = BigNumber(maxReward);
     }
 
     appState.smartWalletState.travaLPState.lpReward.claimableReward = (
-      BigNumber(currentReward).minus(amount)
+      BigNumber(maxReward).minus(amount)
     ).toFixed(0);
 
 

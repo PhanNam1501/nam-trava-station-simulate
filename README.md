@@ -21,6 +21,8 @@
   - [Borrow](#borrow)
   - [Repay](#repay)
   - [Withdraw](#withdraw)
+  - [ClaimRewards](#claimrewards)
+  - [Convert rewards](#convert-rewards)
 - [Simulate Trava NFT Marketplace](#simulate-trava-nft-marketplace)
   - [Buy NFT](#buy-nft)
   - [Sell NFT](#sell-nft)
@@ -78,6 +80,24 @@ appState32 = await updateLPDebtTokenInfo(
     appState3,
     tokenAddress
 )
+```
+Khi goi action claim rewards 
+```
+appState31 = await updateLPtTokenInfo(
+    appState3,
+    tokenAddress
+)
+
+init tokenBalance of rTrava in _to address
+```
+khi goi action convert rewards
+```
+appState31 = await updateLPtTokenInfo(
+    appState3,
+    tokenAddress
+)
+init rTrava balacne in _from address
+init trava balance in _to address
 ```
 ## Các action liên qua đến nft
 ### Tương tác với các mảnh armouries
@@ -224,6 +244,35 @@ appState14 = await SimulationWithdraw(
     to,
     tokenAddress,
     amount
+)
+```
+## ClaimRewards
+get max rewards:
+```
+claimableRewards = await calculateMaxRewards(appState);
+```
+```
+appState15 = await SimulationClaimReward(
+    appState14,
+    to,
+    MAX_UINT256
+)
+```
+
+## Convert rewards
+get max rTrava cua from address
+```
+maxRTrava = 
+        app.walletState.tokenBalance.get(rTravaAddress.toLowerCase()) 
+        or 
+        app.smartWalletState.tokenBalance.get(rTravaAddress.toLowerCase())
+```
+```
+appState16 = await SimulationConvertReward(
+    appState15,
+    from,
+    to,
+    MAX_UINT256
 )
 ```
 # Simulate Trava NFT Marketplace

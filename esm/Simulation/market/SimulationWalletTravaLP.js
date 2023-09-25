@@ -8,10 +8,33 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 import { getAddr } from "../../utils/address";
+import { Contract } from "ethers";
 import { MAX_UINT256, percentMul, wadDiv } from "../../utils/config";
+import IncentiveContractABI from "../../abis/IncentiveContract.json";
 import { BigNumber } from "bignumber.js";
 import { updateLPDebtTokenInfo, updateLPtTokenInfo } from "./UpdateStateAccount";
 import { updateSmartWalletTokenBalance, updateUserTokenBalance } from "../basic/UpdateStateAccount";
+export function calculateMaxRewards(appState) {
+    return __awaiter(this, void 0, void 0, function* () {
+        let listTDTokenRewardsAddress = getListTDTokenRewardsAddress(appState);
+        const travaIncentiveContract = new Contract(getAddr("INCENTIVE_CONTRACT", appState.chainId), IncentiveContractABI, appState.web3);
+        let maxRewardCanGet = yield travaIncentiveContract.getRewardsBalance(listTDTokenRewardsAddress, appState.smartWalletState.address);
+        return maxRewardCanGet;
+    });
+}
+export function getListTDTokenRewardsAddress(appState) {
+    let detailTokenInPool = appState.smartWalletState.detailTokenInPool;
+    let listTDTokenRewardsAddress = new Array();
+    detailTokenInPool.forEach(token => {
+        if (BigNumber(token.tToken.balances).isGreaterThan(0)) {
+            listTDTokenRewardsAddress.push(token.tToken.address);
+        }
+        if (BigNumber(token.dToken.balances).isGreaterThan(0.00001)) {
+            listTDTokenRewardsAddress.push(token.dToken.address);
+        }
+    });
+    return listTDTokenRewardsAddress;
+}
 export function calculateMaxAmountSupply(appState, _tokenAddress, mode) {
     let tokenAddress = _tokenAddress.toLowerCase();
     const walletBalance = appState[mode].tokenBalances.get(tokenAddress);
@@ -419,11 +442,11 @@ export function SimulationClaimReward(appState1, _to, _amount) {
         try {
             let amount = BigNumber(_amount);
             const rTravaAddress = appState.smartWalletState.travaLPState.lpReward.tokenAddress;
-            const currentReward = appState.smartWalletState.travaLPState.lpReward.claimableReward;
+            let maxReward = yield calculateMaxRewards(appState);
             if (amount.toFixed(0) == MAX_UINT256 || amount.isEqualTo(MAX_UINT256)) {
-                amount = BigNumber(currentReward);
+                amount = BigNumber(maxReward);
             }
-            appState.smartWalletState.travaLPState.lpReward.claimableReward = (BigNumber(currentReward).minus(amount)).toFixed(0);
+            appState.smartWalletState.travaLPState.lpReward.claimableReward = (BigNumber(maxReward).minus(amount)).toFixed(0);
             if (_to.toLowerCase() == appState.walletState.address.toLowerCase()) {
                 _to = appState.walletState.address;
                 if (!appState.walletState.tokenBalances.has(rTravaAddress)) {
