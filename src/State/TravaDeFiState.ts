@@ -3,6 +3,11 @@
  * @param
  * @param
  */
+export interface LPReward {
+  tokenAddress: string;
+  claimableReward: string;
+}
+
 export class WalletTravaLPState {
   totalCollateralUSD: string; // USD
   totalDebtUSD: string; // USD
@@ -10,6 +15,7 @@ export class WalletTravaLPState {
   currentLiquidationThreshold: string; //
   ltv: string; //
   healthFactor: string; //
+  lpReward: LPReward;
 
   constructor() {
     this.totalCollateralUSD = "";
@@ -18,46 +24,49 @@ export class WalletTravaLPState {
     this.currentLiquidationThreshold = "";
     this.ltv = "";
     this.healthFactor = "";
+    this.lpReward = {
+      tokenAddress: "",
+      claimableReward: "",
+    }
   }
 }
 
-export class TravaLPStakingState{
-  deposited : string;
-  claimableReward :string;
-  claimedReward : string;
-  constructor(){
+export class TravaLPStakingState {
+  deposited: string;
+  claimableReward: string;
+  claimedReward: string;
+  constructor() {
     this.deposited = "";
     this.claimableReward = "";
     this.claimedReward = "";
   }
 }
-export class BaseAccountVault  {
+export class BaseAccountVault {
   id: string;
-  name : string;
-  code : string;
+  name: string;
+  code: string;
   underlyingAddress: string;
   stakedTokenAddress: string;
   claimable: boolean;
-  reserveDecimals : string;
+  reserveDecimals: string;
   claimableReward: string;
-  claimedReward:string;
+  claimedReward: string;
   deposited: string;
-  
-  constructor()
-  {
-    this.id=""
-    this.name=""
-    this.code=""
-    this.underlyingAddress=""
-    this.stakedTokenAddress=""
-    this.claimable=false
-    this.reserveDecimals="0"
-    this.claimableReward="0"
-    this.claimedReward="0"
-    this.deposited="0"
-    
+
+  constructor() {
+    this.id = ""
+    this.name = ""
+    this.code = ""
+    this.underlyingAddress = ""
+    this.stakedTokenAddress = ""
+    this.claimable = false
+    this.reserveDecimals = "0"
+    this.claimableReward = "0"
+    this.claimedReward = "0"
+    this.deposited = "0"
+
   }
-  
+
 
 }
-export class TravaLPState {}
+export class TravaLPState { }

@@ -36,8 +36,8 @@ const test = async () => {
     ABITravaLP,
     provider
   );
-  const userAddress = "0x9e47969Dc2e13b46575AD9663646a0214a13F880";
-  const proxyAddress = "0x8E79c4f9c4D71aecd0B00a755Bcfe0b86A5d181E";
+  const userAddress = "0x68a6c841040B05D60434d81000f523Bf6355b31D";
+  const proxyAddress = "0x72DE03F7828a473A64b4A415bD76820EBAFf2B2C";
   const tokenAddress = "0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c";
   const amount = BigNumber(0)
   // second update TravaLP state for wallet
@@ -64,7 +64,7 @@ const test = async () => {
       appState12,
       userAddress
       );
-    console.log("Started: ", appState1.smartWalletState.detailTokenInPool)
+    // console.log("Started: ", appState1.smartWalletState.travaLPState)
   // const appState2 = await updateLPtTokenInfo(
   //   appState1,
   //   tokenAddress
@@ -101,7 +101,7 @@ const test = async () => {
   //   "smartWalletState before phase1 : ",
   //   appState.smartWalletState.travaLPState
   // );
-  console.log("Started: ", appState1.smartWalletState.travaLPState, appState1.smartWalletState.tokenBalances.get(tokenAddress.toLowerCase()), calculateMaxAmountBorrow(appState1, tokenAddress).toFixed())
+  console.log("Started: ", appState1.smartWalletState.travaLPState, appState1.smartWalletState.tokenBalances.get(tokenAddress.toLowerCase()), calculateMaxAmountWithdraw(appState1, tokenAddress).toFixed())
   // const appState31 = await simulateSendToken(
   //   appState1,
   //   tokenAddress,

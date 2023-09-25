@@ -9,7 +9,7 @@ import _, { bind, multiply, update } from "lodash";
 import { MAX_UINT256, percentMul, wadDiv } from "../../utils/config";
 import IncentiveContractABI from "../../abis/IncentiveContract.json";
 import { BigNumber } from "bignumber.js";
-import { updateLPDebtTokenInfo, updateLPtTokenInfo } from "./UpdateStateAccount";
+import { updateLPDebtTokenInfo, updateLPtTokenInfo, updateTravaLPInfo } from "./UpdateStateAccount";
 import { updateSmartWalletTokenBalance, updateUserTokenBalance } from "../basic/UpdateStateAccount";
 import { DetailTokenInPool } from "../../State/SmartWalletState";
 
@@ -64,23 +64,27 @@ export function calculateMaxAmountRepay(appState: ApplicationState, _tokenAddres
 export function calculateMaxAmountWithdraw(appState: ApplicationState, _tokenAddress: string): BigNumber {
   let tokenAddress = _tokenAddress.toLowerCase();
   let tokenInfo = appState.smartWalletState.detailTokenInPool.get(tokenAddress.toLowerCase())!;
-  
+
   if (typeof tokenInfo == undefined) {
     throw new Error("Token is not init in smart wallet lending pool state!")
   }
   const depositedRaw = tokenInfo.tToken.balances;
   const deposited = BigNumber(depositedRaw).dividedBy(BigNumber("10").pow(tokenInfo.tToken.decimals));
-  
+
   const tTokenReserveBalanceRaw = tokenInfo.tToken.originToken.balances;
   const tTokenReserveBalance = BigNumber(tTokenReserveBalanceRaw).dividedBy(BigNumber("10").pow(tokenInfo.tToken.decimals));
-  
-  const nativeAvailableWithdraw = BigNumber(appState.smartWalletState.travaLPState.totalCollateralUSD)
-  .minus(BigNumber(appState.smartWalletState.travaLPState.totalDebtUSD).div(BigNumber(appState.smartWalletState.travaLPState.ltv)))
-  .div(tokenInfo.price);
-  
+
+  let nativeAvailableWithdraw = BigNumber(appState.smartWalletState.travaLPState.totalCollateralUSD)
+    .minus(BigNumber(appState.smartWalletState.travaLPState.totalDebtUSD).div(BigNumber(appState.smartWalletState.travaLPState.ltv)))
+    .div(tokenInfo.price);
   const available = BigNumber(tokenInfo.tToken.totalSupply).minus(tokenInfo.dToken.totalSupply).div(tokenInfo.price);
+
+  if (nativeAvailableWithdraw.isNaN()) {
+    nativeAvailableWithdraw = BigNumber(0);
+  }
+
   return BigNumber.max(
-    BigNumber.min(deposited, nativeAvailableWithdraw, tTokenReserveBalance, BigNumber(available)),
+    BigNumber.min(deposited, nativeAvailableWithdraw, tTokenReserveBalance, available),
     0
   ).multipliedBy(BigNumber("10").pow(tokenInfo.tToken.decimals))
 }
@@ -116,6 +120,11 @@ export function calculateNewLTV(oldTotalColleteral: BigNumber, oldLTV: BigNumber
   if (usd_changed.toFixed(0) == "0") {
     return oldLTV;
   }
+
+  if (newTotalCollateral.toFixed(0) == "0") {
+    return BigNumber(0);
+  }
+
   let newLTV = oldTotalColleteral
     .multipliedBy(oldLTV)
     .plus(usd_changed.multipliedBy(tokenLTV))
@@ -187,7 +196,7 @@ export async function SimulationSupply(
         amount.toFixed(0) == MAX_UINT256 || amount.isEqualTo(MAX_UINT256)
       ) {
         amount = calculateMaxAmountSupply(appState, _tokenAddress, "walletState")
-        
+
       }
 
       // get token amount
@@ -584,116 +593,125 @@ export async function SimulationWithdraw(
 
 export async function SimulationClaimReward(
   appState1: ApplicationState,
-  amount: string
+  _to: EthAddress,
+  _amount: string
 ): Promise<ApplicationState> {
+  let appState = { ...appState1 };
   try {
-    const appState = { ...appState1 };
+    let amount = BigNumber(_amount);
 
-    const incentiveContract = new Contract(
-      getAddr("INCENTIVE_CONTRACT", appState.chainId),
-      IncentiveContractABI,
-      appState.web3!
-    );
-    const rTravaAddress = String(
-      await incentiveContract.REWARD_TOKEN()
-    ).toLowerCase();
+    const rTravaAddress = appState.smartWalletState.travaLPState.lpReward.tokenAddress;
+    const currentReward = appState.smartWalletState.travaLPState.lpReward.claimableReward;
 
-    const currentReward = appState.smartWalletState.maxRewardCanClaim;
-    appState.smartWalletState.maxRewardCanClaim = (
-      BigInt(currentReward) - BigInt(amount)
-    ).toString();
+    if (amount.toFixed(0) == MAX_UINT256 || amount.isEqualTo(MAX_UINT256)) {
+      amount = BigNumber(currentReward);
+    }
 
-    const rTravaBalance =
-      appState.smartWalletState.tokenBalances.get(rTravaAddress);
-    if (rTravaBalance) {
-      appState.smartWalletState.tokenBalances.set(
+    appState.smartWalletState.travaLPState.lpReward.claimableReward = (
+      BigNumber(currentReward).minus(amount)
+    ).toFixed(0);
+
+
+    if (_to.toLowerCase() == appState.walletState.address.toLowerCase()) {
+      _to = appState.walletState.address;
+      if (!appState.walletState.tokenBalances.has(rTravaAddress)) {
+        appState = await updateUserTokenBalance(appState, rTravaAddress);
+      }
+      appState.walletState.tokenBalances.set(
         rTravaAddress,
-        (BigInt(rTravaBalance) + BigInt(amount)).toString()
+        BigNumber(appState.walletState.tokenBalances.get(rTravaAddress)!).plus(amount).toFixed(0)
       );
-    } else {
+    } else if (_to.toLowerCase() == appState.smartWalletState.address.toLowerCase()) {
+      _to = appState.smartWalletState.address;
+      if (!appState.smartWalletState.tokenBalances.has(rTravaAddress)) {
+        
+        appState = await updateSmartWalletTokenBalance(appState, rTravaAddress);
+      }
       appState.smartWalletState.tokenBalances.set(
         rTravaAddress,
-        BigInt(amount).toString()
+        BigNumber(appState.smartWalletState.tokenBalances.get(rTravaAddress)!).plus(amount).toFixed(0)
       );
     }
-    return appState;
   } catch (err) {
     throw err;
   }
+  return appState;
 }
 
 export async function SimulationConvertReward(
   appState1: ApplicationState,
+  from: EthAddress,
   to: EthAddress,
-  amount: string
+  _amount: string
 ): Promise<ApplicationState> {
+  let appState = { ...appState1 };
   try {
-    const appState = { ...appState1 };
+    let amount = BigNumber(_amount);
+    const rTravaAddress = appState.smartWalletState.travaLPState.lpReward.tokenAddress;
 
-    const incentiveContract = new Contract(
-      getAddr("INCENTIVE_CONTRACT", appState.chainId),
-      IncentiveContractABI,
-      appState.web3!
-    );
-    const rTravaAddress = (
-      await incentiveContract.REWARD_TOKEN()
-    ).toLowerCase();
-
-    const rTravaBalance =
-      appState.smartWalletState.tokenBalances.get(rTravaAddress);
-
-    if (rTravaBalance) {
-      let realAmount = amount;
-      if (BigInt(amount) > BigInt(rTravaBalance)) {
-        realAmount = rTravaBalance;
+    if (from == appState.walletState.address) {
+      if (!appState.walletState.tokenBalances.has(rTravaAddress)) {
+        appState = await updateUserTokenBalance(appState, rTravaAddress);
       }
+
+      const rTravaBalance = appState.walletState.tokenBalances.get(rTravaAddress)!;
+
+      if (amount.toFixed(0) == MAX_UINT256 || amount.isEqualTo(MAX_UINT256)) {
+        amount = BigNumber(rTravaBalance);
+      }
+
+      appState.walletState.tokenBalances.set(
+        rTravaAddress,
+        BigNumber(rTravaBalance).minus(amount).toFixed(0)
+      );
+
+    } else if (from == appState.smartWalletState.address) {
+      if (!appState.smartWalletState.tokenBalances.has(rTravaAddress)) {
+        appState = await updateSmartWalletTokenBalance(appState, rTravaAddress);
+      }
+
+      const rTravaBalance = appState.smartWalletState.tokenBalances.get(rTravaAddress)!;
+
+      if (amount.toFixed(0) == MAX_UINT256 || amount.isEqualTo(MAX_UINT256)) {
+        amount = BigNumber(rTravaBalance);
+      }
+
       appState.smartWalletState.tokenBalances.set(
         rTravaAddress,
-        (BigInt(rTravaBalance) - BigInt(realAmount)).toString()
-      );
-      const travaAddress = getAddr("TRAVA_TOKEN_IN_MARKET", appState.chainId);
-      if (to.toLowerCase() == appState.smartWalletState.address.toLowerCase()) {
-        to = appState.smartWalletState.address;
-
-        const travaBalance =
-          appState.smartWalletState.tokenBalances.get(travaAddress);
-        if (travaBalance) {
-          appState.smartWalletState.tokenBalances.set(
-            travaAddress,
-            (BigInt(travaBalance) + BigInt(amount)).toString()
-          );
-        } else {
-          appState.smartWalletState.tokenBalances.set(
-            rTravaAddress,
-            BigInt(amount).toString()
-          );
-        }
-      } else if (
-        to.toLowerCase() == appState.walletState.address.toLowerCase()
-      ) {
-        to = appState.walletState.address;
-
-        const travaBalance =
-          appState.walletState.tokenBalances.get(travaAddress);
-        if (travaBalance) {
-          appState.walletState.tokenBalances.set(
-            travaAddress,
-            (BigInt(travaBalance) + BigInt(amount)).toString()
-          );
-        } else {
-          appState.walletState.tokenBalances.set(
-            rTravaAddress,
-            BigInt(amount).toString()
-          );
-        }
-      }
-    } else {
-      throw new Error(
-        `Token rTrava is not exist in reverseList or smart wallet does not have token rTrava.`
+        BigNumber(rTravaBalance).minus(amount).toFixed(0)
       );
     }
-    return appState;
+
+    const travaAddress = getAddr("TRAVA_TOKEN_IN_MARKET", appState.chainId).toLowerCase();
+
+    if (to.toLowerCase() == appState.walletState.address.toLowerCase()) {
+      to = appState.walletState.address;
+
+      if (!appState.walletState.tokenBalances.has(travaAddress)) {
+        appState = await updateUserTokenBalance(appState, travaAddress);
+      }
+
+      const travaBalance = appState.walletState.tokenBalances.get(travaAddress)!;
+      appState.walletState.tokenBalances.set(
+        travaAddress,
+        BigNumber(travaBalance).plus(amount).toFixed(0)
+      )
+    } else if (to.toLowerCase() == appState.smartWalletState.address.toLowerCase()) {
+      to = appState.smartWalletState.address;
+
+      if (!appState.smartWalletState.tokenBalances.has(travaAddress)) {
+       
+        appState = await updateSmartWalletTokenBalance(appState, travaAddress);
+      }
+
+      const travaBalance = appState.smartWalletState.tokenBalances.get(travaAddress)!;
+      appState.smartWalletState.tokenBalances.set(
+        travaAddress,
+        BigNumber(travaBalance).plus(amount).toFixed(0)
+      )
+    }
   } catch (err) {
     throw err;
   }
+  return appState;
 }

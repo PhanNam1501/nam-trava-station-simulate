@@ -38,7 +38,6 @@ export class SmartWalletState {
   sellingNFT: NFTSellingState;
   detailTokenInPool: Map<string, DetailTokenInPool>;
   travaLPStakingStateList: BaseAccountVault[];
-  maxRewardCanClaim: string;
 
   constructor(address: EthAddress) {
     this.address = address;
@@ -50,7 +49,6 @@ export class SmartWalletState {
     this.sellingNFT = new NFTSellingState();
     this.detailTokenInPool = new Map();
     this.travaLPStakingStateList = [];
-    this.maxRewardCanClaim = "0";
   }
 
   // async getTokenAmount(tokenAddress: string): Promise<string> {

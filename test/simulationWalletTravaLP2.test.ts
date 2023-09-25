@@ -2,46 +2,57 @@ import { updateMaxRewardCanClaims, updateRTravaAndTravaForReward, updateTravaLPI
 import { ApplicationState } from "../src/State/ApplicationState";
 import { SimulationClaimReward, SimulationConvertReward } from "../src/Simulation/market/SimulationWalletTravaLP";
 import { Contract, JsonRpcProvider } from "ethers";
+import BigNumber from "bignumber.js";
+import { getAddr } from "../src/utils/address";
 // start test
 
 const test = async () => {
   console.log("=================BEFORE==========================");
-  const provider = new JsonRpcProvider("https://data-seed-prebsc-2-s2.bnbchain.org:8545")
+  const provider = new JsonRpcProvider("https://bsc.publicnode.com")
   const chainId = Number((await provider.getNetwork()).chainId)
+  const userAddress = "0x68a6c841040B05D60434d81000f523Bf6355b31D";
+  const proxyAddress = "0x72DE03F7828a473A64b4A415bD76820EBAFf2B2C";
+
   const appState = new ApplicationState(
-    "0x595622cBd0Fc4727DF476a1172AdA30A9dDf8F43",
-    "0x826D824BE55A403859A6Db67D5EeC5aC386307fE",
-    new JsonRpcProvider("https://data-seed-prebsc-2-s2.bnbchain.org:8545"),
+    userAddress,
+    proxyAddress,
+    provider,
     chainId
   );
 
   let oldState = await updateTravaLPInfo(
     appState,
-    "0x595622cBd0Fc4727DF476a1172AdA30A9dDf8F43"
+    proxyAddress
   )
-
+  oldState = await updateRTravaAndTravaForReward(
+    oldState
+  )
   // oldState = await updateTokenInPoolInfo(
   //   oldState
   // )
-  console.log(oldState.smartWalletState.detailTokenInPool)
-  // let oldState = await updateRTravaAndTravaForReward(appState);
+  // oldState = await updateRTravaAndTravaForReward(appState);
   // oldState = await updateMaxRewardCanClaims(oldState);
   // console.log(oldState.smartWalletState.tokenBalances);
-  // console.log(JSON.stringify(oldState));
-  
-  // let newState = await SimulationClaimReward(
-  //   oldState,
-  //   "10000000000000000000"
-  // );
-  
-  // newState = await SimulationConvertReward(
-  //   newState,
-  //   "0x826D824BE55A403859A6Db67D5EeC5aC386307fE",
-  //   "5000000000000000000"
-  // );
+  console.log(JSON.stringify(oldState.smartWalletState.travaLPState));
+  console.log(JSON.stringify(oldState.smartWalletState.tokenBalances.get(getAddr("TRAVA_TOKEN_IN_MARKET", chainId).toLowerCase())));
+  console.log("=================START==========================");
 
-  // console.log("=================AFTER==========================");
-  // console.log(newState.smartWalletState.tokenBalances);
-  // console.log(JSON.stringify(newState));
+  let newState = await SimulationClaimReward(
+    oldState,
+    userAddress,
+    BigNumber(1e16).toFixed(0)
+  );
+  
+  newState = await SimulationConvertReward(
+    newState,
+    userAddress,
+    proxyAddress,
+    BigNumber(5e15).toFixed(0)
+  );
+
+  console.log("=================AFTER==========================");
+  console.log(newState.smartWalletState.travaLPState.lpReward.claimableReward);
+  console.log(newState.walletState.tokenBalances.get(appState.smartWalletState.travaLPState.lpReward.tokenAddress));
+  console.log(JSON.stringify(oldState.smartWalletState.tokenBalances.get(getAddr("TRAVA_TOKEN_IN_MARKET", chainId).toLowerCase())));
 };
 test();

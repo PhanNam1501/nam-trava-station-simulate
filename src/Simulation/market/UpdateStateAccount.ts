@@ -11,6 +11,7 @@ import { DetailTokenInPool, TokenData } from "../../State/SmartWalletState";
 import MultiCallABI from "../../abis/Multicall.json";
 import BigNumber from "bignumber.js";
 import OraclePrice from "../../utils/oraclePrice";
+import { updateSmartWalletTokenBalance, updateUserTokenBalance } from "../basic/UpdateStateAccount";
 
 
 export async function getTokenBalance(appState: ApplicationState, tokenAddress: EthAddress) {
@@ -296,8 +297,6 @@ async function updateTokenInPoolInfo(
     tTokenList.push(r[6]);
     dTokenList.push(r[7]);
   }
-  console.log("tTokenList", tTokenList)
-  console.log("dTokenList", dTokenList)
 
   let [tTokenBalance, tTokenDecimal, tTokenTotalSupply, originInTTokenBalance, dTokenBalance, dTokenDecimal, dTokenTotalSupply, originInDTokenBalance] = await Promise.all([
     multiCall(
@@ -438,6 +437,24 @@ async function updateTokenInPoolInfo(
       });
     }
   }
+
+  if (appState.smartWalletState.travaLPState.lpReward.claimableReward == "") {
+    const travaIncentiveContract = new Contract(
+      getAddr("INCENTIVE_CONTRACT", appState.chainId),
+      IncentiveContractABI,
+      appState.web3!
+    );
+    let maxRewardCanGet = await travaIncentiveContract.getRewardsBalance(
+      tTokenList.concat(dTokenList),
+      appState.smartWalletState.address
+    );
+    const rTravaAddress = await travaIncentiveContract.REWARD_TOKEN();
+
+    appState.smartWalletState.travaLPState.lpReward.claimableReward = maxRewardCanGet.toString();
+    appState.smartWalletState.travaLPState.lpReward.tokenAddress = String(rTravaAddress).toLowerCase();
+
+  }
+
   return appState
 }
 // call this before all actions
@@ -449,14 +466,16 @@ export async function updateTravaLPInfo(
   const appState = { ...appState1 };
   try {
     // first update token in pool balances
+    if (market == undefined) {
+      market = getAddr("TRAVA_LENDING_POOL_MARKET", appState.chainId);
+    }
     const TravaLendingPool = new Contract(
-      getAddr("TRAVA_LENDING_POOL_MARKET", appState.chainId),
+      market!,
       ABITravaLP,
       appState.web3!
     );
 
     const reserveAddressList = await TravaLendingPool.getReservesList();
-
     let [userTokenInPoolBalance, smartWalletTokenInPoolBalance,] = await Promise.all([
       multiCall(
         BEP20ABI,
@@ -521,7 +540,7 @@ export async function updateTravaLPInfo(
     appState.walletState.travaLPState.availableBorrowsUSD =
       String(userData.availableBorrowsUSD);
     appState.walletState.travaLPState.currentLiquidationThreshold =
-      userData.currentLiquidationThreshold;
+    String(userData.currentLiquidationThreshold);
     appState.walletState.travaLPState.healthFactor = String(userData.healthFactor);
     appState.walletState.travaLPState.ltv = String(userData.ltv);
 
@@ -573,46 +592,49 @@ const multiCall = async (abi: any, calls: any, provider: any, chainId: any) => {
 export async function updateMaxRewardCanClaims(appState1: ApplicationState) {
   try {
     const appState = { ...appState1 };
-    const travaLP = new Contract(
-      getAddr("TRAVA_LENDING_POOL_MARKET", appState.chainId),
-      ABITravaLP,
-      appState.web3!
-    );
-    let reverseList = await travaLP.getReservesList();
-    reverseList = reverseList.map((e: string) => e.toLowerCase());
-
-    let [reserveData] = await Promise.all([
-      multiCall(
+    if (appState.smartWalletState.travaLPState.lpReward.claimableReward == "") {
+      const travaLP = new Contract(
+        getAddr("TRAVA_LENDING_POOL_MARKET", appState.chainId),
         ABITravaLP,
-        reverseList.map((address: string, _: number) => ({
-          address: getAddr("TRAVA_LENDING_POOL_MARKET", appState.chainId),
-          name: "getReserveData",
-          params: [address],
-        })),
-        appState.web3,
-        appState.chainId
-      ),
-    ]);
-    reserveData = reserveData.flat();
-    // console.log("reserveData", reserveData);
+        appState.web3!
+      );
+      let reverseList = await travaLP.getReservesList();
+      reverseList = reverseList.map((e: string) => e.toLowerCase());
 
-    let tTokenList = [] as Array<string>;
-    let dTokenList = [] as Array<string>;
-    for (const r of reserveData) {
-      tTokenList.push(r[6]);
-      dTokenList.push(r[7]);
+      let [reserveData] = await Promise.all([
+        multiCall(
+          ABITravaLP,
+          reverseList.map((address: string, _: number) => ({
+            address: getAddr("TRAVA_LENDING_POOL_MARKET", appState.chainId),
+            name: "getReserveData",
+            params: [address],
+          })),
+          appState.web3,
+          appState.chainId
+        ),
+      ]);
+      reserveData = reserveData.flat();
+      // console.log("reserveData", reserveData);
+
+      let tTokenList = [] as Array<string>;
+      let dTokenList = [] as Array<string>;
+      for (const r of reserveData) {
+        tTokenList.push(r[6]);
+        dTokenList.push(r[7]);
+      }
+
+
+      const travaIncentiveContract = new Contract(
+        getAddr("INCENTIVE_CONTRACT", appState.chainId),
+        IncentiveContractABI,
+        appState.web3!
+      );
+      let maxRewardCanGet = await travaIncentiveContract.getRewardsBalance(
+        tTokenList.concat(dTokenList),
+        appState.smartWalletState.address
+      );
+      appState.smartWalletState.travaLPState.lpReward.claimableReward = maxRewardCanGet.toString();
     }
-    
-    const travaIncentiveContract = new Contract(
-      getAddr("INCENTIVE_CONTRACT", appState.chainId),
-      IncentiveContractABI,
-      appState.web3!
-    );
-    let maxRewardCanGet = await travaIncentiveContract.getRewardsBalance(
-      tTokenList.concat(dTokenList),
-      appState.smartWalletState.address
-    );
-    appState.smartWalletState.maxRewardCanClaim = maxRewardCanGet.toString();
     return appState;
   } catch (error) {
     throw new Error("Can't update LP tToken info !");
@@ -623,7 +645,7 @@ export async function updateRTravaAndTravaForReward(
   appState1: ApplicationState
 ) {
   try {
-    const appState = { ...appState1 };
+    let appState = { ...appState1 };
     const incentiveContract = new Contract(
       getAddr("INCENTIVE_CONTRACT", appState.chainId),
       IncentiveContractABI,
@@ -631,42 +653,13 @@ export async function updateRTravaAndTravaForReward(
     );
     const rTravaAddress = await incentiveContract.REWARD_TOKEN();
 
-    const rTravaContract = new Contract(rTravaAddress, BEP20ABI, appState.web3);
-    const rTravaBalance = await rTravaContract.balanceOf(
-      appState.smartWalletState.address
-    );
-    const rTravaBalance2 = await rTravaContract.balanceOf(
-      appState.walletState.address
-    );
+    appState = await updateUserTokenBalance(appState, rTravaAddress);
+    appState = await updateSmartWalletTokenBalance(appState, rTravaAddress);
 
-    const travaContract = new Contract(
-      getAddr("TRAVA_TOKEN_IN_MARKET", appState.chainId),
-      BEP20ABI,
-      appState.web3
-    );
-    const travaBalance = await travaContract.balanceOf(
-      appState.smartWalletState.address
-    );
-    const travaBalance2 = await travaContract.balanceOf(
-      appState.walletState.address
-    );
+    appState = await updateUserTokenBalance(appState, getAddr("TRAVA_TOKEN_IN_MARKET", appState.chainId));
+    appState = await updateSmartWalletTokenBalance(appState, getAddr("TRAVA_TOKEN_IN_MARKET", appState.chainId));
 
-    appState.smartWalletState.tokenBalances.set(
-      getAddr("TRAVA_TOKEN_IN_MARKET", appState.chainId).toLowerCase(),
-      travaBalance.toString()
-    );
-    appState.walletState.tokenBalances.set(
-      getAddr("TRAVA_TOKEN_IN_MARKET", appState.chainId).toLowerCase(),
-      travaBalance2.toString()
-    );
-    appState.smartWalletState.tokenBalances.set(
-      String(rTravaAddress).toLowerCase(),
-      rTravaBalance.toString()
-    );
-    appState.walletState.tokenBalances.set(
-      String(rTravaAddress).toLowerCase(),
-      rTravaBalance2.toString()
-    );
+    appState.smartWalletState.travaLPState.lpReward.tokenAddress = String(rTravaAddress).toLowerCase();
     return appState;
   } catch (error) {
     throw new Error("Can't update LP tToken info !");
