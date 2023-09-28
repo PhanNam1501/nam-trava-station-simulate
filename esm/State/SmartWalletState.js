@@ -11,6 +11,6 @@ export class SmartWalletState {
         this.ethBalances = "";
         this.sellingNFT = new NFTSellingState();
         this.detailTokenInPool = new Map();
-        this.travaLPStakingStateList = [];
+        this.travaLPStakingStateList = new Map();
     }
 }

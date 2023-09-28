@@ -19,7 +19,7 @@ export declare function updateLPDebtTokenInfo(appState1: ApplicationState, _toke
     web3: import("ethers").JsonRpcProvider;
     chainId: number;
 }>;
-export declare function updateTravaLPInfo(appState1: ApplicationState, userAddress: EthAddress, market?: EthAddress): Promise<ApplicationState>;
+export declare function updateTravaLPInfo(appState1: ApplicationState, market?: EthAddress): Promise<ApplicationState>;
 export declare function updateMaxRewardCanClaims(appState1: ApplicationState): Promise<{
     walletState: import("../../State/WalletState").WalletState;
     smartWalletState: import("../../State/SmartWalletState").SmartWalletState;

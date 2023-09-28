@@ -11,7 +11,7 @@ export interface OriginTokenData {
   balances: string;
 }
 
-export interface TokenData {
+export interface TokenInPoolData {
   address: string;
   balances: string;
   decimals: string;
@@ -21,8 +21,8 @@ export interface TokenData {
 
 export interface DetailTokenInPool {
   decimals: string;
-  dToken: TokenData;
-  tToken: TokenData;
+  dToken: TokenInPoolData;
+  tToken: TokenInPoolData;
   maxLTV: string;
   liqThres: string;
   price: string;
@@ -37,7 +37,7 @@ export class SmartWalletState {
   ethBalances: string;
   sellingNFT: NFTSellingState;
   detailTokenInPool: Map<string, DetailTokenInPool>;
-  travaLPStakingStateList: BaseAccountVault[];
+  travaLPStakingStateList: Map<string, BaseAccountVault>;
 
   constructor(address: EthAddress) {
     this.address = address;
@@ -48,7 +48,7 @@ export class SmartWalletState {
     this.ethBalances = "";
     this.sellingNFT = new NFTSellingState();
     this.detailTokenInPool = new Map();
-    this.travaLPStakingStateList = [];
+    this.travaLPStakingStateList = new Map();
   }
 
   // async getTokenAmount(tokenAddress: string): Promise<string> {

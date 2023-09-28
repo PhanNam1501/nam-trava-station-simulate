@@ -7,11 +7,12 @@ import BEP20ABI from "../../abis/BEP20.json";
 import OracleABI from "../../abis/AaveOracle.json";
 import { convertHexStringToAddress, getAddr } from "../../utils/address";
 import _ from "lodash";
-import { DetailTokenInPool, TokenData } from "../../State/SmartWalletState";
+import { DetailTokenInPool, TokenInPoolData } from "../../State/SmartWalletState";
 import MultiCallABI from "../../abis/Multicall.json";
 import BigNumber from "bignumber.js";
 import OraclePrice from "../../utils/oraclePrice";
 import { updateSmartWalletTokenBalance, updateUserTokenBalance } from "../basic/UpdateStateAccount";
+import { calculateMaxRewards, getListTDTokenRewardsAddress } from "./SimulationWalletTravaLP";
 
 
 export async function getTokenBalance(appState: ApplicationState, tokenAddress: EthAddress) {
@@ -384,8 +385,8 @@ async function updateTokenInPoolInfo(
   let binaryAssetConfig;
   let maxLTV;
   let liqThres;
-  let tToken: TokenData;
-  let dToken: TokenData;
+  let tToken: TokenInPoolData;
+  let dToken: TokenInPoolData;
   for (let i = 0; i < reverseList.length; i++) {
     if (
       !appState.smartWalletState.detailTokenInPool.has(reverseList[i].toString().toLowerCase())
@@ -444,10 +445,8 @@ async function updateTokenInPoolInfo(
       IncentiveContractABI,
       appState.web3!
     );
-    let maxRewardCanGet = await travaIncentiveContract.getRewardsBalance(
-      tTokenList.concat(dTokenList),
-      appState.smartWalletState.address
-    );
+    
+    let maxRewardCanGet = await calculateMaxRewards(appState);
     const rTravaAddress = await travaIncentiveContract.REWARD_TOKEN();
 
     appState.smartWalletState.travaLPState.lpReward.claimableReward = maxRewardCanGet.toString();
@@ -460,7 +459,6 @@ async function updateTokenInPoolInfo(
 // call this before all actions
 export async function updateTravaLPInfo(
   appState1: ApplicationState,
-  userAddress: EthAddress,
   market?: EthAddress
 ): Promise<ApplicationState> {
   const appState = { ...appState1 };
@@ -474,7 +472,6 @@ export async function updateTravaLPInfo(
       ABITravaLP,
       appState.web3!
     );
-
     const reserveAddressList = await TravaLendingPool.getReservesList();
     let [userTokenInPoolBalance, smartWalletTokenInPoolBalance,] = await Promise.all([
       multiCall(
@@ -531,7 +528,7 @@ export async function updateTravaLPInfo(
     }
 
     // second update TravaLP state for wallet
-    const userData = await TravaLendingPool.getUserAccountData(userAddress);
+    const userData = await TravaLendingPool.getUserAccountData(appState.walletState.address);
 
     // update appState for wallet
     appState.walletState.travaLPState.totalCollateralUSD =

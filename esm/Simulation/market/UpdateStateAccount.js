@@ -17,6 +17,7 @@ import MultiCallABI from "../../abis/Multicall.json";
 import BigNumber from "bignumber.js";
 import OraclePrice from "../../utils/oraclePrice";
 import { updateSmartWalletTokenBalance, updateUserTokenBalance } from "../basic/UpdateStateAccount";
+import { calculateMaxRewards } from "./SimulationWalletTravaLP";
 export function getTokenBalance(appState, tokenAddress) {
     return __awaiter(this, void 0, void 0, function* () {
         const tokenContract = new Contract(tokenAddress, BEP20ABI, appState.web3);
@@ -296,7 +297,7 @@ function updateTokenInPoolInfo(appState) {
         }
         if (appState.smartWalletState.travaLPState.lpReward.claimableReward == "") {
             const travaIncentiveContract = new Contract(getAddr("INCENTIVE_CONTRACT", appState.chainId), IncentiveContractABI, appState.web3);
-            let maxRewardCanGet = yield travaIncentiveContract.getRewardsBalance(tTokenList.concat(dTokenList), appState.smartWalletState.address);
+            let maxRewardCanGet = yield calculateMaxRewards(appState);
             const rTravaAddress = yield travaIncentiveContract.REWARD_TOKEN();
             appState.smartWalletState.travaLPState.lpReward.claimableReward = maxRewardCanGet.toString();
             appState.smartWalletState.travaLPState.lpReward.tokenAddress = String(rTravaAddress).toLowerCase();
@@ -305,7 +306,7 @@ function updateTokenInPoolInfo(appState) {
     });
 }
 // call this before all actions
-export function updateTravaLPInfo(appState1, userAddress, market) {
+export function updateTravaLPInfo(appState1, market) {
     return __awaiter(this, void 0, void 0, function* () {
         const appState = Object.assign({}, appState1);
         try {
@@ -346,7 +347,7 @@ export function updateTravaLPInfo(appState1, userAddress, market) {
                 }
             }
             // second update TravaLP state for wallet
-            const userData = yield TravaLendingPool.getUserAccountData(userAddress);
+            const userData = yield TravaLendingPool.getUserAccountData(appState.walletState.address);
             // update appState for wallet
             appState.walletState.travaLPState.totalCollateralUSD =
                 String(userData.totalCollateralUSD);

@@ -100,6 +100,8 @@ export const wadDiv = (a, b) => {
     }
     return a.multipliedBy(WAD).plus(halfB).div(b);
 };
+export const YEAR_TO_SECONDS = 365 * 24 * 60 * 60;
+export const BASE18 = BigNumber("1000000000000000000");
 export const MAX_UINT256 = ethers.MaxUint256.toString();
 export const PERCENTAGE_FACTOR = BigNumber(1e4);
 export const HALF_PERCENT = PERCENTAGE_FACTOR.div(2);

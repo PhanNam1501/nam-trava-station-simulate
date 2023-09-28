@@ -21,16 +21,29 @@ export class TravaLPStakingState {
 }
 export class BaseAccountVault {
     constructor() {
-        this.id = "";
-        this.name = "";
-        this.code = "";
-        this.underlyingAddress = "";
-        this.stakedTokenAddress = "";
         this.claimable = false;
-        this.reserveDecimals = "0";
         this.claimableReward = "0";
-        this.claimedReward = "0";
         this.deposited = "0";
+        this.TVL = "0";
+        this.APR = "0";
+        this.underlyingToken = {
+            underlyingAddress: "",
+            reserveDecimals: "",
+            price: "0",
+        };
+        this.stakedToken = {
+            id: "",
+            name: "",
+            code: "",
+            stakedTokenAddress: "",
+            eps: "",
+            reserveDecimals: "",
+        };
+        this.rewardToken = {
+            address: "",
+            decimals: "",
+            price: ""
+        };
     }
 }
 export class TravaLPState {

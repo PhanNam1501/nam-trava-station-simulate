@@ -23,17 +23,33 @@ export declare class TravaLPStakingState {
     claimedReward: string;
     constructor();
 }
-export declare class BaseAccountVault {
+export interface UnderlyingTokenData {
+    underlyingAddress: string;
+    reserveDecimals: string;
+    price: string;
+}
+export interface StakedTokenData {
     id: string;
     name: string;
     code: string;
-    underlyingAddress: string;
     stakedTokenAddress: string;
-    claimable: boolean;
+    eps: string;
     reserveDecimals: string;
+}
+export interface RewardTokenData {
+    address: string;
+    decimals: string;
+    price: string;
+}
+export declare class BaseAccountVault {
+    claimable: boolean;
     claimableReward: string;
-    claimedReward: string;
     deposited: string;
+    TVL: string;
+    APR: string;
+    underlyingToken: UnderlyingTokenData;
+    stakedToken: StakedTokenData;
+    rewardToken: RewardTokenData;
     constructor();
 }
 export declare class TravaLPState {

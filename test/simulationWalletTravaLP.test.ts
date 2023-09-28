@@ -62,7 +62,6 @@ const test = async () => {
     
     const appState1 = await updateTravaLPInfo(
       appState12,
-      userAddress
       );
     // console.log("Started: ", appState1.smartWalletState.travaLPState)
   // const appState2 = await updateLPtTokenInfo(

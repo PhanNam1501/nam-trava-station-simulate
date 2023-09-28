@@ -32,7 +32,7 @@ export function updateSmartWalletEthBalance(appState1) {
 export function updateUserTokenBalance(appState1, _tokenAddress) {
     return __awaiter(this, void 0, void 0, function* () {
         const appState = Object.assign({}, appState1);
-        if (!appState.walletState.tokenBalances.has(_tokenAddress)) {
+        if (!appState.walletState.tokenBalances.has(_tokenAddress.toLowerCase())) {
             const address = convertHexStringToAddress(_tokenAddress);
             const TokenContract = new Contract(address, ERC20Mock, appState.web3);
             const balance = String(yield TokenContract.balanceOf(appState.walletState.address));
@@ -44,7 +44,7 @@ export function updateUserTokenBalance(appState1, _tokenAddress) {
 export function updateSmartWalletTokenBalance(appState1, _tokenAddress) {
     return __awaiter(this, void 0, void 0, function* () {
         const appState = Object.assign({}, appState1);
-        if (!appState.smartWalletState.tokenBalances.has(_tokenAddress)) {
+        if (!appState.smartWalletState.tokenBalances.has(_tokenAddress.toLowerCase())) {
             const address = convertHexStringToAddress(_tokenAddress);
             const TokenContract = new Contract(address, ERC20Mock, appState.web3);
             const balance = String(yield TokenContract.balanceOf(appState.smartWalletState.address));

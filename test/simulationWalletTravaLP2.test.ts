@@ -4,14 +4,16 @@ import { SimulationClaimReward, SimulationConvertReward, getListTDTokenRewardsAd
 import { Contract, JsonRpcProvider } from "ethers";
 import BigNumber from "bignumber.js";
 import { getAddr } from "../src/utils/address";
+import { updateSmartWalletTokenBalance, updateUserTokenBalance } from "../src/Simulation/basic/UpdateStateAccount";
+import { MAX_UINT256 } from "../src/utils/config";
 // start test
 
 const test = async () => {
   console.log("=================BEFORE==========================");
   const provider = new JsonRpcProvider("https://bsc.publicnode.com")
   const chainId = Number((await provider.getNetwork()).chainId)
-  const userAddress = "0x68a6c841040B05D60434d81000f523Bf6355b31D";
-  const proxyAddress = "0x72DE03F7828a473A64b4A415bD76820EBAFf2B2C";
+  const userAddress = "0x871DBcE2b9923A35716e7E83ee402B535298538E";
+  const proxyAddress = "0x124aa737A67CE0345Ab54ed32d23A8D453788890";
 
   const appState = new ApplicationState(
     userAddress,
@@ -21,38 +23,43 @@ const test = async () => {
   );
 
   let oldState = await updateTravaLPInfo(
-    appState,
-    proxyAddress
+    appState
   )
-  oldState = await updateRTravaAndTravaForReward(
-    oldState
-  )
+  // oldState = await updateRTravaAndTravaForReward(
+  //   oldState
+  // )
   // oldState = await updateTokenInPoolInfo(
   //   oldState
   // )
   // oldState = await updateRTravaAndTravaForReward(appState);
   // oldState = await updateMaxRewardCanClaims(oldState);
   // console.log(oldState.smartWalletState.tokenBalances);
-  console.log(JSON.stringify(oldState.smartWalletState.travaLPState));
-  console.log(getListTDTokenRewardsAddress(oldState));
+  console.log(JSON.stringify(oldState.smartWalletState.travaLPState.lpReward));
+  console.log(oldState.walletState.tokenBalances);
+  // oldState = await updateUserTokenBalance(oldState, "0x0391bE54E72F7e001f6BBc331777710b4f2999Ef".toLowerCase());
+  // console.log("123", oldState.walletState.tokenBalances);
+  // oldState = await SimulationClaimReward(
+  //   oldState,
+  //   userAddress,
+  //   BigNumber(0).toFixed(0)
+  //   );
+    oldState = await updateUserTokenBalance(oldState, "0x170772a06affc0d375ce90ef59c8ec04c7ebf5d2".toLowerCase());
+  // oldState = await updateSmartWalletTokenBalance(oldState, "0x0391bE54E72F7e001f6BBc331777710b4f2999Ef");
+  console.log(oldState.walletState.tokenBalances);
+
   console.log("=================START==========================");
 
-  let newState = await SimulationClaimReward(
+
+  oldState = await SimulationConvertReward(
     oldState,
     userAddress,
-    BigNumber(1e16).toFixed(0)
-  );
-  
-  newState = await SimulationConvertReward(
-    newState,
     userAddress,
-    proxyAddress,
-    BigNumber(5e15).toFixed(0)
+    MAX_UINT256
   );
 
   console.log("=================AFTER==========================");
-  console.log(newState.smartWalletState.travaLPState.lpReward.claimableReward);
-  console.log(newState.walletState.tokenBalances.get(appState.smartWalletState.travaLPState.lpReward.tokenAddress));
-  console.log(JSON.stringify(oldState.smartWalletState.tokenBalances.get(getAddr("TRAVA_TOKEN_IN_MARKET", chainId).toLowerCase())));
+  console.log(oldState.walletState.tokenBalances);
+  // console.log(oldState.walletState.tokenBalances.get(appState.smartWalletState.travaLPState.lpReward.tokenAddress));
+  // console.log(JSON.stringify(oldState.smartWalletState.tokenBalances.get(getAddr("TRAVA_TOKEN_IN_MARKET", chainId).toLowerCase())));
 };
 test();

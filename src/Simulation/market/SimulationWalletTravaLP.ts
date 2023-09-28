@@ -166,11 +166,11 @@ export function calculateNewLiquidThreshold(oldTotalColleteral: BigNumber, oldLi
     return BigNumber(0);
   }
   let usd_changed = newTotalCollateral.minus(oldTotalColleteral);
-  let newLTV = oldTotalColleteral
+  let newLiqThres = oldTotalColleteral
     .multipliedBy(oldLiqThres)
     .plus(usd_changed.multipliedBy(tokenLiqThres))
     .div(newTotalCollateral)
-  return newLTV
+  return newLiqThres
 }
 
 export function getBalanceUsdFromAmount(amount: BigNumber, tokenInfo: DetailTokenInPool): BigNumber {
@@ -719,19 +719,19 @@ export async function SimulationConvertReward(
       if (!appState.walletState.tokenBalances.has(travaAddress)) {
         appState = await updateUserTokenBalance(appState, travaAddress);
       }
-
+      
       const travaBalance = appState.walletState.tokenBalances.get(travaAddress)!;
       appState.walletState.tokenBalances.set(
         travaAddress,
         BigNumber(travaBalance).plus(amount).toFixed(0)
-      )
-    } else if (to.toLowerCase() == appState.smartWalletState.address.toLowerCase()) {
-      to = appState.smartWalletState.address;
-
-      if (!appState.smartWalletState.tokenBalances.has(travaAddress)) {
-       
-        appState = await updateSmartWalletTokenBalance(appState, travaAddress);
-      }
+        )
+      } else if (to.toLowerCase() == appState.smartWalletState.address.toLowerCase()) {
+        to = appState.smartWalletState.address;
+        
+        if (!appState.smartWalletState.tokenBalances.has(travaAddress)) {
+          
+          appState = await updateSmartWalletTokenBalance(appState, travaAddress);
+        }
 
       const travaBalance = appState.smartWalletState.tokenBalances.get(travaAddress)!;
       appState.smartWalletState.tokenBalances.set(

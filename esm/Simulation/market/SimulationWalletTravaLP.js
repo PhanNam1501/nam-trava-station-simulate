@@ -128,11 +128,11 @@ export function calculateNewLiquidThreshold(oldTotalColleteral, oldLiqThres, new
         return BigNumber(0);
     }
     let usd_changed = newTotalCollateral.minus(oldTotalColleteral);
-    let newLTV = oldTotalColleteral
+    let newLiqThres = oldTotalColleteral
         .multipliedBy(oldLiqThres)
         .plus(usd_changed.multipliedBy(tokenLiqThres))
         .div(newTotalCollateral);
-    return newLTV;
+    return newLiqThres;
 }
 export function getBalanceUsdFromAmount(amount, tokenInfo) {
     //get token decimals

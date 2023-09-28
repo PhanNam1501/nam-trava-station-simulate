@@ -140,19 +140,6 @@
     "anonymous": false,
     "inputs": [
       {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "newDistributionEnd",
-        "type": "uint256"
-      }
-    ],
-    "name": "DistributionEndUpdated",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
         "indexed": true,
         "internalType": "address",
         "name": "previousOwner",
@@ -379,6 +366,19 @@
   },
   {
     "inputs": [],
+    "name": "GOVERNANCE",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
     "name": "PERMIT_TYPEHASH",
     "outputs": [
       {
@@ -457,7 +457,33 @@
   },
   {
     "inputs": [],
+    "name": "START_TIME_CLAIM",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
     "name": "UNSTAKE_WINDOW",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "VESTING_TIME_INTERVAL",
     "outputs": [
       {
         "internalType": "uint256",
@@ -546,22 +572,35 @@
     "name": "assets",
     "outputs": [
       {
-        "internalType": "uint104",
+        "internalType": "uint128",
         "name": "emissionPerSecond",
-        "type": "uint104"
+        "type": "uint128"
       },
       {
-        "internalType": "uint104",
-        "name": "index",
-        "type": "uint104"
-      },
-      {
-        "internalType": "uint40",
+        "internalType": "uint128",
         "name": "lastUpdateTimestamp",
-        "type": "uint40"
+        "type": "uint128"
+      },
+      {
+        "internalType": "uint256",
+        "name": "index",
+        "type": "uint256"
       }
     ],
     "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "lendingPool",
+        "type": "address"
+      }
+    ],
+    "name": "authorizeLendingPool",
+    "outputs": [],
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
@@ -597,6 +636,36 @@
       }
     ],
     "name": "claimRewards",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "components": [
+          {
+            "internalType": "uint104",
+            "name": "emissionPerSecond",
+            "type": "uint104"
+          },
+          {
+            "internalType": "uint256",
+            "name": "totalStaked",
+            "type": "uint256"
+          },
+          {
+            "internalType": "address",
+            "name": "underlyingAsset",
+            "type": "address"
+          }
+        ],
+        "internalType": "struct DistributionTypes.AssetConfigInput[]",
+        "name": "assetsConfigInput",
+        "type": "tuple[]"
+      }
+    ],
+    "name": "configureAssets",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -649,34 +718,34 @@
     "inputs": [
       {
         "internalType": "address",
-        "name": "asset",
+        "name": "lendingPoolAddress",
         "type": "address"
-      }
-    ],
-    "name": "getAssetData",
-    "outputs": [
+      },
       {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
+        "internalType": "address",
+        "name": "onBehalfOf",
+        "type": "address"
       },
       {
         "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "",
+        "name": "amount",
         "type": "uint256"
       }
     ],
-    "stateMutability": "view",
+    "name": "depositToPool",
+    "outputs": [],
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
-    "inputs": [],
-    "name": "getDistributionEnd",
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "underlyingAsset",
+        "type": "address"
+      }
+    ],
+    "name": "getAssetEmissionPerSecond",
     "outputs": [
       {
         "internalType": "uint256",
@@ -775,6 +844,24 @@
       }
     ],
     "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "to",
+        "type": "address"
+      }
+    ],
+    "name": "harvest",
+    "outputs": [],
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
@@ -941,11 +1028,107 @@
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "distributionEnd",
+        "name": "_startTimeClaim",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_vestingTimeInterval",
+        "type": "uint256"
+      }
+    ],
+    "name": "setClaimRewardsTimeline",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_coolDownSecond",
+        "type": "uint256"
+      }
+    ],
+    "name": "setCoolDownSecond",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_distributionEnd",
         "type": "uint256"
       }
     ],
     "name": "setDistributionEnd",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_emissionManager",
+        "type": "address"
+      }
+    ],
+    "name": "setEmissionManager",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_gov",
+        "type": "address"
+      }
+    ],
+    "name": "setGovernance",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "contract IBEP20",
+        "name": "_trava",
+        "type": "address"
+      }
+    ],
+    "name": "setRewardToken",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_reward_vault",
+        "type": "address"
+      }
+    ],
+    "name": "setRewardVault",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_unstake_window",
+        "type": "uint256"
+      }
+    ],
+    "name": "setUnstakeWindow",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -966,6 +1149,25 @@
     "name": "stake",
     "outputs": [],
     "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "name": "stakerRewarded",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
     "type": "function"
   },
   {

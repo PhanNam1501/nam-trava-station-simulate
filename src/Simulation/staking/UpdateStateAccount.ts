@@ -1,85 +1,157 @@
-import { Contract, JsonRpcApiProvider } from "ethers";
+import { Contract, Interface } from "ethers";
 import { ApplicationState } from "../../State/ApplicationState";
 import StakedTokenAbi from "../../abis/StakedToken.json";
 import VestingTokenAbi from "../../abis/VestingTrava.json";
-import {getAddr} from "../../utils/address";
-import { VAULT_TYPES, listStakingVault } from "../../utils/stakingVaultConfig";
-import { NETWORKS } from "../../utils/config";
-import { EthAddress } from "../../utils/types";
-import { BaseAccountVault } from "../../State/TravaDeFiState";
-export async function fetchAllAccountVault(appState1: ApplicationState){
+import { getAddr } from "../../utils/address";
+import {  listStakingVault } from "../../utils/stakingVaultConfig";
+import { YEAR_TO_SECONDS } from "../../utils/config";
+import { BaseAccountVault, RewardTokenData, StakedTokenData, UnderlyingTokenData } from "../../State/TravaDeFiState";
+import BigNumber from "bignumber.js";
+import MultiCallABI from "../../abis/Multicall.json";
+import OracleABI from "../../abis/AaveOracle.json";
+import { updateSmartWalletTokenBalance } from "../basic/UpdateStateAccount";
+
+export async function updateAllAccountVault(appState1: ApplicationState) {
   const vaultConfigList = listStakingVault[appState1.chainId];
-  const appState = {...appState1};
-  const promises = vaultConfigList.map(async (vaultConfig) => {
-    return fetchAccountVault(appState1.smartWalletState.address,appState1.web3,vaultConfig,appState1.chainId)
-  })
-  const accountVaults = await Promise.all(promises);
-  appState.smartWalletState.travaLPStakingStateList = accountVaults;
+  let appState = { ...appState1 };
+
+  let underlyingAddress = new Array<string>;
+  let priceUnderlyingAddress = new Array<string>
+  let stakedTokenAddress = new Array<string>;
+  let rewardTokenAddress = new Array<string>;
+  for (let i = 0; i < vaultConfigList.length; i++) {
+    underlyingAddress.push(vaultConfigList[i].underlyingAddress);
+    priceUnderlyingAddress.push(vaultConfigList[i].priceUnderlyingAddress);
+    stakedTokenAddress.push(vaultConfigList[i].stakedTokenAddress);
+    rewardTokenAddress.push(vaultConfigList[i].rewardToken.address)
+  }
+
+  let [
+    depositedDatas, 
+    TVLDatas,
+  ] = await Promise.all([
+    multiCall(
+      StakedTokenAbi,
+      stakedTokenAddress.map((address: string, _: number) => ({
+        address: address,
+        name: "balanceOf",
+        params: [appState.smartWalletState.address],
+      })),
+      appState.web3,
+      appState.chainId
+    ),
+    multiCall(
+      StakedTokenAbi,
+      stakedTokenAddress.map((address: string, _: number) => ({
+        address: address,
+        name: "totalSupply",
+        params: [],
+      })),
+      appState.web3,
+      appState.chainId
+    )
+  ]);
+  
+
+
+  // let [underlyingTokenPriceDatas, rewardTokenPriceDatas] = await Promise.all([
+  //   multiCall(
+  //     OracleABI,
+  //     priceUnderlyingAddress.map((address: string, _: number) => ({
+  //       address: getAddr("ORACLE_ADDRESS", appState.chainId),
+  //       name: "getAssetPrice",
+  //       params: [address],
+  //     })),
+  //     appState.web3,
+  //     appState.chainId
+  //   ),
+  //   multiCall(
+  //     OracleABI,
+  //     rewardTokenAddress.map((address: string, _: number) => ({
+  //       address: getAddr("ORACLE_ADDRESS", appState.chainId),
+  //       name: "getAssetPrice",
+  //       params: [address],
+  //     })),
+  //     appState.web3,
+  //     appState.chainId
+  //   )
+  // ]);
+
+  for (let i = 0; i < vaultConfigList.length; i++) {
+
+    let claimableReward = BigNumber(0);
+    let eps = "0"
+    if(vaultConfigList[i].id == "orai") {
+      const vestingCR = new Contract(getAddr("VESTING_TRAVA_ADDRESS", appState.chainId), VestingTokenAbi, appState.web3);
+      claimableReward = await vestingCR.getClaimableReward(appState.smartWalletState.address, vaultConfigList[i].underlyingAddress)
+      eps = "0.005549"
+    } else {
+      const stakedCR = new Contract(vaultConfigList[i].stakedTokenAddress, StakedTokenAbi, appState.web3);
+      claimableReward = await stakedCR.getTotalRewardsBalance(appState.smartWalletState.address)
+      eps =  BigNumber(await stakedCR.getAssetEmissionPerSecond(vaultConfigList[i].stakedTokenAddress)).div(vaultConfigList[i].reserveDecimals).toFixed()
+    }
+    
+    let stakedToken: StakedTokenData = {
+      id: vaultConfigList[i].id,
+      name: vaultConfigList[i].name,
+      code: vaultConfigList[i].code,
+      stakedTokenAddress: vaultConfigList[i].stakedTokenAddress,
+      eps: eps,
+      reserveDecimals: vaultConfigList[i].reserveDecimals
+    }
+
+    let underlyingToken: UnderlyingTokenData = {
+      underlyingAddress: vaultConfigList[i].underlyingAddress,
+      reserveDecimals: vaultConfigList[i].reserveDecimals,
+      price: "0" //underlyingTokenPriceDatas[i]
+    }
+
+    let rewardToken: RewardTokenData = {
+      address: vaultConfigList[i].rewardToken.address,
+      decimals: vaultConfigList[i].rewardToken.decimals,
+      price: "0", // rewardTokenPriceDatas[i]
+    }
+
+    let TVL = BigNumber(TVLDatas[i]).div(underlyingToken.reserveDecimals).multipliedBy(underlyingToken.price)
+    let APR = BigNumber(eps).multipliedBy(rewardToken.price).multipliedBy(YEAR_TO_SECONDS).div(TVL).div(100);
+    if(APR.isNaN()) {
+      APR = BigNumber(0);
+    }
+
+    let accountVaults: BaseAccountVault = {
+      claimable: vaultConfigList[i].claimable,
+      claimableReward: claimableReward.toString(),
+      deposited: depositedDatas[i].toString(),
+      TVL: TVL.toFixed(),
+      APR: APR.toFixed(),
+      underlyingToken: underlyingToken,
+      stakedToken: stakedToken,
+      rewardToken: rewardToken
+    }
+
+    appState.smartWalletState.travaLPStakingStateList.set(vaultConfigList[i].stakedTokenAddress.toLowerCase(), accountVaults);
+    if (!appState.smartWalletState.tokenBalances.has(vaultConfigList[i].stakedTokenAddress.toLowerCase())) {
+      appState = await updateSmartWalletTokenBalance(appState, vaultConfigList[i].stakedTokenAddress.toLowerCase())
+    }
+  }
   return appState;
 }
-export async function fetchAccountVault(accountAddress:EthAddress,web3Reader:JsonRpcApiProvider,vaultConfig:any,chainId:number) : Promise<BaseAccountVault>
-{
-    const { id: vaultId, stakedTokenAddress } = vaultConfig;
-    const stakedCR = new Contract(stakedTokenAddress,StakedTokenAbi,web3Reader);
-  
-    // rewards
-    const { claimableReward, claimedReward, totalReward, rewardConfig } = await fetchReward(accountAddress,web3Reader,vaultConfig,chainId);
-    //const reward = is3RewardVault(vaultConfig) ? claimableReward : totalReward;
-  
-    // deposited
-    const depositedRaw = await stakedCR.balanceOf(accountAddress);
-    const deposited = String(BigInt(depositedRaw));
-  
-    return {
-      ...vaultConfig,
-      claimableReward,
-      claimedReward,
-      deposited,
-    };
-}
-function is3RewardVault(vault :any){
-    return vault.vaultType === VAULT_TYPES.BASE || vault.vaultType === VAULT_TYPES.REWARD_ON_FTM;
-}
-function isNative(chainId : number ,vaultId : string){
-    return ((chainId== Number(NETWORKS.bscTestnet.chainId) || chainId == Number(NETWORKS.bscMainnet.chainId) ) && vaultId == "bsc")
-}
-export async function fetchReward(accountAddress :EthAddress,web3Reader: JsonRpcApiProvider,vaultConfig : any,chainId:number){
-  const { id: vaultId, underlyingAddress, stakedTokenAddress, reserveDecimals } = vaultConfig;
-  const stakedCR = new Contract(stakedTokenAddress,StakedTokenAbi,web3Reader);
-  let vestingCR;
-  const normalVestingCR = new Contract(getAddr("VESTING_TRAVA_ADDRESS",chainId),VestingTokenAbi,web3Reader);
 
-  vestingCR = normalVestingCR;
-  // claimable
-  let claimableReward = "0";
-  // claimed
-  let claimedReward = "0";
+const multiCall = async (abi: any, calls: any, provider: any, chainId: any) => {
+  let _provider = provider;
+  const multi = new Contract(
+    getAddr("MULTI_CALL_ADDRESS", chainId),
+    MultiCallABI,
+    _provider
+  );
+  const itf = new Interface(abi);
 
-  if (is3RewardVault(vaultConfig)) {
-    const claimableRewardRaw = await vestingCR.getClaimableReward(accountAddress, underlyingAddress)
-    claimableReward = String(BigInt(claimableRewardRaw));
-
-    const claimedRewardRaw = await vestingCR.getClaimedReward(accountAddress, underlyingAddress)
-    claimedReward = String(BigInt(claimedRewardRaw));
-  }
-
-  // totalReward
-  let totalReward ="0";
-  let rewardConfig="0";
-  if (vaultId === "busd" || vaultId === "bnb") {
-    const totalRewardRaw = await normalVestingCR.getTotalReward(accountAddress, underlyingAddress)
-    totalReward = String(BigInt(totalRewardRaw));
-  } else {
-    const totalRewardRaw = await stakedCR.getTotalRewardsBalance(accountAddress)
-    totalReward = String(BigInt(totalRewardRaw));
-    
-  }
-  return {
-    ...vaultConfig,
-    claimableReward,
-    claimedReward,
-    totalReward,
-    rewardConfig,
-  };
-
-}
+  const callData = calls.map((call: any) => [
+    call.address.toLowerCase(),
+    itf.encodeFunctionData(call.name as string, call.params),
+  ]);
+  const { returnData } = await multi.aggregate(callData);
+  return returnData.map((call: any, i: any) =>
+    itf.decodeFunctionResult(calls[i].name, call)
+  );
+};

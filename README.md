@@ -9,6 +9,7 @@
     - [Tương tác với các mảnh armouries](#tương-tác-với-các-mảnh-armouries)
     - [Tương tác với các Knight](#tương-tác-với-các-knight)
     - [Tương tác với các Marketplace](#tương-tác-với-các-marketplace)
+    - [Tuong tac voi Trava Staking](#tuong-tac-voi-trava-staking)
 - [Simulate state](#simulate-state)
   - [Simulate Utilities actions](#simulate-utilities-actions)
   - [Pull token](#pull-token)
@@ -30,7 +31,10 @@
 - [Simulate Trava NFT Utilities](#simulate-trava-nft-utilities)
   - [Transfer armoury](#transfer-armoury)
   - [Transfer collection](#transfer-collection)
-- [Get Max amount in Trava Lending Pool](#get-max-amount-in-trava-lending-pool)
+- [Simulate Trava Staking](#simulate-trava-staking)
+  - [Simulate Trava Staking Stake](#simulate-trava-staking-stake)
+  - [Simulate Trava Staking Redeem (Withdraw)](#simulate-trava-staking-redeem-withdraw)
+  - [Simulate Trava Staking Claim (Withdraw)](#simulate-trava-staking-claim-withdraw)
 ```
 import { ApplicationState } from "../State/ApplicationState";
 
@@ -151,6 +155,24 @@ appState5 = await updateUserTokenBalance(
 ```
 Update các armouries mà user đang bán trên marketplace
 
+### Tuong tac voi Trava Staking
+Update state cua Smart Wallet trong cac vault
+```
+newAppState = await updateAllAccountVault(oldAppState)
+```
+```
+Khi stake: update stakedToken balance for smart wallet, update underlyingToken balance for from address
+Khi withdraw: update underlyingToken balance for "to" Address and Smart Wallet Address
+Khi claimReward: update Trava balance for "to" address 
+```
+```
+stakedPool = await newAppState.smartWalletState.travaLPStakingStateList.get(stakedTokenAdress.toLownerCase())
+
+TVL = stakedPool.TVL
+APR = stakedPool.APR
+reward = stakedPool.claimableReward
+deposited = stakedPool.deposited
+```
 # Simulate state
 Sau khi init state xong. Với mỗi state, các simulate khác nhau
 ## Simulate Utilities actions
@@ -323,31 +345,36 @@ appState19 = await simulateTravaNFTTransfer(
     contract: NFT_COLLECTION address
 )
 ```
-# Get Max amount in Trava Lending Pool
+# Simulate Trava Staking
+## Simulate Trava Staking Stake
 ```
-const maxSupply = calculateMaxAmountSupply(
-    appState: ApplicationState, 
-    _tokenAddress: string, 
-    mode: "walletState" | "smartWalletState"
-    ).toFixed()
+maxAmount = fromState.getTokenBalanceOf(underlyingTokenAddress)
+
+newAppState = await simulateStakeStaking(
+    oldAppState,
+    stakedTokenAddress,
+    from,
+    amount
+)
 ```
+## Simulate Trava Staking Redeem (Withdraw)
 ```
-const maxBorrow = calculateMaxAmountBorrow(
-    appState: ApplicationState, 
-    _tokenAddress: string
-    ).toFixed()
+maxAmount = oldAppState.smartWalletState.travaLPStakingStateList.get(stakedTokenAddress.toLowerCase())!.deposited;
+newAppState = await simulateStakingRedeem(
+    oldAppState,
+    stakedTokenAddress,
+    to,
+    amount
+)
 ```
+## Simulate Trava Staking Claim (Withdraw)
 ```
-const maxRepay = calculateMaxAmountRepay(
-    appState: ApplicationState, 
-    _tokenAddress: string, 
-    mode: "walletState" | "smartWalletState"
-    ).toFixed()
-```
-```
-const maxWithdraw = calculateMaxAmountWithdraw(
-    appState: ApplicationState, 
-    _tokenAddress: string, 
-    mode: "walletState" | "smartWalletState"
-    ).toFixed()
+maxAmount = oldAppState.smartWalletState.travaLPStakingStateList.get(stakedTokenAddress.toLowerCase())!.claimableReward;
+
+newAppState = await simulateStakingClaimRewards(
+    oldAppState,
+    stakedTokenAddress,
+    to,
+    maxAmount
+)
 ```

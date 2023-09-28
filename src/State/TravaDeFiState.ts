@@ -41,29 +41,63 @@ export class TravaLPStakingState {
     this.claimedReward = "";
   }
 }
-export class BaseAccountVault {
+
+export interface UnderlyingTokenData {
+  underlyingAddress: string;
+  reserveDecimals: string;
+  price: string;
+}
+
+export interface StakedTokenData {
   id: string;
   name: string;
   code: string;
-  underlyingAddress: string;
   stakedTokenAddress: string;
-  claimable: boolean;
+  eps: string;
   reserveDecimals: string;
+}
+
+export interface RewardTokenData {
+  address: string;
+  decimals: string;
+  price: string;
+}
+
+export class BaseAccountVault {
+  claimable: boolean;
   claimableReward: string;
-  claimedReward: string;
   deposited: string;
+  TVL: string;
+  APR: string;
+  underlyingToken: UnderlyingTokenData;
+  stakedToken: StakedTokenData;
+  rewardToken: RewardTokenData;
+
 
   constructor() {
-    this.id = ""
-    this.name = ""
-    this.code = ""
-    this.underlyingAddress = ""
-    this.stakedTokenAddress = ""
     this.claimable = false
-    this.reserveDecimals = "0"
     this.claimableReward = "0"
-    this.claimedReward = "0"
     this.deposited = "0"
+    this.TVL = "0"
+    this.APR = "0"
+    this.underlyingToken = {
+      underlyingAddress: "",
+      reserveDecimals: "",
+      price: "0",
+    }
+    this.stakedToken = {
+      id: "",
+      name: "",
+      code: "",
+      stakedTokenAddress: "",
+      eps: "",
+      reserveDecimals: "",
+    }
+    this.rewardToken = {
+      address: "",
+      decimals: "",
+      price: ""
+    }
 
   }
 
