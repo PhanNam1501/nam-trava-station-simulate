@@ -3,13 +3,18 @@ import { updateAllAccountVault } from "../src/Simulation/staking/UpdateStateAcco
 import { ApplicationState } from "../src/State/ApplicationState";
 import { simulateStakeStaking, simulateStakingRedeem } from "../src/Simulation/staking/SimulationStaking";
 import { updateSmartWalletTokenBalance, updateUserTokenBalance } from "../src/Simulation/basic/UpdateStateAccount";
+import { listStakingVault } from "../src/utils/stakingVaultConfig";
 async function test(){
     const provider = new JsonRpcProvider("https://bsc.publicnode.com");
     const chainId = Number((await provider.getNetwork()).chainId)
     const userAddress = "0x871DBcE2b9923A35716e7E83ee402B535298538E";
     const proxyAddress = "0x124aa737A67CE0345Ab54ed32d23A8D453788890";
-    let stakingPool = "0x17b173D4B80B0B5BB7E0f1E99F5962f2D51799Eb"
-    let underLyingToken = "0x170772A06aFfC0d375cE90Ef59C8eC04c7ebF5D2"
+    let listVaults = listStakingVault[chainId];
+    let index = 1;
+
+    let stakingPool = listVaults[index].stakedTokenAddress
+    let underLyingToken = listVaults[index].underlyingAddress
+
     let appState = new ApplicationState( 
     userAddress,
     proxyAddress,

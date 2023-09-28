@@ -1,3 +1,4 @@
+"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -7,25 +8,29 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-import BigNumber from 'bignumber.js';
-import { CollectionName, RarityMapping, TypeMapping } from './KnightConfig';
-import { ethQuery } from './graphindex';
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const bignumber_js_1 = __importDefault(require("bignumber.js"));
+const KnightConfig_1 = require("./KnightConfig");
+const graphindex_1 = require("./graphindex");
 const ArmourElement = ['exp', 'rarity', 'id', 'type', 'setId'];
-const BASE18 = BigNumber('1000000000000000000');
+const BASE18 = (0, bignumber_js_1.default)('1000000000000000000');
 const MarketplaceElement = ['buyer', 'id', 'price', 'seller', 'status'];
 function armourySort(item1, item2) {
     return item2.nRarity - item1.nRarity || item2.exp - item1.exp || item1.nType - item2.nType;
 }
 // Graph lỗi setId bị null
-export default class SellGraphQuery {
+class SellGraphQuery {
     static _rewriteData(data) {
         var _a;
         const setId = Number(data.token.setId) <= 1 ? 1 : 2;
-        const collectionName = CollectionName[setId - 1];
+        const collectionName = KnightConfig_1.CollectionName[setId - 1];
         const nRarity = data.token.rarity;
         const nType = data.token.type;
         const rawPrice = data.price;
-        const price = BigNumber(rawPrice).div(BASE18).toString();
+        const price = (0, bignumber_js_1.default)(rawPrice).div(BASE18).toString();
         return {
             rawData: data,
             collectionId: setId,
@@ -35,15 +40,15 @@ export default class SellGraphQuery {
             nRarity,
             nType,
             price,
-            rarity: RarityMapping[nRarity - 1],
-            type: TypeMapping[nType - 1],
+            rarity: KnightConfig_1.RarityMapping[nRarity - 1],
+            type: KnightConfig_1.TypeMapping[nType - 1],
             seller: data.seller,
         };
     }
     static fetchData(owner) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const result = yield ethQuery.query({
+                const result = yield graphindex_1.ethQuery.query({
                     collection: 'nftcollections',
                     params: {
                         elements: [
@@ -103,3 +108,4 @@ export default class SellGraphQuery {
         });
     }
 }
+exports.default = SellGraphQuery;

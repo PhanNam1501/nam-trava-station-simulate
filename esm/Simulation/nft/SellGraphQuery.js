@@ -1,3 +1,4 @@
+"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -7,27 +8,31 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-import BigNumber from 'bignumber.js';
-import { CollectionName, RarityMapping, TypeMapping } from './KnightConfig';
-import { ethQuery } from './graphindex';
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const bignumber_js_1 = __importDefault(require("bignumber.js"));
+const KnightConfig_1 = require("./KnightConfig");
+const graphindex_1 = require("./graphindex");
 const ArmourElement = ['exp', 'rarity', 'id', 'type', 'setId'];
-const BASE18 = BigNumber('1000000000000000000');
+const BASE18 = (0, bignumber_js_1.default)('1000000000000000000');
 const MarketplaceElement = ['buyer', 'id', 'price', 'seller', 'status'];
 function armourySort(item1, item2) {
     return item2.nRarity - item1.nRarity || item2.exp - item1.exp || item1.nType - item2.nType;
 }
-export default class SellGraphQuery {
+class SellGraphQuery {
     static _rewriteData(data) {
         var _a;
         const setId = Number(data.token.setId) <= 1 ? 1 : 2;
         const id = Number(data.id);
-        const collectionName = CollectionName[setId - 1];
+        const collectionName = KnightConfig_1.CollectionName[setId - 1];
         const nRarity = data.token.rarity;
         const nType = data.token.type;
-        const rarity = RarityMapping[nRarity - 1];
-        const type = TypeMapping[nType - 1];
+        const rarity = KnightConfig_1.RarityMapping[nRarity - 1];
+        const type = KnightConfig_1.TypeMapping[nType - 1];
         const exp = (_a = data.token.exp) !== null && _a !== void 0 ? _a : 0;
-        const price = BigNumber(data.price).div(BASE18).toString();
+        const price = (0, bignumber_js_1.default)(data.price).div(BASE18).toString();
         const seller = data.seller;
         return {
             rawData: data,
@@ -46,7 +51,7 @@ export default class SellGraphQuery {
     static fetchData() {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const result = yield ethQuery.query({
+                const result = yield graphindex_1.ethQuery.query({
                     collection: 'nftmarketplaces',
                     params: {
                         elements: [
@@ -78,3 +83,4 @@ export default class SellGraphQuery {
         });
     }
 }
+exports.default = SellGraphQuery;

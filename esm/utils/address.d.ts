@@ -4,6 +4,7 @@ export declare const listAddr: {
         TRAVA_LENDING_POOL_MARKET: string;
         ORACLE_ADDRESS: string;
         TRAVA_TOKEN_IN_MARKET: string;
+        TRAVA_TOKEN_IN_STAKING: string;
         NFT_CORE_ADDRESS: string;
         MULTI_CALL_ADDRESS: string;
         NFT_SELL_ADDRESS: string;
@@ -13,6 +14,7 @@ export declare const listAddr: {
         TRAVA_TOKEN: string;
         INCENTIVE_CONTRACT: string;
         VESTING_TRAVA_ADDRESS: string;
+        WBNB_TRAVA_LP_ADDRESS: string;
     };
 };
 export declare const getAddr: (name: string, chainId?: number) => EthAddress;

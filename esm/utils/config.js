@@ -1,12 +1,18 @@
-import { set as dfsTokensSetConfig } from "@zennomi/tokens";
-import { ethers } from "ethers";
-import BigNumber from "bignumber.js";
-import { DivisionByZeroError, MultiplicationOverflowError } from "./error";
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.WAD = exports.HALF_PERCENT = exports.PERCENTAGE_FACTOR = exports.MAX_UINT256 = exports.BASE18 = exports.YEAR_TO_SECONDS = exports.wadDiv = exports.percentMul = exports.configure = exports.getNetworkData = exports.CONFIG = exports.NETWORKS = void 0;
+const tokens_1 = require("@zennomi/tokens");
+const ethers_1 = require("ethers");
+const bignumber_js_1 = __importDefault(require("bignumber.js"));
+const error_1 = require("./error");
 /**
  *
  * @type {Networks}
  */
-export const NETWORKS = {
+exports.NETWORKS = {
     bscTestnet: {
         chainId: 97,
         chainName: "Binance Smart Chain Testnet",
@@ -27,82 +33,60 @@ export const NETWORKS = {
 /**
  *
  */
-export const CONFIG = {
-    chainId: NETWORKS.bscTestnet.chainId,
+exports.CONFIG = {
+    chainId: exports.NETWORKS.bscTestnet.chainId,
     testingMode: false,
 };
 /**
  *
  * @param chainId
  */
-export const getNetworkData = (chainId) => {
-    const networkData = Object.values(NETWORKS).find((network) => network.chainId === +chainId);
+const getNetworkData = (chainId) => {
+    const networkData = Object.values(exports.NETWORKS).find((network) => network.chainId === +chainId);
     if (!networkData)
         throw new Error(`Cannot find network data for chainId: ${chainId}`);
     return networkData;
 };
+exports.getNetworkData = getNetworkData;
 /**
  *
  * @param config
  */
-export const configure = (config) => {
+const configure = (config) => {
     if (!config || typeof config !== "object")
         throw new Error("Object expected");
     const newKeys = Object.keys(config);
     newKeys.forEach((key) => {
-        CONFIG[key] = config[key];
+        exports.CONFIG[key] = config[key];
         if (key === "chainId")
-            dfsTokensSetConfig("network", config[key]);
+            (0, tokens_1.set)("network", config[key]);
     });
 };
-export const CONTRACT_NETWORK = {
-    bscTestnet: {
-        WBNB: "0x910CB19698Eac48a6AB7Ccc9542B756f2Bdd67C6",
-        TRAVA_LENDING_POOL_MARKET: ["0x50794d89dbdb2d3aba83820bc3557ff076ca481b"],
-        ORACLE_ADDRESS: "0x3e2320C81FdB8919bC5771CBA897B9C683506140",
-        TRAVA_TOKEN_IN_MARKET: "0xE1F005623934D3D8C724EC68Cc9bFD95498D4435",
-        MULTI_CALL_ADDRESS: "0xd808400FbF312ACA5C7487cd30B0D1386e04BC78",
-        NFT_CORE_ADDRESS: "0xd2Eca5a421db7c2e2aC88Da684214B52915A66b3",
-        NFT_MARKETPLACE: "0x6C5844D1681C346c0f95669B1efe394ef12F1B93",
-        NFT_MANAGER: "0xA91A365D2e3D280553E96D5afA157e6A3e50890A",
-        NFT_COLLECTION: "0x5D996eC57756cEB127a4eD3302d7F28F52FDEbb1",
-        TRAVA_TOKEN: "0x4ABEf176F22B9a71B45ddc6c4A115095d8761b37",
-    },
-    bscMainnet: {
-        WBNB: "0x910CB19698Eac48a6AB7Ccc9542B756f2Bdd67C6",
-        TRAVA_LENDING_POOL_MARKET: ["0x50794d89dbdb2d3aba83820bc3557ff076ca481b"],
-        ORACLE_ADDRESS: "0x7Cd53b71Bf56Cc6C9c9B43719FE98e7c360c35DF",
-        TRAVA_TOKEN_IN_MARKET: "0x0391bE54E72F7e001f6BBc331777710b4f2999Ef",
-        MULTI_CALL_ADDRESS: "0x956BBC80253755A48FBcCC6783BBB418C793A257",
-        NFT_CORE_ADDRESS: "0xd2Eca5a421db7c2e2aC88Da684214B52915A66b3",
-        NFT_MARKETPLACE: "0x39728bB898f6e44D0c0EC9d7934976e5ceA4DcAf",
-        NFT_MANAGER: "0xDE4e584DA24e9a528eCb3ffD0AaccBAEe2EfD137",
-        NFT_COLLECTION: "0x9C3E857eCe6224544aA77c1A6e500d8Fa1c9C102",
-        TRAVA_TOKEN: "0x0391bE54E72F7e001f6BBc331777710b4f2999Ef",
-    },
-};
-export const percentMul = (value, percentage) => {
+exports.configure = configure;
+const percentMul = (value, percentage) => {
     if (value.toFixed(0) == "0" || percentage.isZero()) {
-        return BigNumber(0);
+        return (0, bignumber_js_1.default)(0);
     }
-    if (value.isGreaterThanOrEqualTo(BigNumber(MAX_UINT256).minus(HALF_PERCENT))) {
-        throw new MultiplicationOverflowError("MATH_MULTIPLICATION_OVERFLOW");
+    if (value.isGreaterThanOrEqualTo((0, bignumber_js_1.default)(exports.MAX_UINT256).minus(exports.HALF_PERCENT))) {
+        throw new error_1.MultiplicationOverflowError("MATH_MULTIPLICATION_OVERFLOW");
     }
-    return BigNumber(value.multipliedBy(percentage).plus(HALF_PERCENT).div(PERCENTAGE_FACTOR).toFixed(0));
+    return (0, bignumber_js_1.default)(value.multipliedBy(percentage).plus(exports.HALF_PERCENT).div(exports.PERCENTAGE_FACTOR).toFixed(0));
 };
-export const wadDiv = (a, b) => {
+exports.percentMul = percentMul;
+const wadDiv = (a, b) => {
     if (a.toFixed(0) == "0") {
-        throw new DivisionByZeroError("MATH_DIVISION_BY_ZERO");
+        throw new error_1.DivisionByZeroError("MATH_DIVISION_BY_ZERO");
     }
     let halfB = b.div(2);
-    if (a.isGreaterThan(BigNumber(MAX_UINT256).minus(halfB).div(WAD))) {
-        throw new MultiplicationOverflowError("MATH_MULTIPLICATION_OVERFLOW");
+    if (a.isGreaterThan((0, bignumber_js_1.default)(exports.MAX_UINT256).minus(halfB).div(exports.WAD))) {
+        throw new error_1.MultiplicationOverflowError("MATH_MULTIPLICATION_OVERFLOW");
     }
-    return a.multipliedBy(WAD).plus(halfB).div(b);
+    return a.multipliedBy(exports.WAD).plus(halfB).div(b);
 };
-export const YEAR_TO_SECONDS = 365 * 24 * 60 * 60;
-export const BASE18 = BigNumber("1000000000000000000");
-export const MAX_UINT256 = ethers.MaxUint256.toString();
-export const PERCENTAGE_FACTOR = BigNumber(1e4);
-export const HALF_PERCENT = PERCENTAGE_FACTOR.div(2);
-export const WAD = BigNumber(1e18);
+exports.wadDiv = wadDiv;
+exports.YEAR_TO_SECONDS = 365 * 24 * 60 * 60;
+exports.BASE18 = (0, bignumber_js_1.default)("1000000000000000000");
+exports.MAX_UINT256 = ethers_1.ethers.MaxUint256.toString();
+exports.PERCENTAGE_FACTOR = (0, bignumber_js_1.default)(1e4);
+exports.HALF_PERCENT = exports.PERCENTAGE_FACTOR.div(2);
+exports.WAD = (0, bignumber_js_1.default)(1e18);

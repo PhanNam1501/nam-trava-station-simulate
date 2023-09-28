@@ -680,6 +680,7 @@ var listAddr = {
     TRAVA_LENDING_POOL_MARKET: "0x50794d89dbdb2d3aba83820bc3557ff076ca481b",
     ORACLE_ADDRESS: "0x3e2320C81FdB8919bC5771CBA897B9C683506140",
     TRAVA_TOKEN_IN_MARKET: "0xE1F005623934D3D8C724EC68Cc9bFD95498D4435",
+    TRAVA_TOKEN_IN_STAKING: "0x41Ad43Ae987F7bE3B5024E7B167f81772f097D5b",
     NFT_CORE_ADDRESS: "0xd2Eca5a421db7c2e2aC88Da684214B52915A66b3",
     MULTI_CALL_ADDRESS: "0xd808400FbF312ACA5C7487cd30B0D1386e04BC78",
     NFT_SELL_ADDRESS: "0x6C5844D1681C346c0f95669B1efe394ef12F1B93",
@@ -688,7 +689,8 @@ var listAddr = {
     WBNB_ADDRESS: "0x910CB19698Eac48a6AB7Ccc9542B756f2Bdd67C6",
     TRAVA_TOKEN: "0xE1F005623934D3D8C724EC68Cc9bFD95498D4435",
     INCENTIVE_CONTRACT: "0x8f5D5A6C9938d397be1f99F19dE7bF54B68210cb",
-    VESTING_TRAVA_ADDRESS: "0xeD562cb35EB497Bce7C7789d7b4A0463ab60955b"
+    VESTING_TRAVA_ADDRESS: "0xeD562cb35EB497Bce7C7789d7b4A0463ab60955b",
+    WBNB_TRAVA_LP_ADDRESS: "0xdCbf1fe4642d3c593f665D04Cc66E1E8923DAB5e"
   },
   // MUST BE FILL MAINNET ADDRESS HERE. NOW IS TESTNET
   [_config__WEBPACK_IMPORTED_MODULE_0__.NETWORKS.bscMainnet.chainId]: {
@@ -697,6 +699,8 @@ var listAddr = {
     ORACLE_ADDRESS: "0x7Cd53b71Bf56Cc6C9c9B43719FE98e7c360c35DF",
     // mainnet
     TRAVA_TOKEN_IN_MARKET: "0x0391bE54E72F7e001f6BBc331777710b4f2999Ef",
+    // mainnet
+    TRAVA_TOKEN_IN_STAKING: "0x0391bE54E72F7e001f6BBc331777710b4f2999Ef",
     // mainnet
     NFT_CORE_ADDRESS: "0xAcBfD38C52Ae0344D47A7335D072DE5e3BC49f91",
     // mainnet
@@ -714,7 +718,9 @@ var listAddr = {
     // mainnet
     INCENTIVE_CONTRACT: "0x4c481E66798c6C82aF77d1e14d3233fE5D592A0b",
     // mainnet
-    VESTING_TRAVA_ADDRESS: "0xa2FC194C9f8806501cab9d07Ed03d2FaFF16a618" //mainnet
+    VESTING_TRAVA_ADDRESS: "0xa2FC194C9f8806501cab9d07Ed03d2FaFF16a618",
+    //mainnet
+    WBNB_TRAVA_LP_ADDRESS: "0x865c77d4ff6383e06c58350a2cfb95cca2c0f056" //mainnet
   }
 };
 
@@ -744,7 +750,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   BASE18: () => (/* binding */ BASE18),
 /* harmony export */   CONFIG: () => (/* binding */ CONFIG),
-/* harmony export */   CONTRACT_NETWORK: () => (/* binding */ CONTRACT_NETWORK),
 /* harmony export */   HALF_PERCENT: () => (/* binding */ HALF_PERCENT),
 /* harmony export */   MAX_UINT256: () => (/* binding */ MAX_UINT256),
 /* harmony export */   NETWORKS: () => (/* binding */ NETWORKS),
@@ -827,32 +832,6 @@ var configure = config => {
     CONFIG[key] = config[key];
     if (key === "chainId") (0,_zennomi_tokens__WEBPACK_IMPORTED_MODULE_0__.set)("network", config[key]);
   });
-};
-var CONTRACT_NETWORK = {
-  bscTestnet: {
-    WBNB: "0x910CB19698Eac48a6AB7Ccc9542B756f2Bdd67C6",
-    TRAVA_LENDING_POOL_MARKET: ["0x50794d89dbdb2d3aba83820bc3557ff076ca481b"],
-    ORACLE_ADDRESS: "0x3e2320C81FdB8919bC5771CBA897B9C683506140",
-    TRAVA_TOKEN_IN_MARKET: "0xE1F005623934D3D8C724EC68Cc9bFD95498D4435",
-    MULTI_CALL_ADDRESS: "0xd808400FbF312ACA5C7487cd30B0D1386e04BC78",
-    NFT_CORE_ADDRESS: "0xd2Eca5a421db7c2e2aC88Da684214B52915A66b3",
-    NFT_MARKETPLACE: "0x6C5844D1681C346c0f95669B1efe394ef12F1B93",
-    NFT_MANAGER: "0xA91A365D2e3D280553E96D5afA157e6A3e50890A",
-    NFT_COLLECTION: "0x5D996eC57756cEB127a4eD3302d7F28F52FDEbb1",
-    TRAVA_TOKEN: "0x4ABEf176F22B9a71B45ddc6c4A115095d8761b37"
-  },
-  bscMainnet: {
-    WBNB: "0x910CB19698Eac48a6AB7Ccc9542B756f2Bdd67C6",
-    TRAVA_LENDING_POOL_MARKET: ["0x50794d89dbdb2d3aba83820bc3557ff076ca481b"],
-    ORACLE_ADDRESS: "0x7Cd53b71Bf56Cc6C9c9B43719FE98e7c360c35DF",
-    TRAVA_TOKEN_IN_MARKET: "0x0391bE54E72F7e001f6BBc331777710b4f2999Ef",
-    MULTI_CALL_ADDRESS: "0x956BBC80253755A48FBcCC6783BBB418C793A257",
-    NFT_CORE_ADDRESS: "0xd2Eca5a421db7c2e2aC88Da684214B52915A66b3",
-    NFT_MARKETPLACE: "0x39728bB898f6e44D0c0EC9d7934976e5ceA4DcAf",
-    NFT_MANAGER: "0xDE4e584DA24e9a528eCb3ffD0AaccBAEe2EfD137",
-    NFT_COLLECTION: "0x9C3E857eCe6224544aA77c1A6e500d8Fa1c9C102",
-    TRAVA_TOKEN: "0x0391bE54E72F7e001f6BBc331777710b4f2999Ef"
-  }
 };
 var percentMul = (value, percentage) => {
   if (value.toFixed(0) == "0" || percentage.isZero()) {
@@ -24501,7 +24480,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _utils_config__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(13);
 /* harmony import */ var bignumber_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(15);
 /* harmony import */ var _abis_Multicall_json__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(120);
-/* harmony import */ var _basic_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(9);
+/* harmony import */ var _abis_AaveOracle_json__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(119);
+/* harmony import */ var _basic_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(9);
+/* harmony import */ var _abis_BEP20_json__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(118);
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
 function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
@@ -24509,6 +24490,8 @@ function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return typ
 function _toPrimitive(input, hint) { if (typeof input !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (typeof res !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
+
+
 
 
 
@@ -24527,15 +24510,22 @@ function _updateAllAccountVault() {
     var appState = _objectSpread({}, appState1);
     var underlyingAddress = new Array();
     var priceUnderlyingAddress = new Array();
+    var lpAddress = new Array();
     var stakedTokenAddress = new Array();
     var rewardTokenAddress = new Array();
     for (var i = 0; i < vaultConfigList.length; i++) {
       underlyingAddress.push(vaultConfigList[i].underlyingAddress);
       priceUnderlyingAddress.push(vaultConfigList[i].priceUnderlyingAddress);
+      lpAddress.push(vaultConfigList[i].lpAddress);
       stakedTokenAddress.push(vaultConfigList[i].stakedTokenAddress);
       rewardTokenAddress.push(vaultConfigList[i].rewardToken.address);
     }
-    var [depositedDatas, TVLDatas] = yield Promise.all([multiCall(_abis_StakedToken_json__WEBPACK_IMPORTED_MODULE_1__, stakedTokenAddress.map((address, _) => ({
+    var [depositedDatas,
+    // data of total deposit in all vaults
+    TVLDatas,
+    // data of total supply all staked tokens
+    bnbBalanceInVaults // balance of bnb in all vaults
+    ] = yield Promise.all([multiCall(_abis_StakedToken_json__WEBPACK_IMPORTED_MODULE_1__, stakedTokenAddress.map((address, _) => ({
       address: address,
       name: "balanceOf",
       params: [appState.smartWalletState.address]
@@ -24543,32 +24533,23 @@ function _updateAllAccountVault() {
       address: address,
       name: "totalSupply",
       params: []
+    })), appState.web3, appState.chainId), multiCall(_abis_BEP20_json__WEBPACK_IMPORTED_MODULE_10__, lpAddress.map((address, _) => ({
+      address: (0,_utils_address__WEBPACK_IMPORTED_MODULE_3__.getAddr)("WBNB_ADDRESS", appState.chainId),
+      name: "balanceOf",
+      params: [address]
     })), appState.web3, appState.chainId)]);
-
-    // let [underlyingTokenPriceDatas, rewardTokenPriceDatas] = await Promise.all([
-    //   multiCall(
-    //     OracleABI,
-    //     priceUnderlyingAddress.map((address: string, _: number) => ({
-    //       address: getAddr("ORACLE_ADDRESS", appState.chainId),
-    //       name: "getAssetPrice",
-    //       params: [address],
-    //     })),
-    //     appState.web3,
-    //     appState.chainId
-    //   ),
-    //   multiCall(
-    //     OracleABI,
-    //     rewardTokenAddress.map((address: string, _: number) => ({
-    //       address: getAddr("ORACLE_ADDRESS", appState.chainId),
-    //       name: "getAssetPrice",
-    //       params: [address],
-    //     })),
-    //     appState.web3,
-    //     appState.chainId
-    //   )
-    // ]);
-
+    var oracleContract = new ethers__WEBPACK_IMPORTED_MODULE_0__.Contract((0,_utils_address__WEBPACK_IMPORTED_MODULE_3__.getAddr)("ORACLE_ADDRESS", appState.chainId), _abis_AaveOracle_json__WEBPACK_IMPORTED_MODULE_8__, appState.web3);
+    var bnbPrice = yield oracleContract.getAssetPrice((0,_utils_address__WEBPACK_IMPORTED_MODULE_3__.getAddr)("WBNB_ADDRESS", appState.chainId));
+    var wbnbContract = new ethers__WEBPACK_IMPORTED_MODULE_0__.Contract((0,_utils_address__WEBPACK_IMPORTED_MODULE_3__.getAddr)("WBNB_ADDRESS", appState.chainId), _abis_BEP20_json__WEBPACK_IMPORTED_MODULE_10__, appState.web3);
+    var wbnbBalanceTravalp = yield wbnbContract.balanceOf((0,_utils_address__WEBPACK_IMPORTED_MODULE_3__.getAddr)("WBNB_TRAVA_LP_ADDRESS", appState.chainId));
+    var travaContract = new ethers__WEBPACK_IMPORTED_MODULE_0__.Contract((0,_utils_address__WEBPACK_IMPORTED_MODULE_3__.getAddr)("TRAVA_TOKEN_IN_STAKING", appState.chainId), _abis_BEP20_json__WEBPACK_IMPORTED_MODULE_10__, appState.web3);
+    var travaBalanceTravalp = yield travaContract.balanceOf((0,_utils_address__WEBPACK_IMPORTED_MODULE_3__.getAddr)("WBNB_TRAVA_LP_ADDRESS", appState.chainId));
+    var travaPrice = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_6__["default"])(bnbPrice).multipliedBy(wbnbBalanceTravalp).div(travaBalanceTravalp);
+    if (travaPrice.isNaN()) {
+      travaPrice = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_6__["default"])(0);
+    }
     for (var _i = 0; _i < vaultConfigList.length; _i++) {
+      //calculate claimable reward and eps (epoch permit seconds)
       var claimableReward = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_6__["default"])(0);
       var eps = "0";
       if (vaultConfigList[_i].id == "orai") {
@@ -24580,6 +24561,38 @@ function _updateAllAccountVault() {
         claimableReward = yield stakedCR.getTotalRewardsBalance(appState.smartWalletState.address);
         eps = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_6__["default"])(yield stakedCR.getAssetEmissionPerSecond(vaultConfigList[_i].stakedTokenAddress)).div(vaultConfigList[_i].reserveDecimals).toFixed();
       }
+
+      /** calculate underlying token price
+       * Consider vault underlying token / BNB, we have:
+       * + bnb price * bnb balance in vault = underlying price * underlying balance in vault
+       * + bnb price * bnb balance in vault + underlying price * underlying balance in vault = lp pair token price * lp pair token total supply
+       * => 2 * bnb price * bnb balance in vault = 2 * underlying price * underlying balance in vault = lp pair token price * lp pair token total supply
+       * if underlying token is not pair 
+       *      return underlying price = bnb price * bnb balance in vault / underlying balance in vault
+       *  else: 
+       *      return lp pair token price = 2 * bnb price * bnb balance in vault / lp pair token total supply
+       */
+
+      var underlyingTokenPrice = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_6__["default"])(0);
+      if (vaultConfigList[_i].underlyingAddress.toLowerCase() != vaultConfigList[_i].lpAddress.toLowerCase()) {
+        // if underlying is rTrava or Trava, it is calculated above
+        if (vaultConfigList[_i].priceUnderlyingAddress.toLowerCase() == (0,_utils_address__WEBPACK_IMPORTED_MODULE_3__.getAddr)("TRAVA_TOKEN_IN_STAKING", appState.chainId).toLowerCase()) {
+          underlyingTokenPrice = travaPrice;
+        } else {
+          var priceUnderlyingTokenContract = new ethers__WEBPACK_IMPORTED_MODULE_0__.Contract(vaultConfigList[_i].priceUnderlyingAddress, _abis_BEP20_json__WEBPACK_IMPORTED_MODULE_10__, appState.web3);
+          var balanceOfUnderlyingTokenInVault = yield priceUnderlyingTokenContract.balanceOf(vaultConfigList[_i].lpAddress);
+          underlyingTokenPrice = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_6__["default"])(bnbPrice).multipliedBy(bnbBalanceInVaults[_i]).div(balanceOfUnderlyingTokenInVault);
+        }
+      } else {
+        var lpContract = new ethers__WEBPACK_IMPORTED_MODULE_0__.Contract(vaultConfigList[_i].lpAddress, _abis_StakedToken_json__WEBPACK_IMPORTED_MODULE_1__, appState.web3);
+        var totalSupply = yield lpContract.totalSupply();
+        underlyingTokenPrice = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_6__["default"])(bnbPrice).multipliedBy(bnbBalanceInVaults[_i]).multipliedBy(2).div(totalSupply);
+      }
+      if (underlyingTokenPrice.isNaN()) {
+        underlyingTokenPrice = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_6__["default"])(0);
+      }
+
+      // init state stakeToken
       var stakedToken = {
         id: vaultConfigList[_i].id,
         name: vaultConfigList[_i].name,
@@ -24588,36 +24601,54 @@ function _updateAllAccountVault() {
         eps: eps,
         reserveDecimals: vaultConfigList[_i].reserveDecimals
       };
+
+      // init state underlyingToken
       var underlyingToken = {
         underlyingAddress: vaultConfigList[_i].underlyingAddress,
         reserveDecimals: vaultConfigList[_i].reserveDecimals,
-        price: "0" //underlyingTokenPriceDatas[i]
+        price: underlyingTokenPrice.toFixed(0) //underlyingTokenPriceDatas[i]
       };
 
+      /**Caculate reward token price
+       * if reward token price is trava, rewardTokenPrice = trava price which is caculated above
+       */
+      var rewardTokenPrice = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_6__["default"])("0");
+      if (vaultConfigList[_i].rewardToken.address.toLowerCase() == (0,_utils_address__WEBPACK_IMPORTED_MODULE_3__.getAddr)("TRAVA_TOKEN_IN_STAKING", appState.chainId).toLowerCase()) {
+        rewardTokenPrice = travaPrice;
+      }
+      // init state rewardToken
       var rewardToken = {
         address: vaultConfigList[_i].rewardToken.address,
         decimals: vaultConfigList[_i].rewardToken.decimals,
-        price: "0" // rewardTokenPriceDatas[i]
+        price: rewardTokenPrice.toFixed(0) // rewardTokenPriceDatas[i]
       };
 
+      // Calculate TVL = TVL amount * price
       var TVL = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_6__["default"])(TVLDatas[_i]).div(underlyingToken.reserveDecimals).multipliedBy(underlyingToken.price);
-      var APR = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_6__["default"])(eps).multipliedBy(rewardToken.price).multipliedBy(_utils_config__WEBPACK_IMPORTED_MODULE_5__.YEAR_TO_SECONDS).div(TVL).div(100);
+
+      // Calculate APR = eps * Reward token price * 1 year to seconds / TVL / 100 
+      var APR = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_6__["default"])(eps).multipliedBy(rewardToken.price).multipliedBy(_utils_config__WEBPACK_IMPORTED_MODULE_5__.YEAR_TO_SECONDS).div(TVL);
       if (APR.isNaN()) {
         APR = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_6__["default"])(0);
       }
+
+      // Init state smart wallet in vault[i]
       var accountVaults = {
         claimable: vaultConfigList[_i].claimable,
         claimableReward: claimableReward.toString(),
         deposited: depositedDatas[_i].toString(),
-        TVL: TVL.toFixed(),
+        TVL: TVL.toFixed(0),
         APR: APR.toFixed(),
         underlyingToken: underlyingToken,
         stakedToken: stakedToken,
         rewardToken: rewardToken
       };
+
+      //store sate
       appState.smartWalletState.travaLPStakingStateList.set(vaultConfigList[_i].stakedTokenAddress.toLowerCase(), accountVaults);
       if (!appState.smartWalletState.tokenBalances.has(vaultConfigList[_i].stakedTokenAddress.toLowerCase())) {
-        appState = yield (0,_basic_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_8__.updateSmartWalletTokenBalance)(appState, vaultConfigList[_i].stakedTokenAddress.toLowerCase());
+        // store balance of stakedTokenAddress
+        appState = yield (0,_basic_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_9__.updateSmartWalletTokenBalance)(appState, vaultConfigList[_i].stakedTokenAddress.toLowerCase());
       }
     }
     return appState;
@@ -24699,6 +24730,7 @@ var listStakingVault = {
     reserveDecimals: _config__WEBPACK_IMPORTED_MODULE_0__.BASE18.toFixed(),
     underlyingAddress: "0xdCbf1fe4642d3c593f665D04Cc66E1E8923DAB5e",
     priceUnderlyingAddress: "0xdCbf1fe4642d3c593f665D04Cc66E1E8923DAB5e",
+    lpAddress: "0xdCbf1fe4642d3c593f665D04Cc66E1E8923DAB5e",
     stakedTokenAddress: "0xA36991E7FA207815f37e01E72DBC3b5b874D7F6C",
     claimable: true,
     tokenName: TOKENS_NAME.TRAVA_BNB_LP,
@@ -24715,6 +24747,7 @@ var listStakingVault = {
     reserveDecimals: _config__WEBPACK_IMPORTED_MODULE_0__.BASE18.toFixed(),
     underlyingAddress: "0x41Ad43Ae987F7bE3B5024E7B167f81772f097D5b",
     priceUnderlyingAddress: "0x41Ad43Ae987F7bE3B5024E7B167f81772f097D5b",
+    lpAddress: "0xdCbf1fe4642d3c593f665D04Cc66E1E8923DAB5e",
     stakedTokenAddress: "0x1120E28F5D9eeABfC18afE9600315c6c184b9fcF",
     claimable: true,
     tokenName: TOKENS_NAME.TRAVA_ON_BSC,
@@ -24731,6 +24764,7 @@ var listStakingVault = {
     reserveDecimals: _config__WEBPACK_IMPORTED_MODULE_0__.BASE18.toFixed(),
     underlyingAddress: "0xdCbf1fe4642d3c593f665D04Cc66E1E8923DAB5e",
     priceUnderlyingAddress: "0xdCbf1fe4642d3c593f665D04Cc66E1E8923DAB5e",
+    lpAddress: "0xdCbf1fe4642d3c593f665D04Cc66E1E8923DAB5e",
     stakedTokenAddress: "0xA36991E7FA207815f37e01E72DBC3b5b874D7F6C",
     claimable: true,
     lockedUntil: 1628624800000,
@@ -24750,61 +24784,13 @@ var listStakingVault = {
     reserveDecimals: _config__WEBPACK_IMPORTED_MODULE_0__.BASE18.toFixed(),
     underlyingAddress: "0xdCbf1fe4642d3c593f665D04Cc66E1E8923DAB5e",
     priceUnderlyingAddress: "0xdCbf1fe4642d3c593f665D04Cc66E1E8923DAB5e",
+    lpAddress: "0xdCbf1fe4642d3c593f665D04Cc66E1E8923DAB5e",
     stakedTokenAddress: "0xA36991E7FA207815f37e01E72DBC3b5b874D7F6C",
     claimable: true,
     lockedUntil: 1628624800000,
     badge: "9 months",
     lpLink: "https://pancakeswap.finance/add/BNB/0x0391bE54E72F7e001f6BBc331777710b4f2999Ef",
     tokenName: TOKENS_NAME.TRAVA_BNB_LP,
-    filterMode: FILTER_MODE.LIVE,
-    rewardToken: {
-      symbol: "TRAVA",
-      address: "0x41Ad43Ae987F7bE3B5024E7B167f81772f097D5b",
-      decimals: _config__WEBPACK_IMPORTED_MODULE_0__.BASE18.toFixed()
-    }
-  }, {
-    id: "bnb",
-    name: "Binance Token",
-    code: "BNB",
-    reserveDecimals: _config__WEBPACK_IMPORTED_MODULE_0__.BASE18.toFixed(),
-    underlyingAddress: "0x0245CE100fe6cD3f09d8d660911a9b20440685aB",
-    priceUnderlyingAddress: "0x0245CE100fe6cD3f09d8d660911a9b20440685aB",
-    stakedTokenAddress: "0x1bA94b6f7CB7dE9b48339582d65E99aee402ba74",
-    bnbGateWay: "0x59F92dE42C860161Fe234349b186af739ba9aAb6",
-    claimable: true,
-    tokenName: TOKENS_NAME.BNB,
-    filterMode: FILTER_MODE.LIVE,
-    rewardToken: {
-      symbol: "TRAVA",
-      address: "0x41Ad43Ae987F7bE3B5024E7B167f81772f097D5b",
-      decimals: _config__WEBPACK_IMPORTED_MODULE_0__.BASE18.toFixed()
-    }
-  }, {
-    id: "busd",
-    name: "Binance USD",
-    code: "BUSD",
-    reserveDecimals: _config__WEBPACK_IMPORTED_MODULE_0__.BASE18.toFixed(),
-    underlyingAddress: "0xB9DEC3EbBf11Ecd9c028b6790e3009021261c3C4",
-    priceUnderlyingAddress: "0xB9DEC3EbBf11Ecd9c028b6790e3009021261c3C4",
-    stakedTokenAddress: "0x332ee356C133C808626FDA565e36F007CD317aBd",
-    claimable: true,
-    tokenName: TOKENS_NAME.BUSD,
-    filterMode: FILTER_MODE.LIVE,
-    rewardToken: {
-      symbol: "TRAVA",
-      address: "0x41Ad43Ae987F7bE3B5024E7B167f81772f097D5b",
-      decimals: _config__WEBPACK_IMPORTED_MODULE_0__.BASE18.toFixed()
-    }
-  }, {
-    id: "orai",
-    name: "Orai Token",
-    code: "ORAI",
-    reserveDecimals: _config__WEBPACK_IMPORTED_MODULE_0__.BASE18.toFixed(),
-    underlyingAddress: "0x35dA5D673D7893A8C7F5730Ce1318dEf11baB051",
-    priceUnderlyingAddress: "0x35dA5D673D7893A8C7F5730Ce1318dEf11baB051",
-    stakedTokenAddress: "0x593C5721936998eB7b30e504643E955f9D44c4C5",
-    claimable: true,
-    tokenName: TOKENS_NAME.ORAI,
     filterMode: FILTER_MODE.LIVE,
     rewardToken: {
       symbol: "TRAVA",
@@ -24819,6 +24805,7 @@ var listStakingVault = {
     reserveDecimals: _config__WEBPACK_IMPORTED_MODULE_0__.BASE18.toFixed(),
     underlyingAddress: "0x170772A06aFfC0d375cE90Ef59C8eC04c7ebF5D2",
     priceUnderlyingAddress: "0x0391bE54E72F7e001f6BBc331777710b4f2999Ef",
+    lpAddress: "0x865c77d4ff6383e06c58350a2cfb95cca2c0f056",
     stakedTokenAddress: "0x17b173D4B80B0B5BB7E0f1E99F5962f2D51799Eb",
     claimable: true,
     startTimeClaimAll: 1634576400000,
@@ -24838,6 +24825,7 @@ var listStakingVault = {
     reserveDecimals: _config__WEBPACK_IMPORTED_MODULE_0__.BASE18.toFixed(),
     underlyingAddress: "0x865c77d4ff6383e06c58350a2cfb95cca2c0f056",
     priceUnderlyingAddress: "0x865c77d4ff6383e06c58350a2cfb95cca2c0f056",
+    lpAddress: "0x865c77d4ff6383e06c58350a2cfb95cca2c0f056",
     stakedTokenAddress: "0xF04feE30118fdb83c0957C4f6AbdfDde977b9Aeb",
     claimable: true,
     badge: "No Lock",
@@ -24857,6 +24845,7 @@ var listStakingVault = {
     reserveDecimals: _config__WEBPACK_IMPORTED_MODULE_0__.BASE18.toFixed(),
     underlyingAddress: "0x0391bE54E72F7e001f6BBc331777710b4f2999Ef",
     priceUnderlyingAddress: "0x0391bE54E72F7e001f6BBc331777710b4f2999Ef",
+    lpAddress: "0x865c77d4ff6383e06c58350a2cfb95cca2c0f056",
     stakedTokenAddress: "0xC5f0137ce42437d8f5eF25DA110F7FD7386178ec",
     claimable: true,
     badge: "No Lock",
@@ -24875,6 +24864,7 @@ var listStakingVault = {
     reserveDecimals: _config__WEBPACK_IMPORTED_MODULE_0__.BASE18.toFixed(),
     underlyingAddress: "0xA325Ad6D9c92B55A3Fc5aD7e412B1518F96441C0",
     priceUnderlyingAddress: "0xA325Ad6D9c92B55A3Fc5aD7e412B1518F96441C0",
+    lpAddress: "0x756E415E458ac05c1a69e834092034017f74Da93",
     stakedTokenAddress: "0xd5Cc214621395686B972DDE8481a7463A0DaB962",
     claimable: true,
     vaultType: VAULT_TYPES.BASE,
@@ -35238,7 +35228,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   ApplicationState: () => (/* reexport safe */ _State__WEBPACK_IMPORTED_MODULE_0__.ApplicationState),
 /* harmony export */   BASE18: () => (/* reexport safe */ _utils_config__WEBPACK_IMPORTED_MODULE_3__.BASE18),
 /* harmony export */   CONFIG: () => (/* reexport safe */ _utils_config__WEBPACK_IMPORTED_MODULE_3__.CONFIG),
-/* harmony export */   CONTRACT_NETWORK: () => (/* reexport safe */ _utils_config__WEBPACK_IMPORTED_MODULE_3__.CONTRACT_NETWORK),
 /* harmony export */   DivisionByZeroError: () => (/* reexport safe */ _utils_error__WEBPACK_IMPORTED_MODULE_6__.DivisionByZeroError),
 /* harmony export */   FILTER_MODE: () => (/* reexport safe */ _utils_stakingVaultConfig__WEBPACK_IMPORTED_MODULE_4__.FILTER_MODE),
 /* harmony export */   HALF_PERCENT: () => (/* reexport safe */ _utils_config__WEBPACK_IMPORTED_MODULE_3__.HALF_PERCENT),

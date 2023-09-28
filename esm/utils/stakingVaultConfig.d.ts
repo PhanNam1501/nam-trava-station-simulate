@@ -29,6 +29,7 @@ export declare const listStakingVault: {
         reserveDecimals: string;
         underlyingAddress: string;
         priceUnderlyingAddress: string;
+        lpAddress: string;
         stakedTokenAddress: string;
         claimable: boolean;
         tokenName: string;
@@ -41,7 +42,6 @@ export declare const listStakingVault: {
         lockedUntil?: undefined;
         badge?: undefined;
         lpLink?: undefined;
-        bnbGateWay?: undefined;
     } | {
         id: string;
         name: string;
@@ -49,6 +49,7 @@ export declare const listStakingVault: {
         reserveDecimals: string;
         underlyingAddress: string;
         priceUnderlyingAddress: string;
+        lpAddress: string;
         stakedTokenAddress: string;
         claimable: boolean;
         lockedUntil: number;
@@ -61,27 +62,6 @@ export declare const listStakingVault: {
             address: string;
             decimals: string;
         };
-        bnbGateWay?: undefined;
-    } | {
-        id: string;
-        name: string;
-        code: string;
-        reserveDecimals: string;
-        underlyingAddress: string;
-        priceUnderlyingAddress: string;
-        stakedTokenAddress: string;
-        bnbGateWay: string;
-        claimable: boolean;
-        tokenName: string;
-        filterMode: string;
-        rewardToken: {
-            symbol: string;
-            address: string;
-            decimals: string;
-        };
-        lockedUntil?: undefined;
-        badge?: undefined;
-        lpLink?: undefined;
     })[] | ({
         id: string;
         code: string;
@@ -89,6 +69,7 @@ export declare const listStakingVault: {
         reserveDecimals: string;
         underlyingAddress: string;
         priceUnderlyingAddress: string;
+        lpAddress: string;
         stakedTokenAddress: string;
         claimable: boolean;
         startTimeClaimAll: number;
@@ -109,6 +90,7 @@ export declare const listStakingVault: {
         reserveDecimals: string;
         underlyingAddress: string;
         priceUnderlyingAddress: string;
+        lpAddress: string;
         stakedTokenAddress: string;
         claimable: boolean;
         badge: string;
@@ -129,6 +111,7 @@ export declare const listStakingVault: {
         reserveDecimals: string;
         underlyingAddress: string;
         priceUnderlyingAddress: string;
+        lpAddress: string;
         stakedTokenAddress: string;
         claimable: boolean;
         badge: string;
@@ -149,6 +132,7 @@ export declare const listStakingVault: {
         reserveDecimals: string;
         underlyingAddress: string;
         priceUnderlyingAddress: string;
+        lpAddress: string;
         stakedTokenAddress: string;
         claimable: boolean;
         vaultType: string;
