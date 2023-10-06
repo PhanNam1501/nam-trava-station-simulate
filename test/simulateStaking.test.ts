@@ -4,7 +4,9 @@ import { ApplicationState } from "../src/State/ApplicationState";
 import { simulateStakeStaking, simulateStakingRedeem } from "../src/Simulation/staking/SimulationStaking";
 import { updateSmartWalletTokenBalance, updateUserTokenBalance } from "../src/Simulation/basic/UpdateStateAccount";
 import { listStakingVault } from "../src/utils/stakingVaultConfig";
+import BigNumber from "bignumber.js";
 async function test(){
+    console.log(BigNumber(0.1).toFixed())
     const provider = new JsonRpcProvider("https://bsc.publicnode.com");
     const chainId = Number((await provider.getNetwork()).chainId)
     const userAddress = "0x871DBcE2b9923A35716e7E83ee402B535298538E";

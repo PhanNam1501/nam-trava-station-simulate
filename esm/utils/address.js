@@ -1,10 +1,7 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.convertHexStringToAddress = exports.getAddr = exports.listAddr = void 0;
-const config_1 = require("./config");
-const ethereumjs_util_1 = require("ethereumjs-util");
-exports.listAddr = {
-    [config_1.NETWORKS.bscTestnet.chainId]: {
+import { NETWORKS, CONFIG } from "./config";
+import { toChecksumAddress } from 'ethereumjs-util';
+export const listAddr = {
+    [NETWORKS.bscTestnet.chainId]: {
         TRAVA_LENDING_POOL_MARKET: "0x50794d89dbdb2d3aba83820bc3557ff076ca481b",
         ORACLE_ADDRESS: "0x3e2320C81FdB8919bC5771CBA897B9C683506140",
         TRAVA_TOKEN_IN_MARKET: "0xE1F005623934D3D8C724EC68Cc9bFD95498D4435",
@@ -21,7 +18,7 @@ exports.listAddr = {
         WBNB_TRAVA_LP_ADDRESS: "0xdCbf1fe4642d3c593f665D04Cc66E1E8923DAB5e",
     },
     // MUST BE FILL MAINNET ADDRESS HERE. NOW IS TESTNET
-    [config_1.NETWORKS.bscMainnet.chainId]: {
+    [NETWORKS.bscMainnet.chainId]: {
         TRAVA_LENDING_POOL_MARKET: "0x75de5f7c91a89c16714017c7443eca20c7a8c295",
         ORACLE_ADDRESS: "0x7Cd53b71Bf56Cc6C9c9B43719FE98e7c360c35DF",
         TRAVA_TOKEN_IN_MARKET: "0x0391bE54E72F7e001f6BBc331777710b4f2999Ef",
@@ -38,11 +35,11 @@ exports.listAddr = {
         WBNB_TRAVA_LP_ADDRESS: "0x865c77d4ff6383e06c58350a2cfb95cca2c0f056", //mainnet
     },
 };
-const getAddr = (name, chainId) => {
-    const _chainId = typeof chainId === "undefined" ? config_1.CONFIG.chainId : chainId;
-    const addr = exports.listAddr[_chainId];
+export const getAddr = (name, chainId) => {
+    const _chainId = typeof chainId === "undefined" ? CONFIG.chainId : chainId;
+    const addr = listAddr[_chainId];
     // skip this check if we're in testing mode
-    if (!config_1.CONFIG.testingMode) {
+    if (!CONFIG.testingMode) {
         if (!addr)
             throw new Error(`Cannot find address for chainId: ${_chainId}.`);
         if (!addr[name])
@@ -53,10 +50,8 @@ const getAddr = (name, chainId) => {
     else
         throw new Error(`Invalid addr`);
 };
-exports.getAddr = getAddr;
-const convertHexStringToAddress = (hexString) => {
+export const convertHexStringToAddress = (hexString) => {
     String(hexString).toLowerCase();
     const strippedHex = hexString.replace(/^0x/, '');
-    return (0, ethereumjs_util_1.toChecksumAddress)(`0x${strippedHex}`);
+    return toChecksumAddress(`0x${strippedHex}`);
 };
-exports.convertHexStringToAddress = convertHexStringToAddress;

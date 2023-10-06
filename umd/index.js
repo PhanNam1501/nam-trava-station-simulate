@@ -23394,10 +23394,10 @@ function getListTDTokenRewardsAddress(appState) {
   var listTDTokenRewardsAddress = new Array();
   detailTokenInPool.forEach(token => {
     if ((0,bignumber_js__WEBPACK_IMPORTED_MODULE_4__.BigNumber)(token.tToken.balances).isGreaterThan(0)) {
-      listTDTokenRewardsAddress.push(token.tToken.address);
+      listTDTokenRewardsAddress.push((0,_utils_address__WEBPACK_IMPORTED_MODULE_0__.convertHexStringToAddress)(token.tToken.address));
     }
     if ((0,bignumber_js__WEBPACK_IMPORTED_MODULE_4__.BigNumber)(token.dToken.balances).isGreaterThan(0.00001)) {
-      listTDTokenRewardsAddress.push(token.dToken.address);
+      listTDTokenRewardsAddress.push((0,_utils_address__WEBPACK_IMPORTED_MODULE_0__.convertHexStringToAddress)(token.dToken.address));
     }
   });
   return listTDTokenRewardsAddress;
@@ -23816,7 +23816,7 @@ function _SimulationClaimReward() {
     try {
       var amount = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_4__.BigNumber)(_amount);
       var rTravaAddress = appState.smartWalletState.travaLPState.lpReward.tokenAddress;
-      var maxReward = yield calculateMaxRewards(appState);
+      var maxReward = appState.smartWalletState.travaLPState.lpReward.claimableReward;
       if (amount.toFixed(0) == _utils_config__WEBPACK_IMPORTED_MODULE_2__.MAX_UINT256 || amount.isEqualTo(_utils_config__WEBPACK_IMPORTED_MODULE_2__.MAX_UINT256)) {
         amount = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_4__.BigNumber)(maxReward);
       }

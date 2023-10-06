@@ -1,4 +1,3 @@
-"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -8,15 +7,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateSmartWalletTokenBalance = exports.updateUserTokenBalance = exports.updateSmartWalletEthBalance = exports.updateUserEthBalance = void 0;
-const ERC20Mock_json_1 = __importDefault(require("../../abis/ERC20Mock.json"));
-const ethers_1 = require("ethers");
-const address_1 = require("../../utils/address");
-function updateUserEthBalance(appState1) {
+import ERC20Mock from "../../abis/ERC20Mock.json";
+import { Contract } from "ethers";
+import { convertHexStringToAddress } from "../../utils/address";
+export function updateUserEthBalance(appState1) {
     var _a;
     return __awaiter(this, void 0, void 0, function* () {
         const appState = Object.assign({}, appState1);
@@ -26,8 +20,7 @@ function updateUserEthBalance(appState1) {
         return appState;
     });
 }
-exports.updateUserEthBalance = updateUserEthBalance;
-function updateSmartWalletEthBalance(appState1) {
+export function updateSmartWalletEthBalance(appState1) {
     return __awaiter(this, void 0, void 0, function* () {
         const appState = Object.assign({}, appState1);
         if (appState.smartWalletState.ethBalances == "") {
@@ -36,30 +29,27 @@ function updateSmartWalletEthBalance(appState1) {
         return appState;
     });
 }
-exports.updateSmartWalletEthBalance = updateSmartWalletEthBalance;
-function updateUserTokenBalance(appState1, _tokenAddress) {
+export function updateUserTokenBalance(appState1, _tokenAddress) {
     return __awaiter(this, void 0, void 0, function* () {
         const appState = Object.assign({}, appState1);
         if (!appState.walletState.tokenBalances.has(_tokenAddress.toLowerCase())) {
-            const address = (0, address_1.convertHexStringToAddress)(_tokenAddress);
-            const TokenContract = new ethers_1.Contract(address, ERC20Mock_json_1.default, appState.web3);
+            const address = convertHexStringToAddress(_tokenAddress);
+            const TokenContract = new Contract(address, ERC20Mock, appState.web3);
             const balance = String(yield TokenContract.balanceOf(appState.walletState.address));
             appState.walletState.tokenBalances.set(address.toLowerCase(), balance);
         }
         return appState;
     });
 }
-exports.updateUserTokenBalance = updateUserTokenBalance;
-function updateSmartWalletTokenBalance(appState1, _tokenAddress) {
+export function updateSmartWalletTokenBalance(appState1, _tokenAddress) {
     return __awaiter(this, void 0, void 0, function* () {
         const appState = Object.assign({}, appState1);
         if (!appState.smartWalletState.tokenBalances.has(_tokenAddress.toLowerCase())) {
-            const address = (0, address_1.convertHexStringToAddress)(_tokenAddress);
-            const TokenContract = new ethers_1.Contract(address, ERC20Mock_json_1.default, appState.web3);
+            const address = convertHexStringToAddress(_tokenAddress);
+            const TokenContract = new Contract(address, ERC20Mock, appState.web3);
             const balance = String(yield TokenContract.balanceOf(appState.smartWalletState.address));
             appState.smartWalletState.tokenBalances.set(address.toLowerCase(), balance);
         }
         return appState;
     });
 }
-exports.updateSmartWalletTokenBalance = updateSmartWalletTokenBalance;

@@ -32,10 +32,10 @@ export function getListTDTokenRewardsAddress(appState: ApplicationState): Array<
   let listTDTokenRewardsAddress = new Array();
   detailTokenInPool.forEach(token => {
     if(BigNumber(token.tToken.balances).isGreaterThan(0)) {
-      listTDTokenRewardsAddress.push(token.tToken.address);
+      listTDTokenRewardsAddress.push(convertHexStringToAddress(token.tToken.address));
     }
     if(BigNumber(token.dToken.balances).isGreaterThan(0.00001)){
-      listTDTokenRewardsAddress.push(token.dToken.address);
+      listTDTokenRewardsAddress.push(convertHexStringToAddress(token.dToken.address));
     }
   })
   return listTDTokenRewardsAddress;
@@ -630,7 +630,7 @@ export async function SimulationClaimReward(
 
     const rTravaAddress = appState.smartWalletState.travaLPState.lpReward.tokenAddress;
 
-    let maxReward = await calculateMaxRewards(appState);
+    let maxReward = appState.smartWalletState.travaLPState.lpReward.claimableReward;
 
     if (amount.toFixed(0) == MAX_UINT256 || amount.isEqualTo(MAX_UINT256)) {
       amount = BigNumber(maxReward);

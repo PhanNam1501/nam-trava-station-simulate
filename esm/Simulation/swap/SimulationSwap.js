@@ -1,4 +1,3 @@
-"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -8,11 +7,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.simulateSwap = void 0;
-const UpdateStateAccount_1 = require("../basic/UpdateStateAccount");
-const config_1 = require("../../utils/config");
-function simulateSwap(appState1, _fromToken, _toToken, _fromAmount, _toAmount, _fromAddress, _toAddress) {
+import { updateSmartWalletTokenBalance, updateUserTokenBalance } from "../basic/UpdateStateAccount";
+import { MAX_UINT256 } from "../../utils/config";
+export function simulateSwap(appState1, _fromToken, _toToken, _fromAmount, _toAmount, _fromAddress, _toAddress) {
     return __awaiter(this, void 0, void 0, function* () {
         let fromAmount = _fromAmount;
         let toAmount = _toAmount;
@@ -20,14 +17,14 @@ function simulateSwap(appState1, _fromToken, _toToken, _fromAmount, _toAmount, _
         let toToken = _toToken.toLowerCase();
         let appState = Object.assign({}, appState1);
         if (!appState.walletState.tokenBalances.has(fromToken)) {
-            appState = yield (0, UpdateStateAccount_1.updateUserTokenBalance)(appState, fromToken);
-            appState = yield (0, UpdateStateAccount_1.updateSmartWalletTokenBalance)(appState, fromToken);
+            appState = yield updateUserTokenBalance(appState, fromToken);
+            appState = yield updateSmartWalletTokenBalance(appState, fromToken);
         }
         if (!appState.walletState.tokenBalances.has(toToken)) {
-            appState = yield (0, UpdateStateAccount_1.updateUserTokenBalance)(appState, toToken);
-            appState = yield (0, UpdateStateAccount_1.updateSmartWalletTokenBalance)(appState, toToken);
+            appState = yield updateUserTokenBalance(appState, toToken);
+            appState = yield updateSmartWalletTokenBalance(appState, toToken);
         }
-        if (fromAmount.toString() == config_1.MAX_UINT256 || BigInt(fromAmount) == BigInt(config_1.MAX_UINT256)) {
+        if (fromAmount.toString() == MAX_UINT256 || BigInt(fromAmount) == BigInt(MAX_UINT256)) {
             if (_fromAddress == appState.walletState.address.toLowerCase()) {
                 fromAmount = appState.walletState.tokenBalances.get(fromToken);
             }
@@ -59,4 +56,3 @@ function simulateSwap(appState1, _fromToken, _toToken, _fromAmount, _toAmount, _
         return appState;
     });
 }
-exports.simulateSwap = simulateSwap;

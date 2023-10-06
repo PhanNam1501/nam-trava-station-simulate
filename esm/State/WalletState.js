@@ -1,8 +1,5 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.WalletState = exports.CollectionOwned = exports.NFTOwned = void 0;
-const NFTSellingState_1 = require("./NFTSellingState");
-const TravaDeFiState_1 = require("./TravaDeFiState");
+import { NFTSellingState } from "./NFTSellingState";
+import { WalletTravaLPState } from "./TravaDeFiState";
 // export class NFTData {
 //   id: string | number;
 //   data?: any;
@@ -19,15 +16,14 @@ const TravaDeFiState_1 = require("./TravaDeFiState");
 //     this.v2 = new Array<NFTData>();
 //   }
 // }
-class NFTOwned {
+export class NFTOwned {
     constructor() {
         this.v1 = {};
         this.v2 = {};
         this.isFetch = false;
     }
 }
-exports.NFTOwned = NFTOwned;
-class CollectionOwned {
+export class CollectionOwned {
     constructor() {
         this.v1 = [];
         this.v2 = [];
@@ -35,16 +31,14 @@ class CollectionOwned {
         this.isFetch = false;
     }
 }
-exports.CollectionOwned = CollectionOwned;
-class WalletState {
+export class WalletState {
     constructor(address) {
         this.address = address;
         this.tokenBalances = new Map();
         this.nfts = new NFTOwned();
         this.collection = new CollectionOwned();
-        this.travaLPState = new TravaDeFiState_1.WalletTravaLPState();
+        this.travaLPState = new WalletTravaLPState();
         this.ethBalances = "";
-        this.sellingNFT = new NFTSellingState_1.NFTSellingState();
+        this.sellingNFT = new NFTSellingState();
     }
 }
-exports.WalletState = WalletState;
