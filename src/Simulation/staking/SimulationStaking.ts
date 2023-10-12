@@ -70,6 +70,7 @@ export async function simulateStakeStaking(appState1: ApplicationState, _staking
             stakingPool,
             vault
         )
+        
         appState.smartWalletState.tokenBalances.set(stakedTokenAddress.toLowerCase(), newRewardBalance.toFixed(0));
     }
     return appState;

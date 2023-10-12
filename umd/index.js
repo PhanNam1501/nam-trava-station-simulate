@@ -35100,16 +35100,15 @@ function _simulateSwap() {
       appState = yield (0,_basic_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_0__.updateSmartWalletTokenBalance)(appState, toToken);
     }
     if (fromAmount.toString() == _utils_config__WEBPACK_IMPORTED_MODULE_1__.MAX_UINT256 || BigInt(fromAmount) == BigInt(_utils_config__WEBPACK_IMPORTED_MODULE_1__.MAX_UINT256)) {
-      if (_fromAddress == appState.walletState.address.toLowerCase()) {
+      if (_fromAddress.toLowerCase() == appState.walletState.address.toLowerCase()) {
         fromAmount = appState.walletState.tokenBalances.get(fromToken);
-      } else if (_fromAddress == appState.smartWalletState.address.toLowerCase()) {
+      } else if (_fromAddress.toLowerCase() == appState.smartWalletState.address.toLowerCase()) {
         fromAmount = appState.smartWalletState.tokenBalances.get(fromToken);
       }
     }
     if (_fromAddress.toLowerCase() == appState.walletState.address.toLowerCase()) {
       _fromAddress = appState.walletState.address;
       var newFromBalance = BigInt(appState.walletState.tokenBalances.get(fromToken)) - BigInt(fromAmount);
-      console.log("newFromBalance", newFromBalance);
       appState.walletState.tokenBalances.set(fromToken, String(BigInt(newFromBalance)));
     } else if (_fromAddress.toLowerCase() == appState.smartWalletState.address.toLowerCase()) {
       _fromAddress = appState.smartWalletState.address;

@@ -12,7 +12,7 @@ async function test(){
     const userAddress = "0x871DBcE2b9923A35716e7E83ee402B535298538E";
     const proxyAddress = "0x124aa737A67CE0345Ab54ed32d23A8D453788890";
     let listVaults = listStakingVault[chainId];
-    let index = 1;
+    let index = 0;
 
     let stakingPool = listVaults[index].stakedTokenAddress
     let underLyingToken = listVaults[index].underlyingAddress
