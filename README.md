@@ -35,6 +35,12 @@
   - [Simulate Trava Staking Stake](#simulate-trava-staking-stake)
   - [Simulate Trava Staking Redeem (Withdraw)](#simulate-trava-staking-redeem-withdraw)
   - [Simulate Trava Staking Claim (Withdraw)](#simulate-trava-staking-claim-withdraw)
+- [Simulate state](#simulate-state-1)
+  - [Simulate Utilities actions](#simulate-utilities-actions-1)
+  - [Pull token](#pull-token-1)
+  - [Sendtoken](#sendtoken-1)
+  - [Wrap](#wrap-1)
+  - [Unwrap](#unwrap-1)
 ```
 import { ApplicationState } from "../State/ApplicationState";
 
@@ -376,5 +382,46 @@ newAppState = await simulateStakingClaimRewards(
     stakedTokenAddress,
     to,
     maxAmount
+)
+```
+# Simulate state
+Sau khi init state xong. Với mỗi state, các simulate khác nhau
+## Simulate Utilities actions
+## Pull token
+```
+appState6 = await simulateSendTokenV2(
+    appState5,
+    tokenAddress,
+    from: wallet address
+    to: smart wallet address,
+    amount: string,
+    contractAddress: address of actions
+)
+```
+## Sendtoken
+```
+appState7 = await simulateSendTokenV2(
+    appState6,
+    tokenAddress,
+    from: smart wallet address
+    to: main wallet address,
+    amount: string,
+    contractAddress: address of actions
+)
+```
+## Wrap
+```
+appState8 = await simulateWrapV2(
+    appState7,
+    amount:  string,
+    contractAddress: address of actions
+)
+```
+## Unwrap
+```
+appState9 = await simulateUnwrapV2(
+    appState8,
+    amount:  string,
+    contractAddress: address of actions
 )
 ```

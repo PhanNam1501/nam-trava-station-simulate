@@ -13,21 +13,22 @@ const test = async () => {
   console.log("=================BEFORE==========================");
   const walletAddress = "0x595622cBd0Fc4727DF476a1172AdA30A9dDf8F43"
   const proxyAddress = "0x826D824BE55A403859A6Db67D5EeC5aC386307fE"
-  const chainId = 56;
+  const chainId = 97;
   const _tokenAddress = "0x910CB19698Eac48a6AB7Ccc9542B756f2Bdd67C6"
-  const simulatorUrl = "http://localhost:3000/"
+  const simulatorUrl = "http://34.31.44.86"
+  const port = "3000"
   const response = await axios.request({
     method: "post",
-    url: `http://localhost:3000/fork`,
+    url: `${simulatorUrl}:${port}/fork`,
     data: {
       "address": `${walletAddress}`,
       "chainId": `${chainId}`
     }
   })
 
-  console.log(response.data)
+  const userPort = response.data;
 
-  const provider = new JsonRpcProvider(`http://127.0.0.1:8545`)
+  const provider = new JsonRpcProvider(`${simulatorUrl}:${userPort}`)
 
 
   let amount = "66"
@@ -41,7 +42,7 @@ const test = async () => {
     chainId,
     simulatorUrl
   );
-  
+
   appState = await updateUserEthBalance(appState)
   console.log("ok", appState.walletState.ethBalances);
   // console.log(await TokenContract.balanceOf(proxyAddress));
@@ -58,7 +59,7 @@ const test = async () => {
   // console.log(encodeData)
   let res = await axios.request({
     method: "post",
-    url: `http://localhost:3000/execute`,
+    url: `${simulatorUrl}:${port}/execute`,
     data: {
       "chainId": chainId.toString(),
       "EOAAddress": `${walletAddress}`,
@@ -91,7 +92,7 @@ const test = async () => {
 
   let resKill = await axios.request({
     method: 'post',
-    url:  `http://localhost:3000/kill`,
+    url: `${simulatorUrl}:${port}/kill`,
     data: {
       // "address":  `${walletAddress}`,
       // "chainId": chainId.toString(),
