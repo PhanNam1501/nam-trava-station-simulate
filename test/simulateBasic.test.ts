@@ -1,54 +1,56 @@
 import { simulateSendToken, simulateUnwrap, simulateWrap } from "../src/Simulation/basic/SimulationBasic";
 import { updateUserEthBalance, updateSmartWalletEthBalance, updateSmartWalletTokenBalance, updateUserTokenBalance } from "../src/Simulation/basic/UpdateStateAccount";
 import { ApplicationState } from "../src/State/ApplicationState";
-import { JsonRpcProvider } from "ethers"
+import { Contract, JsonRpcProvider, encodeBase58 } from "ethers"
+import { Recipe, actions, getAddr } from "trava-station-sdk"
+import axios from 'axios';
+import ERC20Mock from "../src/abis/ERC20Mock.json";
+import { convertHexStringToAddress } from "../src/utils/address";
+import BigNumber from "bignumber.js";
+import { simulateWrapV2 } from "../src/Simulation/basic/SimulationBasicV2";
 
-import {
-  updateTravaLPInfo,
-  updateLPDebtTokenInfo,
-  updateLPtTokenInfo,
-} from "../src/Simulation/market/UpdateStateAccount";
-import {
-  SimulationSupply,
-  SimulationBorrow,
-  SimulationRepay,
-  SimulationWithdraw,
-} from "../src/Simulation/market/SimulationWalletTravaLP";
-import { expect } from "chai";
-import { getAddr } from "../src/utils/address";
-import ABITravaLP from "../src/abis/TravaLendingPool.json";
-import { MAX_UINT256 } from "../src/utils/config";
 const test = async () => {
-  console.log("=================BEFORE==========================");
-  const provider = new JsonRpcProvider("https://bsc-testnet.publicnode.com")
-  const chainId = Number((await provider.getNetwork()).chainId)
-  let appState = await new ApplicationState(
-    "0x595622cBd0Fc4727DF476a1172AdA30A9dDf8F43",
-    "0x826D824BE55A403859A6Db67D5EeC5aC386307fE",
-    provider,
-    chainId
-  );
-  console.log("Web3 is", appState.web3)
-  console.log(await appState.web3?.getBalance("0x595622cBd0Fc4727DF476a1172AdA30A9dDf8F43"));
-  //await Promise.all([updateUserEthBalance(appState),updateSmartWalletEthBalance(appState),updateUserTokenBalance(appState,"0x910CB19698Eac48a6AB7Ccc9542B756f2Bdd67C6"),updateSmartWalletTokenBalance(appState,"0x910CB19698Eac48a6AB7Ccc9542B756f2Bdd67C6")]);
-  appState = await updateUserEthBalance(appState);
-  console.log("User Balance is", (appState.walletState.ethBalances))
-  console.log("User WBNB is ", appState.walletState.tokenBalances.get("0x910CB19698Eac48a6AB7Ccc9542B756f2Bdd67C6"));
-  console.log("Smart Wallet Balance is", (appState.smartWalletState.ethBalances));
-  console.log("Smart Wallet WBNB is ", appState.smartWalletState.tokenBalances.get("0x910CB19698Eac48a6AB7Ccc9542B756f2Bdd67C6"));
+    console.log("=================BEFORE==========================");
+    const walletAddress = "0x595622cBd0Fc4727DF476a1172AdA30A9dDf8F43"
+    const proxyAddress = "0x826D824BE55A403859A6Db67D5EeC5aC386307fE"
+    const chainId = 97;
 
-  //Wrap 0.02 BNB
-  await simulateWrap(appState,"57896044618658097711785492504343953926634992332820282019728792003956564819967");
+    const provider = new JsonRpcProvider("http://127.0.0.1:8545")
 
-  console.log("User Balance after wrap 0.02 BNB",appState.walletState.ethBalances);
-  console.log("Smart wallet WBNB after wrap",appState.smartWalletState.tokenBalances.get("0x910CB19698Eac48a6AB7Ccc9542B756f2Bdd67C6"))
+    let appState = new ApplicationState(
+        walletAddress,
+        proxyAddress,
+        provider,
+        chainId,
+        ""
+    );
 
-  // await simulateSendToken(appState,"0x910CB19698Eac48a6AB7Ccc9542B756f2Bdd67C6","0x595622cBd0Fc4727DF476a1172AdA30A9dDf8F43","20000000000000000")
-  // console.log("Smart wallet WBNB after send 0.02 WBNB",appState.smartWalletState.tokenBalances.get("0x910CB19698Eac48a6AB7Ccc9542B756f2Bdd67C6"))
-  // console.log("User WBNB after receive 0.02 WBNB",appState.walletState.tokenBalances.get("0x910CB19698Eac48a6AB7Ccc9542B756f2Bdd67C6"))
+    appState = await updateUserEthBalance(appState)
+    await Promise.all([
+        updateUserEthBalance(appState),
+        updateSmartWalletEthBalance(appState),
+        updateUserTokenBalance(appState, getAddr("WBNB_ADDRESS", chainId)),
+        updateSmartWalletTokenBalance(appState, getAddr("WBNB_ADDRESS", chainId))
+    ]);
+    appState = await updateUserEthBalance(appState);
+    console.log("User Balance is", (appState.walletState.ethBalances))
+    console.log("User WBNB is ", appState.walletState.tokenBalances.get(getAddr("WBNB_ADDRESS", chainId).toLowerCase()));
+    console.log("Smart Wallet Balance is", (appState.smartWalletState.ethBalances));
+    console.log("Smart Wallet WBNB is ", appState.smartWalletState.tokenBalances.get(getAddr("WBNB_ADDRESS", chainId).toLowerCase()));
 
-  // await simulateUnwrap(appState,"20000000000000000")
-  // console.log("User BNB after unwrap",appState.walletState.ethBalances);
+    //Wrap 0.02 BNB
+    await simulateWrapV2(appState, "100", "0xd20B3B10521410bF2C9F165638aC30660C426e3F");
+
+    console.log("User Balance after wrap 0.02 BNB", appState.walletState.ethBalances);
+    console.log("Smart wallet WBNB after wrap", appState.smartWalletState.tokenBalances.get(getAddr("WBNB_ADDRESS", chainId).toLowerCase()))
+
+    await simulateSendToken(appState, getAddr("WBNB_ADDRESS", chainId), proxyAddress, walletAddress, "20000000000000000")
+    console.log("Smart wallet WBNB after send 0.02 WBNB", appState.smartWalletState.tokenBalances.get(getAddr("WBNB_ADDRESS", chainId)))
+    console.log("User WBNB after receive 0.02 WBNB", appState.walletState.tokenBalances.get(getAddr("WBNB_ADDRESS", chainId)))
+
+    await simulateUnwrap(appState, "20000000000000000")
+    console.log("User BNB after unwrap", appState.walletState.ethBalances);
+    console.log(await provider.getBalance("0x595622cBd0Fc4727DF476a1172AdA30A9dDf8F43"));
 
 }
 test()

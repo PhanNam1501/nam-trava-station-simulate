@@ -12,3 +12,10 @@ export class DivisionByZeroError extends Error {
         this.name = 'DivisionByZeroError';
     }
 }
+
+export class NotEnoughBalanceError extends Error {
+    constructor() {
+        super("Not enough balance!");
+        this.name = 'NotEnoughBalanceError';
+    }
+}

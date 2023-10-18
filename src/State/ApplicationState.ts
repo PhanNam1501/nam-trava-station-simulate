@@ -10,17 +10,20 @@ export class ApplicationState {
   NFTSellingState: NFTSellingState;
   web3: JsonRpcProvider;
   chainId: number;
+  simulatorUrl: string;
   constructor(
     userAddress: EthAddress,
     smartWalletAddress: EthAddress,
     web3: JsonRpcProvider,
-    chainId: number
+    chainId: number,
+    simulatorUrl?: string,
   ) {
     this.walletState = new WalletState(userAddress);
     this.smartWalletState = new SmartWalletState(smartWalletAddress);
     this.NFTSellingState = new NFTSellingState();
     this.web3 = web3;
     this.chainId = chainId;
+    this.simulatorUrl = simulatorUrl || ""
   }
 }
 

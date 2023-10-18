@@ -12,9 +12,7 @@ export async function simulateWrap(appState1: ApplicationState, _amount: number 
     if (!appState.smartWalletState.tokenBalances.has(bnb_address)) {
         await updateSmartWalletTokenBalance(appState, bnb_address)
     }
-    // if (BigInt(appState.walletState.ethBalances) < BigInt(amount)) {
-    //     throw new Error("Not enough BNB")
-    // }
+
     console.log("amount.toString() == MAX_UINT256", amount.toString(), MAX_UINT256)
     if (amount.toString() == MAX_UINT256 || BigInt(amount) == BigInt(MAX_UINT256)) {
         console.log("????")
@@ -34,9 +32,7 @@ export async function simulateUnwrap(appState1: ApplicationState, _amount: numbe
     if (!appState.walletState.tokenBalances.has(bnb_address)) {
         await updateUserTokenBalance(appState, bnb_address)
     }
-    // if (BigInt(appState.walletState.tokenBalances.get(bnb_address)!) < BigInt(amount)) {
-    //     throw new Error("Not enough WBNB");
-    // }
+
     if (amount.toString() == MAX_UINT256 || BigInt(amount) == BigInt(MAX_UINT256)) {
         amount = appState.smartWalletState.tokenBalances.get(bnb_address)!;
     }
@@ -59,9 +55,7 @@ export async function simulateSendToken(appState1: ApplicationState, _tokenAddre
     if (!appState.smartWalletState.tokenBalances.has(bnb_address)) {
         await updateSmartWalletTokenBalance(appState, bnb_address)
     }
-    // if (BigInt(appState.smartWalletState.tokenBalances.get(tokenAddress)!) < BigInt(amount)) {
-    //     throw new Error("Not enough Balance");
-    // }
+
     const oldWalletBalance = appState.walletState.tokenBalances.get(tokenAddress)!;
     const oldSmartWalletBalance = appState.smartWalletState.tokenBalances.get(tokenAddress)!;
 
@@ -86,16 +80,7 @@ export async function simulateSendToken(appState1: ApplicationState, _tokenAddre
     } else {
         new Error(`from addresses are wallet address or smart wallet address: ${appState.walletState.address} || ${appState.smartWalletState.address}.`);
     }
-    // if(amount.toString() == MAX_UINT256 || BigInt(amount) == BigInt(MAX_UINT256)) {
-    //     amount = appState.smartWalletState.tokenBalances.get(tokenAddress)!;
-    // }
 
-    // let newTokenBalance = BigInt(appState.smartWalletState.tokenBalances.get(tokenAddress)!) - BigInt(amount);
-    // appState.smartWalletState.tokenBalances.set(tokenAddress, String(newTokenBalance));
-    // if (to == appState.walletState.address) {
-    //     let newUserTokenBalance = BigInt(appState.walletState.tokenBalances.get(tokenAddress)!) + BigInt(amount);
-    //     appState.walletState.tokenBalances.set(tokenAddress, String(newUserTokenBalance));
-    // }
     return appState;
 }
 

@@ -4,6 +4,7 @@ type Config = {
   [key: string]: any;
 };
 
+
 type ContractNetwork = {
   bscTestnet: Contract;
   bscMainnet: Contract;
@@ -70,5 +71,5 @@ export {
   uint16,
   uint8,
   int256,
-  int24,
+  int24
 };
