@@ -2,7 +2,7 @@ import {
   updateTravaLPInfo,
   updateLPDebtTokenInfo,
   updateLPtTokenInfo,
-} from "../src/Simulation/market/UpdateStateAccount";
+} from "../src/Simulation/trava/market/UpdateStateAccount";
 import { updateUserEthBalance, updateSmartWalletEthBalance, updateSmartWalletTokenBalance, updateUserTokenBalance } from "../src/Simulation/basic/UpdateStateAccount";
 
 import {
@@ -12,7 +12,7 @@ import {
   SimulationWithdraw,
   calculateMaxAmountBorrow,
   calculateMaxAmountWithdraw,
-} from "../src/Simulation/market/SimulationWalletTravaLP";
+} from "../src/Simulation/trava/market/SimulationWalletTravaLP";
 
 import {
   simulateSendToken

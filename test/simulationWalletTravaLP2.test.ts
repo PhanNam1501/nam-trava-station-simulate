@@ -1,6 +1,6 @@
-import { updateMaxRewardCanClaims, updateRTravaAndTravaForReward, updateTravaLPInfo } from "../src/Simulation/market/UpdateStateAccount";
+import { updateMaxRewardCanClaims, updateRTravaAndTravaForReward, updateTravaLPInfo } from "../src/Simulation/trava/market/UpdateStateAccount";
 import { ApplicationState } from "../src/State/ApplicationState";
-import { SimulationClaimReward, SimulationConvertReward, getListTDTokenRewardsAddress } from "../src/Simulation/market/SimulationWalletTravaLP";
+import { SimulationClaimReward, SimulationConvertReward, getListTDTokenRewardsAddress } from "../src/Simulation/trava/market/SimulationWalletTravaLP";
 import { Contract, JsonRpcProvider } from "ethers";
 import BigNumber from "bignumber.js";
 import { getAddr } from "../src/utils/address";

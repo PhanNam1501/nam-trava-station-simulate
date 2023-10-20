@@ -1,12 +1,8 @@
-import { simulateSendToken, simulateUnwrap, simulateWrap } from "../src/Simulation/basic/SimulationBasic";
+import { simulateSendToken, simulateUnwrap } from "../src/Simulation/basic/SimulationBasic";
 import { updateUserEthBalance, updateSmartWalletEthBalance, updateSmartWalletTokenBalance, updateUserTokenBalance } from "../src/Simulation/basic/UpdateStateAccount";
 import { ApplicationState } from "../src/State/ApplicationState";
-import { Contract, JsonRpcProvider, encodeBase58 } from "ethers"
-import { Recipe, actions, getAddr } from "trava-station-sdk"
-import axios from 'axios';
-import ERC20Mock from "../src/abis/ERC20Mock.json";
-import { convertHexStringToAddress } from "../src/utils/address";
-import BigNumber from "bignumber.js";
+import {  JsonRpcProvider } from "ethers"
+import { getAddr } from "trava-station-sdk"
 import { simulateWrapV2 } from "../src/Simulation/basic/SimulationBasicV2";
 
 const test = async () => {

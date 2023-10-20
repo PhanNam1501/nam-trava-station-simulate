@@ -1,19 +1,17 @@
-import { EthAddress } from "../../../../../utils/types";
-import { ApplicationState } from "../../../../../State/ApplicationState";
-import ABITravaLP from "../../../../../abis/TravaLendingPool.json";
-import ERC20Mock from "../../../../../abis/ERC20Mock.json";
-import MultiCallABI from "../../../../../abis/Multicall.json";
-import TravaNFTCoreABI from "../../../../../abis/TravaNFTCore.json";
-import NFTCollectionABI from "../../../../../abis/NFTCollection.json";
-import TravaNFTSellABI from "../../../../../abis/TravaNFTSell.json";
-import NFTManagerABI from "../../../../../abis/NFTManager.json";
+import { ApplicationState } from "../../../State/ApplicationState";
+import ERC20Mock from "../../../abis/ERC20Mock.json";
+import MultiCallABI from "../../../abis/Multicall.json";
+import TravaNFTCoreABI from "../../../abis/TravaNFTCore.json";
+import NFTCollectionABI from "../../../abis/NFTCollection.json";
+import TravaNFTSellABI from "../../../abis/TravaNFTSell.json";
+import NFTManagerABI from "../../../abis/NFTManager.json";
 import { Contract, Interface } from "ethers";
-import { getAddr } from "../../../../../utils/address";
+import { getAddr } from "../../../utils/address";
 import _ from "lodash";
-import { ArmouryObject, ArmouryType, CollectionArmoury, NormalKnight, SellingArmouryType, SpecialKnight } from "../../../../../global";
+import { ArmouryType, CollectionArmoury, NormalKnight, SellingArmouryType, SpecialKnight } from "../../../global";
 import { CollectionName, RarityMapping, TypeMapping } from "./KnightConfig";
 import BigNumber from "bignumber.js";
-import { NFTSellingState } from "../../../../../State/NFTSellingState";
+import { NFTSellingState } from "../../../State/NFTSellingState";
 import SellGraphQuery from "./SellGraphQuery";
 import CollectionOwnedGraphQuery from "./CollectionOwnedGraphQuery";
 
@@ -476,10 +474,11 @@ export async function updateSellingNFTFromContract(
     ]);
     const tokenIdsFlattened = nftIds.flat();
 
-    const promises = [];
+    const promises = new Array<NFTSellingState>;
     for (var i = 0; i < tokenIdsFlattened.length; i += 500) {
       const _tokenSlice = tokenIdsFlattened.slice(i, i + 500);
-      promises.push(_fetchNormal(appState, _tokenSlice));
+      let nftSellingState = await _fetchNormal(appState, _tokenSlice)
+      promises.push(nftSellingState);
     }
     const result = await Promise.all(promises);
     if (result.length > 0) {

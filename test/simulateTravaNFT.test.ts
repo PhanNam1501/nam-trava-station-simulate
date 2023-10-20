@@ -1,5 +1,5 @@
-import { updateTravaBalance } from "../src/Simulation/nft/UpdateStateAccount";
-import { simulateTravaNFTBuy, simulateTravaNFTSell, simulateTravaNFTTransfer } from "../src/Simulation/nft/SimulationTravaNFT";
+import { updateTravaBalance } from "../src/Simulation/trava/nft/marketplace/sell/UpdateStateAccount";
+import { simulateTravaNFTBuy, simulateTravaNFTSell, simulateTravaNFTTransfer } from "../src/Simulation/trava/nft/marketplace/sell/SimulationTravaNFT";
 import { ApplicationState } from "../src/State/ApplicationState";
 import { JsonRpcProvider } from "ethers";
 
@@ -7,7 +7,7 @@ import { JsonRpcProvider } from "ethers";
 const testBuy = async () => {
   // let a = new action
   console.log("=================BEFORE==========================");
-  const provider = new ethers.providers.JsonRpcProvider("https://bsc-testnet.publicnode.com")
+  const provider = new JsonRpcProvider("https://bsc-testnet.publicnode.com")
   const chainId = Number((await provider.getNetwork()).chainId)
   const appState = new ApplicationState(
     "0x595622cBd0Fc4727DF476a1172AdA30A9dDf8F43",

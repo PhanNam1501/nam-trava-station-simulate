@@ -1,7 +1,7 @@
 import { ApplicationState } from "../src/State/ApplicationState";
 import { JsonRpcProvider } from "ethers";
-import { updateTravaBalance, updateNFTBalanceFromContract, updateCollectionBalanceFromContract, updateSellingNFTFromContract, updateSellingNFTFromGraph, updateCollectionBalanceFromGraph, updateOwnedSellingNFTFromContract, updateOwnedSellingNFT } from "../src/Simulation/nft/UpdateStateAccount"
-import { simulateTravaNFTBuy, simulateTravaNFTCancelSale, simulateTravaNFTSell } from "../src/Simulation/nft/SimulationTravaNFT";
+import { updateTravaBalance, updateNFTBalanceFromContract, updateCollectionBalanceFromContract, updateSellingNFTFromContract, updateSellingNFTFromGraph, updateCollectionBalanceFromGraph, updateOwnedSellingNFTFromContract, updateOwnedSellingNFT } from "../src/Simulation/trava/nft/marketplace/sell/UpdateStateAccount"
+import { simulateTravaNFTBuy, simulateTravaNFTCancelSale, simulateTravaNFTSell } from "../src/Simulation/trava/nft/marketplace/sell/SimulationTravaNFT";
 import { getAddr } from "../src/utils/address";
 
 const testBuy =async () => {

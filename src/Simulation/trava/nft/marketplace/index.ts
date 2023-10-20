@@ -1,1 +1,1 @@
-export * from "./sell"
+export * from "./SimulationTravaNFTSell"

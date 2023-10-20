@@ -15,6 +15,11 @@
   "repository": "https://github.com/TravaStation/trava-simulation-route",
   "license": "ISC",
   "dependencies": {
+    "@ethereumjs/block": "^5.0.0",
+    "@ethereumjs/common": "^4.0.0",
+    "@ethereumjs/tx": "^5.0.0",
+    "@ethereumjs/util": "^9.0.0",
+    "@ethereumjs/vm": "^7.0.0",
     "@zennomi/tokens": "^1.0.1",
     "axios": "^1.5.1",
     "bignumber.js": "^9.1.1",

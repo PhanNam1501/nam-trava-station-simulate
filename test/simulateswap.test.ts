@@ -1,5 +1,5 @@
 import BigNumber from "bignumber.js";
-import { updateSmartWalletTokenBalance, updateUserTokenBalance } from "../src/Simulation/basic/UpdateStateAccount";
+import { updateSmartWalletTokenBalance, updateUserTokenBalance } from "../src/Simulation/basic/";
 import { simulateSwap } from "../src/Simulation/swap/SimulationSwap";
 import { ApplicationState } from "../src/State/ApplicationState";
 import { JsonRpcProvider } from "ethers"
