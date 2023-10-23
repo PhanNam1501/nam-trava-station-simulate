@@ -9,7 +9,7 @@ import _ from "lodash";
 import { CollectionArmoury, NormalKnight, SellingArmouryType, SpecialKnight } from "./global";
 import { CollectionName, RarityMapping, TypeMapping } from "./../helpers/KnightConfig";
 import BigNumber from "bignumber.js";
-import { NFTSellingState } from "../../../../State/NFTSellingState";
+import { NFTSellingState } from "../../../../State/TravaNFTState";
 
 export async function multiCall(abi: any, calls: any, provider: any, chainId: any): Promise<any> {
 
@@ -273,4 +273,12 @@ export function armourySort(item1: SellingArmouryType, item2: SellingArmouryType
 export function collectionSort(item1: NormalKnight, item2: NormalKnight) {
     if (item1.rarity < item2.rarity) return 1;
     else return -1;
+}
+
+export function shuffleArray(array: any) {
+    const n = array.length;
+    for (let i = n - 1; i > 0; --i) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
 }

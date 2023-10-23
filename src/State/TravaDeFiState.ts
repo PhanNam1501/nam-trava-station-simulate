@@ -103,4 +103,3 @@ export class BaseAccountVault {
 
 
 }
-export class TravaLPState { }

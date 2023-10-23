@@ -1,6 +1,6 @@
 import { ArmouryObject, NormalKnight, SpecialKnight } from "../Simulation/trava/nft/helpers/global";
 import { EthAddress } from "../utils/types";
-import { NFTSellingState } from "./NFTSellingState";
+import { NFTAuctioningState, NFTSellingState } from "./TravaNFTState";
 import { WalletTravaLPState } from "./TravaDeFiState";
 
 // export class NFTData {
@@ -54,6 +54,7 @@ export class WalletState {
   travaLPState: WalletTravaLPState;
   ethBalances: string;
   sellingNFT: NFTSellingState;
+  auctioningState: NFTAuctioningState;
 
   constructor(address: string) {
     this.address = address;
@@ -63,6 +64,7 @@ export class WalletState {
     this.travaLPState = new WalletTravaLPState();
     this.ethBalances = "";
     this.sellingNFT = new NFTSellingState();
+    this.auctioningState = new NFTAuctioningState();
   }
 
   // async getTokenAmount(tokenAddress: string): Promise<string> {

@@ -50,6 +50,19 @@ export type CollectionArmoury = {
 export interface SpecialKnight extends BaseKnight {
   metadataLink: string;
 }
+
+export interface AuctionKnightData {
+  startingBid: string;
+  currentBid: string;
+  endTime: number;
+  nftSeller: string;
+  bidSteps: number;
+}
+
+export interface AuctioningNormalKinght extends NormalKnight, AuctionKnightData { };
+
+export interface AuctioningSpecialKinght extends SpecialKnight, AuctionKnightData { };
+
 // The graph type
 export type Token = {
   exp: null | number;

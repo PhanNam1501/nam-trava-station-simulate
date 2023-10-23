@@ -1,8 +1,7 @@
 import { EthAddress } from "../utils/types";
-import { NFTSellingState } from "./NFTSellingState";
+import { NFTAuctioningState, NFTSellingState } from "./TravaNFTState";
 import {
   BaseAccountVault,
-  TravaLPStakingState,
   WalletTravaLPState,
 } from "./TravaDeFiState";
 import { CollectionOwned, NFTOwned } from "./WalletState";
@@ -36,6 +35,7 @@ export class SmartWalletState {
   travaLPState: WalletTravaLPState;
   ethBalances: string;
   sellingNFT: NFTSellingState;
+  auctioningState: NFTAuctioningState;
   detailTokenInPool: Map<string, DetailTokenInPool>;
   travaLPStakingStateList: Map<string, BaseAccountVault>;
 
@@ -47,6 +47,7 @@ export class SmartWalletState {
     this.collection = new CollectionOwned();
     this.ethBalances = "";
     this.sellingNFT = new NFTSellingState();
+    this.auctioningState = new NFTAuctioningState();
     this.detailTokenInPool = new Map();
     this.travaLPStakingStateList = new Map();
   }

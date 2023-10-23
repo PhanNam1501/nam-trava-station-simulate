@@ -7,7 +7,7 @@ import _ from "lodash";
 import { SellingArmouryType } from "../../helpers/global";
 import { CollectionName, RarityMapping, TypeMapping } from "../../helpers/KnightConfig";
 import BigNumber from "bignumber.js";
-import { NFTSellingState } from "../../../../../State/NFTSellingState";
+import { NFTSellingState } from "../../../../../State/TravaNFTState";
 import SellGraphQuery from "../../helpers/SellGraphQuery";
 import { _fetchNormal, multiCall } from "../../helpers/utils"
 
@@ -182,6 +182,8 @@ export async function updateOwnedSellingNFT(
         }
         appState.smartWalletState.sellingNFT.v1 = appState.NFTSellingState.v1.filter(x => x.seller.toLowerCase() == appState.smartWalletState.address.toLowerCase());
         appState.smartWalletState.sellingNFT.v2 = appState.NFTSellingState.v2.filter(x => x.seller.toLowerCase() == appState.smartWalletState.address.toLowerCase());
+        appState.smartWalletState.sellingNFT.isFetch = true;
+        
         appState.walletState.sellingNFT.v1 = appState.NFTSellingState.v1.filter(x => x.seller.toLowerCase() == appState.walletState.address.toLowerCase());
         appState.walletState.sellingNFT.v2 = appState.NFTSellingState.v2.filter(x => x.seller.toLowerCase() == appState.walletState.address.toLowerCase());
         appState.walletState.sellingNFT.isFetch = true;
