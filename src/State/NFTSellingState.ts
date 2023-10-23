@@ -1,4 +1,4 @@
-import { SellingArmouryType } from "../global";
+import { SellingArmouryType } from "../Simulation/trava/nft/helpers/global";
 
 export class NFTSellingState {
   v1: Array<SellingArmouryType>;

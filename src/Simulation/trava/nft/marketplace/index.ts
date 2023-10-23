@@ -1,1 +1,2 @@
-export * from "./SimulationTravaNFTSell"
+export * from "./sell"
+export * from "./auction"

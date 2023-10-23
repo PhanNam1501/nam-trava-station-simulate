@@ -1,9 +1,9 @@
-import { EthAddress } from "../../../../utils/types";
-import { ApplicationState } from "../../../../State/ApplicationState";
-import { getAddr } from "../../../../utils/address";
+import { EthAddress } from "../../../../../utils/types";
+import { ApplicationState } from "../../../../../State/ApplicationState";
+import { getAddr } from "../../../../../utils/address";
 import _ from "lodash";
-import { ArmouryType, SellingArmouryType } from "../../../../global";
-import { CollectionName, RarityMapping, TypeMapping } from "../KnightConfig";
+import { ArmouryType, SellingArmouryType } from "../../helpers/global";
+import { CollectionName, RarityMapping, TypeMapping } from "../../helpers/KnightConfig";
 import BigNumber from "bignumber.js";
 
 export async function simulateTravaNFTBuy(

@@ -1,8 +1,8 @@
 import BigNumber from 'bignumber.js';
 import { CollectionName, RarityMapping, TypeMapping } from './KnightConfig';
-import { CollectionOwnedMarketplaceType, NFTMarketplaceType, SellingArmouryType } from '../../../global';
+import { CollectionOwnedMarketplaceType, NFTMarketplaceType, SellingArmouryType } from './global';
 import { ethQuery } from './graphindex';
-import { EthAddress } from '../../../utils/types';
+import { EthAddress } from '../../../../utils/types';
 
 const ArmourElement = ['exp', 'rarity', 'id', 'type', 'setId'];
 const BASE18 = BigNumber('1000000000000000000');

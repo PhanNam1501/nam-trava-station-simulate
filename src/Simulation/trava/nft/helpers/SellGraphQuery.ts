@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js';
 import { CollectionName, RarityMapping, TypeMapping } from './KnightConfig';
-import { NFTMarketplaceType, SellingArmouryType } from '../../../global';
+import { NFTMarketplaceType, SellingArmouryType } from './global';
 import { ethQuery } from './graphindex';
 
 const ArmourElement = ['exp', 'rarity', 'id', 'type', 'setId'];

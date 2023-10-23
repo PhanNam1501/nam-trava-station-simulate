@@ -1,4 +1,4 @@
-import { ArmouryObject, NormalKnight, SpecialKnight } from "../global";
+import { ArmouryObject, NormalKnight, SpecialKnight } from "../Simulation/trava/nft/helpers/global";
 import { EthAddress } from "../utils/types";
 import { NFTSellingState } from "./NFTSellingState";
 import { WalletTravaLPState } from "./TravaDeFiState";
