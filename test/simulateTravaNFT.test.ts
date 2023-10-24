@@ -1,5 +1,5 @@
-import { updateTravaBalance } from "../src/Simulation/trava/nft/marketplace/sell/UpdateStateAccount";
-import { simulateTravaNFTBuy, simulateTravaNFTSell, simulateTravaNFTTransfer } from "../src/Simulation/trava/nft/marketplace/sell/SimulationTravaNFT";
+import { updateTravaBalance } from "../src/Simulation";
+import { simulateTravaNFTBuy, simulateTravaNFTSell, simulateTravaNFTTransfer } from "../src/Simulation";
 import { ApplicationState } from "../src/State/ApplicationState";
 import { JsonRpcProvider } from "ethers";
 

@@ -1,3 +1,5 @@
+import { EthAddress, uint256 } from "trava-station-sdk";
+
 // Selling
 export type SellingArmouryType = {
   id: number;
@@ -51,15 +53,25 @@ export interface SpecialKnight extends BaseKnight {
   metadataLink: string;
 }
 
-export interface AuctionKnightData {
+export interface ChangeAuctionKnightData {
+  newStartingBid: string;
+  newEndTime: string;
+
+}
+
+export interface AuctionKnightData extends ChangeAuctionKnightData {
+  nftSeller: EthAddress;
   startingBid: string;
+  currentBidder: EthAddress;
   currentBid: string;
+  startTime: number;
   endTime: number;
-  nftSeller: string;
   bidSteps: number;
 }
 
-export interface AuctioningNormalKinght extends NormalKnight, AuctionKnightData { };
+export interface AuctioningNormalKnight extends NormalKnight, AuctionKnightData {
+
+};
 
 export interface AuctioningSpecialKinght extends SpecialKnight, AuctionKnightData { };
 

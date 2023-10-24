@@ -3,9 +3,10 @@ import { ApplicationState } from "../../../../../State/ApplicationState";
 import { getAddr } from "../../../../../utils/address";
 import TravaNFTAuctionABI from "../../../../../abis/TravaNFTAuction.json"
 import { collectionSort, fetchBasicCollections, fetchNormalItems, multiCall, shuffleArray } from "../../helpers";
-import { AuctioningNormalKinght, CollectionArmoury } from "../../helpers/global";
+import { AuctioningNormalKnight, ChangeAuctionKnightData, CollectionArmoury } from "../../helpers/global";
 import BigNumber from "bignumber.js";
 import { BASE18 } from "../../../../../utils";
+import { uint256 } from "../../../../../utils/types";
 
 export async function _fetchList(auctionOrderIdSlice: any, appState: ApplicationState) {
     const NFTAuctionContract = new Contract(
@@ -15,9 +16,9 @@ export async function _fetchList(auctionOrderIdSlice: any, appState: Application
     );
 
     const auctionOrder = await multiCall(
-        NFTAuctionContract.ABI,
+        TravaNFTAuctionABI,
         auctionOrderIdSlice.map((idx: any) => ({
-            address: NFTAuctionContract.ADDRESS,
+            address: getAddr("NFT_AUCTION_ADDRESS", appState.chainId),
             name: "getTokenOrder",
             params: [idx],
         })),
@@ -28,22 +29,32 @@ export async function _fetchList(auctionOrderIdSlice: any, appState: Application
     let collectionsMetadata = await fetchBasicCollections(auctionOrderIdSlice, appState);
     const auctionOrderFlattened = auctionOrder.flat();
 
+    let changeAuctionKnightData: ChangeAuctionKnightData = {
+        newStartingBid: "",
+        newEndTime: ""
+    }
     let normalCollections = collectionsMetadata.normalCollections.map((item, index) => ({
         ...item,
-        startingBid: BigNumber(auctionOrderFlattened[index].startingBid._hex).dividedBy(BASE18).toFixed(),
-        currentBid: BigNumber(auctionOrderFlattened[index].currentBid._hex).dividedBy(BASE18).toFixed(),
-        endTime: parseInt(auctionOrderFlattened[index].endTime) * 1000,
+        ...changeAuctionKnightData,
         nftSeller: String(auctionOrderFlattened[index].nftSeller),
+        startingBid: String(auctionOrderFlattened[index].startingBid),
+        currentBidder: String(auctionOrderFlattened[index].currentBidder),
+        currentBid: String(auctionOrderFlattened[index].currentBid),
+        startTime: parseInt(auctionOrderFlattened[index].startTime) * 1000,
+        endTime: parseInt(auctionOrderFlattened[index].endTime) * 1000,
         bidSteps: parseInt(auctionOrderFlattened[index].bidSteps),
     }))
     normalCollections = normalCollections.map((i) => ({ ...i, price: i.currentBid || i.startingBid }));
 
     let specialCollections = collectionsMetadata.specialCollections.map((item, index) => ({
         ...item,
-        startingBid: BigNumber(auctionOrderFlattened[index + normalCollections.length].startingBid._hex).dividedBy(BASE18).toFixed(),
-        currentBid: BigNumber(auctionOrderFlattened[index + normalCollections.length].currentBid._hex).dividedBy(BASE18).toFixed(),
-        endTime: parseInt(auctionOrderFlattened[index + normalCollections.length].endTime) * 1000,
+        ...changeAuctionKnightData,
         nftSeller: String(auctionOrderFlattened[index + normalCollections.length].nftSeller),
+        startingBid: BigNumber(auctionOrderFlattened[index + normalCollections.length].startingBid._hex).dividedBy(BASE18).toFixed(),
+        currentBidder: String(auctionOrderFlattened[index + normalCollections.length].currentBidder),
+        currentBid: BigNumber(auctionOrderFlattened[index + normalCollections.length].currentBid._hex).dividedBy(BASE18).toFixed(),
+        startTime: parseInt(auctionOrderFlattened[index + normalCollections.length].startTime) * 1000,
+        endTime: parseInt(auctionOrderFlattened[index + normalCollections.length].endTime) * 1000,
         bidSteps: parseInt(auctionOrderFlattened[index + normalCollections.length].bidSteps),
     }))
     specialCollections = specialCollections.map((i) => ({ ...i, price: i.currentBid || i.startingBid }));
@@ -65,8 +76,8 @@ export async function _fetchList(auctionOrderIdSlice: any, appState: Application
         weaponTokenIdArray,
         appState
     );
-    const v1: Array<AuctioningNormalKinght> = [];
-    const v2: Array<AuctioningNormalKinght> = [];
+    const v1: Array<AuctioningNormalKnight> = [];
+    const v2: Array<AuctioningNormalKnight> = [];
     let counter = 0;
     for (const rawCollection of normalCollections) {
         if (rawCollection.setId == 1) v1.push({ ...rawCollection, ...normalItemsCollections[counter] });
@@ -89,12 +100,12 @@ export async function updateAuctioningNFTFromContract(
             appState.web3
         );
 
-        const total = await NFTAuctionContract.getTokenOnAuctionCount();
+        const total = parseInt(await NFTAuctionContract.getTokenOnAunctionCount());
         const [auctionOrderIds] = await Promise.all([
             multiCall(
-                NFTAuctionContract.ABI,
+                TravaNFTAuctionABI,
                 new Array(total).fill(1).map((_, idx) => ({
-                    address: NFTAuctionContract.ADDRESS,
+                    address: getAddr("NFT_AUCTION_ADDRESS", appState.chainId),
                     name: "getTokenOnAunctionAtIndex",
                     params: [idx],
                 })),
@@ -123,6 +134,7 @@ export async function updateAuctioningNFTFromContract(
                 { v1: [], v2: [], specials: [], isFetch: false }
             );
             appState.NFTAuctioningState = mergedObject;
+        
         }
         else {
             appState.NFTAuctioningState.v1 = [];
@@ -141,7 +153,7 @@ export async function updateOwnedAuctioningNFT(
 ) {
     const appState = { ...appState1 };
     try {
-        if (!appState?.NFTSellingState?.v1 && !appState?.NFTSellingState?.v2) {
+        if (!appState?.NFTSellingState?.isFetch) {
             updateAuctioningNFTFromContract(appState1);
         }
         appState.smartWalletState.auctioningState.v1 = appState.NFTAuctioningState.v1.filter(x => x.nftSeller.toLowerCase() == appState.smartWalletState.address.toLowerCase());
@@ -157,4 +169,17 @@ export async function updateOwnedAuctioningNFT(
         console.log(e);
     }
     return appState;
+}
+
+export async function isAuctionOngoing(
+    appState: ApplicationState,
+    _tokenId: uint256
+): Promise<boolean> {
+    const NFTAuctionContract = new Contract(
+        getAddr("NFT_AUCTION_ADDRESS", appState.chainId),
+        TravaNFTAuctionABI,
+        appState.web3
+    );
+    const isAuctioning: boolean = await NFTAuctionContract.isAuctionOngoing(_tokenId);
+    return isAuctioning;
 }

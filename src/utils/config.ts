@@ -88,6 +88,7 @@ export const wadDiv = (a: BigNumber, b: BigNumber): BigNumber => {
   return a.multipliedBy(WAD).plus(halfB).div(b)
 }
 
+export const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
 export const YEAR_TO_SECONDS = 365 * 24 * 60 * 60
 export const BASE18 = BigNumber("1000000000000000000");
 export const MAX_UINT256: string = ethers.MaxUint256.toString()

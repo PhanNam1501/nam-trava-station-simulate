@@ -19,3 +19,24 @@ export class NotEnoughBalanceError extends Error {
         this.name = 'NotEnoughBalanceError';
     }
 }
+
+export class FromAddressError extends Error {
+    constructor() {
+        super("Invalid from balance!");
+        this.name = 'FromAddressError';
+    }
+}
+
+export class NFTNotFoundError extends Error {
+    constructor(message: string) {
+        super(message);
+        this.name = 'NFTNotFoundError';
+    }
+}
+
+export class NFTIsNotOnGoingError extends Error {
+    constructor(message: string) {
+        super(message);
+        this.name = 'NFTIsNotOnGoing';
+    }
+}

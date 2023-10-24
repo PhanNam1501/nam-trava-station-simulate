@@ -52,6 +52,10 @@ type uint8 = string;
 type int256 = string;
 type int24 = string;
 
+type wallet_mode = "walletState" | "smartWalletState";
+type armoury_version = "v1" | "V2";
+type knight_version = "v1" | "v2" | "specials";
+
 export {
   Config,
   ContractNetwork,
@@ -71,5 +75,8 @@ export {
   uint16,
   uint8,
   int256,
-  int24
+  int24,
+  wallet_mode,
+  armoury_version,
+  knight_version
 };

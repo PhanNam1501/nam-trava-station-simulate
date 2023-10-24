@@ -1,4 +1,4 @@
-import { AuctioningNormalKinght, AuctioningSpecialKinght, SellingArmouryType } from "../Simulation/trava/nft/helpers/global";
+import { AuctioningNormalKnight, AuctioningSpecialKinght, SellingArmouryType } from "../Simulation/trava/nft/helpers/global";
 
 export class NFTSellingState {
   v1: Array<SellingArmouryType>;
@@ -12,13 +12,13 @@ export class NFTSellingState {
 }
 
 export class NFTAuctioningState {
-  v1: Array<AuctioningNormalKinght>;
-  v2: Array<AuctioningNormalKinght>;
+  v1: Array<AuctioningNormalKnight>;
+  v2: Array<AuctioningNormalKnight>;
   specials: Array<AuctioningSpecialKinght>;
   isFetch: boolean;
   constructor() {
-    this.v1 = new Array<AuctioningNormalKinght>();
-    this.v2 = new Array<AuctioningNormalKinght>();
+    this.v1 = new Array<AuctioningNormalKnight>();
+    this.v2 = new Array<AuctioningNormalKnight>();
     this.specials = new Array<AuctioningSpecialKinght>();
     this.isFetch = false;
   }

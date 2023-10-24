@@ -1,10 +1,10 @@
 import { EthAddress } from "../../../../../utils/types";
 import { ApplicationState } from "../../../../../State/ApplicationState";
 import { getAddr } from "../../../../../utils/address";
-import _ from "lodash";
 import { ArmouryType, SellingArmouryType } from "../../helpers/global";
 import { CollectionName, RarityMapping, TypeMapping } from "../../helpers/KnightConfig";
 import BigNumber from "bignumber.js";
+import { NFTNotFoundError } from "../../../../../utils";
 
 export async function simulateTravaNFTBuy(
   appState1: ApplicationState,
@@ -21,7 +21,7 @@ export async function simulateTravaNFTBuy(
       currentVersion = "v2";
     }
     if (!currentNFT) {
-      throw new Error("NFT is not being sold");
+      throw new NFTNotFoundError("NFT is not being sold");
     }
     const travaAddress = getAddr("TRAVA_TOKEN", appState1.chainId).toLowerCase();
     if (from == appState.walletState.address) {
