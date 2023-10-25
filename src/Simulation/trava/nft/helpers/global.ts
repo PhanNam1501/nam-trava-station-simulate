@@ -55,7 +55,6 @@ export interface SpecialKnight extends BaseKnight {
 
 export interface ChangeAuctionKnightData {
   newStartingBid: string;
-  newEndTime: string;
 
 }
 
@@ -73,7 +72,7 @@ export interface AuctioningNormalKnight extends NormalKnight, AuctionKnightData 
 
 };
 
-export interface AuctioningSpecialKinght extends SpecialKnight, AuctionKnightData { };
+export interface AuctioningSpecialKnight extends SpecialKnight, AuctionKnightData { };
 
 // The graph type
 export type Token = {

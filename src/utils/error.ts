@@ -1,3 +1,9 @@
+export class AuthorizeError extends Error {
+    constructor() {
+        super("Unauthorized!");
+        this.name = 'AuthorizeError';
+    }
+}
 // Custom error classes
 export class MultiplicationOverflowError extends Error {
     constructor(message: string) {
@@ -22,8 +28,64 @@ export class NotEnoughBalanceError extends Error {
 
 export class FromAddressError extends Error {
     constructor() {
-        super("Invalid from balance!");
+        super("Invalid from address!");
         this.name = 'FromAddressError';
+    }
+}
+
+export class ExpireAuctionError extends Error {
+    constructor() {
+        super("Auction has closed");
+        this.name = 'ExpireAuctionError';
+    }
+}
+
+export class InexpireAuctionError extends Error {
+    constructor() {
+        super("This auction cannot be finalized");
+        this.name = 'InexpireAuctionError';
+    }
+}
+
+export class HighestBidderError extends Error {
+    constructor() {
+        super("Already highest bidder");
+        this.name = 'HighestBidderError';
+    }
+}
+
+export class BidderError extends Error {
+    constructor() {
+        super("Bider is not owner");
+        this.name = 'BidderError';
+    }
+}
+
+export class OwnerAuctionError extends Error {
+    constructor() {
+        super("Only NFT owner can edit sale");
+        this.name = 'OwnerAuctionError';
+    }
+}
+
+export class OngoingAuctionError extends Error {
+    constructor() {
+        super("Cannot edit ongoing auction");
+        this.name = 'OngoingAuctionError';
+    }
+}
+
+export class BidPriceError extends Error {
+    constructor(message: string) {
+        super(message);
+        this.name = 'BidPriceError';
+    }
+}
+
+export class BidStepsError extends Error {
+    constructor() {
+        super("No one has bid");
+        this.name = 'BidStepsError';
     }
 }
 

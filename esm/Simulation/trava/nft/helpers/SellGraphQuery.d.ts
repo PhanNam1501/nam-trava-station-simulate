@@ -1,4 +1,4 @@
-import { NFTMarketplaceType, SellingArmouryType } from '../../../../../global';
+import { NFTMarketplaceType, SellingArmouryType } from './global';
 export default class SellGraphQuery {
     private static _rewriteData;
     static fetchData(): Promise<{

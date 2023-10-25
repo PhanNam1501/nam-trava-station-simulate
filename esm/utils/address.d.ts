@@ -8,6 +8,7 @@ export declare const listAddr: {
         NFT_CORE_ADDRESS: string;
         MULTI_CALL_ADDRESS: string;
         NFT_SELL_ADDRESS: string;
+        NFT_AUCTION_ADDRESS: string;
         NFT_MANAGER_ADDRESS: string;
         NFT_COLLECTION_ADDRESS: string;
         WBNB_ADDRESS: string;

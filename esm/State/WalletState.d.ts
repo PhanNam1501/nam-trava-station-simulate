@@ -1,6 +1,6 @@
-import { ArmouryObject, NormalKnight, SpecialKnight } from "../global";
+import { ArmouryObject, NormalKnight, SpecialKnight } from "../Simulation/trava/nft/helpers/global";
 import { EthAddress } from "../utils/types";
-import { NFTSellingState } from "./NFTSellingState";
+import { NFTAuctioningState, NFTSellingState } from "./TravaNFTState";
 import { WalletTravaLPState } from "./TravaDeFiState";
 export declare class NFTOwned {
     v1: ArmouryObject;
@@ -23,5 +23,6 @@ export declare class WalletState {
     travaLPState: WalletTravaLPState;
     ethBalances: string;
     sellingNFT: NFTSellingState;
+    auctioningState: NFTAuctioningState;
     constructor(address: string);
 }

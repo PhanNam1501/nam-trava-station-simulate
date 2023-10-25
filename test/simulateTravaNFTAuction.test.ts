@@ -1,5 +1,5 @@
 import BigNumber from "bignumber.js";
-import { simulateTravaNFTCreateAuction, updateAuctioningNFTFromContract, updateCollectionBalanceFromContract, updateNFTBalanceFromContract, updateOwnedAuctioningNFT, updateSellingNFTFromContract, updateTravaBalance } from "../src/Simulation";
+import { simulateTravaNFTCreateAuction, simulateTravaNFTMakeBidAuction, updateAuctioningNFTFromContract, updateCollectionBalanceFromContract, updateNFTBalanceFromContract, updateOwnedAuctioningNFT, updateSellingNFTFromContract, updateTravaBalance } from "../src/Simulation";
 import { simulateTravaNFTBuy, simulateTravaNFTSell, simulateTravaNFTTransfer } from "../src/Simulation";
 import { ApplicationState } from "../src/State/ApplicationState";
 import { JsonRpcProvider } from "ethers";
@@ -19,25 +19,27 @@ const testAuction = async () => {
   appState = await updateTravaBalance(appState);
   console.log("1111111111")
   appState = await updateCollectionBalanceFromContract(appState, "walletState");
-  console.log("2222222222", appState.walletState.collection)
   appState = await updateAuctioningNFTFromContract(appState);
   appState = await updateOwnedAuctioningNFT(appState);
+  console.log("2222222222", appState.NFTAuctioningState.v1)
   
   console.log("=================AFTER==========================");
-  appState = await simulateTravaNFTCreateAuction(
+  // appState = await simulateTravaNFTCreateAuction(
+  //   appState,
+  //   105,
+  //   BigNumber(1e22).toFixed(),
+  //   24 * 60 * 60,
+  //   appState.walletState.address
+  // )
+  // console.log("result", appState.walletState.collection)
+  appState = await simulateTravaNFTMakeBidAuction(
     appState,
-    105,
-    BigNumber(1e22).toFixed(),
-    24 * 60 * 60,
+    "84",
+    "35000000000000000000000",
     appState.walletState.address
   )
-  console.log("result", appState.walletState.collection)
-  // const newState = await simulateTravaNFTBuy(
-  //   appState,
-  //   "4210",
-  //   appState.walletState.address, // from
-  //   appState.walletState.address, // to
-  // );
+  
+  console.log("xyzt", appState.NFTAuctioningState.v1)
 
   // console.log("0k444444444444", JSON.stringify(newState.NFTSellingState));
 };

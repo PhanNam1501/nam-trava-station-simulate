@@ -52,5 +52,3 @@ export declare class BaseAccountVault {
     rewardToken: RewardTokenData;
     constructor();
 }
-export declare class TravaLPState {
-}

@@ -37,21 +37,6 @@ export const CONFIG: Config = {
 
 /**
  *
- * @param chainId
- */
-export const getNetworkData = (chainId: number): Network => {
-  const networkData: Network | undefined = Object.values(NETWORKS).find(
-    (network) => network.chainId === +chainId
-  );
-
-  if (!networkData)
-    throw new Error(`Cannot find network data for chainId: ${chainId}`);
-
-  return networkData;
-};
-
-/**
- *
  * @param config
  */
 export const configure = (config: Config) => {
@@ -95,3 +80,5 @@ export const MAX_UINT256: string = ethers.MaxUint256.toString()
 export const PERCENTAGE_FACTOR: BigNumber = BigNumber(1e4)
 export const HALF_PERCENT: BigNumber = PERCENTAGE_FACTOR.div(2)
 export const WAD: BigNumber = BigNumber(1e18)
+export const FEE_AUCTION_PERCENTAGE = 5 / 100;
+export const MINIMUM_BID_STEP_PERCENT = 5 / 100;

@@ -1,5 +1,5 @@
 import { EthAddress } from "../utils/types";
-import { NFTSellingState } from "./NFTSellingState";
+import { NFTAuctioningState, NFTSellingState } from "./TravaNFTState";
 import { BaseAccountVault, WalletTravaLPState } from "./TravaDeFiState";
 import { CollectionOwned, NFTOwned } from "./WalletState";
 export interface OriginTokenData {
@@ -28,6 +28,7 @@ export declare class SmartWalletState {
     travaLPState: WalletTravaLPState;
     ethBalances: string;
     sellingNFT: NFTSellingState;
+    auctioningState: NFTAuctioningState;
     detailTokenInPool: Map<string, DetailTokenInPool>;
     travaLPStakingStateList: Map<string, BaseAccountVault>;
     constructor(address: EthAddress);

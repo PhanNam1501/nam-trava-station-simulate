@@ -8,7 +8,8 @@
   - [Các action liên qua đến nft](#các-action-liên-qua-đến-nft)
     - [Tương tác với các mảnh armouries](#tương-tác-với-các-mảnh-armouries)
     - [Tương tác với các Knight](#tương-tác-với-các-knight)
-    - [Tương tác với các Marketplace](#tương-tác-với-các-marketplace)
+    - [Tương tác với các Marketplace / Sell armoury](#tương-tác-với-các-marketplace--sell-armoury)
+    - [Tương tác với các Marketplace / Auction](#tương-tác-với-các-marketplace--auction)
     - [Tuong tac voi Trava Staking](#tuong-tac-voi-trava-staking)
 - [Simulate state](#simulate-state)
   - [Simulate Utilities actions](#simulate-utilities-actions)
@@ -24,10 +25,16 @@
   - [Withdraw](#withdraw)
   - [ClaimRewards](#claimrewards)
   - [Convert rewards](#convert-rewards)
-- [Simulate Trava NFT Marketplace](#simulate-trava-nft-marketplace)
+- [Simulate Trava NFT Marketplace / Sell armoury](#simulate-trava-nft-marketplace--sell-armoury)
   - [Buy NFT](#buy-nft)
   - [Sell NFT](#sell-nft)
   - [Cancel order](#cancel-order)
+- [Simulate Trava NFT Marketplace / Auction](#simulate-trava-nft-marketplace--auction)
+  - [Create Auction](#create-auction)
+  - [Make edit auction price](#make-edit-auction-price)
+  - [Make bid auction](#make-bid-auction)
+  - [Make cancel auction](#make-cancel-auction)
+  - [Fninalize auction](#fninalize-auction)
 - [Simulate Trava NFT Utilities](#simulate-trava-nft-utilities)
   - [Transfer armoury](#transfer-armoury)
   - [Transfer collection](#transfer-collection)
@@ -140,7 +147,7 @@ appState4 = await updateCollectionBalanceFromContract(
     "smartWalletState"
 )
 ```
-### Tương tác với các Marketplace
+### Tương tác với các Marketplace / Sell armoury
 Update các armouries đang bán trên marketplace
 ```
 appState4 = await updateSellingNFTFromContract(
@@ -160,7 +167,106 @@ appState5 = await updateUserTokenBalance(
 
 ```
 Update các armouries mà user đang bán trên marketplace
+```
+appState5 = await updateOwnedSellingNFT(
+    appState4
+)
+```
+### Tương tác với các Marketplace / Auction
+First,  update auctioning NFT From Contract when chose any action in Auction
+```
+appState = await updateAuctioningNFTFromContract(
+    appState
+)
+```
+**When create auction**,
 
+First update Owned Auctioning NFT
+```
+appState = await updateOwnedAuctioningNFT(
+    appState
+)
+```
+Then, update collection of from wallet
+```
+appState = await updateCollectionBalanceFromContract(
+    appState
+)
+```
+**When make bid auction**,
+
+update trava balance of from address 
+```
+appState = await updateUserTokenBalance(
+    appState,
+    travaTokenAddress
+) 
+
+appState = await updateUserEthBalance(
+    appState
+)
+
+or
+
+appState = await updateSmartWalletTokenBalance(
+    appState,
+    travaTokenAddress
+) 
+
+appState = await updateSmartWalletEthBalance(
+    appState
+)
+```
+**when edit auction price**
+
+update Owned Auctioning NFT
+```
+appState = await updateOwnedAuctioningNFT(
+    appState,
+    from wallet state
+)
+```
+**when cancel auction**
+
+update Owned Auctioning NFT
+```
+appState = await updateOwnedAuctioningNFT(
+    appState,
+    from wallet state
+)
+```
+Then, update collection of to wallet
+```
+appState = await updateCollectionBalanceFromContract(
+    appState,
+    to wallet state
+)
+```
+**when finalize auction**
+update Owned Auctioning NFT
+if smartWallet is nftSeller, 
+
+update Trava balance, BNB balance of to wallet
+```
+appState = await updateUserTokenBalance(
+    appState,
+    travaTokenAddress
+) 
+
+or
+
+appState = await updateSmartWalletTokenBalance(
+    appState,
+    travaTokenAddress
+) 
+```
+if smartWallet is bidder, 
+```
+appState = await updateCollectionBalanceFromContract(
+    appState,
+    to wallet state
+)
+```
 ### Tuong tac voi Trava Staking
 Update state cua Smart Wallet trong cac vault
 ```
@@ -303,7 +409,7 @@ appState16 = await SimulationConvertReward(
     MAX_UINT256
 )
 ```
-# Simulate Trava NFT Marketplace
+# Simulate Trava NFT Marketplace / Sell armoury
 ## Buy NFT
 ```
 appState15 = await simulateTravaNFTBuy(
@@ -328,6 +434,50 @@ appState17 = await simulateTravaNFTCancelSale(
     appState16,
     to,
     tokenId
+)
+```
+# Simulate Trava NFT Marketplace / Auction
+## Create Auction
+```
+appState = await simulateTravaNFTCreateAuction(
+    appState,
+    tokenId,
+    startingBid,
+    duration (ms),
+    from
+)
+```
+## Make edit auction price
+```
+appState = await simulateTravaNFTEditAuctionPrice(
+    appState,
+    tokenId,
+    startingBid
+)
+```
+## Make bid auction 
+```
+appState = await simulateTravaNFTMakeBidAuction(
+    appState,
+    tokenId,
+    bidPrice,
+    from
+)
+```
+## Make cancel auction 
+```
+appState = await simulateTravaNFTCancelAuction(
+    appState,
+    tokenId,
+    to
+)
+```
+## Fninalize auction 
+```
+appState = await simulateTravaNFTFinalizeAuction(
+    appState,
+    tokenId,
+    to
 )
 ```
 # Simulate Trava NFT Utilities

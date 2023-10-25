@@ -30,8 +30,7 @@ export async function _fetchList(auctionOrderIdSlice: any, appState: Application
     const auctionOrderFlattened = auctionOrder.flat();
 
     let changeAuctionKnightData: ChangeAuctionKnightData = {
-        newStartingBid: "",
-        newEndTime: ""
+        newStartingBid: ""
     }
     let normalCollections = collectionsMetadata.normalCollections.map((item, index) => ({
         ...item,

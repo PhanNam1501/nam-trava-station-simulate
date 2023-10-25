@@ -1,6 +1,6 @@
 {
   "name": "trava-simulation-route",
-  "version": "2.0.2",
+  "version": "2.0.7",
   "description": "",
   "main": "./umd/index.js",
   "module": "./esm/index.js",
@@ -15,20 +15,14 @@
   "repository": "https://github.com/TravaStation/trava-simulation-route",
   "license": "ISC",
   "dependencies": {
-    "@ethereumjs/block": "^5.0.0",
-    "@ethereumjs/common": "^4.0.0",
-    "@ethereumjs/tx": "^5.0.0",
-    "@ethereumjs/util": "^9.0.0",
-    "@ethereumjs/vm": "^7.0.0",
     "@zennomi/tokens": "^1.0.1",
-    "axios": "^1.5.1",
     "bignumber.js": "^9.1.1",
     "decimal.js": "^10.4.3",
     "eth-graph-query": "^2.0.0",
     "ethereumjs-util": "^7.1.5",
     "ethers": "^6.7.0",
     "lodash": "^4.17.21",
-    "trava-station-sdk": "1.0.42"
+    "trava-station-sdk": "1.0.30"
   },
   "devDependencies": {
     "@babel/core": "^7.12.10",

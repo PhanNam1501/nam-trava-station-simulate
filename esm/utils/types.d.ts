@@ -49,4 +49,7 @@ type uint16 = string;
 type uint8 = string;
 type int256 = string;
 type int24 = string;
-export { Config, ContractNetwork, Contract, Network, Networks, EthAddress, bytes32, bytes, uint256, uint160, uint32, uint128, uint80, uint64, uint24, uint16, uint8, int256, int24 };
+type wallet_mode = "walletState" | "smartWalletState";
+type armoury_version = "v1" | "V2";
+type knight_version = "v1" | "v2" | "specials";
+export { Config, ContractNetwork, Contract, Network, Networks, EthAddress, bytes32, bytes, uint256, uint160, uint32, uint128, uint80, uint64, uint24, uint16, uint8, int256, int24, wallet_mode, armoury_version, knight_version };

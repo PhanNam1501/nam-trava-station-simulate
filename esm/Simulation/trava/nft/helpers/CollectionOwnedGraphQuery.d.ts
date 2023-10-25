@@ -1,4 +1,4 @@
-import { EthAddress } from '../../../../../utils/types';
+import { EthAddress } from '../../../../utils/types';
 export default class SellGraphQuery {
     private static _rewriteData;
     static fetchData(owner: EthAddress): Promise<{
