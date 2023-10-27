@@ -5,7 +5,7 @@ import VeABI from "../../../abis/Ve.json";
 import IncentiveABI from "../../../abis/Incentive.json";
 import { LockBalance, TokenInGovernance, RewardTokenData } from "../../../State/TravaGovenanceState";
 import { ApplicationState } from "../../../State/ApplicationState";
-
+import BigNumber from "bignumber.js"
 export async function updateAllLockBalance(appState1: ApplicationState) {
     let appState = { ...appState1 };
 
@@ -172,18 +172,18 @@ export async function updateAllLockBalance(appState1: ApplicationState) {
           appState.chainId
         ),
       ]);
-      let now1 = BigInt(now);
-      let round_ts1 = BigInt(round_ts);
+      let now1 = BigNumber(now);
+      let round_ts1 = BigNumber(round_ts);
       let veNFT1 = veNFT[0][0];
       let totalVe1 = totalVe[0][0];
       let warmUpReward1 = warmUpReward[0][0];
-      let warmUp_ts1 = warmUp_ts[0][0];
+      let warmUp_ts1 = BigNumber(warmUp_ts[0][0]);
       let eps1 = eps[0][0];
-      let unclaimedReward = (now1 - round_ts1) * veNFT1 / totalVe1 * eps1;
-      if (warmUp_ts1 > now1) {
+      let unclaimedReward = (now1.minus(round_ts1)).multipliedBy(veNFT1).dividedBy(totalVe1).multipliedBy(eps1);
+      if (warmUp_ts1.isGreaterThan(now1)) {
         unclaimedReward = warmUpReward1;
       }
-      let balance = compoundAbleRewards[i][0]+unclaimedReward;
+      let balance = unclaimedReward.plus(compoundAbleRewards[i][0]);
 
       // init token in governance
       let tokenInGovernance: TokenInGovernance = {
@@ -196,7 +196,7 @@ export async function updateAllLockBalance(appState1: ApplicationState) {
         address: rewardTokens[i][0].toLowerCase(),
         compoundAbleRewards: compoundAbleRewards[i][0].toString(),
         compoundedRewards: lockedValues[i][0].toString(),
-        balances: balance.toString(),
+        balances: balance.toFixed(0),
         decimals: decimalTokens[i].toString(),
       }
 
