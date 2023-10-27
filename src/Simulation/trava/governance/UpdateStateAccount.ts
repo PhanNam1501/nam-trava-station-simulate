@@ -22,10 +22,9 @@ export async function updateAllLockBalance(appState1: ApplicationState) {
     //0xAe68A6Aa889DddDB27B458bc9038aBD308ff147C
     
     let VeAddress = "0x7E41803de7781f53D1901A3d70A3D3747b3B3B63"
-    console.log("-------------------Huhu--------------------");
+    
     let [
       ids, // data of total deposit in all vaults
-      votingPowers,
     ] = await Promise.all([
       multiCall(
         VeABI,
@@ -37,21 +36,49 @@ export async function updateAllLockBalance(appState1: ApplicationState) {
         appState.web3,
         appState.chainId
       ),
-      multiCall(
-        VeABI,
-        [VeAddress].map((address: string, _: number) => ({
-          address: address,
-          name: "balanceOfNFT",
-          params: [],
-        })),
-        appState.web3,
-        appState.chainId
-      ),
     ]);
 
-    console.log("-------------------Haha--------------------");
+    ids = ids[0][0];
+    console.log("-------------------ID--------------------");
     console.log(ids);
+    let votingPowers : string[] = [];
+    let lockedValues : string[] = [];
+    for (let i = 0; i < ids.length; i++) {
+      let id = ids[i];
+      let [
+        votingPower,
+        lockedValue,
+      ] = await Promise.all([
+        multiCall(
+          VeABI,
+          [VeAddress].map((address: string, _: number) => ({
+            address: address,
+            name: "balanceOfNFT",
+            params: [id],
+          })),
+          appState.web3,
+          appState.chainId
+        ),
+        multiCall(
+          VeABI,
+          [VeAddress].map((address: string, _: number) => ({
+            address: address,
+            name: "locked",
+            params: [id],
+          })),
+          appState.web3,
+          appState.chainId
+        ),
+      ]);
+      votingPowers.push(votingPower[0][0]);
+      lockedValues.push(lockedValue[0]);
+    }
+
+    console.log("-------------------VotingPowers--------------------");
     console.log(votingPowers);
+    console.log("-------------------locked--------------------");
+    console.log(lockedValues);
+
     return appState;
 }
 
