@@ -1,4 +1,4 @@
-import { Contract, Interface } from "ethers";
+import { Contract, Interface, id } from "ethers";
 import { getAddr } from "../../../utils/address";
 import MultiCallABI from "../../../abis/Multicall.json";
 import VeABI from "../../../abis/Ve.json";
@@ -7,7 +7,8 @@ import { LockBalance } from "../../../State/TravaGovenanceState";
 
 import { listStakingVault } from "../../../utils/stakingVaultConfig";
 import { ApplicationState } from "../../../State/ApplicationState";
-
+import { Address } from "ethereumjs-util";
+import { ethers } from "ethers" ;
 export async function updateAllLockBalance(appState1: ApplicationState) {
     const vaultConfigList = listStakingVault[appState1.chainId];
     let appState = { ...appState1 };
@@ -20,35 +21,39 @@ export async function updateAllLockBalance(appState1: ApplicationState) {
     // reward: RewardTokenData;
     //0xAe68A6Aa889DddDB27B458bc9038aBD308ff147C
     
-    let underlyingAddress = new Array<string>;
-    let priceUnderlyingAddress = new Array<string>
-    let lpAddress = new Array<string>;
-    let stakedTokenAddress = new Array<string>;
-    let rewardTokenAddress = new Array<string>;
-    for (let i = 0; i < vaultConfigList.length; i++) {
-      underlyingAddress.push(vaultConfigList[i].underlyingAddress);
-      priceUnderlyingAddress.push(vaultConfigList[i].priceUnderlyingAddress);
-      lpAddress.push(vaultConfigList[i].lpAddress)
-      stakedTokenAddress.push(vaultConfigList[i].stakedTokenAddress);
-      rewardTokenAddress.push(vaultConfigList[i].rewardToken.address)
-    }
+    let VeAddress = "0x7E41803de7781f53D1901A3d70A3D3747b3B3B63"
+    console.log("-------------------Huhu--------------------");
     let [
-      id, // data of total deposit in all vaults
+      ids, // data of total deposit in all vaults
+      votingPowers,
     ] = await Promise.all([
       multiCall(
         VeABI,
-        stakedTokenAddress.map((address: string, _: number) => ({
+        [VeAddress].map((address: string, _: number) => ({
           address: address,
-          name: "tokenURI",
-          params: [appState.smartWalletState.address],
+          name: "getveNFTOfUser",
+          params: [appState.walletState.address],
         })),
         appState.web3,
         appState.chainId
       ),
-      
+      multiCall(
+        VeABI,
+        [VeAddress].map((address: string, _: number) => ({
+          address: address,
+          name: "balanceOfNFT",
+          params: [],
+        })),
+        appState.web3,
+        appState.chainId
+      ),
     ]);
-}
 
+    console.log("-------------------Haha--------------------");
+    console.log(ids);
+    console.log(votingPowers);
+    return appState;
+}
 
 
 
