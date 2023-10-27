@@ -3,21 +3,23 @@ import { getAddr } from "../../../utils/address";
 import MultiCallABI from "../../../abis/Multicall.json";
 import VeABI from "../../../abis/Ve.json";
 
-import { LockBalance } from "../../../State/TravaGovenanceState";
+import { LockBalance, TokenInGovernance, RewardTokenData } from "../../../State/TravaGovenanceState";
 
 import { listStakingVault } from "../../../utils/stakingVaultConfig";
 import { ApplicationState } from "../../../State/ApplicationState";
 import { Address } from "ethereumjs-util";
 import { ethers } from "ethers" ;
+
 export async function updateAllLockBalance(appState1: ApplicationState) {
     const vaultConfigList = listStakingVault[appState1.chainId];
     let appState = { ...appState1 };
 
-    // id: string;
-    // status: string;
-    // votingPower: string;
-    // tokenInGovernance: TokenInGovernance;
-    // unlockTime: string;
+    // id: string; x 
+    // status: string; caculate by unlockTime x
+    // votingPower: string; x 
+    // tokenInGovernance: TokenInGovernance; (in locked) [3] x
+    // balance
+    // unlockTime: string; (in locked) [2] x
     // reward: RewardTokenData;
     //0xAe68A6Aa889DddDB27B458bc9038aBD308ff147C
     
@@ -39,15 +41,17 @@ export async function updateAllLockBalance(appState1: ApplicationState) {
     ]);
 
     ids = ids[0][0];
-    console.log("-------------------ID--------------------");
-    console.log(ids);
     let votingPowers : string[] = [];
     let lockedValues : string[] = [];
+    let decimalTokens : string[] = [];
+    let rewardTokens : string[] = [];;
     for (let i = 0; i < ids.length; i++) {
       let id = ids[i];
       let [
         votingPower,
         lockedValue,
+        decimalToken,
+        rewardToken,
       ] = await Promise.all([
         multiCall(
           VeABI,
@@ -69,22 +73,63 @@ export async function updateAllLockBalance(appState1: ApplicationState) {
           appState.web3,
           appState.chainId
         ),
+        multiCall(
+          VeABI,
+          [VeAddress].map((address: string, _: number) => ({
+            address: address,
+            name: "decimals",
+            params: [],
+          })),
+          appState.web3,
+          appState.chainId
+        ),
+        multiCall(
+          VeABI,
+          [VeAddress].map((address: string, _: number) => ({
+            address: address,
+            name: "rewardToken",
+            params: [],
+          })),
+          appState.web3,
+          appState.chainId
+        ),
+        
       ]);
       votingPowers.push(votingPower[0][0]);
       lockedValues.push(lockedValue[0]);
+      decimalTokens.push(decimalToken[0]);
+      rewardTokens.push(rewardToken[0])
     }
 
-    console.log("-------------------VotingPowers--------------------");
-    console.log(votingPowers);
-    console.log("-------------------locked--------------------");
-    console.log(lockedValues);
+    for (let i = 0; i < ids.length; i++) {
+      // init token in governance
+      let tokenInGovernance: TokenInGovernance = {
+        address: lockedValues[i][3],
+        balances: lockedValues[i][1].toString(),
+        decimals: decimalTokens[i].toString(),
+      }
+      // init reward
+      let rewardTokenData: RewardTokenData = {
+        address: rewardTokens[i][0],
+        balances: "",
+        decimals: decimalTokens[i].toString(),
+      }
 
+      // init state lockBalance
+      let lockBalance: LockBalance = {
+        id: ids[i].toString(),
+        votingPower: votingPowers[i].toString(),
+        tokenInGovernance: tokenInGovernance,
+        unlockTime: lockedValues[i][2].toString(),
+        reward: rewardTokenData,
+    }
+    console.log("-------------------lockBalance--------------------");
+    console.log(lockBalance);
+    appState.smartWalletState.travaGovenanceState.set(ids[i].toString, lockBalance);
+    console.log(appState.smartWalletState.travaGovenanceState);
+    }
     return appState;
 }
-
-
-
-
 
 const multiCall = async (abi: any, calls: any, provider: any, chainId: any) => {
     let _provider = provider;

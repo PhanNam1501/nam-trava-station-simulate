@@ -17,5 +17,6 @@ import BigNumber from "bignumber.js";
     chainId
     )
     appState = await updateAllLockBalance(appState);
+    
 }
 test()

@@ -8,12 +8,10 @@ export interface RewardTokenData {
     address: string;
     balances: string;
     decimals: string;
-    price: string;
 }
 
 export class LockBalance {
     id: string;
-    status: string;
     votingPower: string;
     tokenInGovernance: TokenInGovernance;
     unlockTime: string;
@@ -21,7 +19,6 @@ export class LockBalance {
 
     constructor() {
       this.id = "";
-      this.status = "";
       this.votingPower = "";
       this.tokenInGovernance = {
         address: "",
@@ -33,7 +30,6 @@ export class LockBalance {
         address: "",
         balances: "",
         decimals: "",
-        price: "",
       };
     }
 }
