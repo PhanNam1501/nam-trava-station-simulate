@@ -6,6 +6,8 @@ export interface TokenInGovernance {
 
 export interface RewardTokenData {
     address: string;
+    compoundAbleRewards: string;
+    compoundedRewards: string;
     balances: string;
     decimals: string;
 }
@@ -28,6 +30,8 @@ export class LockBalance {
       this.unlockTime = "";
       this.reward = {
         address: "",
+        compoundAbleRewards: "",
+        compoundedRewards: "",
         balances: "",
         decimals: "",
       };

@@ -2,16 +2,11 @@ import { Contract, Interface, id } from "ethers";
 import { getAddr } from "../../../utils/address";
 import MultiCallABI from "../../../abis/Multicall.json";
 import VeABI from "../../../abis/Ve.json";
-
+import IncentiveABI from "../../../abis/Incentive.json";
 import { LockBalance, TokenInGovernance, RewardTokenData } from "../../../State/TravaGovenanceState";
-
-import { listStakingVault } from "../../../utils/stakingVaultConfig";
 import { ApplicationState } from "../../../State/ApplicationState";
-import { Address } from "ethereumjs-util";
-import { ethers } from "ethers" ;
 
 export async function updateAllLockBalance(appState1: ApplicationState) {
-    const vaultConfigList = listStakingVault[appState1.chainId];
     let appState = { ...appState1 };
 
     // id: string; x 
@@ -23,8 +18,8 @@ export async function updateAllLockBalance(appState1: ApplicationState) {
     // reward: RewardTokenData;
     //0xAe68A6Aa889DddDB27B458bc9038aBD308ff147C
     
-    let VeAddress = "0x7E41803de7781f53D1901A3d70A3D3747b3B3B63"
-    
+    let VeAddress = "0x7E41803de7781f53D1901A3d70A3D3747b3B3B63";
+    let IncentiveAddress = '0xf8F913DFd1Cfd0ef4AE8a04f41B47441c1d0A893';
     let [
       ids, // data of total deposit in all vaults
     ] = await Promise.all([
@@ -44,7 +39,8 @@ export async function updateAllLockBalance(appState1: ApplicationState) {
     let votingPowers : string[] = [];
     let lockedValues : string[] = [];
     let decimalTokens : string[] = [];
-    let rewardTokens : string[] = [];;
+    let rewardTokens : string[] = [];
+    let compoundAbleRewards : string[] = [];
     for (let i = 0; i < ids.length; i++) {
       let id = ids[i];
       let [
@@ -52,6 +48,7 @@ export async function updateAllLockBalance(appState1: ApplicationState) {
         lockedValue,
         decimalToken,
         rewardToken,
+        compoundAbleReward,
       ] = await Promise.all([
         multiCall(
           VeABI,
@@ -93,25 +90,113 @@ export async function updateAllLockBalance(appState1: ApplicationState) {
           appState.web3,
           appState.chainId
         ),
-        
+        multiCall(
+          IncentiveABI,
+          [IncentiveAddress].map((address: string, _: number) => ({
+            address: address,
+            name: "claimable",
+            params: [id],
+          })),
+          appState.web3,
+          appState.chainId
+        ),
       ]);
       votingPowers.push(votingPower[0][0]);
       lockedValues.push(lockedValue[0]);
       decimalTokens.push(decimalToken[0]);
       rewardTokens.push(rewardToken[0])
+      compoundAbleRewards.push(compoundAbleReward[0])
     }
 
+
     for (let i = 0; i < ids.length; i++) {
+      //Math
+      const now = Math.floor(new Date().getTime() / 1000);
+      let round_ts = roundDown(now)
+
+      let [
+        veNFT,
+        totalVe,
+        warmUpReward,
+        warmUp_ts,
+        eps
+      ] = await Promise.all([
+        multiCall(
+          IncentiveABI,
+          [IncentiveAddress].map((address: string, _: number) => ({
+            address: address,
+            name: "ve_for_at",
+            params: [ids[i],round_ts],
+          })),
+          appState.web3,
+          appState.chainId
+        ),
+        multiCall(
+          VeABI,
+          [VeAddress].map((address: string, _: number) => ({
+            address: address,
+            name: "totalSupplyAtT",
+            params: [round_ts],
+          })),
+          appState.web3,
+          appState.chainId
+        ),
+        multiCall(
+          IncentiveABI,
+          [IncentiveAddress].map((address: string, _: number) => ({
+            address: address,
+            name: "claimWarmUpReward",
+            params: [ids[i]],
+          })),
+          appState.web3,
+          appState.chainId
+        ),
+        multiCall(
+          VeABI,
+          [VeAddress].map((address: string, _: number) => ({
+            address: address,
+            name: "user_point_history__ts",
+            params: [ids[i], 1],
+          })),
+          appState.web3,
+          appState.chainId
+        ),
+        multiCall(
+          IncentiveABI,
+          [IncentiveAddress].map((address: string, _: number) => ({
+            address: address,
+            name: "emissionPerSecond",
+            params: [],
+          })),
+          appState.web3,
+          appState.chainId
+        ),
+      ]);
+      let now1 = BigInt(now);
+      let round_ts1 = BigInt(round_ts);
+      let veNFT1 = veNFT[0][0];
+      let totalVe1 = totalVe[0][0];
+      let warmUpReward1 = warmUpReward[0][0];
+      let warmUp_ts1 = warmUp_ts[0][0];
+      let eps1 = eps[0][0];
+      let unclaimedReward = (now1 - round_ts1) * veNFT1 / totalVe1 * eps1;
+      if (warmUp_ts1 > now1) {
+        unclaimedReward = warmUpReward1;
+      }
+      let balance = compoundAbleRewards[i][0]+unclaimedReward;
+
       // init token in governance
       let tokenInGovernance: TokenInGovernance = {
-        address: lockedValues[i][3],
+        address: lockedValues[i][3].toLowerCase(),
         balances: lockedValues[i][1].toString(),
         decimals: decimalTokens[i].toString(),
       }
       // init reward
       let rewardTokenData: RewardTokenData = {
-        address: rewardTokens[i][0],
-        balances: "",
+        address: rewardTokens[i][0].toLowerCase(),
+        compoundAbleRewards: compoundAbleRewards[i][0].toString(),
+        compoundedRewards: lockedValues[i][0].toString(),
+        balances: balance.toString(),
         decimals: decimalTokens[i].toString(),
       }
 
@@ -122,13 +207,18 @@ export async function updateAllLockBalance(appState1: ApplicationState) {
         tokenInGovernance: tokenInGovernance,
         unlockTime: lockedValues[i][2].toString(),
         reward: rewardTokenData,
-    }
-    console.log("-------------------lockBalance--------------------");
-    console.log(lockBalance);
-    appState.smartWalletState.travaGovenanceState.set(ids[i].toString, lockBalance);
-    console.log(appState.smartWalletState.travaGovenanceState);
+      }
+      appState.smartWalletState.travaGovenanceState.set(ids[i].toString(), lockBalance);
     }
     return appState;
+}
+
+function roundDown(timestamp: number) { 
+  // thứ năm gần nhất
+   const thursday = (timestamp / (7*24*3600)) * (7*24*3600); 
+   const dt = 5*(24*3600) + 15*(3600); 
+   if (thursday + dt < timestamp) return thursday + dt; 
+   else return thursday - (7*24*3600) + dt; 
 }
 
 const multiCall = async (abi: any, calls: any, provider: any, chainId: any) => {

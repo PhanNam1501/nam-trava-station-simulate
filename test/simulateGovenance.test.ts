@@ -17,6 +17,6 @@ import BigNumber from "bignumber.js";
     chainId
     )
     appState = await updateAllLockBalance(appState);
-    
+    console.log(appState.smartWalletState.travaGovenanceState)
 }
 test()
