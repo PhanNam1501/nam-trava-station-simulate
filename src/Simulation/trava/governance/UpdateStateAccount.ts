@@ -9,17 +9,18 @@ import BigNumber from "bignumber.js"
 export async function updateAllLockBalance(appState1: ApplicationState) {
     let appState = { ...appState1 };
 
-    // id: string; x 
-    // status: string; caculate by unlockTime x
-    // votingPower: string; x 
-    // tokenInGovernance: TokenInGovernance; (in locked) [3] x
-    // balance
-    // unlockTime: string; (in locked) [2] x
-    // reward: RewardTokenData;
-    //0xAe68A6Aa889DddDB27B458bc9038aBD308ff147C
+    //test-net
+    //0x7E41803de7781f53D1901A3d70A3D3747b3B3B63
+
+    //main-net
+    //0xedf6a93772EEcFB1300F61F6C1aE9680c33996A2
+    let VeAddress = getAddr("VE_TRAVA_ADDRESS", appState.chainId);
     
-    let VeAddress = "0x7E41803de7781f53D1901A3d70A3D3747b3B3B63";
-    let IncentiveAddress = '0xf8F913DFd1Cfd0ef4AE8a04f41B47441c1d0A893';
+    //0xf8F913DFd1Cfd0ef4AE8a04f41B47441c1d0A893
+    //main-net
+    //0xB2E1105969689E931BbBB45a727AE019C8246692
+
+    let IncentiveAddress = getAddr("INCENTIVE_VAULT_ADDRESS", appState.chainId);
     let [
       ids, // data of total deposit in all vaults
     ] = await Promise.all([
