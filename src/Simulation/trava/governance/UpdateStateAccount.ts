@@ -172,18 +172,6 @@ export async function updateAllLockBalance(appState1: ApplicationState) {
       let eps1 = BigNumber(eps[0][0]);
       let unclaimedReward = BigNumber(0);
 
-      console.log("---------------------------------");
-      console.log(now);
-      console.log(round_ts);
-      console.log(veNFT[0][0]);
-      console.log(totalVe[0][0]);
-      console.log(warmUpReward[0][0]);
-      console.log(warmUp_ts[0][0]);
-      console.log(eps[0][0]);
-      console.log(0);
-      console.log("---------------------------------");
-
-
       if (warmUp_ts1.isGreaterThan(now1)) {
         unclaimedReward = warmUpReward1;
       }
