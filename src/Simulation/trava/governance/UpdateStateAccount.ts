@@ -6,20 +6,10 @@ import IncentiveABI from "../../../abis/Incentive.json";
 import { LockBalance, TokenInGovernance, RewardTokenData } from "../../../State/TravaGovenanceState";
 import { ApplicationState } from "../../../State/ApplicationState";
 import BigNumber from "bignumber.js"
+import { DAY_TO_SECONDS, HOUR_TO_SECONDS, WEEK_TO_SECONDS } from "../../../utils/config";
 export async function updateAllLockBalance(appState1: ApplicationState) {
     let appState = { ...appState1 };
-
-    //test-net
-    //0x7E41803de7781f53D1901A3d70A3D3747b3B3B63
-
-    //main-net
-    //0xedf6a93772EEcFB1300F61F6C1aE9680c33996A2
     let VeAddress = getAddr("VE_TRAVA_ADDRESS", appState.chainId);
-    
-    //0xf8F913DFd1Cfd0ef4AE8a04f41B47441c1d0A893
-    //main-net
-    //0xB2E1105969689E931BbBB45a727AE019C8246692
-
     let IncentiveAddress = getAddr("INCENTIVE_VAULT_ADDRESS", appState.chainId);
     let [
       ids, // data of total deposit in all vaults
@@ -175,14 +165,30 @@ export async function updateAllLockBalance(appState1: ApplicationState) {
       ]);
       let now1 = BigNumber(now);
       let round_ts1 = BigNumber(round_ts);
-      let veNFT1 = veNFT[0][0];
-      let totalVe1 = totalVe[0][0];
-      let warmUpReward1 = warmUpReward[0][0];
+      let veNFT1 = BigNumber(veNFT[0][0]);
+      let totalVe1 = BigNumber(totalVe[0][0]);
+      let warmUpReward1 = BigNumber(warmUpReward[0][0]);
       let warmUp_ts1 = BigNumber(warmUp_ts[0][0]);
-      let eps1 = eps[0][0];
-      let unclaimedReward = (now1.minus(round_ts1)).multipliedBy(veNFT1).dividedBy(totalVe1).multipliedBy(eps1);
+      let eps1 = BigNumber(eps[0][0]);
+      let unclaimedReward = BigNumber(0);
+
+      console.log("---------------------------------");
+      console.log(now);
+      console.log(round_ts);
+      console.log(veNFT[0][0]);
+      console.log(totalVe[0][0]);
+      console.log(warmUpReward[0][0]);
+      console.log(warmUp_ts[0][0]);
+      console.log(eps[0][0]);
+      console.log(0);
+      console.log("---------------------------------");
+
+
       if (warmUp_ts1.isGreaterThan(now1)) {
         unclaimedReward = warmUpReward1;
+      }
+      else {
+        unclaimedReward = (now1.minus(round_ts1)).multipliedBy(veNFT1).dividedBy(totalVe1).multipliedBy(eps1);
       }
       let balance = unclaimedReward.plus(compoundAbleRewards[i][0]);
 
@@ -216,10 +222,10 @@ export async function updateAllLockBalance(appState1: ApplicationState) {
 
 function roundDown(timestamp: number) { 
   // thứ năm gần nhất
-   const thursday = (timestamp / (7*24*3600)) * (7*24*3600); 
-   const dt = 5*(24*3600) + 15*(3600); 
+   const thursday = Math.floor(timestamp / WEEK_TO_SECONDS) * WEEK_TO_SECONDS; 
+   const dt = 5 * DAY_TO_SECONDS + 15 * HOUR_TO_SECONDS; 
    if (thursday + dt < timestamp) return thursday + dt; 
-   else return thursday - (7*24*3600) + dt; 
+   else return thursday - WEEK_TO_SECONDS + dt; 
 }
 
 const multiCall = async (abi: any, calls: any, provider: any, chainId: any) => {

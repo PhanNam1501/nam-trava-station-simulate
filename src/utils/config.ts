@@ -89,6 +89,9 @@ export const wadDiv = (a: BigNumber, b: BigNumber): BigNumber => {
 }
 
 export const YEAR_TO_SECONDS = 365 * 24 * 60 * 60
+export const WEEK_TO_SECONDS = 7 * 24 * 60 * 60
+export const DAY_TO_SECONDS = 24 * 60 * 60
+export const HOUR_TO_SECONDS = 60 * 60
 export const BASE18 = BigNumber("1000000000000000000");
 export const MAX_UINT256: string = ethers.MaxUint256.toString()
 export const PERCENTAGE_FACTOR: BigNumber = BigNumber(1e4)

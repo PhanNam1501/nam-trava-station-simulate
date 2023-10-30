@@ -13,7 +13,7 @@ import BigNumber from "bignumber.js";
     //test net
     //https://bsc-testnet.publicnode.com
     //0x595622cBd0Fc4727DF476a1172AdA30A9dDf8F43
-    const userAddress = "0x789b21282e83b46e13334623eda2b037a99efdf2";
+    const userAddress = "0x0c47f9c29c4bc5561532877ec1974145de23ed76";
     const proxyAddress = "0x826D824BE55A403859A6Db67D5EeC5aC386307fE";
 
     let appState = new ApplicationState( 
