@@ -3,8 +3,9 @@ import BigNumber from "bignumber.js";
 import { getAddr } from "../../../utils/address";
 import { DAY_TO_SECONDS, HOUR_TO_SECONDS, WEEK_TO_SECONDS, YEAR_TO_SECONDS } from "../../../utils/config";
 import { LockBalance, RewardTokenData, TokenInGovernance } from "../../../State/TravaGovenanceState";
-
-
+import { Contract, Interface } from "ethers";
+import MultiCallABI from "../../../abis/Multicall.json";
+import VeABI from "../../../abis/Ve.json";
 
 export async function simulateGovernanceCreateLock(
     appState1: ApplicationState,
@@ -34,6 +35,27 @@ export async function simulateGovernanceCreateLock(
         let amount1 = BigNumber(amount).multipliedBy(10**18);
         let period1 = BigNumber(timeRemaining(BigNumber(period)));
         let votingPower = (amount1.multipliedBy(period1).dividedBy(YEAR_TO_SECONDS*4)).integerValue();
+
+
+
+        // init ID
+        // let VeAddress = getAddr("VE_TRAVA_ADDRESS", appState.chainId);
+        // let [
+        //   id, // data of total deposit in all vaults
+        // ] = await Promise.all([
+        //   multiCall(
+        //     VeABI,
+        //     [VeAddress].map((address: string, _: number) => ({
+        //       address: address,
+        //       name: "create_lock_for",
+        //       params: [tokenAddress, Number(amount), Number(period), from],
+        //     })),
+        //     appState.web3,
+        //     appState.chainId
+        //   ),
+        // ]);
+
+        // let newId = id.toString();
         let newId = (Number(getMaxKeyFromMap(appState.smartWalletState.travaGovenanceState))+1).toString();//check lai
         // init reward
         let rewardTokenData: RewardTokenData = {
@@ -59,40 +81,7 @@ export async function simulateGovernanceCreateLock(
           }
           appState.smartWalletState.travaGovenanceState.set(newId, lockBalance);
 
-        //   let currentVersion: "v1" | "v2" = "v1";
-        //   let currentNFT: ArmouryType | undefined = undefined;
-        //   if (from == appState.walletState.address) {
-        //     currentNFT = appState.walletState.nfts.v1[tokenId];
-        //     if (!currentNFT) {
-        //       currentNFT = appState.walletState.nfts.v2[tokenId];
-        //       currentVersion = "v2";
-        //     }
-        //     delete appState.walletState.nfts[currentVersion][tokenId];
-        //   } else {
-        //     currentNFT = appState.smartWalletState.nfts.v1[tokenId];
-        //     if (!currentNFT) {
-        //       currentNFT = appState.smartWalletState.nfts.v2[tokenId];
-        //       currentVersion = "v2";
-        //     }
-        //     delete appState.smartWalletState.nfts[currentVersion][tokenId];
-        //   }
-    
-        //   const collectionId = parseInt(currentNFT.version);
-        //   const collectionName = CollectionName[collectionId - 1];
-        //   const data: SellingArmouryType = {
-        //     id: currentNFT.tokenId,
-        //     collectionName,
-        //     collectionId,
-        //     nRarity: currentNFT.nRarity,
-        //     nType: currentNFT.nType,
-        //     rarity: currentNFT.rarity.toString(),
-        //     type: currentNFT.type.toString(),
-        //     exp: currentNFT.exp,
-        //     price: price,
-        //     seller: appState.smartWalletState.address,
-        //   };
-        //   appState.NFTSellingState[currentVersion].push(data);
-        //   appState.smartWalletState.sellingNFT[currentVersion].push(data);
+          
 
         return appState;
     } catch (err) {
@@ -128,3 +117,22 @@ function getMaxKeyFromMap(map: Map<string, any>): string | undefined {
 
     return maxKey;
 }
+
+const multiCall = async (abi: any, calls: any, provider: any, chainId: any) => {
+    let _provider = provider;
+    const multi = new Contract(
+      getAddr("MULTI_CALL_ADDRESS", chainId),
+      MultiCallABI,
+      _provider
+    );
+    const itf = new Interface(abi);
+  
+    const callData = calls.map((call: any) => [
+      call.address.toLowerCase(),
+      itf.encodeFunctionData(call.name as string, call.params),
+    ]);
+    const { returnData } = await multi.aggregate(callData);
+    return returnData.map((call: any, i: any) =>
+      itf.decodeFunctionResult(calls[i].name, call)
+    );
+  };

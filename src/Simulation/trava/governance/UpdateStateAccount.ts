@@ -173,7 +173,6 @@ export async function updateAllLockBalance(appState1: ApplicationState) {
       let unclaimedReward = BigNumber(0);
 
 
-
       if (warmUp_ts1.isGreaterThan(now1)) {
         unclaimedReward = warmUpReward1;
       }
