@@ -89,6 +89,7 @@ export const wadDiv = (a: BigNumber, b: BigNumber): BigNumber => {
 }
 
 export const YEAR_TO_SECONDS = 365 * 24 * 60 * 60
+export const MONTH_TO_SECONDS = 30 * 24 * 60 * 60
 export const WEEK_TO_SECONDS = 7 * 24 * 60 * 60
 export const DAY_TO_SECONDS = 24 * 60 * 60
 export const HOUR_TO_SECONDS = 60 * 60
