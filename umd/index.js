@@ -626,7 +626,7 @@ var listAddr = {
     NFT_CORE_ADDRESS: "0xd2Eca5a421db7c2e2aC88Da684214B52915A66b3",
     MULTI_CALL_ADDRESS: "0xd808400FbF312ACA5C7487cd30B0D1386e04BC78",
     NFT_SELL_ADDRESS: "0x6C5844D1681C346c0f95669B1efe394ef12F1B93",
-    NFT_AUCTION_ADDRESS: "0x8700c30f7BE8a292144CDD492D7aB35a0d9d05C4",
+    NFT_AUCTION_ADDRESS: "0xD3DEba29db83A4Be4A3635d20e3FAe791298086C",
     NFT_MANAGER_ADDRESS: "0xA91A365D2e3D280553E96D5afA157e6A3e50890A",
     NFT_COLLECTION_ADDRESS: "0x5D996eC57756cEB127a4eD3302d7F28F52FDEbb1",
     WBNB_ADDRESS: "0x910CB19698Eac48a6AB7Ccc9542B756f2Bdd67C6",
@@ -57735,7 +57735,7 @@ function _simulateTravaNFTMakeBidAuction() {
       if (currentNFT.nftSeller.toLowerCase() == appState.smartWalletState.address.toLowerCase()) {
         throw new _utils_error__WEBPACK_IMPORTED_MODULE_3__.BidderError();
       }
-      if (currentNFT.bidSteps == 0 && bidPrice.isLessThanOrEqualTo(currentNFT.currentBid)) {
+      if (currentNFT.bidSteps == 0 && bidPrice.isLessThan(currentNFT.currentBid)) {
         throw new _utils_error__WEBPACK_IMPORTED_MODULE_3__.BidPriceError("Bid price too low");
       } else if (currentNFT.bidSteps > 0 && bidPrice.isLessThan((0,bignumber_js__WEBPACK_IMPORTED_MODULE_6__.BigNumber)(currentNFT.currentBid).multipliedBy(1 + _minimumBidStepPercent))) {
         throw new _utils_error__WEBPACK_IMPORTED_MODULE_3__.BidPriceError("Bid price too low");
@@ -57796,7 +57796,6 @@ function _simulateTravaNFTCancelAuction() {
   _simulateTravaNFTCancelAuction = _asyncToGenerator(function* (appState1, _tokenId, _to) {
     var appState = _objectSpread({}, appState1);
     try {
-      var _yield$appState$web3$4;
       if (_to.toLowerCase() == appState.walletState.address.toLowerCase() && !appState.walletState.collection.isFetch) {
         appState = yield (0,_utilities__WEBPACK_IMPORTED_MODULE_5__.updateCollectionBalanceFromContract)(appState, "walletState");
       } else if (_to.toLowerCase() == appState.smartWalletState.address.toLowerCase() && !appState.smartWalletState.collection.isFetch) {
@@ -57812,10 +57811,6 @@ function _simulateTravaNFTCancelAuction() {
       var currentVersion = auctionKnight.currentVersion;
       var currentIndex = auctionKnight.curentIndex;
       var currentNFT = auctionKnight.currentNFT;
-      var currentTime = ((_yield$appState$web3$4 = yield appState.web3.getBlock('latest')) === null || _yield$appState$web3$4 === void 0 ? void 0 : _yield$appState$web3$4.timestamp) * 1000;
-      if (currentTime > currentNFT.endTime) {
-        throw new _utils_error__WEBPACK_IMPORTED_MODULE_3__.ExpireAuctionError();
-      }
       if (currentNFT.nftSeller.toLowerCase() != appState.smartWalletState.address.toLowerCase()) {
         throw new _utils_error__WEBPACK_IMPORTED_MODULE_3__.OwnerAuctionError();
       }
@@ -57852,7 +57847,7 @@ function _simulateTravaNFTFinalizeAuction() {
     var _feePercentage = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : _utils_config__WEBPACK_IMPORTED_MODULE_2__.FEE_AUCTION_PERCENTAGE;
     var appState = _objectSpread({}, appState1);
     try {
-      var _yield$appState$web3$5;
+      var _yield$appState$web3$4;
       if (!appState.NFTAuctioningState.isFetch) {
         appState = yield (0,_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_4__.updateAuctioningNFTFromContract)(appState);
       }
@@ -57863,7 +57858,7 @@ function _simulateTravaNFTFinalizeAuction() {
       var currentVersion = auctionKnight.currentVersion;
       var currentIndex = auctionKnight.curentIndex;
       var currentNFT = auctionKnight.currentNFT;
-      var currentTime = ((_yield$appState$web3$5 = yield appState.web3.getBlock('latest')) === null || _yield$appState$web3$5 === void 0 ? void 0 : _yield$appState$web3$5.timestamp) * 1000;
+      var currentTime = ((_yield$appState$web3$4 = yield appState.web3.getBlock('latest')) === null || _yield$appState$web3$4 === void 0 ? void 0 : _yield$appState$web3$4.timestamp) * 1000;
       if (currentTime <= currentNFT.endTime) {
         throw new _utils_error__WEBPACK_IMPORTED_MODULE_3__.InexpireAuctionError();
       }

@@ -139,7 +139,7 @@ export function simulateTravaNFTMakeBidAuction(appState1, _tokenId, _bidPrice, _
             if (currentNFT.nftSeller.toLowerCase() == appState.smartWalletState.address.toLowerCase()) {
                 throw new BidderError();
             }
-            if (currentNFT.bidSteps == 0 && bidPrice.isLessThanOrEqualTo(currentNFT.currentBid)) {
+            if (currentNFT.bidSteps == 0 && bidPrice.isLessThan(currentNFT.currentBid)) {
                 throw new BidPriceError("Bid price too low");
             }
             else if (currentNFT.bidSteps > 0 && bidPrice.isLessThan(BigNumber(currentNFT.currentBid).multipliedBy(1 + _minimumBidStepPercent))) {
@@ -192,7 +192,6 @@ export function simulateTravaNFTEditAuctionPrice(appState1, _tokenId, _startingB
     });
 }
 export function simulateTravaNFTCancelAuction(appState1, _tokenId, _to) {
-    var _a;
     return __awaiter(this, void 0, void 0, function* () {
         let appState = Object.assign({}, appState1);
         try {
@@ -212,10 +211,6 @@ export function simulateTravaNFTCancelAuction(appState1, _tokenId, _to) {
             let currentVersion = auctionKnight.currentVersion;
             let currentIndex = auctionKnight.curentIndex;
             let currentNFT = auctionKnight.currentNFT;
-            let currentTime = ((_a = (yield appState.web3.getBlock('latest'))) === null || _a === void 0 ? void 0 : _a.timestamp) * 1000;
-            if (currentTime > currentNFT.endTime) {
-                throw new ExpireAuctionError();
-            }
             if (currentNFT.nftSeller.toLowerCase() != appState.smartWalletState.address.toLowerCase()) {
                 throw new OwnerAuctionError();
             }

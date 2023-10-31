@@ -191,7 +191,7 @@ export async function simulateTravaNFTMakeBidAuction(
             throw new BidderError();
         }
 
-        if (currentNFT.bidSteps == 0 && bidPrice.isLessThanOrEqualTo(currentNFT.currentBid)) {
+        if (currentNFT.bidSteps == 0 && bidPrice.isLessThan(currentNFT.currentBid)) {
             throw new BidPriceError("Bid price too low")
         } else if (currentNFT.bidSteps > 0 && bidPrice.isLessThan(BigNumber(currentNFT.currentBid).multipliedBy(1 + _minimumBidStepPercent))) {
             throw new BidPriceError("Bid price too low")
@@ -279,12 +279,6 @@ export async function simulateTravaNFTCancelAuction(
         let currentVersion = auctionKnight.currentVersion;
         let currentIndex = auctionKnight.curentIndex;
         let currentNFT = auctionKnight.currentNFT;
-
-        let currentTime = (await appState.web3.getBlock('latest'))?.timestamp! * 1000;
-
-        if (currentTime > currentNFT.endTime) {
-            throw new ExpireAuctionError();
-        }
 
         if (currentNFT.nftSeller.toLowerCase() != appState.smartWalletState.address.toLowerCase()) {
             throw new OwnerAuctionError();

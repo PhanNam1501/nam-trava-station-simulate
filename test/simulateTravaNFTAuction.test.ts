@@ -21,7 +21,7 @@ const testAuction = async () => {
   appState = await updateCollectionBalanceFromContract(appState, "walletState");
   appState = await updateAuctioningNFTFromContract(appState);
   appState = await updateOwnedAuctioningNFT(appState);
-  console.log("2222222222", appState.NFTAuctioningState.v1)
+  console.log("2222222222", appState.NFTAuctioningState.v2.find(n => n.id == 88))
   
   console.log("=================AFTER==========================");
   // appState = await simulateTravaNFTCreateAuction(
@@ -34,8 +34,8 @@ const testAuction = async () => {
   // console.log("result", appState.walletState.collection)
   appState = await simulateTravaNFTMakeBidAuction(
     appState,
-    "84",
-    "35000000000000000000000",
+    "88",
+    BigNumber(900).multipliedBy(1e18).toFixed(0),
     appState.walletState.address
   )
   
