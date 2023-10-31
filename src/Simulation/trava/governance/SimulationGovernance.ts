@@ -3,9 +3,6 @@ import BigNumber from "bignumber.js";
 import { getAddr } from "../../../utils/address";
 import { DAY_TO_SECONDS, HOUR_TO_SECONDS, WEEK_TO_SECONDS, YEAR_TO_SECONDS } from "../../../utils/config";
 import { LockBalance, RewardTokenData, TokenInGovernance } from "../../../State/TravaGovenanceState";
-import { Contract, Interface } from "ethers";
-import MultiCallABI from "../../../abis/Multicall.json";
-import VeABI from "../../../abis/Ve.json";
 import { updateSmartWalletTokenBalance, updateUserTokenBalance } from "../../basic/UpdateStateAccount";
 import { MAX_UINT256, percentMul, wadDiv } from "../../../utils/config";
 
@@ -55,26 +52,10 @@ export async function simulateGovernanceCreateLock(
     let votingPower = (amount.multipliedBy(remainingPeriod).dividedBy(YEAR_TO_SECONDS * 4)).integerValue();
 
     //init ID
-    let VeAddress = getAddr("VE_TRAVA_ADDRESS", appState.chainId);
-    let [
-      id, // data of total deposit in all vaults
-    ] = await Promise.all([
-      multiCall(
-        VeABI,
-        [VeAddress].map((address: string, _: number) => ({
-          address: address,
-          name: "supplyNFT",
-          params: [],
-        })),
-        appState.web3,
-        appState.chainId
-      ),
-    ]);
-
-    let newId = (BigNumber(id).plus(1)).toFixed();
+    let newId = appState.VeTravaState.totalSupply + 1;
     // init reward
     let rewardTokenData: RewardTokenData = {
-      address: '0xce9f0487f07988003f511d6651153a6dacc32f50',
+      address: getAddr("TRAVA_TOKEN_ADDRESS_GOVENANCE").toLowerCase(),
       compoundAbleRewards: "0",
       compoundedRewards: "0",
       balances: "0",
@@ -88,20 +69,19 @@ export async function simulateGovernanceCreateLock(
     }
 
     let lockBalance: LockBalance = {
-      id: newId,
+      id: newId.toString(),
       votingPower: votingPower.toFixed(),
       tokenInGovernance: tokenInGovernance,
       unlockTime: (BigNumber(period).plus(Math.floor(new Date().getTime() / 1000))).toString(),
       reward: rewardTokenData,
     }
-    appState.smartWalletState.travaGovenanceState.set(newId, lockBalance);
+    appState.smartWalletState.travaGovenanceState.set(newId.toString(), lockBalance);
+    appState.VeTravaState.totalSupply += 1;
 
-
-
-    return appState;
   } catch (err) {
     throw err;
   }
+  return appState;
 }
 
 function timeRemaining(_timeLock: BigNumber) {
@@ -113,28 +93,8 @@ function timeRemaining(_timeLock: BigNumber) {
 };
 
 function roundDown(timestamp: number) {
-  // thứ năm gần nhất
   const thursday = Math.floor(timestamp / WEEK_TO_SECONDS) * WEEK_TO_SECONDS;
   const dt = 5 * DAY_TO_SECONDS + 15 * HOUR_TO_SECONDS;
   if (thursday + dt < timestamp) return thursday + dt;
   else return thursday - WEEK_TO_SECONDS + dt;
 }
-
-const multiCall = async (abi: any, calls: any, provider: any, chainId: any) => {
-  let _provider = provider;
-  const multi = new Contract(
-    getAddr("MULTI_CALL_ADDRESS", chainId),
-    MultiCallABI,
-    _provider
-  );
-  const itf = new Interface(abi);
-
-  const callData = calls.map((call: any) => [
-    call.address.toLowerCase(),
-    itf.encodeFunctionData(call.name as string, call.params),
-  ]);
-  const { returnData } = await multi.aggregate(callData);
-  return returnData.map((call: any, i: any) =>
-    itf.decodeFunctionResult(calls[i].name, call)
-  );
-};

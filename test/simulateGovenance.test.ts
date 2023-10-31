@@ -27,6 +27,7 @@ import { MONTH_TO_SECONDS, WEEK_TO_SECONDS } from "../src/utils/config";
     chainId
     )
     appState = await updateAllLockBalance(appState);
+    appState = await simulateGovernanceCreateLock(appState,"0xce9f0487f07988003f511d6651153a6dacc32f50", "20", userAddress, MONTH_TO_SECONDS.toString());
     console.log(appState.smartWalletState.travaGovenanceState)
     appState = await simulateGovernanceCreateLock(appState,"0xce9f0487f07988003f511d6651153a6dacc32f50", "20", userAddress, MONTH_TO_SECONDS.toString());
     console.log(appState.smartWalletState.travaGovenanceState)

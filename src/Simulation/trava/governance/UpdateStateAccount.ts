@@ -13,6 +13,7 @@ export async function updateAllLockBalance(appState1: ApplicationState) {
     let IncentiveAddress = getAddr("INCENTIVE_VAULT_ADDRESS", appState.chainId);
     let [
       ids, // data of total deposit in all vaults
+      totalSupplyNFT,
     ] = await Promise.all([
       multiCall(
         VeABI,
@@ -24,8 +25,18 @@ export async function updateAllLockBalance(appState1: ApplicationState) {
         appState.web3,
         appState.chainId
       ),
+      multiCall(
+        VeABI,
+        [VeAddress].map((address: string, _: number) => ({
+          address: address,
+          name: "supplyNFT",
+          params: [],
+        })),
+        appState.web3,
+        appState.chainId
+      ),
     ]);
-
+    let totalSupply = Number(totalSupplyNFT);
     ids = ids[0][0];
     let votingPowers : string[] = [];
     let lockedValues : string[] = [];
@@ -205,6 +216,7 @@ export async function updateAllLockBalance(appState1: ApplicationState) {
         reward: rewardTokenData,
       }
       appState.smartWalletState.travaGovenanceState.set(ids[i].toString(), lockBalance);
+      appState.VeTravaState.totalSupply = totalSupply;
     }
     return appState;
 }

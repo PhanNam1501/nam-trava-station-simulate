@@ -3,11 +3,13 @@ import { EthAddress } from "../utils/types";
 import { SmartWalletState } from "./SmartWalletState";
 import { NFTSellingState } from "./NFTSellingState";
 import { JsonRpcProvider } from "ethers";
+import { VeTravaState } from "./VeTravaState";
 
 export class ApplicationState {
   walletState: WalletState;
   smartWalletState: SmartWalletState;
   NFTSellingState: NFTSellingState;
+  VeTravaState: VeTravaState;
   web3: JsonRpcProvider;
   chainId: number;
   simulatorUrl: string;
@@ -21,6 +23,7 @@ export class ApplicationState {
     this.walletState = new WalletState(userAddress);
     this.smartWalletState = new SmartWalletState(smartWalletAddress);
     this.NFTSellingState = new NFTSellingState();
+    this.VeTravaState = new VeTravaState();
     this.web3 = web3;
     this.chainId = chainId;
     this.simulatorUrl = simulatorUrl || ""
