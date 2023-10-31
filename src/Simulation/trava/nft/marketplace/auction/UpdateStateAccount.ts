@@ -2,11 +2,12 @@ import { Contract } from "ethers";
 import { ApplicationState } from "../../../../../State/ApplicationState";
 import { getAddr } from "../../../../../utils/address";
 import TravaNFTAuctionABI from "../../../../../abis/TravaNFTAuction.json"
-import { collectionSort, fetchBasicCollections, fetchNormalItems, multiCall, shuffleArray } from "../../helpers";
-import { AuctioningNormalKnight, ChangeAuctionKnightData, CollectionArmoury } from "../../helpers/global";
+import { collectionSort, fetchBasicCollections, fetchNormalItems, shuffleArray } from "../../helpers/utils";
+import { AuctioningNormalKnight, ChangeAuctionKnightData } from "../../helpers/global";
 import BigNumber from "bignumber.js";
 import { BASE18 } from "../../../../../utils";
 import { uint256 } from "../../../../../utils/types";
+import { multiCall } from "../../../../../utils/helper";
 
 export async function _fetchList(auctionOrderIdSlice: any, appState: ApplicationState) {
     const NFTAuctionContract = new Contract(

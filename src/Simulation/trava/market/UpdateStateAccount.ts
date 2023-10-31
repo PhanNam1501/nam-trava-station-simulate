@@ -1,18 +1,18 @@
 import { EthAddress } from "../../../utils/types";
 import { ApplicationState } from "../../../State/ApplicationState";
-import { Contract, Interface } from "ethers";
+import { Contract } from "ethers";
 import ABITravaLP from "../../../abis/TravaLendingPool.json";
 import IncentiveContractABI from "../../../abis/IncentiveContract.json";
 import BEP20ABI from "../../../abis/BEP20.json";
 import OracleABI from "../../../abis/AaveOracle.json";
 import { convertHexStringToAddress, getAddr } from "../../../utils/address";
 import _ from "lodash";
-import { DetailTokenInPool, TokenInPoolData } from "../../../State/SmartWalletState";
-import MultiCallABI from "../../../abis/Multicall.json";
+import { TokenInPoolData } from "../../../State/SmartWalletState";
 import BigNumber from "bignumber.js";
 import OraclePrice from "../../../utils/oraclePrice";
 import { updateSmartWalletTokenBalance, updateUserTokenBalance } from "../../basic/UpdateStateAccount";
-import { calculateMaxRewards, getListTDTokenRewardsAddress } from "./SimulationWalletTravaLP";
+import { calculateMaxRewards } from "./SimulationWalletTravaLP";
+import { multiCall } from "../../../utils/helper";
 
 
 export async function getTokenBalance(appState: ApplicationState, tokenAddress: EthAddress) {
@@ -566,25 +566,6 @@ export async function updateTravaLPInfo(
     return appState1;
   }
 }
-
-const multiCall = async (abi: any, calls: any, provider: any, chainId: any) => {
-  let _provider = provider;
-  const multi = new Contract(
-    getAddr("MULTI_CALL_ADDRESS", chainId),
-    MultiCallABI,
-    _provider
-  );
-  const itf = new Interface(abi);
-
-  const callData = calls.map((call: any) => [
-    call.address.toLowerCase(),
-    itf.encodeFunctionData(call.name as string, call.params),
-  ]);
-  const { returnData } = await multi.aggregate(callData);
-  return returnData.map((call: any, i: any) =>
-    itf.decodeFunctionResult(calls[i].name, call)
-  );
-};
 
 export async function updateMaxRewardCanClaims(appState1: ApplicationState) {
   try {

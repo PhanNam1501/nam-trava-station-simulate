@@ -9,7 +9,8 @@ import { CollectionName, RarityMapping, TypeMapping } from "../../helpers/Knight
 import BigNumber from "bignumber.js";
 import { NFTSellingState } from "../../../../../State/TravaNFTState";
 import SellGraphQuery from "../../helpers/SellGraphQuery";
-import { _fetchNormal, multiCall } from "../../helpers/utils"
+import { _fetchNormal } from "../../helpers/utils"
+import { multiCall } from "../../../../../utils/helper";
 
 export async function updateSellingNFTFromContract(
     appState1: ApplicationState,

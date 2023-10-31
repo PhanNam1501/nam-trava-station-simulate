@@ -1,4 +1,4 @@
-import { Contract, Interface } from "ethers";
+import { Contract } from "ethers";
 import { ApplicationState } from "../../../State/ApplicationState";
 import StakedTokenAbi from "../../../abis/StakedToken.json";
 import VestingTokenAbi from "../../../abis/VestingTrava.json";
@@ -7,10 +7,10 @@ import { listStakingVault } from "../../../utils/stakingVaultConfig";
 import { YEAR_TO_SECONDS } from "../../../utils/config";
 import { BaseAccountVault, RewardTokenData, StakedTokenData, UnderlyingTokenData } from "../../../State/TravaDeFiState";
 import BigNumber from "bignumber.js";
-import MultiCallABI from "../../../abis/Multicall.json";
 import OracleABI from "../../../abis/AaveOracle.json";
 import { updateSmartWalletTokenBalance } from "../../basic/UpdateStateAccount";
 import BEP20ABI from "../../../abis/BEP20.json";
+import { multiCall } from "../helpers/utils";
 
 export async function updateAllAccountVault(appState1: ApplicationState) {
   const vaultConfigList = listStakingVault[appState1.chainId];
@@ -188,22 +188,3 @@ export async function updateAllAccountVault(appState1: ApplicationState) {
   }
   return appState;
 }
-
-const multiCall = async (abi: any, calls: any, provider: any, chainId: any) => {
-  let _provider = provider;
-  const multi = new Contract(
-    getAddr("MULTI_CALL_ADDRESS", chainId),
-    MultiCallABI,
-    _provider
-  );
-  const itf = new Interface(abi);
-
-  const callData = calls.map((call: any) => [
-    call.address.toLowerCase(),
-    itf.encodeFunctionData(call.name as string, call.params),
-  ]);
-  const { returnData } = await multi.aggregate(callData);
-  return returnData.map((call: any, i: any) =>
-    itf.decodeFunctionResult(calls[i].name, call)
-  );
-};

@@ -1,36 +1,14 @@
 import { ApplicationState } from "../../../../State/ApplicationState";
-import MultiCallABI from "../../../../abis/Multicall.json";
 import TravaNFTCoreABI from "../../../../abis/TravaNFTCore.json";
 import NFTCollectionABI from "../../../../abis/NFTCollection.json";
 import TravaNFTSellABI from "../../../../abis/TravaNFTSell.json";
-import { Contract, Interface } from "ethers";
 import { getAddr } from "../../../../utils/address";
 import _ from "lodash";
 import { CollectionArmoury, NormalKnight, SellingArmouryType, SpecialKnight } from "./global";
-import { CollectionName, RarityMapping, TypeMapping } from "./../helpers/KnightConfig";
+import { CollectionName, RarityMapping, TypeMapping } from "./KnightConfig";
 import BigNumber from "bignumber.js";
 import { NFTSellingState } from "../../../../State/TravaNFTState";
-
-export async function multiCall(abi: any, calls: any, provider: any, chainId: any): Promise<any> {
-
-    let _provider = provider;
-    const multi = new Contract(
-        getAddr("MULTI_CALL_ADDRESS", chainId),
-        MultiCallABI,
-        _provider
-    );
-    const itf = new Interface(abi);
-
-    const callData = calls.map((call: any) => [
-        call.address.toLowerCase(),
-        itf.encodeFunctionData(call.name as string, call.params),
-    ]);
-    const { returnData } = await multi.aggregate(callData);
-    return returnData.map((call: any, i: any) =>
-        itf.decodeFunctionResult(calls[i].name, call)
-    );
-};
-
+import { multiCall } from "../../helpers/utils";
 
 export async function fetchNormalItems(
     armorTokenIds: Array<string>,

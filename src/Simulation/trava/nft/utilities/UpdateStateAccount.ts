@@ -9,7 +9,8 @@ import _ from "lodash";
 import { ArmouryType, NormalKnight } from "../helpers/global";
 import {  RarityMapping, TypeMapping } from "../helpers/KnightConfig";
 import CollectionOwnedGraphQuery from "../helpers/CollectionOwnedGraphQuery";
-import { _fetchNormal, collectionSort, fetchBasicCollections, fetchNormalItems, multiCall } from "../helpers/utils"
+import { _fetchNormal, collectionSort, fetchBasicCollections, fetchNormalItems } from "../helpers/utils"
+import { multiCall } from "../../../../utils/helper";
 
 // Update balance of trava
 export async function updateTravaBalance(
