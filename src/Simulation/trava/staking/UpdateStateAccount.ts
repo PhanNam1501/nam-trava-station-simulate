@@ -10,7 +10,7 @@ import BigNumber from "bignumber.js";
 import OracleABI from "../../../abis/AaveOracle.json";
 import { updateSmartWalletTokenBalance } from "../../basic/UpdateStateAccount";
 import BEP20ABI from "../../../abis/BEP20.json";
-import { multiCall } from "../helpers/utils";
+import { multiCall } from "../../../utils/helper";
 
 export async function updateAllAccountVault(appState1: ApplicationState) {
   const vaultConfigList = listStakingVault[appState1.chainId];

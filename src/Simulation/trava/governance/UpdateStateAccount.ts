@@ -9,7 +9,8 @@ import { multiCall } from "../../../utils/helper";
 import { TokenInVeTrava } from './../../../State/TravaGovenanceState';
 import { Contract } from "ethers";
 import { tokenLockOptions } from "./travaGovernanceConfig";
-import { EthAddress } from "../../../utils/types";
+import { EthAddress, wallet_mode } from "../../../utils/types";
+import { FromAddressError } from "../../../utils/error";
 
 export async function updateTravaGovernanceState(appState1: ApplicationState, force = false) {
   let appState = { ...appState1 };
@@ -43,12 +44,21 @@ export async function updateTravaGovernanceState(appState1: ApplicationState, fo
   return appState;
 }
 
-export async function updateAllLockBalance(appState1: ApplicationState) {
+export async function updateUserLockBalance(appState1: ApplicationState, _userAddress: EthAddress) {
   let appState = { ...appState1 };
   try {
     if (appState.TravaGovernanceState.totalSupply == "") {
       appState = await updateTravaGovernanceState(appState);
     }
+
+    let mode: wallet_mode;
+    if (_userAddress.toLowerCase() == appState.walletState.address.toLowerCase()) {
+      mode = "walletState"
+    } else if (_userAddress.toLowerCase() == appState.smartWalletState.address.toLowerCase()) {
+      mode = "smartWalletState"
+    } else {
+      throw new FromAddressError()
+  }
 
     let VeAddress = getAddr("VE_TRAVA_ADDRESS", appState.chainId);
     let IncentiveAddress = getAddr("INCENTIVE_VAULT_ADDRESS", appState.chainId);
@@ -59,7 +69,7 @@ export async function updateAllLockBalance(appState1: ApplicationState) {
       appState.web3
     )
 
-    let ids = await veContract.getveNFTOfUser(appState.walletState.address);
+    let ids = await veContract.getveNFTOfUser(appState[mode].address);
 
     ids = ids[0][0];
     let votingPowers: string[] = [];
@@ -241,7 +251,7 @@ export async function updateAllLockBalance(appState1: ApplicationState) {
         rewardTokenBalance: rewardTokenBalance,
       }
 
-      appState.smartWalletState.veTravaListState.set(ids[i].toString(), veTravaState);
+      appState[mode].veTravaListState.set(ids[i].toString(), veTravaState);
     }
   } catch (err) {
     throw err;

@@ -1,18 +1,10 @@
 import { EthAddress, uint256 } from "trava-station-sdk";
 import { TokenLockOption } from './../Simulation/trava/governance/travaGovernanceConfig';
 
-export class TravaGovernanceState {
+export interface TravaGovernanceState {
   totalSupply: uint256;
   rewardTokenInfo: rewardTokenInfo;
   tokensInGovernance: Map<string, TokenLockOption>;
-  constructor() {
-    this.totalSupply = ""
-    this.rewardTokenInfo = {
-      address: "",
-      decimals: ""
-    }
-    this.tokensInGovernance = new Map()
-  }
 }
 
 
@@ -32,31 +24,11 @@ export interface rewardTokenInfo {
   decimals: uint256;
 }
 
-export class VeTravaState {
+export interface VeTravaState {
   id: uint256;
   votingPower: uint256;
   tokenInVeTrava: TokenInVeTrava;
   unlockTime: uint256;
   rewardTokenBalance: RewardTokenBalance;
-
-  constructor() {
-    this.id = "";
-    this.votingPower = "";
-    this.tokenInVeTrava = {
-      balances: "",
-      tokenLockOption: {
-        address: "",
-        symbol: "",
-        name: "",
-        decimals: ""
-      }
-    };
-    this.unlockTime = "";
-    this.rewardTokenBalance = {
-      compoundAbleRewards: "",
-      compoundedRewards: "",
-      balances: ""
-    };
-  }
 }
 

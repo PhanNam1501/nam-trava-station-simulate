@@ -8,7 +8,7 @@ import { CollectionArmoury, NormalKnight, SellingArmouryType, SpecialKnight } fr
 import { CollectionName, RarityMapping, TypeMapping } from "./KnightConfig";
 import BigNumber from "bignumber.js";
 import { NFTSellingState } from "../../../../State/TravaNFTState";
-import { multiCall } from "../../helpers/utils";
+import { multiCall } from "../../../../utils/helper";
 
 export async function fetchNormalItems(
     armorTokenIds: Array<string>,
