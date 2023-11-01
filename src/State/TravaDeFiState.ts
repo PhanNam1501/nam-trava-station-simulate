@@ -1,20 +1,22 @@
+import { EthAddress, uint256 } from "trava-station-sdk";
+
 /**
  *
  * @param
  * @param
  */
 export interface LPReward {
-  tokenAddress: string;
-  claimableReward: string;
+  tokenAddress: EthAddress;
+  claimableReward: uint256;
 }
 
 export class WalletTravaLPState {
-  totalCollateralUSD: string; // USD
-  totalDebtUSD: string; // USD
-  availableBorrowsUSD: string; // USD
-  currentLiquidationThreshold: string; //
-  ltv: string; //
-  healthFactor: string; //
+  totalCollateralUSD: uint256; // USD
+  totalDebtUSD: uint256; // USD
+  availableBorrowsUSD: uint256; // USD
+  currentLiquidationThreshold: uint256; //
+  ltv: uint256; //
+  healthFactor: uint256; //
   lpReward: LPReward;
 
   constructor() {
@@ -32,9 +34,9 @@ export class WalletTravaLPState {
 }
 
 export class TravaLPStakingState {
-  deposited: string;
-  claimableReward: string;
-  claimedReward: string;
+  deposited: uint256;
+  claimableReward: uint256;
+  claimedReward: uint256;
   constructor() {
     this.deposited = "";
     this.claimableReward = "";
@@ -43,7 +45,7 @@ export class TravaLPStakingState {
 }
 
 export interface UnderlyingTokenData {
-  underlyingAddress: string;
+  underlyingAddress: EthAddress;
   reserveDecimals: string;
   price: string;
 }
@@ -52,23 +54,23 @@ export interface StakedTokenData {
   id: string;
   name: string;
   code: string;
-  stakedTokenAddress: string;
-  eps: string;
-  reserveDecimals: string;
+  stakedTokenAddress: EthAddress;
+  eps: uint256;
+  reserveDecimals: uint256;
 }
 
 export interface RewardTokenData {
-  address: string;
-  decimals: string;
-  price: string;
+  address: EthAddress;
+  decimals: uint256;
+  price: uint256;
 }
 
 export class BaseAccountVault {
   claimable: boolean;
-  claimableReward: string;
-  deposited: string;
-  TVL: string;
-  APR: string;
+  claimableReward: uint256;
+  deposited: uint256;
+  TVL: uint256;
+  APR: uint256;
   underlyingToken: UnderlyingTokenData;
   stakedToken: StakedTokenData;
   rewardToken: RewardTokenData;

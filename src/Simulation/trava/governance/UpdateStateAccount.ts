@@ -1,41 +1,60 @@
 import { getAddr } from "../../../utils/address";
 import VeABI from "../../../abis/Ve.json";
 import IncentiveABI from "../../../abis/Incentive.json";
-import { LockBalance, TokenInGovernance, RewardTokenData } from "../../../State/TravaGovenanceState";
+import { VeTravaState, RewardTokenBalance, rewardTokenInfo } from "../../../State/TravaGovenanceState";
 import { ApplicationState } from "../../../State/ApplicationState";
 import BigNumber from "bignumber.js"
 import { DAY_TO_SECONDS, HOUR_TO_SECONDS, WEEK_TO_SECONDS } from "../../../utils/config";
 import { multiCall } from "../../../utils/helper";
+import { TokenInVeTrava } from './../../../State/TravaGovenanceState';
+import { Contract } from "ethers";
+import { tokenLockOptions } from "./travaGovernanceConfig";
+
+export async function updateTravaGovernanceState(appState1: ApplicationState, force = false) {
+  let appState = { ...appState1 };
+  try {
+    if (appState.TravaGovernanceState.totalSupply == "" || force) {
+      const veContract = new Contract(
+        getAddr("VE_TRAVA_ADDRESS", appState.chainId),
+        VeABI,
+        appState.web3
+      )
+
+      const totalSupply = await veContract.supplyNFT();
+      const rewardTokenInfo: rewardTokenInfo = {
+        address: getAddr("TRAVA_TOKEN_ADDRESS_GOVENANCE", appState.chainId).toLowerCase(),
+        decimals: "18"
+      }
+
+      const listTokenInGovernance = tokenLockOptions[appState.chainId];
+
+      for (let i = 0; i < listTokenInGovernance.length; i++) {
+        let key = listTokenInGovernance[i].address.toLowerCase()
+        appState.TravaGovernanceState.tokensInGovernance.set(key, listTokenInGovernance[i])
+      }
+      appState.TravaGovernanceState.totalSupply = totalSupply;
+      appState.TravaGovernanceState.rewardTokenInfo = rewardTokenInfo;
+    }
+
+  } catch (err) {
+    throw new Error();
+  }
+  return appState;
+}
+
 export async function updateAllLockBalance(appState1: ApplicationState) {
   let appState = { ...appState1 };
   let VeAddress = getAddr("VE_TRAVA_ADDRESS", appState.chainId);
   let IncentiveAddress = getAddr("INCENTIVE_VAULT_ADDRESS", appState.chainId);
-  let [
-    ids, // data of total deposit in all vaults
-    totalSupplyNFT,
-  ] = await Promise.all([
-    multiCall(
-      VeABI,
-      [VeAddress].map((address: string, _: number) => ({
-        address: address,
-        name: "getveNFTOfUser",
-        params: [appState.walletState.address],
-      })),
-      appState.web3,
-      appState.chainId
-    ),
-    multiCall(
-      VeABI,
-      [VeAddress].map((address: string, _: number) => ({
-        address: address,
-        name: "supplyNFT",
-        params: [],
-      })),
-      appState.web3,
-      appState.chainId
-    ),
-  ]);
-  let totalSupply = Number(totalSupplyNFT);
+
+  const veContract = new Contract(
+    VeAddress,
+    VeABI,
+    appState.web3
+  )
+
+  let ids = await veContract.getveNFTOfUser(appState.walletState.address);
+
   ids = ids[0][0];
   let votingPowers: string[] = [];
   let lockedValues: string[] = [];
@@ -206,35 +225,34 @@ export async function updateAllLockBalance(appState1: ApplicationState) {
     let balance = unclaimedReward.plus(compoundAbleRewards[i][0]);
 
     // init token in governance
-    let tokenInGovernance: TokenInGovernance = {
+    let tokenInVeTrava: TokenInVeTrava = {
       address: lockedValues[i][3].toLowerCase(),
       balances: lockedValues[i][1].toString(),
-      decimals: decimalTokens[i].toString(),
     }
     // init reward
-    let rewardTokenData: RewardTokenData = {
-      address: rewardTokens[i][0].toLowerCase(),
+    let rewardTokenBalance: RewardTokenBalance = {
+      // address: rewardTokens[i][0].toLowerCase(),
       compoundAbleRewards: compoundAbleRewards[i][0].toString(),
       compoundedRewards: lockedValues[i][0].toString(),
       balances: balance.toFixed(0),
-      decimals: decimalTokens[i].toString(),
+      // decimals: decimalTokens[i].toString(),
     }
 
     // init state lockBalance
-    let lockBalance: LockBalance = {
+    let veTravaState: VeTravaState = {
       id: ids[i].toString(),
       votingPower: votingPowers[i].toString(),
-      tokenInGovernance: tokenInGovernance,
+      tokenInVeTrava: tokenInVeTrava,
       unlockTime: lockedValues[i][2].toString(),
-      reward: rewardTokenData,
+      rewardTokenBalance: rewardTokenBalance,
     }
-    appState.smartWalletState.travaGovenanceState.set(ids[i].toString(), lockBalance);
-    appState.VeTravaState.totalSupply = totalSupply;
+
+    appState.smartWalletState.veTravaListState.set(ids[i].toString(), veTravaState);
   }
   return appState;
 }
 
-function roundDown(timestamp: number) {
+export function roundDown(timestamp: number) {
   // thứ năm gần nhất
   const thursday = Math.floor(timestamp / WEEK_TO_SECONDS) * WEEK_TO_SECONDS;
   const dt = 5 * DAY_TO_SECONDS + 15 * HOUR_TO_SECONDS;

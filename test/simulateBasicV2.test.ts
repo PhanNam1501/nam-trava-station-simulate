@@ -51,7 +51,7 @@ const test = async () => {
   let wrapAction = new actions.basic.WrapBnbAction(BigNumber(1e2).toString(), "0xd20B3B10521410bF2C9F165638aC30660C426e3F")
 
   // let encodeActionData = wrapAction.encodeForDsProxyCall()
-  let recipe = new Recipe("testWrap", chainId, [
+  let recipe = new Recipe("testWrap", [
     wrapAction
   ])
 

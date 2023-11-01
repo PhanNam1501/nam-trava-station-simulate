@@ -2,17 +2,28 @@ import { ApplicationState } from "../../../State/ApplicationState";
 import BigNumber from "bignumber.js";
 import { getAddr } from "../../../utils/address";
 import { DAY_TO_SECONDS, HOUR_TO_SECONDS, WEEK_TO_SECONDS, YEAR_TO_SECONDS } from "../../../utils/config";
-import { LockBalance, RewardTokenData, TokenInGovernance } from "../../../State/TravaGovenanceState";
+import { RewardTokenBalance, TokenInVeTrava, VeTravaState } from "../../../State/TravaGovenanceState";
 import { updateSmartWalletTokenBalance, updateUserTokenBalance } from "../../basic/UpdateStateAccount";
 import { MAX_UINT256, percentMul, wadDiv } from "../../../utils/config";
+import { EthAddress } from "../../../utils/types";
+import { uint256 } from "trava-station-sdk";
+import { roundDown } from "./UpdateStateAccount";
+
+export function timeRemaining(_timeLock: BigNumber): BigNumber {
+  const now = Math.floor(new Date().getTime() / 1000);
+  if (_timeLock.isEqualTo(WEEK_TO_SECONDS)) {
+    _timeLock = _timeLock.multipliedBy(2);
+  }
+  return BigNumber(roundDown(now + Number(_timeLock)) - now);
+};
 
 
 export async function simulateGovernanceCreateLock(
   _appState1: ApplicationState,
-  _tokenAddress: string,
-  _amount: string,
-  _from: string,
-  _period: string, //second
+  _tokenAddress: EthAddress,
+  _amount: uint256,
+  _from: EthAddress,
+  _period: uint256, //second
 ): Promise<ApplicationState> {
   const appState = { ..._appState1 };
 
@@ -48,35 +59,34 @@ export async function simulateGovernanceCreateLock(
         travaBalance.minus(amount).toFixed(0)
       );
     }
+
     let remainingPeriod = BigNumber(timeRemaining(BigNumber(period)));
     let votingPower = (amount.multipliedBy(remainingPeriod).dividedBy(YEAR_TO_SECONDS * 4)).integerValue();
 
     //init ID
-    let newId = appState.VeTravaState.totalSupply + 1;
+    let newId = BigNumber(appState.TravaGovernanceState.totalSupply).plus(1).toFixed(0);
+
     // init reward
-    let rewardTokenData: RewardTokenData = {
-      address: getAddr("TRAVA_TOKEN_ADDRESS_GOVENANCE", appState.chainId).toLowerCase(),
+    let rewardTokenBalance: RewardTokenBalance = {
       compoundAbleRewards: "0",
       compoundedRewards: "0",
-      balances: "0",
-      decimals: "18",
+      balances: "0"
     }
 
-    let tokenInGovernance: TokenInGovernance = {
+    let tokenInVeTrava: TokenInVeTrava = {
       address: tokenAddress.toLowerCase(),
       balances: amount.toFixed(0),
-      decimals: "18",
     }
 
-    let lockBalance: LockBalance = {
+    let veTravaState: VeTravaState = {
       id: newId.toString(),
       votingPower: votingPower.toFixed(),
-      tokenInGovernance: tokenInGovernance,
+      tokenInVeTrava: tokenInVeTrava,
       unlockTime: (BigNumber(period).plus(Math.floor(new Date().getTime() / 1000))).toString(),
-      reward: rewardTokenData,
+      rewardTokenBalance: rewardTokenBalance,
     }
-    appState.smartWalletState.travaGovenanceState.set(newId.toString(), lockBalance);
-    appState.VeTravaState.totalSupply += 1;
+    appState.smartWalletState.veTravaListState.set(newId.toString(), veTravaState);
+    appState.TravaGovernanceState.totalSupply = newId;
 
   } catch (err) {
     throw err;
@@ -84,17 +94,3 @@ export async function simulateGovernanceCreateLock(
   return appState;
 }
 
-function timeRemaining(_timeLock: BigNumber) {
-  const now = Math.floor(new Date().getTime() / 1000);
-  if (_timeLock.isEqualTo(WEEK_TO_SECONDS)) {
-    _timeLock = _timeLock.multipliedBy(2);
-  }
-  return BigNumber(roundDown(now + Number(_timeLock)) - now);
-};
-
-function roundDown(timestamp: number) {
-  const thursday = Math.floor(timestamp / WEEK_TO_SECONDS) * WEEK_TO_SECONDS;
-  const dt = 5 * DAY_TO_SECONDS + 15 * HOUR_TO_SECONDS;
-  if (thursday + dt < timestamp) return thursday + dt;
-  else return thursday - WEEK_TO_SECONDS + dt;
-}

@@ -3,14 +3,15 @@ import { EthAddress } from "../utils/types";
 import { SmartWalletState } from "./SmartWalletState";
 import { NFTAuctioningState, NFTSellingState } from "./TravaNFTState";
 import { JsonRpcProvider } from "ethers";
-import { VeTravaState } from "./VeTravaState";
+import { TravaGovernanceState } from "./TravaGovenanceState";
 
 export class ApplicationState {
+  createdTime: number;
   walletState: WalletState;
   smartWalletState: SmartWalletState;
   NFTSellingState: NFTSellingState;
   NFTAuctioningState: NFTAuctioningState;
-  VeTravaState: VeTravaState;
+  TravaGovernanceState: TravaGovernanceState;
   web3: JsonRpcProvider;
   chainId: number;
   simulatorUrl: string;
@@ -21,11 +22,12 @@ export class ApplicationState {
     chainId: number,
     simulatorUrl?: string,
   ) {
+    this.createdTime = Math.floor(new Date().getTime() / 1000);
     this.walletState = new WalletState(userAddress);
     this.smartWalletState = new SmartWalletState(smartWalletAddress);
     this.NFTSellingState = new NFTSellingState();
     this.NFTAuctioningState = new NFTAuctioningState();
-    this.VeTravaState = new VeTravaState();
+    this.TravaGovernanceState = new TravaGovernanceState();
     this.web3 = web3;
     this.chainId = chainId;
     this.simulatorUrl = simulatorUrl || ""

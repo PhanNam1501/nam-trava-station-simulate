@@ -5,7 +5,7 @@ import {
   WalletTravaLPState,
 } from "./TravaDeFiState";
 import { CollectionOwned, NFTOwned } from "./WalletState";
-import { LockBalance } from "./TravaGovenanceState"
+import { VeTravaState } from "./TravaGovenanceState"
 export interface OriginTokenData {
   balances: string;
 }
@@ -38,7 +38,7 @@ export class SmartWalletState {
   auctioningState: NFTAuctioningState;
   detailTokenInPool: Map<string, DetailTokenInPool>;
   travaLPStakingStateList: Map<string, BaseAccountVault>;
-  travaGovenanceState: Map<string, LockBalance>;
+  veTravaListState: Map<string, VeTravaState>;
   constructor(address: EthAddress) {
     this.address = address;
     this.tokenBalances = new Map<string, string>();
@@ -50,7 +50,7 @@ export class SmartWalletState {
     this.auctioningState = new NFTAuctioningState();
     this.detailTokenInPool = new Map();
     this.travaLPStakingStateList = new Map();
-    this.travaGovenanceState = new Map();
+    this.veTravaListState = new Map();
   }
 
   // async getTokenAmount(tokenAddress: string): Promise<string> {
