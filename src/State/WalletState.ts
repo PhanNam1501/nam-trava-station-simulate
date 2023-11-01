@@ -2,7 +2,7 @@ import { ArmouryObject, NormalKnight, SpecialKnight } from "../Simulation/trava/
 import { EthAddress } from "../utils/types";
 import { NFTAuctioningState, NFTSellingState } from "./TravaNFTState";
 import { WalletTravaLPState } from "./TravaDeFiState";
-import { VeTravaState } from "./TravaGovenanceState";
+import { VeTravaListState, VeTravaState } from "./TravaGovenanceState";
 
 // export class NFTData {
 //   id: string | number;
@@ -56,7 +56,7 @@ export class WalletState {
   ethBalances: string;
   sellingNFT: NFTSellingState;
   auctioningState: NFTAuctioningState;
-  veTravaListState: Map<string, VeTravaState>;
+  veTravaListState: VeTravaListState;
   constructor(address: string) {
     this.address = address;
     this.tokenBalances = new Map<string, string>();
@@ -66,7 +66,7 @@ export class WalletState {
     this.ethBalances = "";
     this.sellingNFT = new NFTSellingState();
     this.auctioningState = new NFTAuctioningState();
-    this.veTravaListState = new Map();
+    this.veTravaListState = new VeTravaListState();
   }
 
   // async getTokenAmount(tokenAddress: string): Promise<string> {

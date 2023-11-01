@@ -74,6 +74,7 @@ export const wadDiv = (a: BigNumber, b: BigNumber): BigNumber => {
 }
 
 export const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
+export const MAX_LOCK_TIMES = 4 * 365 * 24 * 60 * 60
 export const YEAR_TO_SECONDS = 365 * 24 * 60 * 60
 export const MONTH_TO_SECONDS = 30 * 24 * 60 * 60
 export const WEEK_TO_SECONDS = 7 * 24 * 60 * 60

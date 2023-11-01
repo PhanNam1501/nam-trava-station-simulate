@@ -1,15 +1,16 @@
-import { getAddr } from "../../../utils/address";
+import { convertHexStringToAddress, getAddr } from "../../../utils/address";
 import VeABI from "../../../abis/Ve.json";
 import IncentiveABI from "../../../abis/Incentive.json";
-import { VeTravaState, RewardTokenBalance, rewardTokenInfo } from "../../../State/TravaGovenanceState";
+import { VeTravaState, RewardTokenBalance, rewardTokenInfo, TokenLock } from "../../../State/TravaGovenanceState";
 import { ApplicationState } from "../../../State/ApplicationState";
 import BigNumber from "bignumber.js"
-import { DAY_TO_SECONDS, HOUR_TO_SECONDS, WEEK_TO_SECONDS } from "../../../utils/config";
+import { BASE18, DAY_TO_SECONDS, HOUR_TO_SECONDS, WEEK_TO_SECONDS } from "../../../utils/config";
 import { multiCall } from "../../../utils/helper";
 import { TokenInVeTrava } from './../../../State/TravaGovenanceState';
+import ValuatorABI from "../../../abis/IValuator.json";
 import { Contract } from "ethers";
 import { tokenLockOptions } from "./travaGovernanceConfig";
-import { EthAddress, wallet_mode } from "../../../utils/types";
+import { BigNumberish, EthAddress, wallet_mode } from "../../../utils/types";
 import { FromAddressError } from "../../../utils/error";
 
 export async function updateTravaGovernanceState(appState1: ApplicationState, force = false) {
@@ -32,7 +33,12 @@ export async function updateTravaGovernanceState(appState1: ApplicationState, fo
 
       for (let i = 0; i < listTokenInGovernance.length; i++) {
         let key = listTokenInGovernance[i].address.toLowerCase()
-        appState.TravaGovernanceState.tokensInGovernance.set(key, listTokenInGovernance[i])
+        let tokenRatio = (await getTokenRatio(appState, listTokenInGovernance[i].address)).toFixed(0);
+        let tokenLock: TokenLock = {
+          ...listTokenInGovernance[i],
+          ratio: tokenRatio
+        }
+        appState.TravaGovernanceState.tokensInGovernance.set(key, tokenLock)
       }
       appState.TravaGovernanceState.totalSupply = totalSupply;
       appState.TravaGovernanceState.rewardTokenInfo = rewardTokenInfo;
@@ -58,7 +64,7 @@ export async function updateUserLockBalance(appState1: ApplicationState, _userAd
       mode = "smartWalletState"
     } else {
       throw new FromAddressError()
-  }
+    }
 
     let VeAddress = getAddr("VE_TRAVA_ADDRESS", appState.chainId);
     let IncentiveAddress = getAddr("INCENTIVE_VAULT_ADDRESS", appState.chainId);
@@ -251,8 +257,10 @@ export async function updateUserLockBalance(appState1: ApplicationState, _userAd
         rewardTokenBalance: rewardTokenBalance,
       }
 
-      appState[mode].veTravaListState.set(ids[i].toString(), veTravaState);
+      appState[mode].veTravaListState.veTravaList.set(ids[i].toString(), veTravaState);
     }
+    appState[mode].veTravaListState.isFetch = true;
+
   } catch (err) {
     throw err;
   }
@@ -266,3 +274,30 @@ export function roundDown(timestamp: number) {
   if (thursday + dt < timestamp) return thursday + dt;
   else return thursday - WEEK_TO_SECONDS + dt;
 }
+
+export async function getTokenRatio(appState: ApplicationState, _tokenAddress: EthAddress): Promise<BigNumber> {
+  let tokenAddress = convertHexStringToAddress(_tokenAddress);
+  let ratio = BigNumber(0)
+  if (tokenAddress.toLowerCase() == getAddr("TRAVA_TOKEN_ADDRESS_GOVENANCE", appState.chainId)) {
+    ratio = BigNumber(1);
+  } else {
+    let isNormalToken = [getAddr("TRAVA_TOKEN_ADDRESS_GOVENANCE", appState.chainId).toLowerCase(), getAddr("TRAVA_TOKEN_ADDRESS_GOVENANCE", appState.chainId).toLowerCase()].includes(
+      tokenAddress.toLowerCase()
+    );
+
+    const valuatorAddress = isNormalToken
+      ? getAddr("TOKEN_VALUATOR_ADDRESS", appState.chainId)
+      : getAddr("LP_VALUATOR_ADDRESS", appState.chainId)
+
+    const valuatorContract = new Contract(
+      valuatorAddress,
+      ValuatorABI,
+      appState.web3
+    )
+
+    const ratioRaw = await valuatorContract.ratio(tokenAddress);
+    ratio = BigNumber(ratioRaw._hex);
+  }
+  return ratio
+}
+

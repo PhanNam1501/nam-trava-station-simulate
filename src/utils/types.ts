@@ -1,3 +1,5 @@
+import BigNumberJS from 'bignumber.js';
+
 type Config = {
   chainId: number;
   testingMode: boolean;
@@ -56,6 +58,8 @@ type wallet_mode = "walletState" | "smartWalletState";
 type armoury_version = "v1" | "V2";
 type knight_version = "v1" | "v2" | "specials";
 
+type BigNumberish = BigNumberJS.Value;
+
 export {
   Config,
   ContractNetwork,
@@ -78,5 +82,6 @@ export {
   int24,
   wallet_mode,
   armoury_version,
-  knight_version
+  knight_version,
+  BigNumberish
 };
