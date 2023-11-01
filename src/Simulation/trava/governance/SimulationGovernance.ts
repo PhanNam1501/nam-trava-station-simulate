@@ -7,7 +7,7 @@ import { updateSmartWalletTokenBalance, updateUserTokenBalance } from "../../bas
 import { MAX_UINT256, percentMul, wadDiv } from "../../../utils/config";
 import { EthAddress } from "../../../utils/types";
 import { uint256 } from "trava-station-sdk";
-import { roundDown } from "./UpdateStateAccount";
+import { roundDown, updateTravaGovernanceState } from "./UpdateStateAccount";
 
 export function timeRemaining(_timeLock: BigNumber): BigNumber {
   const now = Math.floor(new Date().getTime() / 1000);
@@ -25,16 +25,21 @@ export async function simulateGovernanceCreateLock(
   _from: EthAddress,
   _period: uint256, //second
 ): Promise<ApplicationState> {
-  const appState = { ..._appState1 };
+  let appState = { ..._appState1 };
 
   try {
     const tokenAddress = _tokenAddress.toLowerCase();
     let amount = BigNumber(_amount);
     const from = _from;
     const period = _period;
+
+    if (appState.TravaGovernanceState.totalSupply == "") {
+      appState = await updateTravaGovernanceState(appState);
+    }
+
     if (from == appState.walletState.address) {
       if (!appState.walletState.tokenBalances.has(tokenAddress)) {
-        await updateUserTokenBalance(appState, tokenAddress);
+        appState = await updateUserTokenBalance(appState, tokenAddress);
       }
       let travaBalance = BigNumber(appState.walletState.tokenBalances.get(tokenAddress)!);
       if (amount.isEqualTo(MAX_UINT256)) {
@@ -47,7 +52,7 @@ export async function simulateGovernanceCreateLock(
     }
     if (from == appState.smartWalletState.address) {
       if (!appState.smartWalletState.tokenBalances.has(tokenAddress)) {
-        await updateSmartWalletTokenBalance(appState, tokenAddress);
+        appState = await updateSmartWalletTokenBalance(appState, tokenAddress);
       }
       let travaBalance =
         BigNumber(appState.smartWalletState.tokenBalances.get(tokenAddress)!);
@@ -73,9 +78,11 @@ export async function simulateGovernanceCreateLock(
       balances: "0"
     }
 
+    // init token in governance
+    let tokenLockOption = appState.TravaGovernanceState.tokensInGovernance.get(tokenAddress)!;
     let tokenInVeTrava: TokenInVeTrava = {
-      address: tokenAddress.toLowerCase(),
       balances: amount.toFixed(0),
+      tokenLockOption: tokenLockOption
     }
 
     let veTravaState: VeTravaState = {

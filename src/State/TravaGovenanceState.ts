@@ -18,7 +18,7 @@ export class TravaGovernanceState {
 
 export interface TokenInVeTrava {
   balances: uint256;
-  address: EthAddress;
+  tokenLockOption: TokenLockOption;
 }
 
 export interface RewardTokenBalance {
@@ -43,8 +43,13 @@ export class VeTravaState {
     this.id = "";
     this.votingPower = "";
     this.tokenInVeTrava = {
-      address: "",
       balances: "",
+      tokenLockOption: {
+        address: "",
+        symbol: "",
+        name: "",
+        decimals: ""
+      }
     };
     this.unlockTime = "";
     this.rewardTokenBalance = {
