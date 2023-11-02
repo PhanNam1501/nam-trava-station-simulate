@@ -11,6 +11,7 @@
     - [Tương tác với các Marketplace / Sell armoury](#tương-tác-với-các-marketplace--sell-armoury)
     - [Tương tác với các Marketplace / Auction](#tương-tác-với-các-marketplace--auction)
     - [Tuong tac voi Trava Staking](#tuong-tac-voi-trava-staking)
+    - [Tuưng tác với Trava Governance](#tuưng-tác-với-trava-governance)
 - [Simulate state](#simulate-state)
   - [Simulate Utilities actions](#simulate-utilities-actions)
   - [Pull token](#pull-token)
@@ -42,6 +43,13 @@
   - [Simulate Trava Staking Stake](#simulate-trava-staking-stake)
   - [Simulate Trava Staking Redeem (Withdraw)](#simulate-trava-staking-redeem-withdraw)
   - [Simulate Trava Staking Claim (Withdraw)](#simulate-trava-staking-claim-withdraw)
+- [Simulate Trava Governance State](#simulate-trava-governance-state)
+  - [Simulate Create Lock](#simulate-create-lock)
+  - [Simulate Increase Balance](#simulate-increase-balance)
+  - [Simulate Change unlock time](#simulate-change-unlock-time)
+  - [Simulate Compound](#simulate-compound)
+  - [Simulate Withdraw](#simulate-withdraw)
+  - [Simulate Merge](#simulate-merge)
 - [Simulate state](#simulate-state-1)
   - [Simulate Utilities actions](#simulate-utilities-actions-1)
   - [Pull token](#pull-token-1)
@@ -284,6 +292,35 @@ TVL = stakedPool.TVL
 APR = stakedPool.APR
 reward = stakedPool.claimableReward
 deposited = stakedPool.deposited
+```
+### Tuưng tác với Trava Governance
+Khi chon bat cu action nao cua Trava Governance, update TravaGovernanceState
+```
+appState = await updateTravaGovernanceState(appState);
+```
+Khi chon action Create Lock,  update Trava Governace State cua from address, to address, update bep20 balance of from address
+```
+appState = await updateUserLockBalance(appState, fromAddress)
+appState = await updateUserLockBalance(appState, toAddress)
+appState = /// update token balance cua from address
+```
+Khi chon action merge,  update Trava Governace State cua from address
+```
+appState = await updateUserLockBalance(appState, fromAddress)
+```
+Khi chon cac action :  coumpound, change unlock time, update Trava Governace State cua smart wallet address
+```
+appState = await updateUserLockBalance(appState, smartWalletAddress)
+```
+Khi chon cac action :  withdraw update Trava Governace State cua smart wallet address, update trava balance va token lock balance cua to address
+```
+appState = await updateUserLockBalance(appState, smartWalletAddress)
+appState = /// update trava balance cua to address
+appState = /// update token locked balance cua to address 
+```
+Khi chon action  increase balance, Trava Governace State cua smart wallet address, update token locked balance cua from address 
+```
+appState = // update token locked balance cua from address
 ```
 # Simulate state
 Sau khi init state xong. Với mỗi state, các simulate khác nhau
@@ -532,6 +569,59 @@ newAppState = await simulateStakingClaimRewards(
     stakedTokenAddress,
     to,
     maxAmount
+)
+```
+# Simulate Trava Governance State
+## Simulate Create Lock
+```
+newAppState = await simulateTravaGovernanceCreateLock(
+    oldAppState,
+    tokenId,
+    amount,
+    from,
+    period
+)
+``` 
+## Simulate Increase Balance
+```
+newAppState = await simulateTravaGovernanceIncreaseBalance(
+    oldAppState,
+    tokenId,
+    amount,
+    fromAddress,
+    smartWalletAddress
+)
+```
+## Simulate Change unlock time
+```
+newAppState = await simulateTravaGovernanceChangeUnlockTime(
+    oldAppState,
+    tokenId,
+    newUnlockTime
+)
+```
+## Simulate Compound
+```
+newAppState = await simulateTravaGovernanceCompound(
+    oldAppState,
+    tokenId
+)
+```
+## Simulate Withdraw
+```
+newAppState = await simulateTravaGovernanceWithdraw(
+    oldAppState,
+    tokenId,
+    to
+)
+```
+## Simulate Merge
+```
+newAppState = await simulateTravaGovernanceMerge(
+    oldAppState,
+    tokenId1,
+    tokenId2,
+    from
 )
 ```
 # Simulate state

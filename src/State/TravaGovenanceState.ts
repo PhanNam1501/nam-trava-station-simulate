@@ -2,10 +2,19 @@ import { EthAddress, uint256 } from "trava-station-sdk";
 import { TokenLockOption } from './../Simulation/trava/governance/travaGovernanceConfig';
 import { BigNumberish } from "../utils/types";
 
-export interface TravaGovernanceState {
+export class TravaGovernanceState {
   totalSupply: uint256;
   rewardTokenInfo: rewardTokenInfo;
   tokensInGovernance: Map<string, TokenLock>;
+
+  constructor() {
+    this.totalSupply = "",
+      this.rewardTokenInfo = {
+        address: "",
+        decimals: "",
+      }
+    this.tokensInGovernance = new Map()
+  }
 }
 
 export interface TokenLock extends TokenLockOption {

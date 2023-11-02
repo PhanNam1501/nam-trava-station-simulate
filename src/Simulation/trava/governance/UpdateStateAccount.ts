@@ -28,15 +28,15 @@ export async function updateTravaGovernanceState(appState1: ApplicationState, fo
         address: getAddr("TRAVA_TOKEN_ADDRESS_GOVENANCE", appState.chainId).toLowerCase(),
         decimals: "18"
       }
-
+      
       const listTokenInGovernance = tokenLockOptions[appState.chainId];
-
+      
       for (let i = 0; i < listTokenInGovernance.length; i++) {
         let key = listTokenInGovernance[i].address.toLowerCase()
-        let tokenRatio = (await getTokenRatio(appState, listTokenInGovernance[i].address)).toFixed(0);
+        let tokenRatio = (await getTokenRatio(appState, listTokenInGovernance[i].address))
         let tokenLock: TokenLock = {
           ...listTokenInGovernance[i],
-          ratio: tokenRatio
+          ratio: tokenRatio.toFixed(0)
         }
         appState.TravaGovernanceState.tokensInGovernance.set(key, tokenLock)
       }
@@ -45,7 +45,7 @@ export async function updateTravaGovernanceState(appState1: ApplicationState, fo
     }
 
   } catch (err) {
-    throw new Error();
+    console.log(err)
   }
   return appState;
 }
@@ -76,8 +76,6 @@ export async function updateUserLockBalance(appState1: ApplicationState, _userAd
     )
 
     let ids = await veContract.getveNFTOfUser(appState[mode].address);
-
-    ids = ids[0][0];
     let votingPowers: string[] = [];
     let lockedValues: string[] = [];
     let rewardTokens: string[] = [];
@@ -131,12 +129,12 @@ export async function updateUserLockBalance(appState1: ApplicationState, _userAd
           appState.chainId
         ),
       ]);
+
       votingPowers.push(votingPower[0][0]);
       lockedValues.push(lockedValue[0]);
       rewardTokens.push(rewardToken[0])
       compoundAbleRewards.push(compoundAbleReward[0])
     }
-
     //Math
     const now = Math.floor(new Date().getTime() / 1000);
     let round_ts = roundDown(now)
@@ -278,25 +276,25 @@ export function roundDown(timestamp: number) {
 export async function getTokenRatio(appState: ApplicationState, _tokenAddress: EthAddress): Promise<BigNumber> {
   let tokenAddress = convertHexStringToAddress(_tokenAddress);
   let ratio = BigNumber(0)
-  if (tokenAddress.toLowerCase() == getAddr("TRAVA_TOKEN_ADDRESS_GOVENANCE", appState.chainId)) {
+  if (tokenAddress.toLowerCase() == getAddr("TRAVA_TOKEN_ADDRESS_GOVENANCE", appState.chainId).toLowerCase()) {
     ratio = BigNumber(1);
   } else {
-    let isNormalToken = [getAddr("TRAVA_TOKEN_ADDRESS_GOVENANCE", appState.chainId).toLowerCase(), getAddr("TRAVA_TOKEN_ADDRESS_GOVENANCE", appState.chainId).toLowerCase()].includes(
+    let isNormalToken = [getAddr("TRAVA_TOKEN_ADDRESS_GOVENANCE", appState.chainId).toLowerCase(), getAddr("RTRAVA_TOKEN_ADDRESS", appState.chainId).toLowerCase()].includes(
       tokenAddress.toLowerCase()
     );
 
     const valuatorAddress = isNormalToken
       ? getAddr("TOKEN_VALUATOR_ADDRESS", appState.chainId)
       : getAddr("LP_VALUATOR_ADDRESS", appState.chainId)
-
+    
     const valuatorContract = new Contract(
       valuatorAddress,
       ValuatorABI,
       appState.web3
     )
-
     const ratioRaw = await valuatorContract.ratio(tokenAddress);
-    ratio = BigNumber(ratioRaw._hex);
+    console.log("ratioRaw", ratioRaw)
+    ratio = BigNumber(String(ratioRaw));
   }
   return ratio
 }

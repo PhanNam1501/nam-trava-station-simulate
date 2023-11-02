@@ -1,5 +1,5 @@
 import { JsonRpcProvider, ethers } from "ethers";
-import { updateUserLockBalance } from "../src/Simulation/trava/governance/UpdateStateAccount";
+import { updateTravaGovernanceState, updateUserLockBalance } from "../src/Simulation/trava/governance/UpdateStateAccount";
 import { simulateTravaGovernanceCreateLock } from "../src/Simulation/trava/governance/SimulationGovernance";
 import { ApplicationState } from "../src/State/ApplicationState";
 import { getAddr } from "../src/utils/address";
@@ -26,10 +26,11 @@ import { MONTH_TO_SECONDS, WEEK_TO_SECONDS } from "../src/utils/config";
     provider,
     chainId
     )
+    appState = await updateTravaGovernanceState(appState);
     appState = await updateUserLockBalance(appState, userAddress);
-    appState = await simulateTravaGovernanceCreateLock(appState,"0xce9f0487f07988003f511d6651153a6dacc32f50", "20", userAddress, MONTH_TO_SECONDS.toString());
+    appState = await simulateTravaGovernanceCreateLock(appState,"0xce9f0487f07988003f511d6651153a6dacc32f50", "20", MONTH_TO_SECONDS.toString(), userAddress, proxyAddress);
     console.log(appState.smartWalletState.veTravaListState)
-    appState = await simulateTravaGovernanceCreateLock(appState,"0xce9f0487f07988003f511d6651153a6dacc32f50", "20", userAddress, MONTH_TO_SECONDS.toString());
+    appState = await simulateTravaGovernanceCreateLock(appState,"0xce9f0487f07988003f511d6651153a6dacc32f50", "20", MONTH_TO_SECONDS.toString(), userAddress, proxyAddress);
     console.log(appState.smartWalletState.veTravaListState)
 }
 test()
