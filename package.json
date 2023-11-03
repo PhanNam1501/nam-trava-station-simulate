@@ -20,14 +20,15 @@
     "decimal.js": "^10.4.3",
     "eth-graph-query": "^2.0.0",
     "ethereumjs-util": "^7.1.5",
-    "ethers": "^6.7.0",
     "lodash": "^4.17.21",
-    "trava-station-sdk": "1.0.30"
+    "trava-station-sdk": "1.0.30",
+    "typescript": "^5.2.2"
   },
   "devDependencies": {
     "@babel/core": "^7.12.10",
     "@babel/preset-env": "^7.12.11",
     "@babel/preset-typescript": "^7.12.7",
+    "@types/bignumber.js": "^5.0.0",
     "@types/chai": "^4.3.5",
     "@types/lodash": "^4.14.197",
     "@types/mocha": "^10.0.1",
@@ -35,9 +36,9 @@
     "@types/ws": "^8.5.5",
     "babel-loader": "^8.2.2",
     "chai": "^4.3.7",
+    "ethers": "^6.8.1",
     "mocha": "^10.2.0",
     "ts-node": "^10.9.1",
-    "typescript": "5.0.4",
     "webpack": "^5.13.0",
     "webpack-cli": "^5.1.4"
   }

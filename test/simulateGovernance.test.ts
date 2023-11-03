@@ -26,9 +26,9 @@ import { MONTH_TO_SECONDS, WEEK_TO_SECONDS } from "../src/utils/config";
     provider,
     chainId
     )
-    appState = await updateTravaGovernanceState(appState);
+    // appState = await updateTravaGovernanceState(appState);
     appState = await updateUserLockBalance(appState, userAddress);
-    appState = await simulateTravaGovernanceCreateLock(appState,"0xce9f0487f07988003f511d6651153a6dacc32f50", "20", MONTH_TO_SECONDS.toString(), userAddress, proxyAddress);
+    appState = await simulateTravaGovernanceCreateLock(appState,"0xce9f0487f07988003f511d6651153a6dacc32f50", "200000000000000", MONTH_TO_SECONDS.toString(), userAddress, proxyAddress);
     console.log(appState.smartWalletState.veTravaListState)
     appState = await simulateTravaGovernanceCreateLock(appState,"0xce9f0487f07988003f511d6651153a6dacc32f50", "20", MONTH_TO_SECONDS.toString(), userAddress, proxyAddress);
     console.log(appState.smartWalletState.veTravaListState)
