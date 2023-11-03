@@ -27,6 +27,12 @@ export function getPredictVotingPower(tokenBalance: uint256, increaseAmount: uin
   return calcVotingPower(amountInTrava, timeLeft);
 }
 
+// export function getPredictVotingPower1(veTrava: TokenInVeTrava, increaseAmount: uint256, timeEnd: uint256) {
+//   let amountInTrava = getAmountInTrava(tokenBalance, increaseAmount, tokenRatio, claimedReward).toFixed(0);
+//   let timeLeft = getTimeLeft(timeEnd).toFixed(0);
+//   return calcVotingPower(amountInTrava, timeLeft);
+// }
+
 export function timeRemaining(_timeLock: BigNumber): BigNumber {
   const now = Math.floor(new Date().getTime() / 1000);
   if (_timeLock.isEqualTo(WEEK_TO_SECONDS)) {
@@ -400,8 +406,10 @@ export async function simulateTravaGovernanceMerge(
     // let rewardTokenAddress = appState.TravaGovernanceState.rewardTokenInfo.address.toLowerCase();
 
     let maxUnlockTime = veTrava1.unlockTime;
+    let newBalance = BigNumber(deposited1).plus(BigNumber(deposited2).times(tokenLockOption2.ratio).div(tokenLockOption1.ratio))
     if (BigNumber(maxUnlockTime).isLessThan(veTrava2.unlockTime)) {
       maxUnlockTime = veTrava2.unlockTime
+      newBalance = BigNumber(deposited2).plus(BigNumber(deposited1).times(tokenLockOption1.ratio).div(tokenLockOption2.ratio))
     }
 
     let newVotingPower1 = getPredictVotingPower(deposited1, "0", tokenLockOption1.ratio, veTrava1.rewardTokenBalance.compoundedRewards, maxUnlockTime);
@@ -411,6 +419,7 @@ export async function simulateTravaGovernanceMerge(
     veTrava2.rewardTokenBalance.compoundedRewards = BigNumber(compoundedRewards2).plus(compoundedRewards1).toFixed(0)
     veTrava2.rewardTokenBalance.balances = BigNumber(balanceRewards2).plus(balanceRewards1).toFixed(0)
 
+    
     veTrava2.tokenInVeTrava.balances = BigNumber(deposited2).plus(deposited1).toFixed(0)
     veTrava2.unlockTime = maxUnlockTime
     veTrava2.votingPower = BigNumber(newVotingPower2).plus(newVotingPower1).toFixed(0)
