@@ -106,3 +106,16 @@ export type CollectionArmouryFromGraph = {
   rarity: string;
   exp: string | null;
 };
+
+// VeTrava
+export type SellingVeTravaType = {
+  id: number;
+  amount: number;
+  rwAmount: number;
+  end: string;
+  token: string;
+  votingPower: number;
+  seller: string;
+  price: number;
+  paymentOption: number;
+};
