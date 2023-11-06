@@ -5,7 +5,7 @@ import { ApplicationState } from "../src/State/ApplicationState";
 import { getAddr } from "../src/utils/address";
 import BigNumber from "bignumber.js";
 import { MONTH_TO_SECONDS, WEEK_TO_SECONDS } from "../src/utils/config";
-
+import { simulateNFTVeTravaTranfer } from "../src/Simulation/trava/nft/marketplace/veTrava/SimulationNFTVeTrava";
   // start 
   async function test(){
     console.log(BigNumber(0.1).toFixed())
@@ -28,7 +28,10 @@ import { MONTH_TO_SECONDS, WEEK_TO_SECONDS } from "../src/utils/config";
     )
     // appState = await updateTravaGovernanceState(appState);
     appState = await updateUserVeTravaMarket(appState, userAddress);
+    appState = await simulateNFTVeTravaTranfer(appState, "39", userAddress, proxyAddress);
+    appState = await simulateNFTVeTravaTranfer(appState, "43", userAddress, proxyAddress);
     console.log(appState.NFTVeTravaMarketSellingState);
     console.log(appState.walletState.veTravaListState);
+    console.log(appState.smartWalletState.veTravaListState);
 }
 test()

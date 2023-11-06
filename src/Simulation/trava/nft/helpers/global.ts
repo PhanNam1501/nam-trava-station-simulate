@@ -117,5 +117,5 @@ export type SellingVeTravaType = {
   votingPower: number;
   seller: string;
   price: number;
-  paymentOption: number;
+  priceToken: string;
 };

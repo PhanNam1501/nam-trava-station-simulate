@@ -41,10 +41,6 @@ export async function updateSellingNFTFromContract(
             ),
         ]);
         const tokenOnSaleFlattened = tokenIdsOnMarket.flat();
-        //test sau xoa
-        tokenOnSaleFlattened.push(30);
-        tokenOnSaleFlattened.push(31);
-        //
         const [tokensMetadata, tokenVotingPower, tokenOrder] = await Promise.all([
             multiCall(
                 VeABI,
@@ -79,6 +75,13 @@ export async function updateSellingNFTFromContract(
             let tokenMetadata = tokensMetadata[i];
             let tokenVoting = tokenVotingPower[i];
             let tokenOrderInfo = tokenOrder[i];
+            let priceToken = "";
+            if (BigNumber(tokenOrderInfo[0][2]).isEqualTo(1)) {
+                priceToken = getAddr("TRAVA_TOKEN", appState.chainId);
+            }
+            else if (BigNumber(tokenOrderInfo[0][2]).isEqualTo(2)) {
+                priceToken = getAddr("BUSD_TOKEN_ADDRESS", appState.chainId);
+            }
             let sellingVeTravaItem = {
                 id: tokenId,
                 amount: tokenMetadata[1],
@@ -88,7 +91,7 @@ export async function updateSellingNFTFromContract(
                 votingPower: tokenVoting[0],
                 seller: tokenOrderInfo[0][0],
                 price: tokenOrderInfo[0][1],
-                paymentOption: tokenOrderInfo[0][2],
+                priceToken: priceToken,
             };
             sellingVeTrava.push(sellingVeTravaItem);
         }
