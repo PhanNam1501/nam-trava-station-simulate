@@ -10,6 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 import ERC20Mock from "../../abis/ERC20Mock.json";
 import { Contract } from "ethers";
 import { convertHexStringToAddress } from "../../utils/address";
+import { FromAddressError } from "../../utils";
 export function updateUserEthBalance(appState1, force) {
     var _a;
     return __awaiter(this, void 0, void 0, function* () {
@@ -49,6 +50,36 @@ export function updateSmartWalletTokenBalance(appState1, _tokenAddress, force) {
             const TokenContract = new Contract(address, ERC20Mock, appState.web3);
             const balance = String(yield TokenContract.balanceOf(appState.smartWalletState.address));
             appState.smartWalletState.tokenBalances.set(address.toLowerCase(), balance);
+        }
+        return appState;
+    });
+}
+export function updateTokenBalance(appState1, _from, _tokenAddress, force) {
+    var _a;
+    return __awaiter(this, void 0, void 0, function* () {
+        const appState = Object.assign({}, appState1);
+        let mode;
+        if (_from.toLowerCase() == appState.walletState.address.toLowerCase()) {
+            mode = "walletState";
+        }
+        else if (_from.toLowerCase() == appState.smartWalletState.address.toLowerCase()) {
+            mode = "smartWalletState";
+        }
+        else {
+            throw new FromAddressError();
+        }
+        if (_tokenAddress) {
+            if (!appState[mode].tokenBalances.has(_tokenAddress.toLowerCase()) || force) {
+                const address = convertHexStringToAddress(_tokenAddress);
+                const TokenContract = new Contract(address, ERC20Mock, appState.web3);
+                const balance = String(yield TokenContract.balanceOf(appState[mode].address));
+                appState[mode].tokenBalances.set(address.toLowerCase(), balance);
+            }
+        }
+        else {
+            if (appState[mode].ethBalances == "" || force) {
+                appState[mode].ethBalances = String(yield ((_a = appState.web3) === null || _a === void 0 ? void 0 : _a.getBalance(appState[mode].address)));
+            }
         }
         return appState;
     });

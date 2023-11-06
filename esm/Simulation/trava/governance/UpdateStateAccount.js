@@ -70,87 +70,76 @@ export function updateUserLockBalance(appState1, _userAddress) {
             let lockedValues = [];
             let rewardTokens = [];
             let compoundAbleRewards = [];
+            let [listVotingPower, listLockedValue, listRewardToken, listCompoundAbleReward] = yield Promise.all([
+                multiCall(VeABI, ids.map((id, _) => ({
+                    address: VeAddress,
+                    name: "balanceOfNFT",
+                    params: [id],
+                })), appState.web3, appState.chainId),
+                multiCall(VeABI, ids.map((id, _) => ({
+                    address: VeAddress,
+                    name: "locked",
+                    params: [id],
+                })), appState.web3, appState.chainId),
+                multiCall(VeABI, ids.map((id, _) => ({
+                    address: VeAddress,
+                    name: "rewardToken",
+                    params: [],
+                })), appState.web3, appState.chainId),
+                multiCall(IncentiveABI, ids.map((id, _) => ({
+                    address: IncentiveAddress,
+                    name: "claimable",
+                    params: [id],
+                })), appState.web3, appState.chainId),
+            ]);
             for (let i = 0; i < ids.length; i++) {
-                let id = ids[i];
-                let [votingPower, lockedValue, rewardToken, compoundAbleReward,] = yield Promise.all([
-                    multiCall(VeABI, [VeAddress].map((address, _) => ({
-                        address: address,
-                        name: "balanceOfNFT",
-                        params: [id],
-                    })), appState.web3, appState.chainId),
-                    multiCall(VeABI, [VeAddress].map((address, _) => ({
-                        address: address,
-                        name: "locked",
-                        params: [id],
-                    })), appState.web3, appState.chainId),
-                    multiCall(VeABI, [VeAddress].map((address, _) => ({
-                        address: address,
-                        name: "rewardToken",
-                        params: [],
-                    })), appState.web3, appState.chainId),
-                    multiCall(IncentiveABI, [IncentiveAddress].map((address, _) => ({
-                        address: address,
-                        name: "claimable",
-                        params: [id],
-                    })), appState.web3, appState.chainId),
-                ]);
-                votingPowers.push(votingPower[0][0]);
-                lockedValues.push(lockedValue[0]);
-                rewardTokens.push(rewardToken[0]);
-                compoundAbleRewards.push(compoundAbleReward[0]);
+                let votingPower = listVotingPower[i];
+                let lockedValue = listLockedValue[i];
+                let rewardToken = listRewardToken[i];
+                let compoundAbleReward = listCompoundAbleReward[i];
+                votingPowers.push(votingPower[0]);
+                lockedValues.push(lockedValue);
+                rewardTokens.push(rewardToken);
+                compoundAbleRewards.push(compoundAbleReward);
             }
             //Math
             const now = Math.floor(new Date().getTime() / 1000);
             let round_ts = roundDown(now);
-            // let [veNFTs] = await Promise.all(
-            //   [
-            //     multiCall(
-            //       IncentiveABI,
-            //       ids.map((id: any, _: number) => ({
-            //         address: IncentiveAddress,
-            //         name: "ve_for_at",
-            //         params: [id, round_ts],
-            //       })),
-            //       appState.web3,
-            //       appState.chainId
-            //     ),
-            //   ]
-            // )
+            let [listVeNFT, listTotalVe, listWarmUpReward, listWarmUp_ts, listEps] = yield Promise.all([
+                multiCall(IncentiveABI, ids.map((id, _) => ({
+                    address: IncentiveAddress,
+                    name: "ve_for_at",
+                    params: [id, round_ts],
+                })), appState.web3, appState.chainId),
+                multiCall(VeABI, ids.map((id, _) => ({
+                    address: VeAddress,
+                    name: "totalSupplyAtT",
+                    params: [round_ts],
+                })), appState.web3, appState.chainId),
+                multiCall(IncentiveABI, ids.map((id, _) => ({
+                    address: IncentiveAddress,
+                    name: "claimWarmUpReward",
+                    params: [id],
+                })), appState.web3, appState.chainId),
+                multiCall(VeABI, ids.map((id, _) => ({
+                    address: VeAddress,
+                    name: "user_point_history__ts",
+                    params: [id, 1],
+                })), appState.web3, appState.chainId),
+                multiCall(IncentiveABI, ids.map((id, _) => ({
+                    address: IncentiveAddress,
+                    name: "emissionPerSecond",
+                    params: [],
+                })), appState.web3, appState.chainId),
+            ]);
             for (let i = 0; i < ids.length; i++) {
-                let [veNFT, totalVe, warmUpReward, warmUp_ts, eps] = yield Promise.all([
-                    multiCall(IncentiveABI, [IncentiveAddress].map((address, _) => ({
-                        address: address,
-                        name: "ve_for_at",
-                        params: [ids[i], round_ts],
-                    })), appState.web3, appState.chainId),
-                    multiCall(VeABI, [VeAddress].map((address, _) => ({
-                        address: address,
-                        name: "totalSupplyAtT",
-                        params: [round_ts],
-                    })), appState.web3, appState.chainId),
-                    multiCall(IncentiveABI, [IncentiveAddress].map((address, _) => ({
-                        address: address,
-                        name: "claimWarmUpReward",
-                        params: [ids[i]],
-                    })), appState.web3, appState.chainId),
-                    multiCall(VeABI, [VeAddress].map((address, _) => ({
-                        address: address,
-                        name: "user_point_history__ts",
-                        params: [ids[i], 1],
-                    })), appState.web3, appState.chainId),
-                    multiCall(IncentiveABI, [IncentiveAddress].map((address, _) => ({
-                        address: address,
-                        name: "emissionPerSecond",
-                        params: [],
-                    })), appState.web3, appState.chainId),
-                ]);
                 let now1 = BigNumber(now);
                 let round_ts1 = BigNumber(round_ts);
-                let veNFT1 = BigNumber(veNFT[0][0]);
-                let totalVe1 = BigNumber(totalVe[0][0]);
-                let warmUpReward1 = BigNumber(warmUpReward[0][0]);
-                let warmUp_ts1 = BigNumber(warmUp_ts[0][0]);
-                let eps1 = BigNumber(eps[0][0]);
+                let veNFT1 = BigNumber(listVeNFT[i][0]);
+                let totalVe1 = BigNumber(listTotalVe[i][0]);
+                let warmUpReward1 = BigNumber(listWarmUpReward[i][0]);
+                let warmUp_ts1 = BigNumber(listWarmUp_ts[i][0]);
+                let eps1 = BigNumber(listEps[i][0]);
                 let unclaimedReward = BigNumber(0);
                 if (warmUp_ts1.isGreaterThan(now1)) {
                     unclaimedReward = warmUpReward1;

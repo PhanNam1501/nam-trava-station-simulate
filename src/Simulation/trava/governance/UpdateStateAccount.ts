@@ -28,9 +28,9 @@ export async function updateTravaGovernanceState(appState1: ApplicationState, fo
         address: getAddr("TRAVA_TOKEN_ADDRESS_GOVENANCE", appState.chainId).toLowerCase(),
         decimals: "18"
       }
-      
+
       const listTokenInGovernance = tokenLockOptions[appState.chainId];
-      
+
       for (let i = 0; i < listTokenInGovernance.length; i++) {
         let key = listTokenInGovernance[i].address.toLowerCase()
         let tokenRatio = (await getTokenRatio(appState, listTokenInGovernance[i].address))
@@ -80,18 +80,17 @@ export async function updateUserLockBalance(appState1: ApplicationState, _userAd
     let lockedValues: string[] = [];
     let rewardTokens: string[] = [];
     let compoundAbleRewards: string[] = [];
-    for (let i = 0; i < ids.length; i++) {
-      let id = ids[i];
-      let [
-        votingPower,
-        lockedValue,
-        rewardToken,
-        compoundAbleReward,
-      ] = await Promise.all([
+    let [
+      listVotingPower,
+      listLockedValue,
+      listRewardToken,
+      listCompoundAbleReward
+    ] = await Promise.all(
+      [
         multiCall(
           VeABI,
-          [VeAddress].map((address: string, _: number) => ({
-            address: address,
+          ids.map((id: any, _: number) => ({
+            address: VeAddress,
             name: "balanceOfNFT",
             params: [id],
           })),
@@ -100,8 +99,8 @@ export async function updateUserLockBalance(appState1: ApplicationState, _userAd
         ),
         multiCall(
           VeABI,
-          [VeAddress].map((address: string, _: number) => ({
-            address: address,
+          ids.map((id: any, _: number) => ({
+            address: VeAddress,
             name: "locked",
             params: [id],
           })),
@@ -110,8 +109,8 @@ export async function updateUserLockBalance(appState1: ApplicationState, _userAd
         ),
         multiCall(
           VeABI,
-          [VeAddress].map((address: string, _: number) => ({
-            address: address,
+          ids.map((id: any, _: number) => ({
+            address: VeAddress,
             name: "rewardToken",
             params: [],
           })),
@@ -120,62 +119,53 @@ export async function updateUserLockBalance(appState1: ApplicationState, _userAd
         ),
         multiCall(
           IncentiveABI,
-          [IncentiveAddress].map((address: string, _: number) => ({
-            address: address,
+          ids.map((id: any, _: number) => ({
+            address: IncentiveAddress,
             name: "claimable",
             params: [id],
           })),
           appState.web3,
           appState.chainId
         ),
-      ]);
+      ])
 
-      votingPowers.push(votingPower[0][0]);
-      lockedValues.push(lockedValue[0]);
-      rewardTokens.push(rewardToken[0])
-      compoundAbleRewards.push(compoundAbleReward[0])
+    for (let i = 0; i < ids.length; i++) {
+      let votingPower = listVotingPower[i];
+      let lockedValue = listLockedValue[i];
+      let rewardToken = listRewardToken[i];
+      let compoundAbleReward = listCompoundAbleReward[i];
+      votingPowers.push(votingPower[0]);
+      lockedValues.push(lockedValue);
+      rewardTokens.push(rewardToken)
+      compoundAbleRewards.push(compoundAbleReward)
     }
+
     //Math
     const now = Math.floor(new Date().getTime() / 1000);
     let round_ts = roundDown(now)
 
-    // let [veNFTs] = await Promise.all(
-    //   [
-    //     multiCall(
-    //       IncentiveABI,
-    //       ids.map((id: any, _: number) => ({
-    //         address: IncentiveAddress,
-    //         name: "ve_for_at",
-    //         params: [id, round_ts],
-    //       })),
-    //       appState.web3,
-    //       appState.chainId
-    //     ),
-    //   ]
-    // )
-    for (let i = 0; i < ids.length; i++) {
-
-      let [
-        veNFT,
-        totalVe,
-        warmUpReward,
-        warmUp_ts,
-        eps
-      ] = await Promise.all([
+    let [
+      listVeNFT,
+      listTotalVe,
+      listWarmUpReward,
+      listWarmUp_ts,
+      listEps
+    ] = await Promise.all(
+      [
         multiCall(
           IncentiveABI,
-          [IncentiveAddress].map((address: string, _: number) => ({
-            address: address,
+          ids.map((id: any, _: number) => ({
+            address: IncentiveAddress,
             name: "ve_for_at",
-            params: [ids[i], round_ts],
+            params: [id, round_ts],
           })),
           appState.web3,
           appState.chainId
         ),
         multiCall(
           VeABI,
-          [VeAddress].map((address: string, _: number) => ({
-            address: address,
+          ids.map((id: any, _: number) => ({
+            address: VeAddress,
             name: "totalSupplyAtT",
             params: [round_ts],
           })),
@@ -184,44 +174,46 @@ export async function updateUserLockBalance(appState1: ApplicationState, _userAd
         ),
         multiCall(
           IncentiveABI,
-          [IncentiveAddress].map((address: string, _: number) => ({
-            address: address,
+          ids.map((id: any, _: number) => ({
+            address: IncentiveAddress,
             name: "claimWarmUpReward",
-            params: [ids[i]],
+            params: [id],
           })),
           appState.web3,
           appState.chainId
         ),
         multiCall(
           VeABI,
-          [VeAddress].map((address: string, _: number) => ({
-            address: address,
+          ids.map((id: any, _: number) => ({
+            address: VeAddress,
             name: "user_point_history__ts",
-            params: [ids[i], 1],
+            params: [id, 1],
           })),
           appState.web3,
           appState.chainId
         ),
         multiCall(
           IncentiveABI,
-          [IncentiveAddress].map((address: string, _: number) => ({
-            address: address,
+          ids.map((id: any, _: number) => ({
+            address: IncentiveAddress,
             name: "emissionPerSecond",
             params: [],
           })),
           appState.web3,
           appState.chainId
         ),
-      ]);
+      ]
+    )
+
+    for (let i = 0; i < ids.length; i++) {
       let now1 = BigNumber(now);
       let round_ts1 = BigNumber(round_ts);
-      let veNFT1 = BigNumber(veNFT[0][0]);
-      let totalVe1 = BigNumber(totalVe[0][0]);
-      let warmUpReward1 = BigNumber(warmUpReward[0][0]);
-      let warmUp_ts1 = BigNumber(warmUp_ts[0][0]);
-      let eps1 = BigNumber(eps[0][0]);
+      let veNFT1 = BigNumber(listVeNFT[i][0]);
+      let totalVe1 = BigNumber(listTotalVe[i][0]);
+      let warmUpReward1 = BigNumber(listWarmUpReward[i][0]);
+      let warmUp_ts1 = BigNumber(listWarmUp_ts[i][0]);
+      let eps1 = BigNumber(listEps[i][0]);
       let unclaimedReward = BigNumber(0);
-
 
       if (warmUp_ts1.isGreaterThan(now1)) {
         unclaimedReward = warmUpReward1;
@@ -286,7 +278,7 @@ export async function getTokenRatio(appState: ApplicationState, _tokenAddress: E
     const valuatorAddress = isNormalToken
       ? getAddr("TOKEN_VALUATOR_ADDRESS", appState.chainId)
       : getAddr("LP_VALUATOR_ADDRESS", appState.chainId)
-    
+
     const valuatorContract = new Contract(
       valuatorAddress,
       ValuatorABI,
