@@ -28,9 +28,9 @@ export async function updateTravaGovernanceState(appState1: ApplicationState, fo
         address: getAddr("TRAVA_TOKEN_ADDRESS_GOVENANCE", appState.chainId).toLowerCase(),
         decimals: "18"
       }
-      
+
       const listTokenInGovernance = tokenLockOptions[appState.chainId];
-      
+
       for (let i = 0; i < listTokenInGovernance.length; i++) {
         let key = listTokenInGovernance[i].address.toLowerCase()
         let tokenRatio = (await getTokenRatio(appState, listTokenInGovernance[i].address))
@@ -86,48 +86,48 @@ export async function updateUserLockBalance(appState1: ApplicationState, _userAd
       listRewardToken,
       listCompoundAbleReward
     ] = await Promise.all(
-    [
-      multiCall(
-        VeABI,
-        ids.map((id: any, _: number) => ({
-          address: VeAddress,
-          name: "balanceOfNFT",
-          params: [id],
-        })),
-        appState.web3,
-        appState.chainId
-      ),
-      multiCall(
-        VeABI,
-        ids.map((id: any, _: number) => ({
-          address: VeAddress,
-          name: "locked",
-          params: [id],
-        })),
-        appState.web3,
-        appState.chainId
-      ),
-      multiCall(
-        VeABI,
-        ids.map((id: any, _: number) => ({
-          address: VeAddress,
-          name: "rewardToken",
-          params: [],
-        })),
-        appState.web3,
-        appState.chainId
-      ),
-      multiCall(
-        IncentiveABI,
-        ids.map((id: any, _: number) => ({
-          address: IncentiveAddress,
-          name: "claimable",
-          params: [id],
-        })),
-        appState.web3,
-        appState.chainId
-      ),    
-    ])
+      [
+        multiCall(
+          VeABI,
+          ids.map((id: any, _: number) => ({
+            address: VeAddress,
+            name: "balanceOfNFT",
+            params: [id],
+          })),
+          appState.web3,
+          appState.chainId
+        ),
+        multiCall(
+          VeABI,
+          ids.map((id: any, _: number) => ({
+            address: VeAddress,
+            name: "locked",
+            params: [id],
+          })),
+          appState.web3,
+          appState.chainId
+        ),
+        multiCall(
+          VeABI,
+          ids.map((id: any, _: number) => ({
+            address: VeAddress,
+            name: "rewardToken",
+            params: [],
+          })),
+          appState.web3,
+          appState.chainId
+        ),
+        multiCall(
+          IncentiveABI,
+          ids.map((id: any, _: number) => ({
+            address: IncentiveAddress,
+            name: "claimable",
+            params: [id],
+          })),
+          appState.web3,
+          appState.chainId
+        ),
+      ])
 
     for (let i = 0; i < ids.length; i++) {
       let votingPower = listVotingPower[i];
@@ -145,11 +145,11 @@ export async function updateUserLockBalance(appState1: ApplicationState, _userAd
     let round_ts = roundDown(now)
 
     let [
-        listVeNFT,
-        listTotalVe,
-        listWarmUpReward,
-        listWarmUp_ts,
-        listEps
+      listVeNFT,
+      listTotalVe,
+      listWarmUpReward,
+      listWarmUp_ts,
+      listEps
     ] = await Promise.all(
       [
         multiCall(
@@ -278,7 +278,7 @@ export async function getTokenRatio(appState: ApplicationState, _tokenAddress: E
     const valuatorAddress = isNormalToken
       ? getAddr("TOKEN_VALUATOR_ADDRESS", appState.chainId)
       : getAddr("LP_VALUATOR_ADDRESS", appState.chainId)
-    
+
     const valuatorContract = new Contract(
       valuatorAddress,
       ValuatorABI,
