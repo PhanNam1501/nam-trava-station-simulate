@@ -1,14 +1,13 @@
 import { ApplicationState } from "../../../State/ApplicationState";
 import BigNumber from "bignumber.js";
-import { convertHexStringToAddress, getAddr } from "../../../utils/address";
-import { BASE18, DAY_TO_SECONDS, HOUR_TO_SECONDS, MAX_LOCK_TIMES, WEEK_TO_SECONDS, YEAR_TO_SECONDS } from "../../../utils/config";
-import { RewardTokenBalance, TokenInVeTrava, VeTravaState } from "../../../State/TravaGovenanceState";
-import { updateSmartWalletTokenBalance, updateUserTokenBalance } from "../../basic/UpdateStateAccount";
-import { MAX_UINT256, percentMul, wadDiv } from "../../../utils/config";
-import { BigNumberish, EthAddress, wallet_mode } from "../../../utils/types";
+import { MAX_LOCK_TIMES, WEEK_TO_SECONDS, YEAR_TO_SECONDS } from "../../../utils/config";
+import { RewardTokenBalance, TokenInVeTrava, VeTravaState } from "../../../State/trava/lending/TravaGovenanceState";
+import { updateSmartWalletTokenBalance, updateTokenBalance, updateUserTokenBalance } from "../../basic/UpdateStateAccount";
+import { MAX_UINT256 } from "../../../utils/config";
+import { EthAddress } from "../../../utils/types";
 import { uint256 } from "trava-station-sdk";
 import { roundDown, updateTravaGovernanceState, updateUserLockBalance } from "./UpdateStateAccount";
-import { FromAddressError } from "../../../utils/error";
+import { getMode } from "../../../utils/helper";
 
 export function getTimeLeft(time: uint256) {
   return Math.max(new Date(time).getTime() - new Date().getTime(), 0) / 1000;
@@ -61,45 +60,17 @@ export async function simulateTravaGovernanceCreateLock(
       appState = await updateTravaGovernanceState(appState);
     }
 
-    if (from == appState.walletState.address) {
-      if (!appState.walletState.tokenBalances.has(tokenAddress)) {
-        appState = await updateUserTokenBalance(appState, tokenAddress);
-      }
+    let mode = getMode(appState, _from);
 
-      if (!appState.walletState.veTravaListState.isFetch) {
-        appState = await updateUserLockBalance(appState, from);
-      }
-
-
-      let travaBalance = BigNumber(appState.walletState.tokenBalances.get(tokenAddress)!);
-      if (amount.isEqualTo(MAX_UINT256)) {
-        amount = travaBalance;
-      }
-      appState.walletState.tokenBalances.set(
-        tokenAddress,
-        travaBalance.minus(amount).toFixed(0)
-      );
+    if(!appState[mode].tokenBalances.has(tokenAddress)) {
+      appState = await updateTokenBalance(appState, _from, tokenAddress);
     }
-    if (from == appState.smartWalletState.address) {
-      if (!appState.smartWalletState.tokenBalances.has(tokenAddress)) {
-        appState = await updateSmartWalletTokenBalance(appState, tokenAddress);
-      }
-
-      if (!appState.smartWalletState.veTravaListState.isFetch) {
-        appState = await updateUserLockBalance(appState, from);
-      }
-
-
-      let travaBalance =
-        BigNumber(appState.smartWalletState.tokenBalances.get(tokenAddress)!);
-      if (amount.isEqualTo(MAX_UINT256)) {
-        amount = travaBalance;
-      }
-      appState.smartWalletState.tokenBalances.set(
-        tokenAddress,
-        travaBalance.minus(amount).toFixed(0)
-      );
+    
+    let travaBalance = BigNumber(appState[mode].tokenBalances.get(tokenAddress)!);
+    if(amount.isEqualTo(MAX_UINT256)) {
+      amount = travaBalance;
     }
+    appState[mode].tokenBalances.set(tokenAddress, travaBalance.minus(amount).toFixed(0));
 
     let remainingPeriod = BigNumber(timeRemaining(BigNumber(period)));
     let votingPower = (amount.multipliedBy(remainingPeriod).dividedBy(YEAR_TO_SECONDS * 4)).integerValue();
@@ -129,17 +100,13 @@ export async function simulateTravaGovernanceCreateLock(
       rewardTokenBalance: rewardTokenBalance,
     }
 
-    if (_to.toLowerCase() == appState.walletState.address.toLowerCase()) {
-      if (!appState.walletState.veTravaListState.isFetch) {
-        appState = await updateUserLockBalance(appState, appState.walletState.address);
+    if (_to.toLowerCase() == appState.walletState.address.toLowerCase() || _to.toLowerCase() == appState.smartWalletState.address.toLowerCase()) {
+      mode = getMode(appState, _to);
+      if (!appState[mode].veTravaListState.isFetch) {
+        appState = await updateUserLockBalance(appState, appState[mode].address);
       }
 
-      appState.walletState.veTravaListState.veTravaList.set(newId.toString(), veTravaState);
-    } else if (_to.toLowerCase() == appState.smartWalletState.address.toLowerCase()) {
-      if (!appState.smartWalletState.veTravaListState.isFetch) {
-        appState = await updateUserLockBalance(appState, appState.smartWalletState.address);
-      }
-      appState.smartWalletState.veTravaListState.veTravaList.set(newId.toString(), veTravaState);
+      appState[mode].veTravaListState.veTravaList.set(newId.toString(), veTravaState);
     }
     appState.TravaGovernanceState.totalSupply = newId;
 
@@ -161,14 +128,7 @@ export async function simulateTravaGovernanceIncreaseBalance(
       appState = await updateTravaGovernanceState(appState);
     }
 
-    let mode: wallet_mode;
-    if (_from.toLowerCase() == appState.walletState.address.toLowerCase()) {
-      mode = "walletState"
-    } else if (_from.toLowerCase() == appState.smartWalletState.address.toLowerCase()) {
-      mode = "smartWalletState"
-    } else {
-      throw new FromAddressError()
-    }
+    let mode = getMode(appState, _from);
 
     if (!appState.smartWalletState.veTravaListState.isFetch) {
       await updateUserLockBalance(appState, appState.smartWalletState.address);
@@ -305,49 +265,31 @@ export async function simulateTravaGovernanceWithdraw(
     let tokenAddress = veTrava.tokenInVeTrava.tokenLockOption.address.toLowerCase()
 
     let deposited = veTrava.tokenInVeTrava.balances;
-    let rewardBalance = veTrava.rewardTokenBalance.compoundedRewards;
+    let rewarded = veTrava.rewardTokenBalance.compoundedRewards;
     let rewardTokenAddress = appState.TravaGovernanceState.rewardTokenInfo.address.toLowerCase();
 
-    if (_to.toLowerCase() == appState.walletState.address.toLowerCase()) {
-      if (!appState.walletState.tokenBalances.has(rewardTokenAddress)) {
-        appState = await updateUserTokenBalance(appState, rewardTokenAddress);
+    if (_to.toLowerCase() == appState.walletState.address.toLowerCase() || _to.toLowerCase() == appState.smartWalletState.address.toLowerCase()) {
+      let mode = getMode(appState, _to);
+      if (!appState[mode].tokenBalances.has(rewardTokenAddress)) {
+        appState = await updateTokenBalance(appState, _to, rewardTokenAddress);
       }
 
-      if (!appState.walletState.tokenBalances.has(tokenAddress)) {
-        appState = await updateUserTokenBalance(appState, tokenAddress);
+      if (!appState[mode].tokenBalances.has(tokenAddress)) {
+        appState = await updateTokenBalance(appState, _to, tokenAddress);
       }
-
-      let balance = appState.walletState.tokenBalances.get(rewardTokenAddress)!
-      appState.walletState.tokenBalances.set(
+      
+      let tokenBalance = appState[mode].tokenBalances.get(tokenAddress)!;
+      appState[mode].tokenBalances.set(
         tokenAddress,
-        BigNumber(balance).plus(deposited).toFixed(0)
+        BigNumber(tokenBalance).plus(deposited).toFixed(0)
+        )
+      
+      let rewardBalance = appState[mode].tokenBalances.get(rewardTokenAddress)!;
+      appState[mode].tokenBalances.set(
+          rewardTokenAddress,
+          BigNumber(rewardBalance).plus(rewarded).toFixed(0)
       )
 
-      appState.walletState.tokenBalances.set(
-        tokenAddress,
-        BigNumber(rewardBalance).plus(deposited).toFixed(0)
-      )
-
-    } else if (_to.toLowerCase() == appState.smartWalletState.address.toLowerCase()) {
-
-      if (!appState.walletState.tokenBalances.has(rewardTokenAddress)) {
-        appState = await updateSmartWalletTokenBalance(appState, rewardTokenAddress);
-      }
-
-      if (!appState.walletState.tokenBalances.has(tokenAddress)) {
-        appState = await updateSmartWalletTokenBalance(appState, tokenAddress);
-      }
-
-      let balance = appState.smartWalletState.tokenBalances.get(rewardTokenAddress)!
-      appState.smartWalletState.tokenBalances.set(
-        tokenAddress,
-        BigNumber(balance).plus(deposited).toFixed(0)
-      )
-
-      appState.smartWalletState.tokenBalances.set(
-        tokenAddress,
-        BigNumber(rewardBalance).plus(deposited).toFixed(0)
-      )
     }
 
     appState.smartWalletState.veTravaListState.veTravaList.delete(_tokenId);
@@ -370,14 +312,7 @@ export async function simulateTravaGovernanceMerge(
       appState = await updateTravaGovernanceState(appState);
     }
 
-    let mode: wallet_mode;
-    if (_from.toLowerCase() == appState.walletState.address.toLowerCase()) {
-      mode = "walletState"
-    } else if (_from.toLowerCase() == appState.smartWalletState.address.toLowerCase()) {
-      mode = "smartWalletState"
-    } else {
-      throw new FromAddressError()
-    }
+    let mode = getMode(appState, _from);
 
     if (!appState[mode].veTravaListState.isFetch) {
       await updateUserLockBalance(appState, appState[mode].address);

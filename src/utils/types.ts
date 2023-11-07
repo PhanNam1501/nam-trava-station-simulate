@@ -60,7 +60,11 @@ type knight_version = "v1" | "v2" | "specials";
 
 type BigNumberish = BigNumberJS.Value;
 
+type AxiosRequestConfig = any
+
+
 export {
+  AxiosRequestConfig,
   Config,
   ContractNetwork,
   Contract,

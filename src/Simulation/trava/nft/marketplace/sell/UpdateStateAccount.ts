@@ -7,7 +7,7 @@ import _ from "lodash";
 import { SellingArmouryType } from "../../helpers/global";
 import { CollectionName, RarityMapping, TypeMapping } from "../../helpers/KnightConfig";
 import BigNumber from "bignumber.js";
-import { NFTSellingState } from "../../../../../State/TravaNFTState";
+import { NFTSellingState } from "../../../../../State/trava/nft/TravaNFTState";
 import SellGraphQuery from "../../helpers/SellGraphQuery";
 import { _fetchNormal } from "../../helpers/utils"
 import { multiCall } from "../../../../../utils/helper";

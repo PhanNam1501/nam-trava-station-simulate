@@ -1,8 +1,8 @@
 import { ArmouryObject, NormalKnight, SpecialKnight } from "../Simulation/trava/nft/helpers/global";
 import { EthAddress } from "../utils/types";
-import { NFTAuctioningState, NFTSellingState } from "./TravaNFTState";
-import { WalletTravaLPState } from "./TravaDeFiState";
-import { VeTravaListState, VeTravaState } from "./TravaGovenanceState";
+import { NFTAuctioningState, NFTSellingState } from "./trava/nft/TravaNFTState";
+import { WalletTravaLPState } from "./trava/lending/TravaDeFiState";
+import { VeTravaListState, VeTravaState } from "./trava/lending/TravaGovenanceState";
 
 // export class NFTData {
 //   id: string | number;

@@ -1,4 +1,5 @@
 import { EthAddress, uint256 } from "trava-station-sdk";
+import { Vault } from "../missions";
 
 // Selling
 export type SellingArmouryType = {
@@ -74,6 +75,34 @@ export interface AuctioningNormalKnight extends NormalKnight, AuctionKnightData 
 
 export interface AuctioningSpecialKnight extends SpecialKnight, AuctionKnightData { };
 
+export interface FarmingKinghtInfo {
+  attainedExp: number,
+  depositedTime: number,
+  id: number,
+  exp: number,
+  earn: number,
+  value: number
+}
+export interface FarmingKnightDetailInfo extends FarmingKinghtInfo {
+  apr: number,
+  rarity: number,
+  armor: CollectionArmoury;
+  helmet: CollectionArmoury;
+  shield: CollectionArmoury;
+  weapon: CollectionArmoury;
+}
+
+export interface NFTFarming {
+  vault: Vault;
+  aprAvg: number;
+  numberKnightOfUser: number;
+  totalNFTs: number;
+  totalRewardOfUser: uint256;
+  totalVaultValue: number;
+  dailyReward: number;
+  farmingState: Array<FarmingKnightDetailInfo>;
+}
+
 // The graph type
 export type Token = {
   exp: null | number;
@@ -106,3 +135,4 @@ export type CollectionArmouryFromGraph = {
   rarity: string;
   exp: string | null;
 };
+
