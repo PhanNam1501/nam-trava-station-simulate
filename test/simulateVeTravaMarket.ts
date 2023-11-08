@@ -1,5 +1,5 @@
 import { JsonRpcProvider, ethers } from "ethers";
-import { updateSellingNFTFromContract, updateUserVeTravaMarket } from "../src/Simulation/trava/nft/marketplace/veTrava/UpdateStateAccount";
+import { updateSellingVeTrava, updateOwnedVeTrava } from "../src/Simulation/trava/nft/marketplace/veTrava/UpdateStateAccount";
 import { simulateTravaGovernanceCreateLock } from "../src/Simulation/trava/governance/SimulationGovernance";
 import { ApplicationState } from "../src/State/ApplicationState";
 import { getAddr } from "../src/utils/address";
@@ -27,7 +27,8 @@ import { simulateNFTVeTravaTranfer } from "../src/Simulation/trava/nft/marketpla
     chainId
     )
     // appState = await updateTravaGovernanceState(appState);
-    appState = await updateUserVeTravaMarket(appState, userAddress);
+    appState = await updateSellingVeTrava(appState);
+    appState = await updateOwnedVeTrava(appState, userAddress);
     appState = await simulateNFTVeTravaTranfer(appState, "39", userAddress, proxyAddress);
     appState = await simulateNFTVeTravaTranfer(appState, "43", userAddress, proxyAddress);
     console.log(appState.NFTVeTravaMarketSellingState);

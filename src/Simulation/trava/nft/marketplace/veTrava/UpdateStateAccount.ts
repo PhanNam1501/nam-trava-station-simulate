@@ -14,7 +14,7 @@ import { FromAddressError } from "../../../../../utils/error";
 import { updateTravaGovernanceState, updateUserLockBalance } from "../../../governance/UpdateStateAccount";
 
 
-export async function updateSellingNFTFromContract(
+export async function updateSellingVeTrava(
     appState1: ApplicationState,
 ): Promise<ApplicationState> {
     let appState = { ...appState1 };
@@ -87,11 +87,11 @@ export async function updateSellingNFTFromContract(
                 amount: tokenMetadata[1],
                 rwAmount: tokenMetadata[0],
                 end: tokenMetadata[2].toString(),
-                token: tokenMetadata[3],
+                token: tokenMetadata[3].toLowerCase(),
                 votingPower: tokenVoting[0],
-                seller: tokenOrderInfo[0][0],
+                seller: tokenOrderInfo[0][0].toLowerCase(),
                 price: tokenOrderInfo[0][1],
-                priceToken: priceToken,
+                priceToken: priceToken.toLowerCase(),
             };
             sellingVeTrava.push(sellingVeTravaItem);
         }
@@ -103,12 +103,12 @@ export async function updateSellingNFTFromContract(
     return appState;
 }
 
-export async function updateUserVeTravaMarket(appState1: ApplicationState, _userAddress: EthAddress) {
+export async function updateOwnedVeTrava(appState1: ApplicationState, _userAddress: EthAddress) {
     let appState = { ...appState1 };
     try {
-        if (appState.NFTVeTravaMarketSellingState.isFetch == false) {
-            appState = await updateSellingNFTFromContract(appState);
-          }
+        // if (appState.NFTVeTravaMarketSellingState.isFetch == false) {
+        //     appState = await updateSellingVeTrava(appState);
+        //   }
           await updateUserLockBalance(appState, _userAddress);
     } catch (e) {
         console.log(e);
