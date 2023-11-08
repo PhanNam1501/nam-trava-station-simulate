@@ -34,16 +34,13 @@ export async function simulateNFTVeTravaTranfer(
           } else {
             modeTo = "Other"
           }
-        if (modeFrom == modeTo) {
-            return appState;
-        }
         if (modeTo == "Other") {
             appState[modeFrom].veTravaListState.veTravaList.delete(_NFTId);
         }
         else{
             let data: VeTravaState = appState[modeFrom].veTravaListState.veTravaList.get(_NFTId)!;
-            appState[modeTo].veTravaListState.veTravaList.set(_NFTId, data);
             appState[modeFrom].veTravaListState.veTravaList.delete(_NFTId);
+            appState[modeTo].veTravaListState.veTravaList.set(_NFTId, data);
         }
     } catch (err) {
         throw err;

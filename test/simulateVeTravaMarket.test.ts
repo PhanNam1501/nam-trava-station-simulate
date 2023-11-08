@@ -31,6 +31,7 @@ import { simulateNFTVeTravaTranfer } from "../src/Simulation/trava/nft/marketpla
     appState = await updateOwnedVeTrava(appState, userAddress);
     appState = await simulateNFTVeTravaTranfer(appState, "39", userAddress, proxyAddress);
     appState = await simulateNFTVeTravaTranfer(appState, "43", userAddress, proxyAddress);
+    appState = await simulateNFTVeTravaTranfer(appState, "43", proxyAddress, proxyAddress);
     console.log(appState.NFTVeTravaMarketSellingState);
     console.log(appState.walletState.veTravaListState);
     console.log(appState.smartWalletState.veTravaListState);
