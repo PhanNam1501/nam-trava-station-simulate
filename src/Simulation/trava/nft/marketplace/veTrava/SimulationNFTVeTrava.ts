@@ -43,9 +43,7 @@ export async function simulateNFTVeTravaTranfer(
         else{
             let data: VeTravaState = appState[modeFrom].veTravaListState.veTravaList.get(_NFTId)!;
             appState[modeTo].veTravaListState.veTravaList.set(_NFTId, data);
-            appState[modeTo].veTravaListState.isFetch = true;
             appState[modeFrom].veTravaListState.veTravaList.delete(_NFTId);
-
         }
     } catch (err) {
         throw err;
