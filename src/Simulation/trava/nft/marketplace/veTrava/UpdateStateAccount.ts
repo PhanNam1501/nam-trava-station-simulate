@@ -82,15 +82,15 @@ export async function updateSellingVeTrava(
             else if (BigNumber(tokenOrderInfo[0][2]).isEqualTo(2)) {
                 priceToken = getAddr("BUSD_TOKEN_ADDRESS", appState.chainId);
             }
-            let sellingVeTravaItem = {
-                id: tokenId,
-                amount: tokenMetadata[1],
-                rwAmount: tokenMetadata[0],
+            let sellingVeTravaItem: SellingVeTravaType = {
+                id: parseInt(tokenId),
+                amount: parseInt(tokenMetadata[1]),
+                rwAmount: parseInt(tokenMetadata[0]),
                 end: tokenMetadata[2].toString(),
                 token: tokenMetadata[3].toLowerCase(),
-                votingPower: tokenVoting[0],
+                votingPower: parseInt(tokenVoting[0]),
                 seller: tokenOrderInfo[0][0].toLowerCase(),
-                price: tokenOrderInfo[0][1],
+                price: parseInt(tokenOrderInfo[0][1]),
                 priceToken: priceToken.toLowerCase(),
             };
             sellingVeTrava.push(sellingVeTravaItem);
