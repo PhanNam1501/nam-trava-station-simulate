@@ -1,12 +1,10 @@
-import { ApplicationState } from "../../../../../State/ApplicationState";
-import { Contract } from "ethers";
-import { getAddr } from "../../../../../utils/address";
+import { ApplicationState } from "../../../../State/ApplicationState";
 import _ from "lodash";
-import { _fetchNormal } from "../../helpers/utils"
-import { BigNumberish, EthAddress, wallet_mode } from "../../../../../utils/types";
-import { FromAddressError } from "../../../../../utils/error";
-import { updateTravaGovernanceState, updateUserLockBalance } from "../../../governance/UpdateStateAccount";
-import { VeTravaState } from "../../../../../State/TravaGovenanceState";
+import { _fetchNormal } from "../helpers/utils"
+import { BigNumberish, EthAddress, wallet_mode } from "../../../../utils/types";
+import { FromAddressError } from "../../../../utils/error";
+import { updateTravaGovernanceState, updateUserLockBalance } from "../../governance/UpdateStateAccount";
+import { VeTravaState } from "../../../../State/TravaGovenanceState";
 export async function simulateNFTVeTravaTranfer(
     _appState1: ApplicationState,
     _NFTId: string,
