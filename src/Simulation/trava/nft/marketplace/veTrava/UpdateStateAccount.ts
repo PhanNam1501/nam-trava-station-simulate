@@ -4,13 +4,12 @@ import { getAddr } from "../../../../../utils/address";
 import _ from "lodash";
 import { SellingVeTravaType } from "../../helpers/global";
 import BigNumber from "bignumber.js";
-import { _fetchNormal } from "../../helpers/utils"
 import { BigNumberish, EthAddress, wallet_mode } from "../../../../../utils/types";
 import { multiCall } from "../../../../../utils/helper";
 import veTravaMarketplaceABI from "../../../../../abis/veTravaMarketplaceABI.json";
 import VeABI from "../../../../../abis/Ve.json";
 import { FromAddressError } from "../../../../../utils/error";
-
+import BEP20ABI from "../../../../../abis/BEP20.json";
 export async function updateSellingVeTrava(
     appState1: ApplicationState,
     force = false,
@@ -68,6 +67,20 @@ export async function updateSellingVeTrava(
                 appState.chainId
                 ),
             ]);
+            const travaContract = new Contract(
+                getAddr("TRAVA_TOKEN", appState.chainId),
+                BEP20ABI,
+                appState.web3
+                )
+            const travaTokenDecimals = await travaContract.decimals();
+            const busdContract = new Contract(
+                getAddr("BUSD_TOKEN_ADDRESS", appState.chainId),
+                BEP20ABI,
+                appState.web3
+                )
+            const busdTokenDecimals = await busdContract.decimals();
+
+
             const sellingVeTrava = new Array<SellingVeTravaType>;
             for (let i = 0; i < tokenOnSaleFlattened.length; i++) {
                 let tokenId = tokenOnSaleFlattened[i];
@@ -75,11 +88,14 @@ export async function updateSellingVeTrava(
                 let tokenVoting = tokenVotingPower[i];
                 let tokenOrderInfo = tokenOrder[i];
                 let priceToken = "";
+                let priceTokenDecimals = 0;
                 if (BigNumber(tokenOrderInfo[0][2]).isEqualTo(1)) {
                     priceToken = getAddr("TRAVA_TOKEN", appState.chainId);
+                    priceTokenDecimals = Number(travaTokenDecimals);
                 }
                 else if (BigNumber(tokenOrderInfo[0][2]).isEqualTo(2)) {
                     priceToken = getAddr("BUSD_TOKEN_ADDRESS", appState.chainId);
+                    priceTokenDecimals = Number(busdTokenDecimals);
                 }
                 let sellingVeTravaItem: SellingVeTravaType = {
                     id: parseInt(tokenId),
@@ -91,6 +107,7 @@ export async function updateSellingVeTrava(
                     seller: tokenOrderInfo[0][0].toLowerCase(),
                     price: parseInt(tokenOrderInfo[0][1]),
                     priceToken: priceToken.toLowerCase(),
+                    priceTokenDecimals: priceTokenDecimals,
                 };
                 sellingVeTrava.push(sellingVeTravaItem);
             }

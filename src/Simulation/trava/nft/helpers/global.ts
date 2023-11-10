@@ -148,4 +148,5 @@ export type SellingVeTravaType = {
   seller: EthAddress;
   price: number;
   priceToken: EthAddress;
+  priceTokenDecimals: number;
 };

@@ -19,7 +19,7 @@ export async function simulateNFTVeTravaTranfer(
             appState = await updateTravaGovernanceState(appState);
           }
           let modeFrom: wallet_mode = getMode(appState, _from);
-          let modeTo: wallet_mode = getMode(appState, _from);
+          let modeTo: wallet_mode = getMode(appState, _to);
           if (modeTo == "walletState" || modeTo == "smartWalletState") {
             let data: VeTravaState = appState[modeFrom].veTravaListState.veTravaList.get(_NFTId)!;
             appState[modeFrom].veTravaListState.veTravaList.delete(_NFTId);
