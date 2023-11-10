@@ -5,6 +5,7 @@ import { BigNumberish, EthAddress, wallet_mode } from "../../../../utils/types";
 import { FromAddressError } from "../../../../utils/error";
 import { updateTravaGovernanceState, updateUserLockBalance } from "../../governance/UpdateStateAccount";
 import { VeTravaState } from "../../../../State";
+import { getMode } from "../../../../utils/helper";
 
 export async function simulateNFTVeTravaTranfer(
     _appState1: ApplicationState,
@@ -17,30 +18,16 @@ export async function simulateNFTVeTravaTranfer(
         if (appState.TravaGovernanceState.totalSupply == "") {
             appState = await updateTravaGovernanceState(appState);
           }
-          let modeFrom: wallet_mode;
-          let modeTo: "walletState" | "smartWalletState" | "Other";
-          if (_from.toLowerCase() == appState.walletState.address.toLowerCase()) {
-            modeFrom = "walletState"
-          } else if (_from.toLowerCase() == appState.smartWalletState.address.toLowerCase()) {
-            modeFrom = "smartWalletState"
-          } else {
-            throw new FromAddressError()
-          }
-          if (_to.toLowerCase() == appState.walletState.address.toLowerCase()) {
-            modeTo = "walletState"
-          } else if (_to.toLowerCase() == appState.smartWalletState.address.toLowerCase()) {
-            modeTo = "smartWalletState"
-          } else {
-            modeTo = "Other"
-          }
-        if (modeTo == "Other") {
-            appState[modeFrom].veTravaListState.veTravaList.delete(_NFTId);
-        }
-        else{
+          let modeFrom: wallet_mode = getMode(appState, _from);
+          let modeTo: wallet_mode = getMode(appState, _from);
+          if (modeTo == "walletState" || modeTo == "smartWalletState") {
             let data: VeTravaState = appState[modeFrom].veTravaListState.veTravaList.get(_NFTId)!;
             appState[modeFrom].veTravaListState.veTravaList.delete(_NFTId);
             appState[modeTo].veTravaListState.veTravaList.set(_NFTId, data);
-        }
+          }
+          else{
+              appState[modeFrom].veTravaListState.veTravaList.delete(_NFTId);
+          }
     } catch (err) {
         throw err;
       }
