@@ -9,8 +9,7 @@ import BEP20ABI from "../../../../../abis/BEP20.json";
 import { Contract } from "ethers";
 import BigNumber from "bignumber.js";
 import { updateSmartWalletTokenBalance, updateUserTokenBalance } from "../../../../basic";
-import { get } from "lodash";
-import { getAddr } from "../../../../../utils";
+
 export async function simulateNFTVeTravaCreateSale(
     _appState1: ApplicationState,
     _NFTId: string,
