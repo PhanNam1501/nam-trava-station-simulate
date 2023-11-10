@@ -140,12 +140,12 @@ export type CollectionArmouryFromGraph = {
 // VeTrava
 export type tokenLocked = {
   address: EthAddress;
-  decimal: string;
+  decimals: string;
 }
 
 export type priceToken = {
   address: EthAddress;
-  decimal: string;
+  decimals: string;
 }
 
 export type SellingVeTravaType = {

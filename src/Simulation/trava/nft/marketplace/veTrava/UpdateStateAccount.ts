@@ -114,11 +114,11 @@ export async function updateSellingVeTrava(
                 }
                 let tokenLocked: tokenLocked = {
                     address: tokenMetadata[3].toLowerCase(),
-                    decimal: tokenLockDecimals[i].toString(),
+                    decimals: tokenLockDecimals[i].toString(),
                 }
                 let priceToken: priceToken = {
                     address: priceTokenAddress.toLowerCase(),
-                    decimal: priceTokenDecimals.toString(),
+                    decimals: priceTokenDecimals.toString(),
                 }
                 let sellingVeTravaItem: SellingVeTravaType = {
                     id: tokenId.toString(),
