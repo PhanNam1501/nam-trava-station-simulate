@@ -1,6 +1,6 @@
 import { EthAddress, uint256 } from "trava-station-sdk";
-import { TokenLockOption } from './../Simulation/trava/governance/travaGovernanceConfig';
-import { BigNumberish } from "../utils/types";
+import { TokenLockOption } from '../../../Simulation/trava/governance/travaGovernanceConfig';
+import { BigNumberish } from "../../../utils/types";
 
 export class TravaGovernanceState {
   totalSupply: uint256;

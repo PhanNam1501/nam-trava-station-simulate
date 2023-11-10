@@ -1,9 +1,9 @@
 import { WalletState } from "./WalletState";
 import { EthAddress } from "../utils/types";
 import { SmartWalletState } from "./SmartWalletState";
-import { NFTAuctioningState, NFTSellingState, NFTVeTravaSellingState } from "./TravaNFTState";
+import { NFTAuctioningState, NFTFarmingsState, NFTSellingState, NFTVeTravaSellingState } from "./trava/nft/TravaNFTState";
 import { JsonRpcProvider } from "ethers";
-import { TravaGovernanceState } from "./TravaGovenanceState";
+import { TravaGovernanceState } from "./trava/lending/TravaGovenanceState";
 
 export class ApplicationState {
   createdTime: number;

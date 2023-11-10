@@ -6,10 +6,11 @@ import { ApplicationState } from './../../../../../State/ApplicationState';
 import { getAddr } from "../../../../../utils/address";
 import { FEE_AUCTION_PERCENTAGE, MAX_UINT256, MINIMUM_BID_STEP_PERCENT, ZERO_ADDRESS } from '../../../../../utils/config';
 import { AuthorizeError, BidPriceError, BidStepsError, BidderError, ExpireAuctionError, FromAddressError, HighestBidderError, InexpireAuctionError, NFTIsNotOnGoingError, NFTNotFoundError, OngoingAuctionError, OwnerAuctionError } from '../../../../../utils/error';
-import { NFTAuctioningState } from '../../../../../State/TravaNFTState';
+import { NFTAuctioningState } from '../../../../../State/trava/nft/TravaNFTState';
 import { isAuctionOngoing, updateAuctioningNFTFromContract, updateOwnedAuctioningNFT } from "./UpdateStateAccount";
 import { updateCollectionBalanceFromContract } from '../../utilities';
 import { BigNumber } from 'bignumber.js';
+import { getMode } from '../../../../../utils/helper';
 
 export function findTravaNFTKnightAuctioning(
     _tokenId: number | uint256,
@@ -57,17 +58,9 @@ export async function simulateTravaNFTCreateAuction(
 ): Promise<ApplicationState> {
     let appState = { ...appState1 };
     try {
-        let mode: wallet_mode;
-        if (_from.toLowerCase() == appState.walletState.address.toLowerCase()) {
-            mode = "walletState"
-        } else if (_from.toLowerCase() == appState.smartWalletState.address.toLowerCase()) {
-            mode = "smartWalletState"
-        }
-        else {
-            throw new FromAddressError()
-        }
+        let mode = getMode(appState, _from);
 
-        if (!appState.smartWalletState.collection.isFetch) {
+        if (!appState[mode].collection.isFetch) {
             appState = await updateCollectionBalanceFromContract(appState, mode);
         }
 

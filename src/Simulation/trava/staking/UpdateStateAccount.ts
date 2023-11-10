@@ -5,7 +5,7 @@ import VestingTokenAbi from "../../../abis/VestingTrava.json";
 import { getAddr } from "../../../utils/address";
 import { listStakingVault } from "../../../utils/stakingVaultConfig";
 import { YEAR_TO_SECONDS } from "../../../utils/config";
-import { BaseAccountVault, RewardTokenData, StakedTokenData, UnderlyingTokenData } from "../../../State/TravaDeFiState";
+import { BaseAccountVault, RewardTokenData, StakedTokenData, UnderlyingTokenData } from "../../../State/trava/lending/TravaDeFiState";
 import BigNumber from "bignumber.js";
 import OracleABI from "../../../abis/AaveOracle.json";
 import { updateSmartWalletTokenBalance } from "../../basic/UpdateStateAccount";
