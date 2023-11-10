@@ -1,11 +1,12 @@
 import { JsonRpcProvider, ethers } from "ethers";
-import { updateSellingVeTrava, updateOwnedVeTrava } from "../src/Simulation/trava/nft/marketplace/veTrava/UpdateStateAccount";
+import { updateSellingVeTrava } from "../src/Simulation/trava/nft/marketplace/veTrava/UpdateStateAccount";
 import { simulateTravaGovernanceCreateLock } from "../src/Simulation/trava/governance/SimulationGovernance";
 import { ApplicationState } from "../src/State/ApplicationState";
 import { getAddr } from "../src/utils/address";
 import BigNumber from "bignumber.js";
 import { MONTH_TO_SECONDS, WEEK_TO_SECONDS } from "../src/utils/config";
 import { simulateNFTVeTravaTranfer } from "../src/Simulation/trava/nft/utilities/SimulationVeTravaNFTUtilities";
+import { updateUserLockBalance } from "../src/Simulation";
   // start 
   async function test(){
     console.log(BigNumber(0.1).toFixed())
@@ -28,7 +29,7 @@ import { simulateNFTVeTravaTranfer } from "../src/Simulation/trava/nft/utilities
     )
     // appState = await updateTravaGovernanceState(appState);
     appState = await updateSellingVeTrava(appState);
-    appState = await updateOwnedVeTrava(appState, userAddress);
+    appState = await updateUserLockBalance(appState, userAddress);
     appState = await simulateNFTVeTravaTranfer(appState, "39", userAddress, proxyAddress);
     appState = await simulateNFTVeTravaTranfer(appState, "43", userAddress, proxyAddress);
     appState = await simulateNFTVeTravaTranfer(appState, "43", proxyAddress, proxyAddress);
