@@ -26,6 +26,7 @@ export async function simulateNFTVeTravaCreateSale(
         let modeFrom: wallet_mode = getMode(appState, _from);
         if (appState[modeFrom].veTravaListState.veTravaList.has(_NFTId)) {
             let data: VeTravaState = appState[modeFrom].veTravaListState.veTravaList.get(_NFTId)!;
+            console.log(data);
             appState[modeFrom].veTravaListState.veTravaList.delete(_NFTId);
             const tokenLockContract = new Contract(
                 _priceTokenAddress,
@@ -76,21 +77,13 @@ export async function simulateNFTVeTravaCancelSale(
         let modeFrom: wallet_mode = getMode(appState, _from);
         if (appState.NFTVeTravaMarketSellingState.sellingVeTrava.find(x => x.id == _NFTId) && _from == appState.NFTVeTravaMarketSellingState.sellingVeTrava.find(x => x.id == _NFTId)!.seller) {
             let data = appState.NFTVeTravaMarketSellingState.sellingVeTrava.find(x => x.id == _NFTId)!;
-            let tokenRatio = (await getTokenRatio(appState, data.tokenLocked.address));
             let tokenLock: TokenLockOption = tokenLockOptions[appState.chainId].find(x => x.address == data.tokenLocked.address)!;
-            let tokenLockHasRatio: TokenLock = {
-                address: tokenLock.address,
-                symbol: tokenLock.symbol,
-                name: tokenLock.name,
-                decimals: tokenLock.decimals,
-                ratio: tokenRatio.toFixed(),
-            }
             let data1: VeTravaState = {
                 id: data.id,
                 votingPower: data.votingPower,
                 tokenInVeTrava: {
                     balances: data.amount,
-                    tokenLockOption: tokenLockHasRatio,
+                    tokenLockOption: tokenLock,
                 },
                 unlockTime: data.end,
                 rewardTokenBalance: {
