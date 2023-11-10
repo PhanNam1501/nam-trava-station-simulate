@@ -4,7 +4,6 @@ import { getAddr } from "../../../../../utils/address";
 import _ from "lodash";
 import { SellingVeTravaType } from "../../helpers/global";
 import BigNumber from "bignumber.js";
-import { NFTVeTravaSellingState } from "../../../../../State/TravaNFTState";
 import { _fetchNormal } from "../../helpers/utils"
 import { BigNumberish, EthAddress, wallet_mode } from "../../../../../utils/types";
 import { multiCall } from "../../../../../utils/helper";

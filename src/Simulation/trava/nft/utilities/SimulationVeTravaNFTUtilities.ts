@@ -4,7 +4,8 @@ import { _fetchNormal } from "../helpers/utils"
 import { BigNumberish, EthAddress, wallet_mode } from "../../../../utils/types";
 import { FromAddressError } from "../../../../utils/error";
 import { updateTravaGovernanceState, updateUserLockBalance } from "../../governance/UpdateStateAccount";
-import { VeTravaState } from "../../../../State/TravaGovenanceState";
+import { VeTravaState } from "../../../../State";
+
 export async function simulateNFTVeTravaTranfer(
     _appState1: ApplicationState,
     _NFTId: string,
