@@ -9,6 +9,7 @@ import BigNumber from "bignumber.js";
 import { updateSmartWalletTokenBalance, updateUserTokenBalance } from "../../../../basic";
 import { NFTNotFoundError } from '../../../../../utils/error';
 import { tokenSellOptions } from "./veTravaConfig";
+import { simulateNFTVeTravaTranfer } from "../../utilities/SimulationVeTravaNFTUtilities";
 export async function simulateNFTVeTravaCreateSale(
     _appState1: ApplicationState,
     _NFTId: uint256,
@@ -64,6 +65,7 @@ export async function simulateNFTVeTravaCreateSale(
 export async function simulateNFTVeTravaCancelSale(
     _appState1: ApplicationState,
     _NFTId: uint256,
+    _to: EthAddress,
 ): Promise<ApplicationState> {
     let appState = {..._appState1};
     try{
@@ -96,8 +98,8 @@ export async function simulateNFTVeTravaCancelSale(
             }
             appState.smartWalletState.veTravaListState.veTravaList.set(_NFTId, data1);
             appState.NFTVeTravaMarketSellingState.sellingVeTrava = appState.NFTVeTravaMarketSellingState.sellingVeTrava.filter(x => x.id != _NFTId);
-            
         }
+        appState = await simulateNFTVeTravaTranfer(appState, _NFTId, _from, _to);
     } catch (err) {
         throw err;
       }

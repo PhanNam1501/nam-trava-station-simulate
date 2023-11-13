@@ -42,7 +42,7 @@ import { simulateNFTVeTravaCancelSale, simulateNFTVeTravaCreateSale, simulateNFT
     console.log(appState.smartWalletState.veTravaListState);
     console.log(appState.NFTVeTravaMarketSellingState);
     console.log("===============TEST CANCEL SALE==================");
-    appState = await simulateNFTVeTravaCancelSale(appState, "43");
+    appState = await simulateNFTVeTravaCancelSale(appState, "43", proxyAddress);
     console.log(appState.smartWalletState.veTravaListState);
     console.log(appState.NFTVeTravaMarketSellingState);
     console.log("===============TEST BUY==================");

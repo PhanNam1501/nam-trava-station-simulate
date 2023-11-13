@@ -21,7 +21,14 @@ export async function simulateNFTVeTravaTranfer(
             appState = await updateTravaGovernanceState(appState);
           }
           let modeFrom: wallet_mode = getMode(appState, _from);
-          let modeTo: wallet_mode = getMode(appState, _to);
+          let modeTo: "walletState" | "smartWalletState" | "Others";
+          if (_from.toLowerCase() == appState.walletState.address.toLowerCase()) {
+            modeTo = "walletState"
+          } else if (_from.toLowerCase() == appState.smartWalletState.address.toLowerCase()) {
+            modeTo = "smartWalletState"
+          } else {
+            modeTo = "Others"
+          }
           if (!appState[modeFrom].veTravaListState.veTravaList.has(_NFTId)) {
             throw new NFTNotFoundError("NFT not found");
           }
