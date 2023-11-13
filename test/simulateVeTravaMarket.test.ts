@@ -6,7 +6,7 @@ import { getAddr } from "../src/utils/address";
 import BigNumber from "bignumber.js";
 import { MONTH_TO_SECONDS, WEEK_TO_SECONDS } from "../src/utils/config";
 import { simulateNFTVeTravaTranfer } from "../src/Simulation/trava/nft/utilities/SimulationVeTravaNFTUtilities";
-import { updateUserLockBalance, updateUserTokenBalance } from "../src/Simulation";
+import { updateTravaGovernanceState, updateUserLockBalance, updateUserTokenBalance } from "../src/Simulation";
 import { simulateNFTVeTravaCancelSale, simulateNFTVeTravaCreateSale, simulateNFTVeTravaBuy } from "../src/Simulation/trava/nft/marketplace/veTrava/SimulationNFTVeTrava";
   // start 
   async function test(){
@@ -29,7 +29,7 @@ import { simulateNFTVeTravaCancelSale, simulateNFTVeTravaCreateSale, simulateNFT
     chainId
     )
     appState = await updateUserTokenBalance(appState, getAddr("TRAVA_TOKEN"));
-    // appState = await updateTravaGovernanceState(appState);
+    //appState = await updateTravaGovernanceState(appState);
     appState = await updateSellingVeTrava(appState);
     appState = await updateUserLockBalance(appState, userAddress);
     appState = await simulateNFTVeTravaTranfer(appState, "39", userAddress, proxyAddress);

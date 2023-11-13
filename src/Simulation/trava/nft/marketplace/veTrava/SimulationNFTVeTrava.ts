@@ -27,9 +27,9 @@ export async function simulateNFTVeTravaCreateSale(
             appState = await updateSellingVeTrava(appState);
         }
         let modeFrom: wallet_mode = getMode(appState, _from);
+        console.log(appState[modeFrom].veTravaListState.veTravaList);
         if (appState[modeFrom].veTravaListState.veTravaList.has(_NFTId)) {
             let data: VeTravaState = appState[modeFrom].veTravaListState.veTravaList.get(_NFTId)!;
-            console.log(data);
             appState[modeFrom].veTravaListState.veTravaList.delete(_NFTId);
             const tokenLockContract = new Contract(
                 _priceTokenAddress,
@@ -138,14 +138,9 @@ export async function simulateNFTVeTravaBuy(
                 },
             }
 
-            // TEST
-            //modeFrom = "walletState";
 
             let price = data.price;
             let priceTokenAddress = data.priceToken.address.toLowerCase();
-
-            // TEST
-            // let priceTokenAddress = getAddr("TRAVA_TOKEN");
 
             if (modeFrom == "walletState") {
                 appState = await updateUserTokenBalance(appState, priceTokenAddress);
@@ -156,13 +151,11 @@ export async function simulateNFTVeTravaBuy(
             let balanceOfToken = BigNumber(0);
             if (appState[modeFrom].tokenBalances.has(priceTokenAddress.toLowerCase())) {
                 balanceOfToken = BigNumber(appState[modeFrom].tokenBalances.get(priceTokenAddress.toLowerCase())!);
-                console.log(appState[modeFrom].tokenBalances);
             }
             let newBalance = balanceOfToken.minus(price).toFixed();
             appState[modeFrom].tokenBalances.set(priceTokenAddress.toLowerCase(), newBalance);  
             appState[modeFrom].veTravaListState.veTravaList.set(_NFTId, data1);
             appState.NFTVeTravaMarketSellingState.sellingVeTrava = appState.NFTVeTravaMarketSellingState.sellingVeTrava.filter(x => x.id != _NFTId);
-            console.log(appState[modeFrom].tokenBalances);
         }
     } catch (err) {
         throw err;

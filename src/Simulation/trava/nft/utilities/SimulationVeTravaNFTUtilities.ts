@@ -20,13 +20,15 @@ export async function simulateNFTVeTravaTranfer(
           }
           let modeFrom: wallet_mode = getMode(appState, _from);
           let modeTo: wallet_mode = getMode(appState, _to);
-          if (modeTo == "walletState" || modeTo == "smartWalletState") {
-            let data: VeTravaState = appState[modeFrom].veTravaListState.veTravaList.get(_NFTId)!;
-            appState[modeFrom].veTravaListState.veTravaList.delete(_NFTId);
-            appState[modeTo].veTravaListState.veTravaList.set(_NFTId, data);
-          }
-          else{
+          if (appState[modeFrom].veTravaListState.veTravaList.has(_NFTId)) {
+            if (modeTo == "walletState" || modeTo == "smartWalletState") {
+              let data: VeTravaState = appState[modeFrom].veTravaListState.veTravaList.get(_NFTId)!;
               appState[modeFrom].veTravaListState.veTravaList.delete(_NFTId);
+              appState[modeTo].veTravaListState.veTravaList.set(_NFTId, data);
+            }
+            else{
+                appState[modeFrom].veTravaListState.veTravaList.delete(_NFTId);
+            }
           }
     } catch (err) {
         throw err;
