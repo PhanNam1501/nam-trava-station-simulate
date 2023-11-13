@@ -1,5 +1,7 @@
 # TRAVA SIMULATION ROUTE
+
 # Table of contents
+
 - [TRAVA SIMULATION ROUTE](#trava-simulation-route)
 - [Table of contents](#table-of-contents)
 - [Initialize state](#initialize-state)
@@ -12,6 +14,7 @@
     - [Tương tác với các Marketplace / Auction](#tương-tác-với-các-marketplace--auction)
     - [Tuong tac voi Trava Staking](#tuong-tac-voi-trava-staking)
     - [Tuưng tác với Trava Governance](#tuưng-tác-với-trava-governance)
+    - [Tương tác với veTrava NFT Marketplace](#tương-tác-với-veTrava-nft-marketplace)
 - [Simulate state](#simulate-state)
   - [Simulate Utilities actions](#simulate-utilities-actions)
   - [Pull token](#pull-token)
@@ -56,6 +59,12 @@
   - [Sendtoken](#sendtoken-1)
   - [Wrap](#wrap-1)
   - [Unwrap](#unwrap-1)
+- [Simulate veTrava NFT Marketplace](#simulate-veTrava-NFT-marketplace)
+  - [Simulate Tranfer veTrava NFT](#simulate-veTrava-NFT-tranfer)
+  - [Simulate Create Sale veTrava NFT](#simulate-veTrava-NFT-create-sale)
+  - [Simulate Cancel Sale veTrava NFT](#simulate-veTrava-NFT-cancel-sale)
+  - [Simulate Buy veTrava NFT](#simulate-veTrava-NFT-buy)
+
 ```
 import { ApplicationState } from "../State/ApplicationState";
 
@@ -68,16 +77,22 @@ let appState = new ApplicationState(
     chainId: chainId
 );
 ```
+
 # Initialize state
+
 ## Các action liên quan đến token
+
 Khi sử dụng đồng token nào, thì khởi tạo state về số dư của đồng token đó:
+
 ```
 appState1 = await updateUserTokenBalance(
     appState,
     tokenAddress
 )
 ```
+
 Nếu sử dụng đồng BNB
+
 ```
 appState2 = await updateUserEthBalance(
     appState1
@@ -85,28 +100,36 @@ appState2 = await updateUserEthBalance(
 ```
 
 ## Các action liên quan đến pools: deposit, borrow, withdraw, repay
+
 Khi sử dụng các action trong pools, thì thực hiện update state của user về pool này
+
 ```
 appState3 = await updateTravaLPInfo(
     appState2,
     market
 )
 ```
+
 Khi gọi action supply và withdraw
+
 ```
 appState31 = await updateLPtTokenInfo(
     appState3,
     tokenAddress
 )
 ```
+
 Khi gọi action borrow và repay
+
 ```
 appState32 = await updateLPDebtTokenInfo(
     appState3,
     tokenAddress
 )
 ```
-Khi goi action claim rewards 
+
+Khi goi action claim rewards
+
 ```
 appState31 = await updateLPtTokenInfo(
     appState3,
@@ -115,7 +138,9 @@ appState31 = await updateLPtTokenInfo(
 
 init tokenBalance of rTrava in _to address
 ```
+
 khi goi action convert rewards
+
 ```
 appState31 = await updateLPtTokenInfo(
     appState3,
@@ -124,39 +149,53 @@ appState31 = await updateLPtTokenInfo(
 init rTrava balacne in _from address
 init trava balance in _to address
 ```
+
 ## Các action liên qua đến nft
+
 ### Tương tác với các mảnh armouries
+
 Update các armouries của main wallet
+
 ```
 appState4 = await updateNFTBalanceFromContract(
     appState3,
     "walletState"
 )
 ```
+
 Update các armouries của smart wallet
+
 ```
 appState4 = await updateNFTBalanceFromContract(
     appState3,
     "smartWalletState"
 )
 ```
+
 ### Tương tác với các Knight
+
 Update các Knight của main wallet
+
 ```
 appState4 = await updateCollectionBalanceFromContract(
     appState3,
     "walletState"
 )
 ```
+
 Update các Knight của smart wallet
+
 ```
 appState4 = await updateCollectionBalanceFromContract(
     appState3,
     "smartWalletState"
 )
 ```
+
 ### Tương tác với các Marketplace / Sell armoury
+
 Update các armouries đang bán trên marketplace
+
 ```
 appState4 = await updateSellingNFTFromContract(
     appState3
@@ -166,7 +205,9 @@ appState41 = await updateOwnedSellingNFT(
     appState4
 )
 ```
+
 Update state của [trava token](#các-action-liên-quan-đến-token) như trên
+
 ```
 appState5 = await updateUserTokenBalance(
     appState4,
@@ -174,41 +215,52 @@ appState5 = await updateUserTokenBalance(
 )
 
 ```
+
 Update các armouries mà user đang bán trên marketplace
+
 ```
 appState5 = await updateOwnedSellingNFT(
     appState4
 )
 ```
+
 ### Tương tác với các Marketplace / Auction
-First,  update auctioning NFT From Contract when chose any action in Auction
+
+First, update auctioning NFT From Contract when chose any action in Auction
+
 ```
 appState = await updateAuctioningNFTFromContract(
     appState
 )
 ```
+
 **When create auction**,
 
 First update Owned Auctioning NFT
+
 ```
 appState = await updateOwnedAuctioningNFT(
     appState
 )
 ```
+
 Then, update collection of from wallet
+
 ```
 appState = await updateCollectionBalanceFromContract(
     appState
 )
 ```
+
 **When make bid auction**,
 
-update trava balance of from address 
+update trava balance of from address
+
 ```
 appState = await updateUserTokenBalance(
     appState,
     travaTokenAddress
-) 
+)
 
 appState = await updateUserEthBalance(
     appState
@@ -219,72 +271,87 @@ or
 appState = await updateSmartWalletTokenBalance(
     appState,
     travaTokenAddress
-) 
+)
 
 appState = await updateSmartWalletEthBalance(
     appState
 )
 ```
+
 **when edit auction price**
 
 update Owned Auctioning NFT
+
 ```
 appState = await updateOwnedAuctioningNFT(
     appState,
     from wallet state
 )
 ```
+
 **when cancel auction**
 
 update Owned Auctioning NFT
+
 ```
 appState = await updateOwnedAuctioningNFT(
     appState,
     from wallet state
 )
 ```
+
 Then, update collection of to wallet
+
 ```
 appState = await updateCollectionBalanceFromContract(
     appState,
     to wallet state
 )
 ```
+
 **when finalize auction**
 update Owned Auctioning NFT
-if smartWallet is nftSeller, 
+if smartWallet is nftSeller,
 
 update Trava balance, BNB balance of to wallet
+
 ```
 appState = await updateUserTokenBalance(
     appState,
     travaTokenAddress
-) 
+)
 
 or
 
 appState = await updateSmartWalletTokenBalance(
     appState,
     travaTokenAddress
-) 
+)
 ```
-if smartWallet is bidder, 
+
+if smartWallet is bidder,
+
 ```
 appState = await updateCollectionBalanceFromContract(
     appState,
     to wallet state
 )
 ```
+
 ### Tuong tac voi Trava Staking
+
 Update state cua Smart Wallet trong cac vault
+
 ```
 newAppState = await updateAllAccountVault(oldAppState)
 ```
+
 ```
 Khi stake: update stakedToken balance for smart wallet, update underlyingToken balance for from address
 Khi withdraw: update underlyingToken balance for "to" Address and Smart Wallet Address
-Khi claimReward: update Trava balance for "to" address 
+Khi claimReward: update Trava balance for "to" address
 ```
+
 ```
 stakedPool = await newAppState.smartWalletState.travaLPStakingStateList.get(stakedTokenAdress.toLownerCase())
 
@@ -293,39 +360,71 @@ APR = stakedPool.APR
 reward = stakedPool.claimableReward
 deposited = stakedPool.deposited
 ```
-### Tuưng tác với Trava Governance
+
+### Tương tác với Trava Governance
+
 Khi chon bat cu action nao cua Trava Governance, update TravaGovernanceState
+
 ```
 appState = await updateTravaGovernanceState(appState);
 ```
-Khi chon action Create Lock,  update Trava Governace State cua from address, to address, update bep20 balance of from address
+
+Khi chon action Create Lock, update Trava Governace State cua from address, to address, update bep20 balance of from address
+
 ```
 appState = await updateUserLockBalance(appState, fromAddress)
 appState = await updateUserLockBalance(appState, toAddress)
 appState = /// update token balance cua from address
 ```
-Khi chon action merge,  update Trava Governace State cua from address
+
+Khi chon action merge, update Trava Governace State cua from address
+
 ```
 appState = await updateUserLockBalance(appState, fromAddress)
 ```
-Khi chon cac action :  coumpound, change unlock time, update Trava Governace State cua smart wallet address
+
+Khi chon cac action : coumpound, change unlock time, update Trava Governace State cua smart wallet address
+
 ```
 appState = await updateUserLockBalance(appState, smartWalletAddress)
 ```
-Khi chon cac action :  withdraw update Trava Governace State cua smart wallet address, update trava balance va token lock balance cua to address
+
+Khi chon cac action : withdraw update Trava Governace State cua smart wallet address, update trava balance va token lock balance cua to address
+
 ```
 appState = await updateUserLockBalance(appState, smartWalletAddress)
 appState = /// update trava balance cua to address
-appState = /// update token locked balance cua to address 
+appState = /// update token locked balance cua to address
 ```
-Khi chon action  increase balance, Trava Governace State cua smart wallet address, update token locked balance cua from address 
+
+Khi chon action increase balance, Trava Governace State cua smart wallet address, update token locked balance cua from address
+
 ```
 appState = // update token locked balance cua from address
 ```
+
+### Tương tác với veTrava NFT Marketplace
+
+Khi chọn bất cứ action nào của veTrava NFT Marketplace, update user lock balance của from address
+
+```
+appState = await updateUserLockBalance(appState, fromAddress);
+```
+
+Khi chọn action Create Sale, veTrava Buy, Cancel Sale
+
+```
+appState = await updateSellingVeTrava(appState);
+```
+
 # Simulate state
+
 Sau khi init state xong. Với mỗi state, các simulate khác nhau
+
 ## Simulate Utilities actions
+
 ## Pull token
+
 ```
 appState6 = await simulateSendToken(
     appState5,
@@ -335,7 +434,9 @@ appState6 = await simulateSendToken(
     amount: number | string
 )
 ```
+
 ## Sendtoken
+
 ```
 appState7 = await simulateSendToken(
     appState6,
@@ -345,21 +446,27 @@ appState7 = await simulateSendToken(
     amount: number | string
 )
 ```
+
 ## Wrap
+
 ```
 appState8 = await simulateWrap(
     appState7,
     amount: number | string
 )
 ```
+
 ## Unwrap
+
 ```
 appState9 = await simulateUnwrap(
     appState8,
     amount: number | string
 )
 ```
+
 ## Swap
+
 ```
 appState10 = await simulateSwap(
     appState9,
@@ -371,8 +478,11 @@ appState10 = await simulateSwap(
     toAddress
 )
 ```
+
 # Simulate Trava Pools actions
+
 ## Deposit
+
 ```
 appState11 = await SimulationSupply(
     appState10,
@@ -381,7 +491,9 @@ appState11 = await SimulationSupply(
     amount: string
 )
 ```
+
 ## Borrow
+
 ```
 appState12 = await SimulationBorrow(
     appState11,
@@ -390,11 +502,15 @@ appState12 = await SimulationBorrow(
     amount: string
 )
 ```
+
 ## Repay
+
 get max amount:
+
 ```
 maxAmount = appState.smartWalletState.detailTokenInPool[tokenAddress].dToken.balances
 ```
+
 ```
 appState13 = await SimulationRepay(
     appState12,
@@ -403,8 +519,11 @@ appState13 = await SimulationRepay(
     amount: string
 )
 ```
+
 ## Withdraw
+
 get max amount:
+
 ```
 maxAmount = appState.smartWalletState.detailTokenInPool[tokenAddress].tToken.balances
 ```
@@ -417,11 +536,15 @@ appState14 = await SimulationWithdraw(
     amount
 )
 ```
+
 ## ClaimRewards
+
 get max rewards:
+
 ```
 claimableRewards = await calculateMaxRewards(appState);
 ```
+
 ```
 appState15 = await SimulationClaimReward(
     appState14,
@@ -431,13 +554,16 @@ appState15 = await SimulationClaimReward(
 ```
 
 ## Convert rewards
+
 get max rTrava cua from address
+
 ```
-maxRTrava = 
-        app.walletState.tokenBalance.get(rTravaAddress.toLowerCase()) 
-        or 
+maxRTrava =
+        app.walletState.tokenBalance.get(rTravaAddress.toLowerCase())
+        or
         app.smartWalletState.tokenBalance.get(rTravaAddress.toLowerCase())
 ```
+
 ```
 appState16 = await SimulationConvertReward(
     appState15,
@@ -446,26 +572,33 @@ appState16 = await SimulationConvertReward(
     MAX_UINT256
 )
 ```
+
 # Simulate Trava NFT Marketplace / Sell armoury
+
 ## Buy NFT
+
 ```
 appState15 = await simulateTravaNFTBuy(
     appState14,
     tokenId,
-    from, 
+    from,
     to
 )
 ```
+
 ## Sell NFT
+
 ```
 appState16 = await simulateTravaNFTSell(
     appState15,
     tokenId,
-    price: numer | String, 
+    price: numer | String,
     from: String
 )
 ```
+
 ## Cancel order
+
 ```
 appState17 = await simulateTravaNFTCancelSale(
     appState16,
@@ -473,8 +606,11 @@ appState17 = await simulateTravaNFTCancelSale(
     tokenId
 )
 ```
+
 # Simulate Trava NFT Marketplace / Auction
+
 ## Create Auction
+
 ```
 appState = await simulateTravaNFTCreateAuction(
     appState,
@@ -484,7 +620,9 @@ appState = await simulateTravaNFTCreateAuction(
     from
 )
 ```
+
 ## Make edit auction price
+
 ```
 appState = await simulateTravaNFTEditAuctionPrice(
     appState,
@@ -492,7 +630,9 @@ appState = await simulateTravaNFTEditAuctionPrice(
     startingBid
 )
 ```
-## Make bid auction 
+
+## Make bid auction
+
 ```
 appState = await simulateTravaNFTMakeBidAuction(
     appState,
@@ -501,7 +641,9 @@ appState = await simulateTravaNFTMakeBidAuction(
     from
 )
 ```
-## Make cancel auction 
+
+## Make cancel auction
+
 ```
 appState = await simulateTravaNFTCancelAuction(
     appState,
@@ -509,7 +651,9 @@ appState = await simulateTravaNFTCancelAuction(
     to
 )
 ```
-## Fninalize auction 
+
+## Fninalize auction
+
 ```
 appState = await simulateTravaNFTFinalizeAuction(
     appState,
@@ -517,8 +661,11 @@ appState = await simulateTravaNFTFinalizeAuction(
     to
 )
 ```
+
 # Simulate Trava NFT Utilities
+
 ## Transfer armoury
+
 ```
 appState18 = await simulateTravaNFTTransfer(
     appState17,
@@ -528,7 +675,9 @@ appState18 = await simulateTravaNFTTransfer(
     contract: NFT_CORE address
 )
 ```
+
 ## Transfer collection
+
 ```
 appState19 = await simulateTravaNFTTransfer(
     appState18,
@@ -538,8 +687,11 @@ appState19 = await simulateTravaNFTTransfer(
     contract: NFT_COLLECTION address
 )
 ```
+
 # Simulate Trava Staking
+
 ## Simulate Trava Staking Stake
+
 ```
 maxAmount = fromState.getTokenBalanceOf(underlyingTokenAddress)
 
@@ -550,7 +702,9 @@ newAppState = await simulateStakeStaking(
     amount
 )
 ```
+
 ## Simulate Trava Staking Redeem (Withdraw)
+
 ```
 maxAmount = oldAppState.smartWalletState.travaLPStakingStateList.get(stakedTokenAddress.toLowerCase())!.deposited;
 newAppState = await simulateStakingRedeem(
@@ -560,7 +714,9 @@ newAppState = await simulateStakingRedeem(
     amount
 )
 ```
+
 ## Simulate Trava Staking Claim (Withdraw)
+
 ```
 maxAmount = oldAppState.smartWalletState.travaLPStakingStateList.get(stakedTokenAddress.toLowerCase())!.claimableReward;
 
@@ -571,8 +727,11 @@ newAppState = await simulateStakingClaimRewards(
     maxAmount
 )
 ```
+
 # Simulate Trava Governance State
+
 ## Simulate Create Lock
+
 ```
 newAppState = await simulateTravaGovernanceCreateLock(
     oldAppState,
@@ -581,8 +740,10 @@ newAppState = await simulateTravaGovernanceCreateLock(
     from,
     period
 )
-``` 
+```
+
 ## Simulate Increase Balance
+
 ```
 newAppState = await simulateTravaGovernanceIncreaseBalance(
     oldAppState,
@@ -592,7 +753,9 @@ newAppState = await simulateTravaGovernanceIncreaseBalance(
     smartWalletAddress
 )
 ```
+
 ## Simulate Change unlock time
+
 ```
 newAppState = await simulateTravaGovernanceChangeUnlockTime(
     oldAppState,
@@ -600,14 +763,18 @@ newAppState = await simulateTravaGovernanceChangeUnlockTime(
     newUnlockTime
 )
 ```
+
 ## Simulate Compound
+
 ```
 newAppState = await simulateTravaGovernanceCompound(
     oldAppState,
     tokenId
 )
 ```
+
 ## Simulate Withdraw
+
 ```
 newAppState = await simulateTravaGovernanceWithdraw(
     oldAppState,
@@ -615,7 +782,9 @@ newAppState = await simulateTravaGovernanceWithdraw(
     to
 )
 ```
+
 ## Simulate Merge
+
 ```
 newAppState = await simulateTravaGovernanceMerge(
     oldAppState,
@@ -624,10 +793,15 @@ newAppState = await simulateTravaGovernanceMerge(
     from
 )
 ```
+
 # Simulate state
+
 Sau khi init state xong. Với mỗi state, các simulate khác nhau
+
 ## Simulate Utilities actions
+
 ## Pull token
+
 ```
 appState6 = await simulateSendTokenV2(
     appState5,
@@ -638,7 +812,9 @@ appState6 = await simulateSendTokenV2(
     contractAddress: address of actions
 )
 ```
+
 ## Sendtoken
+
 ```
 appState7 = await simulateSendTokenV2(
     appState6,
@@ -649,7 +825,9 @@ appState7 = await simulateSendTokenV2(
     contractAddress: address of actions
 )
 ```
+
 ## Wrap
+
 ```
 appState8 = await simulateWrapV2(
     appState7,
@@ -657,11 +835,56 @@ appState8 = await simulateWrapV2(
     contractAddress: address of actions
 )
 ```
+
 ## Unwrap
+
 ```
 appState9 = await simulateUnwrapV2(
     appState8,
     amount:  string,
     contractAddress: address of actions
 )
+```
+
+## Simulate Tranfer veTrava NFT
+
+```
+appState1 = await simulateNFTVeTravaTranfer(
+    appState,
+    idVeTrava,
+    fromAddress,
+    toAddress
+);
+```
+
+## Simulate Create Sale veTrava NFT
+
+```
+appState2 = await simulateNFTVeTravaCreateSale(
+    appState,
+    idVeTrava,
+    fromAddress,
+    priceAmount,
+    addressPriceToken,
+);
+```
+
+## Simulate Cancel Sale veTrava NFT
+
+```
+appState3 = await simulateNFTVeTravaCancelSale(
+    appState,
+    idVeTrava,
+    toAddress,
+);
+```
+
+## Simulate Buy veTrava NFT
+
+```
+appState4 = await simulateNFTVeTravaBuy(
+    appState,
+    idVeTrava,
+    toAddress,
+);
 ```

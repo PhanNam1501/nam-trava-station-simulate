@@ -28,10 +28,9 @@ import { simulateNFTVeTravaCancelSale, simulateNFTVeTravaCreateSale, simulateNFT
     provider,
     chainId
     )
-    appState = await updateUserTokenBalance(appState, getAddr("TRAVA_TOKEN"));
-    //appState = await updateTravaGovernanceState(appState);
     appState = await updateSellingVeTrava(appState);
     appState = await updateUserLockBalance(appState, userAddress);
+    console.log("===============TEST TRANFER==================");
     appState = await simulateNFTVeTravaTranfer(appState, "43", userAddress, proxyAddress);
     appState = await simulateNFTVeTravaTranfer(appState, "43", proxyAddress, proxyAddress);
     // console.log(appState.NFTVeTravaMarketSellingState);
