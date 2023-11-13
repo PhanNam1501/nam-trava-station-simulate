@@ -2,10 +2,11 @@ import { ApplicationState } from "../../../../State/ApplicationState";
 import _ from "lodash";
 import { _fetchNormal } from "../helpers/utils"
 import { BigNumberish, EthAddress, wallet_mode } from "../../../../utils/types";
-import { FromAddressError } from "../../../../utils/error";
+import { FromAddressError, NFTNotFoundError } from "../../../../utils/error";
 import { updateTravaGovernanceState, updateUserLockBalance } from "../../governance/UpdateStateAccount";
 import { VeTravaState } from "../../../../State";
 import { getMode } from "../../../../utils/helper";
+import { updateTokenBalance } from "../../../basic";
 
 export async function simulateNFTVeTravaTranfer(
     _appState1: ApplicationState,
@@ -15,23 +16,31 @@ export async function simulateNFTVeTravaTranfer(
 ): Promise<ApplicationState> {
     let appState = {..._appState1};
     try{
+        let tokenAddress: EthAddress = "";
         if (appState.TravaGovernanceState.totalSupply == "") {
             appState = await updateTravaGovernanceState(appState);
           }
           let modeFrom: wallet_mode = getMode(appState, _from);
           let modeTo: wallet_mode = getMode(appState, _to);
+          if (!appState[modeFrom].veTravaListState.veTravaList.has(_NFTId)) {
+            throw new NFTNotFoundError("NFT not found");
+          }
           if (appState[modeFrom].veTravaListState.veTravaList.has(_NFTId)) {
             if (modeTo == "walletState" || modeTo == "smartWalletState") {
               let data: VeTravaState = appState[modeFrom].veTravaListState.veTravaList.get(_NFTId)!;
               appState[modeFrom].veTravaListState.veTravaList.delete(_NFTId);
               appState[modeTo].veTravaListState.veTravaList.set(_NFTId, data);
+              tokenAddress = data.tokenInVeTrava.tokenLockOption.address;
             }
             else{
                 appState[modeFrom].veTravaListState.veTravaList.delete(_NFTId);
             }
           }
+          if(!appState[modeFrom].tokenBalances.has(tokenAddress)) {
+            appState = await updateTokenBalance(appState, _from, tokenAddress);
+          }
     } catch (err) {
-        throw err;
+      throw err;
       }
       return appState;
 }

@@ -26,10 +26,10 @@ export async function simulateNFTVeTravaCreateSale(
         if (appState.NFTVeTravaMarketSellingState.isFetch == false) {
             appState = await updateSellingVeTrava(appState);
         }
-        if (!appState.smartWalletState.veTravaListState.veTravaList.has(_NFTId)) {
+        let modeFrom: wallet_mode = getMode(appState, _from);
+        if (!appState[modeFrom].veTravaListState.veTravaList.has(_NFTId)) {
             throw new NFTNotFoundError("NFT not found");
         }
-        let modeFrom: wallet_mode = getMode(appState, _from);
         if (appState[modeFrom].veTravaListState.veTravaList.has(_NFTId)) {
             let data: VeTravaState = appState[modeFrom].veTravaListState.veTravaList.get(_NFTId)!;
             const tokenLockContract = new Contract(
