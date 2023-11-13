@@ -27,10 +27,8 @@ export async function simulateNFTVeTravaCreateSale(
             appState = await updateSellingVeTrava(appState);
         }
         let modeFrom: wallet_mode = getMode(appState, _from);
-        console.log(appState[modeFrom].veTravaListState.veTravaList);
         if (appState[modeFrom].veTravaListState.veTravaList.has(_NFTId)) {
             let data: VeTravaState = appState[modeFrom].veTravaListState.veTravaList.get(_NFTId)!;
-            appState[modeFrom].veTravaListState.veTravaList.delete(_NFTId);
             const tokenLockContract = new Contract(
                 _priceTokenAddress,
                 BEP20ABI,
@@ -56,6 +54,7 @@ export async function simulateNFTVeTravaCreateSale(
                 price: _price,
                 priceToken: priceToken,
             } 
+            appState[modeFrom].veTravaListState.veTravaList.delete(_NFTId);
             appState.NFTVeTravaMarketSellingState.sellingVeTrava.push(sellVeToken);
         }
     } catch (err) {
@@ -67,7 +66,6 @@ export async function simulateNFTVeTravaCreateSale(
 export async function simulateNFTVeTravaCancelSale(
     _appState1: ApplicationState,
     _NFTId: string,
-    _from: EthAddress,
 ): Promise<ApplicationState> {
     let appState = {..._appState1};
     try{
@@ -77,7 +75,7 @@ export async function simulateNFTVeTravaCancelSale(
         if (appState.NFTVeTravaMarketSellingState.isFetch == false) {
             appState = await updateSellingVeTrava(appState);
         }
-        let modeFrom: wallet_mode = getMode(appState, _from);
+        let _from = appState.smartWalletState.address;
         if (appState.NFTVeTravaMarketSellingState.sellingVeTrava.find(x => x.id == _NFTId) && _from == appState.NFTVeTravaMarketSellingState.sellingVeTrava.find(x => x.id == _NFTId)!.seller) {
             let data = appState.NFTVeTravaMarketSellingState.sellingVeTrava.find(x => x.id == _NFTId)!;
             let tokenLock: TokenLockOption = tokenLockOptions[appState.chainId].find(x => x.address == data.tokenLocked.address)!;
@@ -95,7 +93,7 @@ export async function simulateNFTVeTravaCancelSale(
                     balances: data.rwAmount,
                 },
             }
-            appState[modeFrom].veTravaListState.veTravaList.set(_NFTId, data1);
+            appState.smartWalletState.veTravaListState.veTravaList.set(_NFTId, data1);
             appState.NFTVeTravaMarketSellingState.sellingVeTrava = appState.NFTVeTravaMarketSellingState.sellingVeTrava.filter(x => x.id != _NFTId);
             
         }
