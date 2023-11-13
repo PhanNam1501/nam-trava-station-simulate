@@ -16,27 +16,21 @@ export async function simulateNFTVeTravaTranfer(
 ): Promise<ApplicationState> {
     let appState = {..._appState1};
     try{
+        _from = _from.toLowerCase();
+        _to = _to.toLowerCase();
         let tokenAddress: EthAddress = "";
         if (appState.TravaGovernanceState.totalSupply == "") {
             appState = await updateTravaGovernanceState(appState);
           }
           let modeFrom: wallet_mode = getMode(appState, _from);
-          let modeTo: "walletState" | "smartWalletState" | "Others";
-          if (_from.toLowerCase() == appState.walletState.address.toLowerCase()) {
-            modeTo = "walletState"
-          } else if (_from.toLowerCase() == appState.smartWalletState.address.toLowerCase()) {
-            modeTo = "smartWalletState"
-          } else {
-            modeTo = "Others"
-          }
           if (!appState[modeFrom].veTravaListState.veTravaList.has(_NFTId)) {
             throw new NFTNotFoundError("NFT not found");
           }
           if (appState[modeFrom].veTravaListState.veTravaList.has(_NFTId)) {
-            if (modeTo == "walletState" || modeTo == "smartWalletState") {
+            if (_to == appState.walletState.address.toLowerCase() || _to == appState.smartWalletState.address.toLowerCase()) {
               let data: VeTravaState = appState[modeFrom].veTravaListState.veTravaList.get(_NFTId)!;
               appState[modeFrom].veTravaListState.veTravaList.delete(_NFTId);
-              appState[modeTo].veTravaListState.veTravaList.set(_NFTId, data);
+              appState[getMode(appState, _to)].veTravaListState.veTravaList.set(_NFTId, data);
               tokenAddress = data.tokenInVeTrava.tokenLockOption.address;
             }
             else{
