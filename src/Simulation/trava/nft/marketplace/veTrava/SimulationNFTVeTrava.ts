@@ -9,7 +9,7 @@ import BEP20ABI from "../../../../../abis/BEP20.json";
 import { Contract } from "ethers";
 import BigNumber from "bignumber.js";
 import { updateSmartWalletTokenBalance, updateUserTokenBalance } from "../../../../basic";
-
+import { NFTNotFoundError } from '../../../../../utils/error';
 export async function simulateNFTVeTravaCreateSale(
     _appState1: ApplicationState,
     _NFTId: string,
@@ -25,6 +25,9 @@ export async function simulateNFTVeTravaCreateSale(
         }
         if (appState.NFTVeTravaMarketSellingState.isFetch == false) {
             appState = await updateSellingVeTrava(appState);
+        }
+        if (!appState.smartWalletState.veTravaListState.veTravaList.has(_NFTId)) {
+            throw new NFTNotFoundError("NFT not found");
         }
         let modeFrom: wallet_mode = getMode(appState, _from);
         if (appState[modeFrom].veTravaListState.veTravaList.has(_NFTId)) {
@@ -76,6 +79,9 @@ export async function simulateNFTVeTravaCancelSale(
             appState = await updateSellingVeTrava(appState);
         }
         let _from = appState.smartWalletState.address;
+        if (!appState.NFTVeTravaMarketSellingState.sellingVeTrava.find(x => x.id == _NFTId)) {
+            throw new NFTNotFoundError("NFT not found");
+        }
         if (appState.NFTVeTravaMarketSellingState.sellingVeTrava.find(x => x.id == _NFTId) && _from == appState.NFTVeTravaMarketSellingState.sellingVeTrava.find(x => x.id == _NFTId)!.seller) {
             let data = appState.NFTVeTravaMarketSellingState.sellingVeTrava.find(x => x.id == _NFTId)!;
             let tokenLock: TokenLockOption = tokenLockOptions[appState.chainId].find(x => x.address == data.tokenLocked.address)!;
@@ -118,6 +124,9 @@ export async function simulateNFTVeTravaBuy(
             appState = await updateSellingVeTrava(appState);
         }
         let modeFrom: wallet_mode = getMode(appState, _from);
+        if (!appState.NFTVeTravaMarketSellingState.sellingVeTrava.find(x => x.id == _NFTId)) {
+            throw new NFTNotFoundError("NFT not found");
+        }
         if (appState.NFTVeTravaMarketSellingState.sellingVeTrava.find(x => x.id == _NFTId) && _from != appState.NFTVeTravaMarketSellingState.sellingVeTrava.find(x => x.id == _NFTId)!.seller) {
             let data = appState.NFTVeTravaMarketSellingState.sellingVeTrava.find(x => x.id == _NFTId)!;
             let tokenLock: TokenLockOption = tokenLockOptions[appState.chainId].find(x => x.address == data.tokenLocked.address)!;
