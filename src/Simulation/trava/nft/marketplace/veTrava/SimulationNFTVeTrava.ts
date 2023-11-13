@@ -3,7 +3,7 @@ import { ApplicationState } from "../../../../../State/ApplicationState";
 import { getMode } from "../../../../../utils/helper";
 import { EthAddress, wallet_mode } from "../../../../../utils/types";
 import { TokenLockOption, getTokenRatio, tokenLockOptions, updateTravaGovernanceState } from "../../../governance";
-import { SellingVeTravaType, priceToken, tokenLocked } from "../../helpers";
+import { SellingVeTravaType, tokenInfo } from "../../helpers";
 import { updateSellingVeTrava } from "./UpdateStateAccount";
 import BEP20ABI from "../../../../../abis/BEP20.json";
 import { Contract } from "ethers";
@@ -37,11 +37,11 @@ export async function simulateNFTVeTravaCreateSale(
                 appState.web3
             )
             let tokenLockDecimal = await tokenLockContract.decimals();
-            let priceToken: priceToken = {
+            let priceToken: tokenInfo = {
                 address: _priceTokenAddress,
                 decimals: tokenLockDecimal.toString(),
             }
-            let tokenLocked: tokenLocked = {
+            let tokenLocked: tokenInfo = {
                 address: data.tokenInVeTrava.tokenLockOption.address,
                 decimals: data.tokenInVeTrava.tokenLockOption.decimals,
             }

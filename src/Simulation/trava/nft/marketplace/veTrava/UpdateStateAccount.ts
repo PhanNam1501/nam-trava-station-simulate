@@ -2,7 +2,7 @@ import { ApplicationState } from "../../../../../State/ApplicationState";
 import { Contract } from "ethers";
 import { getAddr } from "../../../../../utils/address";
 import _ from "lodash";
-import { SellingVeTravaType, priceToken, tokenLocked } from "../../helpers/global";
+import { SellingVeTravaType, tokenInfo } from "../../helpers/global";
 import BigNumber from "bignumber.js";
 import { BigNumberish, EthAddress, wallet_mode } from "../../../../../utils/types";
 import { multiCall } from "../../../../../utils/helper";
@@ -112,11 +112,11 @@ export async function updateSellingVeTrava(
                     priceTokenAddress = getAddr("BUSD_TOKEN_ADDRESS", appState.chainId);
                     priceTokenDecimals = Number(busdTokenDecimals);
                 }
-                let tokenLocked: tokenLocked = {
+                let tokenLocked: tokenInfo = {
                     address: tokenMetadata[3].toLowerCase(),
                     decimals: tokenLockDecimals[i].toString(),
                 }
-                let priceToken: priceToken = {
+                let priceToken: tokenInfo = {
                     address: priceTokenAddress.toLowerCase(),
                     decimals: priceTokenDecimals.toString(),
                 }
