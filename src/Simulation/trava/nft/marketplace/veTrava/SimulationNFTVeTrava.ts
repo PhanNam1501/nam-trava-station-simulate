@@ -1,4 +1,4 @@
-import { TokenLock, VeTravaState } from "../../../../../State";
+import { VeTravaState } from "../../../../../State";
 import { ApplicationState } from "../../../../../State/ApplicationState";
 import { getMode } from "../../../../../utils/helper";
 import { EthAddress, uint256, wallet_mode } from "../../../../../utils/types";
