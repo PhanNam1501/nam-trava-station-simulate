@@ -1,7 +1,7 @@
 import { ApplicationState } from "../../../../State/ApplicationState";
 import _ from "lodash";
 import { _fetchNormal } from "../helpers/utils"
-import { BigNumberish, EthAddress, wallet_mode } from "../../../../utils/types";
+import { BigNumberish, EthAddress, uint256, wallet_mode } from "../../../../utils/types";
 import { FromAddressError, NFTNotFoundError } from "../../../../utils/error";
 import { updateTravaGovernanceState, updateUserLockBalance } from "../../governance/UpdateStateAccount";
 import { VeTravaState } from "../../../../State";
@@ -10,7 +10,7 @@ import { updateTokenBalance } from "../../../basic";
 
 export async function simulateNFTVeTravaTranfer(
     _appState1: ApplicationState,
-    _NFTId: string,
+    _NFTId: uint256,
     _from: EthAddress,
     _to: EthAddress,
 ): Promise<ApplicationState> {

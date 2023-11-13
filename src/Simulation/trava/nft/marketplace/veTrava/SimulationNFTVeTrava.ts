@@ -1,7 +1,7 @@
 import { TokenLock, VeTravaState } from "../../../../../State";
 import { ApplicationState } from "../../../../../State/ApplicationState";
 import { getMode } from "../../../../../utils/helper";
-import { EthAddress, wallet_mode } from "../../../../../utils/types";
+import { EthAddress, uint256, wallet_mode } from "../../../../../utils/types";
 import { TokenLockOption, getTokenRatio, tokenLockOptions, updateTravaGovernanceState } from "../../../governance";
 import { SellingVeTravaType, tokenInfo } from "../../helpers";
 import { updateSellingVeTrava } from "./UpdateStateAccount";
@@ -12,9 +12,9 @@ import { updateSmartWalletTokenBalance, updateUserTokenBalance } from "../../../
 import { NFTNotFoundError } from '../../../../../utils/error';
 export async function simulateNFTVeTravaCreateSale(
     _appState1: ApplicationState,
-    _NFTId: string,
+    _NFTId: uint256,
     _from: EthAddress,
-    _price: string,
+    _price: uint256,
     _priceTokenAddress: EthAddress,
 ): Promise<ApplicationState> {
     let appState = {..._appState1};
@@ -68,7 +68,7 @@ export async function simulateNFTVeTravaCreateSale(
 
 export async function simulateNFTVeTravaCancelSale(
     _appState1: ApplicationState,
-    _NFTId: string,
+    _NFTId: uint256,
 ): Promise<ApplicationState> {
     let appState = {..._appState1};
     try{
@@ -112,7 +112,7 @@ export async function simulateNFTVeTravaCancelSale(
 
 export async function simulateNFTVeTravaBuy(
     _appState1: ApplicationState,
-    _NFTId: string,
+    _NFTId: uint256,
     _from: EthAddress,
 ): Promise<ApplicationState> {
     let appState = {..._appState1};
