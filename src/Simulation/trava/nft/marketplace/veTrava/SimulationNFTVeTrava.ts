@@ -5,11 +5,10 @@ import { EthAddress, uint256, wallet_mode } from "../../../../../utils/types";
 import { TokenLockOption, getTokenRatio, tokenLockOptions, updateTravaGovernanceState } from "../../../governance";
 import { SellingVeTravaType, tokenInfo } from "../../helpers";
 import { updateSellingVeTrava } from "./UpdateStateAccount";
-import BEP20ABI from "../../../../../abis/BEP20.json";
-import { Contract } from "ethers";
 import BigNumber from "bignumber.js";
 import { updateSmartWalletTokenBalance, updateUserTokenBalance } from "../../../../basic";
 import { NFTNotFoundError } from '../../../../../utils/error';
+import { tokenSellOptions } from "./veTravaConfig";
 export async function simulateNFTVeTravaCreateSale(
     _appState1: ApplicationState,
     _NFTId: uint256,
@@ -32,15 +31,11 @@ export async function simulateNFTVeTravaCreateSale(
         }
         if (appState[modeFrom].veTravaListState.veTravaList.has(_NFTId)) {
             let data: VeTravaState = appState[modeFrom].veTravaListState.veTravaList.get(_NFTId)!;
-            const tokenLockContract = new Contract(
-                _priceTokenAddress,
-                BEP20ABI,
-                appState.web3
-            )
-            let tokenLockDecimal = await tokenLockContract.decimals();
+            const listTokenInGovernance = tokenSellOptions[appState.chainId];
+            let tokenPriceDecimal = listTokenInGovernance.find(x => x.address == _priceTokenAddress)!.decimals;
             let priceToken: tokenInfo = {
                 address: _priceTokenAddress,
-                decimals: tokenLockDecimal.toString(),
+                decimals: tokenPriceDecimal.toString(),
             }
             let tokenLocked: tokenInfo = {
                 address: data.tokenInVeTrava.tokenLockOption.address,
