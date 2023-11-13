@@ -8,8 +8,8 @@ import { updateSellingVeTrava } from "./UpdateStateAccount";
 import BigNumber from "bignumber.js";
 import { updateSmartWalletTokenBalance, updateUserTokenBalance } from "../../../../basic";
 import { NFTNotFoundError } from '../../../../../utils/error';
-import { tokenSellOptions } from "./veTravaConfig";
 import { simulateNFTVeTravaTranfer } from "../../utilities/SimulationVeTravaNFTUtilities";
+import _ from "lodash";
 export async function simulateNFTVeTravaCreateSale(
     _appState1: ApplicationState,
     _NFTId: uint256,
@@ -32,7 +32,6 @@ export async function simulateNFTVeTravaCreateSale(
         }
         if (appState[modeFrom].veTravaListState.veTravaList.has(_NFTId)) {
             let data: VeTravaState = appState[modeFrom].veTravaListState.veTravaList.get(_NFTId)!;
-            const listTokenInGovernance = tokenSellOptions[appState.chainId];
             let priceToken: tokenInfo = {
                 address: _priceTokenAddress,
                 amount: _price,
@@ -66,36 +65,39 @@ export async function simulateNFTVeTravaCancelSale(
 ): Promise<ApplicationState> {
     let appState = {..._appState1};
     try{
+        _to = _to.toLowerCase();
         if (appState.TravaGovernanceState.totalSupply == "") {
             appState = await updateTravaGovernanceState(appState);
         }
         if (appState.NFTVeTravaMarketSellingState.isFetch == false) {
             appState = await updateSellingVeTrava(appState);
         }
-        let _from = appState.smartWalletState.address;
+        let _from = appState.smartWalletState.address.toLowerCase();
         if (!appState.NFTVeTravaMarketSellingState.sellingVeTrava.find(x => x.id == _NFTId)) {
             throw new NFTNotFoundError("NFT not found");
         }
-        if (appState.NFTVeTravaMarketSellingState.sellingVeTrava.find(x => x.id == _NFTId) && _from == appState.NFTVeTravaMarketSellingState.sellingVeTrava.find(x => x.id == _NFTId)!.seller) {
-            let data = appState.NFTVeTravaMarketSellingState.sellingVeTrava.find(x => x.id == _NFTId)!;
-            let tokenLock: TokenLockOption = tokenLockOptions[appState.chainId].find(x => x.address == data.lockedToken.address)!;
-            let data1: VeTravaState = {
-                id: data.id,
-                votingPower: data.votingPower,
-                tokenInVeTrava: {
-                    balances: data.lockedToken.amount,
-                    tokenLockOption: tokenLock,
-                },
-                unlockTime: data.end,
-                rewardTokenBalance: {
-                    compoundAbleRewards: data.rwAmount,
-                    compoundedRewards: data.rwAmount,
-                    balances: data.rwAmount,
-                },
-            }
-            appState.smartWalletState.veTravaListState.veTravaList.set(_NFTId, data1);
-            appState.NFTVeTravaMarketSellingState.sellingVeTrava = appState.NFTVeTravaMarketSellingState.sellingVeTrava.filter(x => x.id != _NFTId);
+        if (!(_from == appState.NFTVeTravaMarketSellingState.sellingVeTrava.find(x => x.id == _NFTId)!.seller.toLowerCase())){
+            throw new Error("Not owner error");
+        } 
+        let data = appState.NFTVeTravaMarketSellingState.sellingVeTrava.find(x => x.id == _NFTId)!;
+        let tokenLock: TokenLockOption = tokenLockOptions[appState.chainId].find(x => x.address == data.lockedToken.address)!;
+        let data1: VeTravaState = {
+            id: data.id,
+            votingPower: data.votingPower,
+            tokenInVeTrava: {
+                balances: data.lockedToken.amount,
+                tokenLockOption: tokenLock,
+            },
+            unlockTime: data.end,
+            rewardTokenBalance: {
+                compoundAbleRewards: data.rwAmount,
+                compoundedRewards: data.rwAmount,
+                balances: data.rwAmount,
+            },
         }
+        appState.smartWalletState.veTravaListState.veTravaList.set(_NFTId, data1);
+        appState.NFTVeTravaMarketSellingState.sellingVeTrava = appState.NFTVeTravaMarketSellingState.sellingVeTrava.filter(x => x.id != _NFTId);
+        
         appState = await simulateNFTVeTravaTranfer(appState, _NFTId, _from, _to);
     } catch (err) {
         throw err;
@@ -108,6 +110,7 @@ export async function simulateNFTVeTravaBuy(
     _appState1: ApplicationState,
     _NFTId: uint256,
     _from: EthAddress,
+    _to: EthAddress,
 ): Promise<ApplicationState> {
     let appState = {..._appState1};
     try{
@@ -121,7 +124,8 @@ export async function simulateNFTVeTravaBuy(
         if (!appState.NFTVeTravaMarketSellingState.sellingVeTrava.find(x => x.id == _NFTId)) {
             throw new NFTNotFoundError("NFT not found");
         }
-        if (appState.NFTVeTravaMarketSellingState.sellingVeTrava.find(x => x.id == _NFTId) && _from != appState.NFTVeTravaMarketSellingState.sellingVeTrava.find(x => x.id == _NFTId)!.seller) {
+        _from = _from.toLowerCase();
+        if (_from != appState.NFTVeTravaMarketSellingState.sellingVeTrava.find(x => x.id == _NFTId)!.seller.toLowerCase()) {
             let data = appState.NFTVeTravaMarketSellingState.sellingVeTrava.find(x => x.id == _NFTId)!;
             let tokenLock: TokenLockOption = tokenLockOptions[appState.chainId].find(x => x.address == data.lockedToken.address)!;
             let data1: VeTravaState = {
