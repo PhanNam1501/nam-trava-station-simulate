@@ -1,4 +1,6 @@
-import { AuctioningNormalKnight, AuctioningSpecialKnight, FarmingKnightDetailInfo, NFTFarming, SellingArmouryType, SellingVeTravaType } from "../../../Simulation/trava/nft/helpers/global";
+import { TokenSellOption } from "../../../Simulation";
+import { AuctioningNormalKnight, AuctioningSpecialKnight, FarmingKnightDetailInfo, NFTFarming, SellingArmouryType, SellingVeTravaType, tokenInfo } from "../../../Simulation/trava/nft/helpers/global";
+import { EthAddress } from "../../../utils/types";
 
 export class NFTSellingState {
   v1: Array<SellingArmouryType>;
@@ -26,9 +28,11 @@ export class NFTAuctioningState {
 
 export class NFTVeTravaSellingState {
   sellingVeTrava: Array<SellingVeTravaType>;
+  priceTokens: Map<EthAddress, TokenSellOption>;
   isFetch: boolean;
   constructor() {
     this.sellingVeTrava = new Array<SellingVeTravaType>();
+    this.priceTokens = new Map();
     this.isFetch = false;
   }
 }

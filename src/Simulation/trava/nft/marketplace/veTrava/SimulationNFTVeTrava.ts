@@ -2,7 +2,7 @@ import { VeTravaState } from "../../../../../State";
 import { ApplicationState } from "../../../../../State/ApplicationState";
 import { getMode } from "../../../../../utils/helper";
 import { EthAddress, uint256, wallet_mode } from "../../../../../utils/types";
-import { TokenLockOption, getTokenRatio, tokenLockOptions, updateTravaGovernanceState } from "../../../governance";
+import { TokenLockOption, tokenLockOptions, updateTravaGovernanceState } from "../../../governance";
 import { SellingVeTravaType, tokenInfo } from "../../helpers";
 import { updateSellingVeTrava } from "./UpdateStateAccount";
 import BigNumber from "bignumber.js";
@@ -33,24 +33,21 @@ export async function simulateNFTVeTravaCreateSale(
         if (appState[modeFrom].veTravaListState.veTravaList.has(_NFTId)) {
             let data: VeTravaState = appState[modeFrom].veTravaListState.veTravaList.get(_NFTId)!;
             const listTokenInGovernance = tokenSellOptions[appState.chainId];
-            let tokenPriceDecimal = listTokenInGovernance.find(x => x.address == _priceTokenAddress)!.decimals;
             let priceToken: tokenInfo = {
                 address: _priceTokenAddress,
-                decimals: tokenPriceDecimal.toString(),
+                amount: _price,
             }
             let tokenLocked: tokenInfo = {
                 address: data.tokenInVeTrava.tokenLockOption.address,
-                decimals: data.tokenInVeTrava.tokenLockOption.decimals,
+                amount: data.tokenInVeTrava.balances,
             }
             let sellVeToken: SellingVeTravaType = {
                 id: _NFTId,
-                amount: data.tokenInVeTrava.balances,
                 rwAmount: data.rewardTokenBalance.compoundAbleRewards,
                 end: data.unlockTime,
-                tokenLocked: tokenLocked,
+                lockedToken: tokenLocked,
                 votingPower: data.votingPower,
                 seller: _from,
-                price: _price,
                 priceToken: priceToken,
             } 
             appState[modeFrom].veTravaListState.veTravaList.delete(_NFTId);
@@ -81,12 +78,12 @@ export async function simulateNFTVeTravaCancelSale(
         }
         if (appState.NFTVeTravaMarketSellingState.sellingVeTrava.find(x => x.id == _NFTId) && _from == appState.NFTVeTravaMarketSellingState.sellingVeTrava.find(x => x.id == _NFTId)!.seller) {
             let data = appState.NFTVeTravaMarketSellingState.sellingVeTrava.find(x => x.id == _NFTId)!;
-            let tokenLock: TokenLockOption = tokenLockOptions[appState.chainId].find(x => x.address == data.tokenLocked.address)!;
+            let tokenLock: TokenLockOption = tokenLockOptions[appState.chainId].find(x => x.address == data.lockedToken.address)!;
             let data1: VeTravaState = {
                 id: data.id,
                 votingPower: data.votingPower,
                 tokenInVeTrava: {
-                    balances: data.amount,
+                    balances: data.lockedToken.amount,
                     tokenLockOption: tokenLock,
                 },
                 unlockTime: data.end,
@@ -126,12 +123,12 @@ export async function simulateNFTVeTravaBuy(
         }
         if (appState.NFTVeTravaMarketSellingState.sellingVeTrava.find(x => x.id == _NFTId) && _from != appState.NFTVeTravaMarketSellingState.sellingVeTrava.find(x => x.id == _NFTId)!.seller) {
             let data = appState.NFTVeTravaMarketSellingState.sellingVeTrava.find(x => x.id == _NFTId)!;
-            let tokenLock: TokenLockOption = tokenLockOptions[appState.chainId].find(x => x.address == data.tokenLocked.address)!;
+            let tokenLock: TokenLockOption = tokenLockOptions[appState.chainId].find(x => x.address == data.lockedToken.address)!;
             let data1: VeTravaState = {
                 id: data.id,
                 votingPower: data.votingPower,
                 tokenInVeTrava: {
-                    balances: data.amount,
+                    balances: data.lockedToken.amount,
                     tokenLockOption: tokenLock,
                 },
                 unlockTime: data.end,
@@ -143,7 +140,7 @@ export async function simulateNFTVeTravaBuy(
             }
 
 
-            let price = data.price;
+            let price = data.priceToken.amount;
             let priceTokenAddress = data.priceToken.address.toLowerCase();
 
             if (modeFrom == "walletState") {

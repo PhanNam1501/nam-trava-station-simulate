@@ -4,18 +4,25 @@ import { getAddr } from "../../../../../utils/address";
 import _ from "lodash";
 import { SellingVeTravaType, tokenInfo } from "../../helpers/global";
 import BigNumber from "bignumber.js";
-import { BigNumberish, EthAddress, wallet_mode } from "../../../../../utils/types";
 import { multiCall } from "../../../../../utils/helper";
 import veTravaMarketplaceABI from "../../../../../abis/veTravaMarketplaceABI.json";
 import VeABI from "../../../../../abis/Ve.json";
-import { FromAddressError } from "../../../../../utils/error";
-import BEP20ABI from "../../../../../abis/BEP20.json";
+import { TokenSellOption, tokenSellOptions } from "./veTravaConfig";
+
 export async function updateSellingVeTrava(
     appState1: ApplicationState,
     force = false,
 ): Promise<ApplicationState> {
     let appState = { ...appState1 };
     try {
+        const listTokenSell = tokenSellOptions[appState.chainId];
+        for (let i = 0; i < listTokenSell.length; i++) {
+            let key = listTokenSell[i].address.toLowerCase()
+            let tokenSell: TokenSellOption = {
+            ...listTokenSell[i],
+            }
+            appState.NFTVeTravaMarketSellingState.priceTokens.set(key, tokenSell)
+        }
         if (appState.NFTVeTravaMarketSellingState.isFetch == false || force == true) {
             const veTravaMarketAddress = getAddr("VE_TRAVA_MARKETPLACE_ADDRESS", appState.chainId);
             const veTravaAddress = getAddr("VE_TRAVA_ADDRESS", appState.chainId);
@@ -67,35 +74,7 @@ export async function updateSellingVeTrava(
                 appState.chainId
                 ),
             ]);
-            const travaContract = new Contract(
-                getAddr("TRAVA_TOKEN", appState.chainId),
-                BEP20ABI,
-                appState.web3
-                )
-            const travaTokenDecimals = await travaContract.decimals();
-            const busdContract = new Contract(
-                getAddr("BUSD_TOKEN_ADDRESS", appState.chainId),
-                BEP20ABI,
-                appState.web3
-                )
-            const busdTokenDecimals = await busdContract.decimals();
-            let tokenLockAddress: string[] = [];
-            for (let i = 0; i < tokenOnSaleFlattened.length; i++) {
-                let tokenMetadata = tokensMetadata[i];
-                tokenLockAddress.push(tokenMetadata[3].toLowerCase());
-            }
-            const [tokenLockDecimals] = await Promise.all([
-                multiCall(
-                    BEP20ABI,
-                    tokenLockAddress.map((address: any) => ({
-                        address: address,
-                        name: "decimals",
-                        params: [],
-                })),
-                    appState.web3,
-                    appState.chainId
-                ),
-            ]);
+
             const sellingVeTrava = new Array<SellingVeTravaType>;
             for (let i = 0; i < tokenOnSaleFlattened.length; i++) {
                 let tokenId = tokenOnSaleFlattened[i];
@@ -103,32 +82,27 @@ export async function updateSellingVeTrava(
                 let tokenVoting = tokenVotingPower[i];
                 let tokenOrderInfo = tokenOrder[i];
                 let priceTokenAddress = "";
-                let priceTokenDecimals = 0;
                 if (BigNumber(tokenOrderInfo[0][2]).isEqualTo(1)) {
                     priceTokenAddress = getAddr("TRAVA_TOKEN", appState.chainId);
-                    priceTokenDecimals = Number(travaTokenDecimals);
                 }
                 else if (BigNumber(tokenOrderInfo[0][2]).isEqualTo(2)) {
                     priceTokenAddress = getAddr("BUSD_TOKEN_ADDRESS", appState.chainId);
-                    priceTokenDecimals = Number(busdTokenDecimals);
                 }
                 let tokenLocked: tokenInfo = {
                     address: tokenMetadata[3].toLowerCase(),
-                    decimals: tokenLockDecimals[i].toString(),
+                    amount: tokenMetadata[1].toString(),
                 }
                 let priceToken: tokenInfo = {
                     address: priceTokenAddress.toLowerCase(),
-                    decimals: priceTokenDecimals.toString(),
+                    amount: tokenOrderInfo[0][1].toString(),
                 }
                 let sellingVeTravaItem: SellingVeTravaType = {
                     id: tokenId.toString(),
-                    amount: tokenMetadata[1].toString(),
                     rwAmount: tokenMetadata[0].toString(),
                     end: tokenMetadata[2].toString(),
-                    tokenLocked: tokenLocked,
+                    lockedToken: tokenLocked,
                     votingPower: tokenVoting[0].toString(),
                     seller: tokenOrderInfo[0][0].toLowerCase(),
-                    price: tokenOrderInfo[0][1].toString(),
                     priceToken: priceToken,
                 };
                 sellingVeTrava.push(sellingVeTravaItem);
