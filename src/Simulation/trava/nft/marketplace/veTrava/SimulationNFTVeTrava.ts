@@ -125,39 +125,41 @@ export async function simulateNFTVeTravaBuy(
             throw new NFTNotFoundError("NFT not found");
         }
         _from = _from.toLowerCase();
-        if (_from != appState.NFTVeTravaMarketSellingState.sellingVeTrava.find(x => x.id == _NFTId)!.seller.toLowerCase()) {
-            let data = appState.NFTVeTravaMarketSellingState.sellingVeTrava.find(x => x.id == _NFTId)!;
-            let tokenLock: TokenLockOption = tokenLockOptions[appState.chainId].find(x => x.address == data.lockedToken.address)!;
-            let data1: VeTravaState = {
-                id: data.id,
-                votingPower: data.votingPower,
-                tokenInVeTrava: {
-                    balances: data.lockedToken.amount,
-                    tokenLockOption: tokenLock,
-                },
-                unlockTime: data.end,
-                rewardTokenBalance: {
-                    compoundAbleRewards: data.rwAmount,
-                    compoundedRewards: data.rwAmount,
-                    balances: data.rwAmount,
-                },
-            }
-
-
-            let price = data.priceToken.amount;
-            let priceTokenAddress = data.priceToken.address.toLowerCase();
-
-            if(!appState[modeFrom].tokenBalances.has(priceTokenAddress.toLowerCase())) {
-                appState = await updateTokenBalance(appState, _from, priceTokenAddress);
-              }
-            let balanceOfToken = BigNumber(0);            
-            balanceOfToken = BigNumber(appState[modeFrom].tokenBalances.get(priceTokenAddress.toLowerCase())!);
-
-            let newBalance = balanceOfToken.minus(price).toFixed();
-            appState[modeFrom].tokenBalances.set(priceTokenAddress.toLowerCase(), newBalance);  
-            appState[modeFrom].veTravaListState.veTravaList.set(_NFTId, data1);
-            appState.NFTVeTravaMarketSellingState.sellingVeTrava = appState.NFTVeTravaMarketSellingState.sellingVeTrava.filter(x => x.id != _NFTId);
+        if (_from == appState.NFTVeTravaMarketSellingState.sellingVeTrava.find(x => x.id == _NFTId)!.seller.toLowerCase()) {
+            throw new Error("Seller is Buyer error");
         }
+        let data = appState.NFTVeTravaMarketSellingState.sellingVeTrava.find(x => x.id == _NFTId)!;
+        let tokenLock: TokenLockOption = tokenLockOptions[appState.chainId].find(x => x.address == data.lockedToken.address)!;
+        let data1: VeTravaState = {
+            id: data.id,
+            votingPower: data.votingPower,
+            tokenInVeTrava: {
+                balances: data.lockedToken.amount,
+                tokenLockOption: tokenLock,
+            },
+            unlockTime: data.end,
+            rewardTokenBalance: {
+                compoundAbleRewards: data.rwAmount,
+                compoundedRewards: data.rwAmount,
+                balances: data.rwAmount,
+            },
+        }
+
+
+        let price = data.priceToken.amount;
+        let priceTokenAddress = data.priceToken.address.toLowerCase();
+
+        if(!appState[modeFrom].tokenBalances.has(priceTokenAddress.toLowerCase())) {
+            appState = await updateTokenBalance(appState, _from, priceTokenAddress);
+            }
+        let balanceOfToken = BigNumber(0);            
+        balanceOfToken = BigNumber(appState[modeFrom].tokenBalances.get(priceTokenAddress.toLowerCase())!);
+
+        let newBalance = balanceOfToken.minus(price).toFixed();
+        appState[modeFrom].tokenBalances.set(priceTokenAddress.toLowerCase(), newBalance);  
+        appState[modeFrom].veTravaListState.veTravaList.set(_NFTId, data1);
+        appState.NFTVeTravaMarketSellingState.sellingVeTrava = appState.NFTVeTravaMarketSellingState.sellingVeTrava.filter(x => x.id != _NFTId);
+        
     } catch (err) {
         throw err;
       }
