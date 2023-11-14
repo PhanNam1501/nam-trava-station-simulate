@@ -6,7 +6,7 @@ import { TokenLockOption, tokenLockOptions, updateTravaGovernanceState } from ".
 import { SellingVeTravaType, tokenInfo } from "../../helpers";
 import { updateSellingVeTrava } from "./UpdateStateAccount";
 import BigNumber from "bignumber.js";
-import { updateSmartWalletTokenBalance, updateTokenBalance, updateUserTokenBalance } from "../../../../basic";
+import { updateTokenBalance } from "../../../../basic";
 import { NFTNotFoundError } from '../../../../../utils/error';
 import { simulateNFTVeTravaTranfer } from "../../utilities/SimulationVeTravaNFTUtilities";
 import _ from "lodash";

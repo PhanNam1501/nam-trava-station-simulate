@@ -1,12 +1,11 @@
 import { ApplicationState } from "../../../../State/ApplicationState";
 import _ from "lodash";
 import { _fetchNormal } from "../helpers/utils"
-import { BigNumberish, EthAddress, uint256, wallet_mode } from "../../../../utils/types";
-import { FromAddressError, NFTNotFoundError } from "../../../../utils/error";
+import { EthAddress, uint256, wallet_mode } from "../../../../utils/types";
+import { NFTNotFoundError } from "../../../../utils/error";
 import { updateTravaGovernanceState, updateUserLockBalance } from "../../governance/UpdateStateAccount";
 import { VeTravaState } from "../../../../State";
 import { getMode } from "../../../../utils/helper";
-import { updateTokenBalance } from "../../../basic";
 
 export async function simulateNFTVeTravaTranfer(
     _appState1: ApplicationState,
