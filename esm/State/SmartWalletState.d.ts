@@ -3,7 +3,6 @@ import { NFTAuctioningState, NFTFarmingsState, NFTSellingState } from "./trava/n
 import { BaseAccountVault, WalletTravaLPState } from "./trava/lending/TravaDeFiState";
 import { CollectionOwned, NFTOwned } from "./WalletState";
 import { VeTravaListState } from "./trava/lending/TravaGovenanceState";
-import { FarmingKnightDetailInfo } from "../Simulation";
 export interface OriginTokenData {
     balances: string;
 }
@@ -31,7 +30,6 @@ export declare class SmartWalletState {
     ethBalances: string;
     sellingNFT: NFTSellingState;
     auctioningState: NFTAuctioningState;
-    farmingState: Array<FarmingKnightDetailInfo>;
     NFTFarmingsState: NFTFarmingsState;
     detailTokenInPool: Map<string, DetailTokenInPool>;
     travaLPStakingStateList: Map<string, BaseAccountVault>;

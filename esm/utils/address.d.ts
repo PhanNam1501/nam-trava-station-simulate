@@ -25,6 +25,7 @@ export declare const listAddr: {
         VE_TRAVA_MARKETPLACE_ADDRESS: string;
         BUSD_TOKEN_ADDRESS: string;
         NFT_FARMING_BASE_EXP: string;
+        FARMING_REWARD_VAULT: string;
     };
 };
 export declare const getAddr: (name: string, chainId?: number) => EthAddress;

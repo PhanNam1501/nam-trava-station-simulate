@@ -80,6 +80,7 @@ function updateFarmingState(appState1, force = false) {
                             nftInfos.push({
                                 attainedExp: parseInt(exp[index][0]),
                                 depositedTime: parseInt(data["depositTime"]) * 1000,
+                                lastPolishTime: parseInt(data["lastPolishTime"]) * 1000,
                                 id: Number(idList[index]),
                                 exp: Number(expEarned[index][0]),
                                 earn: (0, bignumber_js_1.default)(balance[index]).dividedBy(utils_1.BASE18).toNumber(),

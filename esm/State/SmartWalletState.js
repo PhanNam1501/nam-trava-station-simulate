@@ -16,7 +16,6 @@ class SmartWalletState {
         this.sellingNFT = new TravaNFTState_1.NFTSellingState();
         this.auctioningState = new TravaNFTState_1.NFTAuctioningState();
         this.NFTFarmingsState = new TravaNFTState_1.NFTFarmingsState();
-        this.farmingState = new Array();
         this.detailTokenInPool = new Map();
         this.travaLPStakingStateList = new Map();
         this.veTravaListState = new TravaGovenanceState_1.VeTravaListState();

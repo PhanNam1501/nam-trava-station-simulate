@@ -103,6 +103,7 @@ export async function updateFarmingState(appState1: ApplicationState, force = fa
                         nftInfos.push({
                             attainedExp: parseInt(exp[index][0]),
                             depositedTime: parseInt(data["depositTime"]) * 1000,
+                            lastPolishTime: parseInt(data["lastPolishTime"]) * 1000,
                             id: Number(idList[index]),
                             exp: Number(expEarned[index][0]),
                             earn: BigNumber(balance[index]).dividedBy(BASE18).toNumber(),

@@ -1,5 +1,5 @@
 import { ApplicationState } from "../../../State/ApplicationState";
-export declare function updateAllAccountVault(appState1: ApplicationState): Promise<{
+export declare function updateAllAccountVault(appState1: ApplicationState, force?: boolean): Promise<{
     createdTime: number;
     walletState: import("../../..").WalletState;
     smartWalletState: import("../../..").SmartWalletState;

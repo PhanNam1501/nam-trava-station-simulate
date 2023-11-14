@@ -419,7 +419,6 @@ class SmartWalletState {
     _defineProperty(this, "ethBalances", void 0);
     _defineProperty(this, "sellingNFT", void 0);
     _defineProperty(this, "auctioningState", void 0);
-    _defineProperty(this, "farmingState", void 0);
     _defineProperty(this, "NFTFarmingsState", void 0);
     _defineProperty(this, "detailTokenInPool", void 0);
     _defineProperty(this, "travaLPStakingStateList", void 0);
@@ -433,7 +432,6 @@ class SmartWalletState {
     this.sellingNFT = new _trava_nft_TravaNFTState__WEBPACK_IMPORTED_MODULE_0__.NFTSellingState();
     this.auctioningState = new _trava_nft_TravaNFTState__WEBPACK_IMPORTED_MODULE_0__.NFTAuctioningState();
     this.NFTFarmingsState = new _trava_nft_TravaNFTState__WEBPACK_IMPORTED_MODULE_0__.NFTFarmingsState();
-    this.farmingState = new Array();
     this.detailTokenInPool = new Map();
     this.travaLPStakingStateList = new Map();
     this.veTravaListState = new _trava_lending_TravaGovenanceState__WEBPACK_IMPORTED_MODULE_3__.VeTravaListState();
@@ -538,6 +536,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   _fetchList: () => (/* reexport safe */ _trava__WEBPACK_IMPORTED_MODULE_2__._fetchList),
 /* harmony export */   _fetchNormal: () => (/* reexport safe */ _trava__WEBPACK_IMPORTED_MODULE_2__._fetchNormal),
 /* harmony export */   armourySort: () => (/* reexport safe */ _trava__WEBPACK_IMPORTED_MODULE_2__.armourySort),
+/* harmony export */   caculateValue: () => (/* reexport safe */ _trava__WEBPACK_IMPORTED_MODULE_2__.caculateValue),
 /* harmony export */   calcVotingPower: () => (/* reexport safe */ _trava__WEBPACK_IMPORTED_MODULE_2__.calcVotingPower),
 /* harmony export */   calculateKnightApr: () => (/* reexport safe */ _trava__WEBPACK_IMPORTED_MODULE_2__.calculateKnightApr),
 /* harmony export */   calculateMaxAmountBorrow: () => (/* reexport safe */ _trava__WEBPACK_IMPORTED_MODULE_2__.calculateMaxAmountBorrow),
@@ -831,7 +830,8 @@ var listAddr = {
     RTRAVA_TOKEN_ADDRESS: '0x4a9901cdAfDFB2aC614c12627E0A5B45A63929d6',
     VE_TRAVA_MARKETPLACE_ADDRESS: "0x642e9fD16cA66db2747695dc0DddD0ce54aB3AB1",
     BUSD_TOKEN_ADDRESS: "0x8ADE9A293528EB21f2fD9d7fF6eD919Adf1AdEC7",
-    NFT_FARMING_BASE_EXP: "0xb0c3137d7C7d8cf994b9931359A97605dF277815"
+    NFT_FARMING_BASE_EXP: "0xb0c3137d7C7d8cf994b9931359A97605dF277815",
+    FARMING_REWARD_VAULT: "0x17b173D4B80B0B5BB7E0f1E99F5962f2D51799Eb"
   },
   // MUST BE FILL MAINNET ADDRESS HERE. NOW IS TESTNET
   [_config__WEBPACK_IMPORTED_MODULE_0__.NETWORKS.bscMainnet.chainId]: {
@@ -875,7 +875,8 @@ var listAddr = {
     RTRAVA_TOKEN_ADDRESS: '0x170772A06aFfC0d375cE90Ef59C8eC04c7ebF5D2',
     VE_TRAVA_MARKETPLACE_ADDRESS: "0x65c62822940C1a57C90Ac8BF0874730624ec7Fb7",
     BUSD_TOKEN_ADDRESS: "0xe9e7cea3dedca5984780bafc599bd69add087d56",
-    NFT_FARMING_BASE_EXP: "0xc7a3a214206d6677b3321865AfbD84a417414Db3"
+    NFT_FARMING_BASE_EXP: "0xc7a3a214206d6677b3321865AfbD84a417414Db3",
+    FARMING_REWARD_VAULT: "0x1120E28F5D9eeABfC18afE9600315c6c184b9fcF"
   }
 };
 var getAddr = (name, chainId) => {
@@ -55407,6 +55408,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   _fetchList: () => (/* reexport safe */ _nft__WEBPACK_IMPORTED_MODULE_1__._fetchList),
 /* harmony export */   _fetchNormal: () => (/* reexport safe */ _nft__WEBPACK_IMPORTED_MODULE_1__._fetchNormal),
 /* harmony export */   armourySort: () => (/* reexport safe */ _nft__WEBPACK_IMPORTED_MODULE_1__.armourySort),
+/* harmony export */   caculateValue: () => (/* reexport safe */ _nft__WEBPACK_IMPORTED_MODULE_1__.caculateValue),
 /* harmony export */   calcVotingPower: () => (/* reexport safe */ _governance__WEBPACK_IMPORTED_MODULE_3__.calcVotingPower),
 /* harmony export */   calculateKnightApr: () => (/* reexport safe */ _nft__WEBPACK_IMPORTED_MODULE_1__.calculateKnightApr),
 /* harmony export */   calculateMaxAmountBorrow: () => (/* reexport safe */ _market__WEBPACK_IMPORTED_MODULE_0__.calculateMaxAmountBorrow),
@@ -56657,6 +56659,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   _fetchList: () => (/* reexport safe */ _marketplace__WEBPACK_IMPORTED_MODULE_1__._fetchList),
 /* harmony export */   _fetchNormal: () => (/* reexport safe */ _helpers__WEBPACK_IMPORTED_MODULE_0__._fetchNormal),
 /* harmony export */   armourySort: () => (/* reexport safe */ _helpers__WEBPACK_IMPORTED_MODULE_0__.armourySort),
+/* harmony export */   caculateValue: () => (/* reexport safe */ _missions__WEBPACK_IMPORTED_MODULE_2__.caculateValue),
 /* harmony export */   calculateKnightApr: () => (/* reexport safe */ _missions__WEBPACK_IMPORTED_MODULE_2__.calculateKnightApr),
 /* harmony export */   calculateVaultApr: () => (/* reexport safe */ _missions__WEBPACK_IMPORTED_MODULE_2__.calculateVaultApr),
 /* harmony export */   collectionSort: () => (/* reexport safe */ _helpers__WEBPACK_IMPORTED_MODULE_0__.collectionSort),
@@ -60417,6 +60420,7 @@ function _simulateNFTVeTravaTranfer() {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   caculateValue: () => (/* reexport safe */ _heuristicFarming__WEBPACK_IMPORTED_MODULE_0__.caculateValue),
 /* harmony export */   calculateKnightApr: () => (/* reexport safe */ _heuristicFarming__WEBPACK_IMPORTED_MODULE_0__.calculateKnightApr),
 /* harmony export */   calculateVaultApr: () => (/* reexport safe */ _heuristicFarming__WEBPACK_IMPORTED_MODULE_0__.calculateVaultApr),
 /* harmony export */   getNormalKinghtFromFarmingKnight: () => (/* reexport safe */ _heuristicFarming__WEBPACK_IMPORTED_MODULE_0__.getNormalKinghtFromFarmingKnight),
@@ -60437,6 +60441,7 @@ __webpack_require__.r(__webpack_exports__);
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   caculateValue: () => (/* reexport safe */ _simulateHeuristicFarming__WEBPACK_IMPORTED_MODULE_2__.caculateValue),
 /* harmony export */   calculateKnightApr: () => (/* reexport safe */ _UpdateStateAccount__WEBPACK_IMPORTED_MODULE_0__.calculateKnightApr),
 /* harmony export */   calculateVaultApr: () => (/* reexport safe */ _UpdateStateAccount__WEBPACK_IMPORTED_MODULE_0__.calculateVaultApr),
 /* harmony export */   getNormalKinghtFromFarmingKnight: () => (/* reexport safe */ _simulateHeuristicFarming__WEBPACK_IMPORTED_MODULE_2__.getNormalKinghtFromFarmingKnight),
@@ -60541,6 +60546,7 @@ function _updateFarmingState() {
               nftInfos.push({
                 attainedExp: parseInt(exp[index][0]),
                 depositedTime: parseInt(data["depositTime"]) * 1000,
+                lastPolishTime: parseInt(data["lastPolishTime"]) * 1000,
                 id: Number(idList[index]),
                 exp: Number(expEarned[index][0]),
                 earn: (0,bignumber_js__WEBPACK_IMPORTED_MODULE_6__["default"])(balance[index]).dividedBy(_utils__WEBPACK_IMPORTED_MODULE_0__.BASE18).toNumber(),
@@ -60740,6 +60746,7 @@ module.exports = JSON.parse('[{"anonymous":false,"inputs":[{"indexed":true,"inte
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   caculateValue: () => (/* binding */ caculateValue),
 /* harmony export */   getNormalKinghtFromFarmingKnight: () => (/* binding */ getNormalKinghtFromFarmingKnight),
 /* harmony export */   simulateTravaNFTHeuristicFarmingClaim: () => (/* binding */ simulateTravaNFTHeuristicFarmingClaim),
 /* harmony export */   simulateTravaNFTHeuristicFarmingPolish: () => (/* binding */ simulateTravaNFTHeuristicFarmingPolish),
@@ -60752,6 +60759,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _helpers__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(350);
 /* harmony import */ var _utilities__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(377);
 /* harmony import */ var _UpdateStateAccount__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(396);
+/* harmony import */ var _staking__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(400);
 function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
 function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
 function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
@@ -60759,6 +60767,7 @@ function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return typ
 function _toPrimitive(input, hint) { if (typeof input !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (typeof res !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
+
 
 
 
@@ -60787,6 +60796,9 @@ function getNormalKinghtFromFarmingKnight(farmingKnightDetailInfo) {
   };
   return normalKnight;
 }
+function caculateValue(newExp) {
+  return newExp / _utils__WEBPACK_IMPORTED_MODULE_1__.DAY_TO_SECONDS + 100;
+}
 function simulateTravaNFTHeuristicFarmingStake(_x, _x2, _x3, _x4) {
   return _simulateTravaNFTHeuristicFarmingStake.apply(this, arguments);
 }
@@ -60805,26 +60817,36 @@ function _simulateTravaNFTHeuristicFarmingStake() {
       var totalNFTs = heuristicFarmingVault.totalNFTs;
       var totalVaultValue = heuristicFarmingVault.totalVaultValue;
       var dailyReward = heuristicFarmingVault.dailyReward;
-      var newTotalVaultValue = totalVaultValue + 100 * _ids.length;
+      var newTotalVaultValue = totalVaultValue;
       var _loop = function* _loop(i) {
         var currentNFT = appState[mode].collection.v1.find(n => n.id == _ids[i]);
         if (!currentNFT) {
           throw new _utils__WEBPACK_IMPORTED_MODULE_1__.NFTNotFoundError("Knight is not found!");
         }
+        newTotalVaultValue += caculateValue(currentNFT.exp);
+      };
+      for (var i = 0; i < _ids.length; i++) {
+        yield* _loop(i);
+      }
+      var _loop2 = function* _loop2(_i) {
+        var currentNFT = appState[mode].collection.v1.find(n => n.id == _ids[_i]);
+        if (!currentNFT) {
+          throw new _utils__WEBPACK_IMPORTED_MODULE_1__.NFTNotFoundError("Knight is not found!");
+        }
         var rarityStr = _helpers__WEBPACK_IMPORTED_MODULE_3__.RarityMapping[currentNFT.rarity - 1];
         var collectionFarmingVault = appState.smartWalletState.NFTFarmingsState.nftFarmings.get("".concat(rarityStr, "-vault"));
-        var kinghtApr = (0,_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_5__.calculateKnightApr)(dailyReward, 100, newTotalVaultValue, collectionFarmingVault.vault.collectionPrice);
+        var knightApr = (0,_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_5__.calculateKnightApr)(dailyReward, 100, newTotalVaultValue, collectionFarmingVault.vault.collectionPrice);
         var nftInfo = {
           attainedExp: 0,
           depositedTime: 0,
-          // lastPolishTime: appState.createdTime,
-          id: _ids[i],
+          lastPolishTime: appState.createdTime,
+          id: _ids[_i],
           exp: currentNFT.exp,
           earn: 0,
-          value: 100
+          value: caculateValue(currentNFT.exp)
         };
         var farmingKnightDetailInfo = _objectSpread(_objectSpread({}, nftInfo), {}, {
-          apr: kinghtApr,
+          apr: knightApr,
           rarity: currentNFT.rarity,
           armor: currentNFT.armor,
           helmet: currentNFT.helmet,
@@ -60832,10 +60854,10 @@ function _simulateTravaNFTHeuristicFarmingStake() {
           weapon: currentNFT.weapon
         });
         heuristicFarmingVault.farmingState.push(farmingKnightDetailInfo);
-        appState[mode].collection.v1 = appState[mode].collection.v1.filter(x => x.id != _ids[i]);
+        appState[mode].collection.v1 = appState[mode].collection.v1.filter(x => x.id != _ids[_i]);
       };
-      for (var i = 0; i < _ids.length; i++) {
-        yield* _loop(i);
+      for (var _i = 0; _i < _ids.length; _i++) {
+        yield* _loop2(_i);
       }
       heuristicFarmingVault.numberKnightOfUser = heuristicFarmingVault.numberKnightOfUser + _ids.length;
       heuristicFarmingVault.totalNFTs = totalNFTs + _ids.length;
@@ -60856,47 +60878,53 @@ function _simulateTravaNFTHeuristicFarmingWithdraw() {
   _simulateTravaNFTHeuristicFarmingWithdraw = _asyncToGenerator(function* (appState1, _ids, _vaultId, _to) {
     var appState = appState1;
     try {
+      if (!appState.smartWalletState.NFTFarmingsState.isFetch) {
+        appState = yield (0,_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_5__.updateFarmingState)(appState);
+      }
       var heuristicFarmingVault = appState.smartWalletState.NFTFarmingsState.nftFarmings.get(_vaultId.toLowerCase());
       var totalNFTs = heuristicFarmingVault.totalNFTs;
       var totalVaultValue = heuristicFarmingVault.totalVaultValue;
       var dailyReward = heuristicFarmingVault.dailyReward;
       var withdrawValue = 0;
-      for (var _id = 0; _id < _ids.length; _id++) {
-        for (var sellingId = 0; sellingId < heuristicFarmingVault.farmingState.length; sellingId++) {
-          if (_id == sellingId) {
-            withdrawValue += heuristicFarmingVault.farmingState[sellingId].value;
-          }
+      for (var sellingId = 0; sellingId < heuristicFarmingVault.farmingState.length; sellingId++) {
+        if (_ids.includes(sellingId)) {
+          withdrawValue += heuristicFarmingVault.farmingState[sellingId].value;
         }
       }
-      for (var _id2 = 0; _id2 < _ids.length; _id2++) {
-        var _loop2 = function* _loop2(_sellingId2) {
-          if (_id2 == _sellingId2) {
-            heuristicFarmingVault.farmingState = heuristicFarmingVault.farmingState.filter(n => n.id != _sellingId2);
-            if ((0,_utils_helper__WEBPACK_IMPORTED_MODULE_2__.isWallet)(appState, _to)) {
-              var toMode = (0,_utils_helper__WEBPACK_IMPORTED_MODULE_2__.getMode)(appState, _to);
-              var normalKnight = getNormalKinghtFromFarmingKnight(heuristicFarmingVault.farmingState[_sellingId2]);
-              if (!appState[toMode].collection.isFetch) {
-                appState = yield (0,_utilities__WEBPACK_IMPORTED_MODULE_4__.updateCollectionBalanceFromContract)(appState, toMode);
-              }
-              appState[toMode].collection.v1.push(normalKnight);
+      var _loop3 = function* _loop3(_sellingId2) {
+        var farmingKnightDetailInfo = heuristicFarmingVault.farmingState[_sellingId2];
+        if (_ids.includes(farmingKnightDetailInfo.id)) {
+          if ((0,_utils_helper__WEBPACK_IMPORTED_MODULE_2__.isWallet)(appState, _to)) {
+            var toMode = (0,_utils_helper__WEBPACK_IMPORTED_MODULE_2__.getMode)(appState, _to);
+            var normalKnight = getNormalKinghtFromFarmingKnight(heuristicFarmingVault.farmingState[_sellingId2]);
+            normalKnight.exp = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_0__["default"])(normalKnight.exp).plus((0,bignumber_js__WEBPACK_IMPORTED_MODULE_0__["default"])(appState.createdTime).minus(farmingKnightDetailInfo.depositedTime).div(3).toFixed(0)).toNumber();
+            if (!appState[toMode].collection.isFetch) {
+              appState = yield (0,_utilities__WEBPACK_IMPORTED_MODULE_4__.updateCollectionBalanceFromContract)(appState, toMode);
             }
-            _sellingId2--;
-          } else {
-            var rarityStr = _helpers__WEBPACK_IMPORTED_MODULE_3__.RarityMapping[heuristicFarmingVault.farmingState[_sellingId2].rarity - 1];
-            var collectionFarmingVault = appState.smartWalletState.NFTFarmingsState.nftFarmings.get("".concat(rarityStr, "-vault"));
-            var knightApr = (0,_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_5__.calculateKnightApr)(dailyReward, heuristicFarmingVault.farmingState[_sellingId2].value, totalVaultValue - withdrawValue, collectionFarmingVault.vault.collectionPrice);
-            heuristicFarmingVault.farmingState[_sellingId2].apr = knightApr;
+            appState[toMode].collection.v1.push(normalKnight);
           }
-          _sellingId = _sellingId2;
-        };
-        for (var _sellingId = 0; _sellingId < heuristicFarmingVault.farmingState.length; _sellingId++) {
-          yield* _loop2(_sellingId);
+          heuristicFarmingVault.farmingState = heuristicFarmingVault.farmingState.filter(n => n.id != _sellingId2);
+          _sellingId2--;
+        } else {
+          var rarityStr = _helpers__WEBPACK_IMPORTED_MODULE_3__.RarityMapping[heuristicFarmingVault.farmingState[_sellingId2].rarity - 1];
+          var collectionFarmingVault = appState.smartWalletState.NFTFarmingsState.nftFarmings.get("".concat(rarityStr, "-vault"));
+          var knightApr = (0,_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_5__.calculateKnightApr)(dailyReward, heuristicFarmingVault.farmingState[_sellingId2].value, totalVaultValue - withdrawValue, collectionFarmingVault.vault.collectionPrice);
+          heuristicFarmingVault.farmingState[_sellingId2].apr = knightApr;
         }
+        _sellingId = _sellingId2;
+      };
+      for (var _sellingId = 0; _sellingId < heuristicFarmingVault.farmingState.length; _sellingId++) {
+        yield* _loop3(_sellingId);
       }
+      if (appState.smartWalletState.travaLPStakingStateList.size == 0) {
+        appState = yield (0,_staking__WEBPACK_IMPORTED_MODULE_6__.updateAllAccountVault)(appState);
+      }
+      appState = yield (0,_staking__WEBPACK_IMPORTED_MODULE_6__.simulateStakingClaimRewards)(appState, (0,_utils__WEBPACK_IMPORTED_MODULE_1__.getAddr)("FARMING_REWARD_VAULT", appState.chainId), appState.smartWalletState.address, heuristicFarmingVault.totalRewardOfUser);
       heuristicFarmingVault.numberKnightOfUser = heuristicFarmingVault.numberKnightOfUser - _ids.length;
       heuristicFarmingVault.totalNFTs = totalNFTs - _ids.length;
       heuristicFarmingVault.aprAvg = (0,_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_5__.calculateVaultApr)(dailyReward, totalNFTs - _ids.length, heuristicFarmingVault.vault.collectionPrice);
       heuristicFarmingVault.totalVaultValue = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_0__["default"])(totalVaultValue).minus(withdrawValue).toNumber();
+      heuristicFarmingVault.totalRewardOfUser = "0";
       appState.smartWalletState.NFTFarmingsState.nftFarmings.set(_vaultId, heuristicFarmingVault);
     } catch (err) {
       console.log(err);
@@ -60911,7 +60939,15 @@ function simulateTravaNFTHeuristicFarmingClaim(_x9, _x10, _x11) {
 function _simulateTravaNFTHeuristicFarmingClaim() {
   _simulateTravaNFTHeuristicFarmingClaim = _asyncToGenerator(function* (appState1, _ids, _vaultId) {
     var appState = appState1;
-    try {} catch (err) {
+    try {
+      var heuristicFarmingVault = appState.smartWalletState.NFTFarmingsState.nftFarmings.get(_vaultId.toLowerCase());
+      if (appState.smartWalletState.travaLPStakingStateList.size == 0) {
+        appState = yield (0,_staking__WEBPACK_IMPORTED_MODULE_6__.updateAllAccountVault)(appState);
+      }
+      appState = yield (0,_staking__WEBPACK_IMPORTED_MODULE_6__.simulateStakingClaimRewards)(appState, (0,_utils__WEBPACK_IMPORTED_MODULE_1__.getAddr)("FARMING_REWARD_VAULT", appState.chainId), appState.smartWalletState.address, heuristicFarmingVault.totalRewardOfUser);
+      heuristicFarmingVault.totalRewardOfUser = "0";
+      appState.smartWalletState.NFTFarmingsState.nftFarmings.set(_vaultId, heuristicFarmingVault);
+    } catch (err) {
       console.log(err);
     }
     return appState;
@@ -60925,7 +60961,35 @@ function _simulateTravaNFTHeuristicFarmingPolish() {
   _simulateTravaNFTHeuristicFarmingPolish = _asyncToGenerator(function* (appState1, _ids, _vaultId) {
     var appState = appState1;
     try {
-      for (var i = 0; i < _ids.length; i++) {}
+      if (!appState.smartWalletState.NFTFarmingsState.isFetch) {
+        appState = yield (0,_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_5__.updateFarmingState)(appState);
+      }
+      var heuristicFarmingVault = appState.smartWalletState.NFTFarmingsState.nftFarmings.get(_vaultId.toLowerCase());
+      var dailyReward = heuristicFarmingVault.dailyReward;
+      var value = 0;
+      for (var sellingId = 0; sellingId < heuristicFarmingVault.farmingState.length; sellingId++) {
+        var farmingKnightDetailInfo = heuristicFarmingVault.farmingState[sellingId];
+        var newValue = 0;
+        if (_ids.includes(farmingKnightDetailInfo.id)) {
+          var oldExp = heuristicFarmingVault.farmingState[sellingId].exp;
+          var newExp = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_0__["default"])(oldExp).plus((0,bignumber_js__WEBPACK_IMPORTED_MODULE_0__["default"])(appState.createdTime).minus(farmingKnightDetailInfo.depositedTime).div(3).toFixed(0));
+          newValue = caculateValue(newExp.toNumber());
+          heuristicFarmingVault.farmingState[sellingId].exp = newExp.toNumber();
+          heuristicFarmingVault.farmingState[sellingId].value = newValue;
+        }
+        value += newValue;
+      }
+      for (var _sellingId3 = 0; _sellingId3 < heuristicFarmingVault.farmingState.length; _sellingId3++) {
+        var _farmingKnightDetailInfo = heuristicFarmingVault.farmingState[_sellingId3];
+        if (_ids.includes(_farmingKnightDetailInfo.id)) {
+          var rarityStr = _helpers__WEBPACK_IMPORTED_MODULE_3__.RarityMapping[heuristicFarmingVault.farmingState[_sellingId3].rarity - 1];
+          var collectionFarmingVault = appState.smartWalletState.NFTFarmingsState.nftFarmings.get("".concat(rarityStr, "-vault"));
+          var knightApr = (0,_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_5__.calculateKnightApr)(dailyReward, heuristicFarmingVault.farmingState[_sellingId3].value, value, collectionFarmingVault.vault.collectionPrice);
+          heuristicFarmingVault.farmingState[_sellingId3].apr = knightApr;
+        }
+      }
+      heuristicFarmingVault.totalVaultValue = value;
+      appState.smartWalletState.NFTFarmingsState.nftFarmings.set(_vaultId, heuristicFarmingVault);
     } catch (err) {
       console.log(err);
     }
@@ -60996,149 +61060,152 @@ function updateAllAccountVault(_x) {
 }
 function _updateAllAccountVault() {
   _updateAllAccountVault = _asyncToGenerator(function* (appState1) {
+    var force = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
     var vaultConfigList = _utils_stakingVaultConfig__WEBPACK_IMPORTED_MODULE_4__.listStakingVault[appState1.chainId];
     var appState = _objectSpread({}, appState1);
-    var underlyingAddress = new Array();
-    var priceUnderlyingAddress = new Array();
-    var lpAddress = new Array();
-    var stakedTokenAddress = new Array();
-    var rewardTokenAddress = new Array();
-    for (var i = 0; i < vaultConfigList.length; i++) {
-      underlyingAddress.push(vaultConfigList[i].underlyingAddress);
-      priceUnderlyingAddress.push(vaultConfigList[i].priceUnderlyingAddress);
-      lpAddress.push(vaultConfigList[i].lpAddress);
-      stakedTokenAddress.push(vaultConfigList[i].stakedTokenAddress);
-      rewardTokenAddress.push(vaultConfigList[i].rewardToken.address);
-    }
-    var [depositedDatas,
-    // data of total deposit in all vaults
-    TVLDatas,
-    // data of total supply all staked tokens
-    bnbBalanceInVaults // balance of bnb in all vaults
-    ] = yield Promise.all([(0,_utils_helper__WEBPACK_IMPORTED_MODULE_10__.multiCall)(_abis_StakedToken_json__WEBPACK_IMPORTED_MODULE_1__, stakedTokenAddress.map((address, _) => ({
-      address: address,
-      name: "balanceOf",
-      params: [appState.smartWalletState.address]
-    })), appState.web3, appState.chainId), (0,_utils_helper__WEBPACK_IMPORTED_MODULE_10__.multiCall)(_abis_StakedToken_json__WEBPACK_IMPORTED_MODULE_1__, stakedTokenAddress.map((address, _) => ({
-      address: address,
-      name: "totalSupply",
-      params: []
-    })), appState.web3, appState.chainId), (0,_utils_helper__WEBPACK_IMPORTED_MODULE_10__.multiCall)(_abis_BEP20_json__WEBPACK_IMPORTED_MODULE_9__, lpAddress.map((address, _) => ({
-      address: (0,_utils_address__WEBPACK_IMPORTED_MODULE_3__.getAddr)("WBNB_ADDRESS", appState.chainId),
-      name: "balanceOf",
-      params: [address]
-    })), appState.web3, appState.chainId)]);
-    var oracleContract = new ethers__WEBPACK_IMPORTED_MODULE_0__.Contract((0,_utils_address__WEBPACK_IMPORTED_MODULE_3__.getAddr)("ORACLE_ADDRESS", appState.chainId), _abis_AaveOracle_json__WEBPACK_IMPORTED_MODULE_7__, appState.web3);
-    var bnbPrice = yield oracleContract.getAssetPrice((0,_utils_address__WEBPACK_IMPORTED_MODULE_3__.getAddr)("WBNB_ADDRESS", appState.chainId));
-    var wbnbContract = new ethers__WEBPACK_IMPORTED_MODULE_0__.Contract((0,_utils_address__WEBPACK_IMPORTED_MODULE_3__.getAddr)("WBNB_ADDRESS", appState.chainId), _abis_BEP20_json__WEBPACK_IMPORTED_MODULE_9__, appState.web3);
-    var wbnbBalanceTravalp = yield wbnbContract.balanceOf((0,_utils_address__WEBPACK_IMPORTED_MODULE_3__.getAddr)("WBNB_TRAVA_LP_ADDRESS", appState.chainId));
-    var travaContract = new ethers__WEBPACK_IMPORTED_MODULE_0__.Contract((0,_utils_address__WEBPACK_IMPORTED_MODULE_3__.getAddr)("TRAVA_TOKEN_IN_STAKING", appState.chainId), _abis_BEP20_json__WEBPACK_IMPORTED_MODULE_9__, appState.web3);
-    var travaBalanceTravalp = yield travaContract.balanceOf((0,_utils_address__WEBPACK_IMPORTED_MODULE_3__.getAddr)("WBNB_TRAVA_LP_ADDRESS", appState.chainId));
-    var travaPrice = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_6__["default"])(bnbPrice).multipliedBy(wbnbBalanceTravalp).div(travaBalanceTravalp);
-    if (travaPrice.isNaN()) {
-      travaPrice = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_6__["default"])(0);
-    }
-    for (var _i = 0; _i < vaultConfigList.length; _i++) {
-      //calculate claimable reward and eps (epoch permit seconds)
-      var claimableReward = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_6__["default"])(0);
-      var eps = "0";
-      if (vaultConfigList[_i].id == "orai") {
-        var vestingCR = new ethers__WEBPACK_IMPORTED_MODULE_0__.Contract((0,_utils_address__WEBPACK_IMPORTED_MODULE_3__.getAddr)("VESTING_TRAVA_ADDRESS", appState.chainId), _abis_VestingTrava_json__WEBPACK_IMPORTED_MODULE_2__, appState.web3);
-        claimableReward = yield vestingCR.getClaimableReward(appState.smartWalletState.address, vaultConfigList[_i].underlyingAddress);
-        eps = "0.005549";
-      } else {
-        var stakedCR = new ethers__WEBPACK_IMPORTED_MODULE_0__.Contract(vaultConfigList[_i].stakedTokenAddress, _abis_StakedToken_json__WEBPACK_IMPORTED_MODULE_1__, appState.web3);
-        claimableReward = yield stakedCR.getTotalRewardsBalance(appState.smartWalletState.address);
-        eps = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_6__["default"])(yield stakedCR.getAssetEmissionPerSecond(vaultConfigList[_i].stakedTokenAddress)).div(vaultConfigList[_i].reserveDecimals).toFixed();
+    if (appState.smartWalletState.travaLPStakingStateList.size == 0 || force) {
+      var underlyingAddress = new Array();
+      var priceUnderlyingAddress = new Array();
+      var lpAddress = new Array();
+      var stakedTokenAddress = new Array();
+      var rewardTokenAddress = new Array();
+      for (var i = 0; i < vaultConfigList.length; i++) {
+        underlyingAddress.push(vaultConfigList[i].underlyingAddress);
+        priceUnderlyingAddress.push(vaultConfigList[i].priceUnderlyingAddress);
+        lpAddress.push(vaultConfigList[i].lpAddress);
+        stakedTokenAddress.push(vaultConfigList[i].stakedTokenAddress);
+        rewardTokenAddress.push(vaultConfigList[i].rewardToken.address);
       }
-
-      /** calculate underlying token price
-       * Consider vault underlying token / BNB, we have:
-       * + bnb price * bnb balance in vault = underlying price * underlying balance in vault
-       * + bnb price * bnb balance in vault + underlying price * underlying balance in vault = lp pair token price * lp pair token total supply
-       * => 2 * bnb price * bnb balance in vault = 2 * underlying price * underlying balance in vault = lp pair token price * lp pair token total supply
-       * if underlying token is not pair 
-       *      return underlying price = bnb price * bnb balance in vault / underlying balance in vault
-       *  else: 
-       *      return lp pair token price = 2 * bnb price * bnb balance in vault / lp pair token total supply
-       */
-
-      var underlyingTokenPrice = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_6__["default"])(0);
-      if (vaultConfigList[_i].underlyingAddress.toLowerCase() != vaultConfigList[_i].lpAddress.toLowerCase()) {
-        // if underlying is rTrava or Trava, it is calculated above
-        if (vaultConfigList[_i].priceUnderlyingAddress.toLowerCase() == (0,_utils_address__WEBPACK_IMPORTED_MODULE_3__.getAddr)("TRAVA_TOKEN_IN_STAKING", appState.chainId).toLowerCase()) {
-          underlyingTokenPrice = travaPrice;
+      var [depositedDatas,
+      // data of total deposit in all vaults
+      TVLDatas,
+      // data of total supply all staked tokens
+      bnbBalanceInVaults // balance of bnb in all vaults
+      ] = yield Promise.all([(0,_utils_helper__WEBPACK_IMPORTED_MODULE_10__.multiCall)(_abis_StakedToken_json__WEBPACK_IMPORTED_MODULE_1__, stakedTokenAddress.map((address, _) => ({
+        address: address,
+        name: "balanceOf",
+        params: [appState.smartWalletState.address]
+      })), appState.web3, appState.chainId), (0,_utils_helper__WEBPACK_IMPORTED_MODULE_10__.multiCall)(_abis_StakedToken_json__WEBPACK_IMPORTED_MODULE_1__, stakedTokenAddress.map((address, _) => ({
+        address: address,
+        name: "totalSupply",
+        params: []
+      })), appState.web3, appState.chainId), (0,_utils_helper__WEBPACK_IMPORTED_MODULE_10__.multiCall)(_abis_BEP20_json__WEBPACK_IMPORTED_MODULE_9__, lpAddress.map((address, _) => ({
+        address: (0,_utils_address__WEBPACK_IMPORTED_MODULE_3__.getAddr)("WBNB_ADDRESS", appState.chainId),
+        name: "balanceOf",
+        params: [address]
+      })), appState.web3, appState.chainId)]);
+      var oracleContract = new ethers__WEBPACK_IMPORTED_MODULE_0__.Contract((0,_utils_address__WEBPACK_IMPORTED_MODULE_3__.getAddr)("ORACLE_ADDRESS", appState.chainId), _abis_AaveOracle_json__WEBPACK_IMPORTED_MODULE_7__, appState.web3);
+      var bnbPrice = yield oracleContract.getAssetPrice((0,_utils_address__WEBPACK_IMPORTED_MODULE_3__.getAddr)("WBNB_ADDRESS", appState.chainId));
+      var wbnbContract = new ethers__WEBPACK_IMPORTED_MODULE_0__.Contract((0,_utils_address__WEBPACK_IMPORTED_MODULE_3__.getAddr)("WBNB_ADDRESS", appState.chainId), _abis_BEP20_json__WEBPACK_IMPORTED_MODULE_9__, appState.web3);
+      var wbnbBalanceTravalp = yield wbnbContract.balanceOf((0,_utils_address__WEBPACK_IMPORTED_MODULE_3__.getAddr)("WBNB_TRAVA_LP_ADDRESS", appState.chainId));
+      var travaContract = new ethers__WEBPACK_IMPORTED_MODULE_0__.Contract((0,_utils_address__WEBPACK_IMPORTED_MODULE_3__.getAddr)("TRAVA_TOKEN_IN_STAKING", appState.chainId), _abis_BEP20_json__WEBPACK_IMPORTED_MODULE_9__, appState.web3);
+      var travaBalanceTravalp = yield travaContract.balanceOf((0,_utils_address__WEBPACK_IMPORTED_MODULE_3__.getAddr)("WBNB_TRAVA_LP_ADDRESS", appState.chainId));
+      var travaPrice = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_6__["default"])(bnbPrice).multipliedBy(wbnbBalanceTravalp).div(travaBalanceTravalp);
+      if (travaPrice.isNaN()) {
+        travaPrice = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_6__["default"])(0);
+      }
+      for (var _i = 0; _i < vaultConfigList.length; _i++) {
+        //calculate claimable reward and eps (epoch permit seconds)
+        var claimableReward = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_6__["default"])(0);
+        var eps = "0";
+        if (vaultConfigList[_i].id == "orai") {
+          var vestingCR = new ethers__WEBPACK_IMPORTED_MODULE_0__.Contract((0,_utils_address__WEBPACK_IMPORTED_MODULE_3__.getAddr)("VESTING_TRAVA_ADDRESS", appState.chainId), _abis_VestingTrava_json__WEBPACK_IMPORTED_MODULE_2__, appState.web3);
+          claimableReward = yield vestingCR.getClaimableReward(appState.smartWalletState.address, vaultConfigList[_i].underlyingAddress);
+          eps = "0.005549";
         } else {
-          var priceUnderlyingTokenContract = new ethers__WEBPACK_IMPORTED_MODULE_0__.Contract(vaultConfigList[_i].priceUnderlyingAddress, _abis_BEP20_json__WEBPACK_IMPORTED_MODULE_9__, appState.web3);
-          var balanceOfUnderlyingTokenInVault = yield priceUnderlyingTokenContract.balanceOf(vaultConfigList[_i].lpAddress);
-          underlyingTokenPrice = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_6__["default"])(bnbPrice).multipliedBy(bnbBalanceInVaults[_i]).div(balanceOfUnderlyingTokenInVault);
+          var stakedCR = new ethers__WEBPACK_IMPORTED_MODULE_0__.Contract(vaultConfigList[_i].stakedTokenAddress, _abis_StakedToken_json__WEBPACK_IMPORTED_MODULE_1__, appState.web3);
+          claimableReward = yield stakedCR.getTotalRewardsBalance(appState.smartWalletState.address);
+          eps = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_6__["default"])(yield stakedCR.getAssetEmissionPerSecond(vaultConfigList[_i].stakedTokenAddress)).div(vaultConfigList[_i].reserveDecimals).toFixed();
         }
-      } else {
-        var lpContract = new ethers__WEBPACK_IMPORTED_MODULE_0__.Contract(vaultConfigList[_i].lpAddress, _abis_StakedToken_json__WEBPACK_IMPORTED_MODULE_1__, appState.web3);
-        var totalSupply = yield lpContract.totalSupply();
-        underlyingTokenPrice = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_6__["default"])(bnbPrice).multipliedBy(bnbBalanceInVaults[_i]).multipliedBy(2).div(totalSupply);
-      }
-      if (underlyingTokenPrice.isNaN()) {
-        underlyingTokenPrice = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_6__["default"])(0);
-      }
 
-      // init state stakeToken
-      var stakedToken = {
-        id: vaultConfigList[_i].id,
-        name: vaultConfigList[_i].name,
-        code: vaultConfigList[_i].code,
-        stakedTokenAddress: vaultConfigList[_i].stakedTokenAddress,
-        eps: eps,
-        reserveDecimals: vaultConfigList[_i].reserveDecimals
-      };
+        /** calculate underlying token price
+         * Consider vault underlying token / BNB, we have:
+         * + bnb price * bnb balance in vault = underlying price * underlying balance in vault
+         * + bnb price * bnb balance in vault + underlying price * underlying balance in vault = lp pair token price * lp pair token total supply
+         * => 2 * bnb price * bnb balance in vault = 2 * underlying price * underlying balance in vault = lp pair token price * lp pair token total supply
+         * if underlying token is not pair 
+         *      return underlying price = bnb price * bnb balance in vault / underlying balance in vault
+         *  else: 
+         *      return lp pair token price = 2 * bnb price * bnb balance in vault / lp pair token total supply
+         */
 
-      // init state underlyingToken
-      var underlyingToken = {
-        underlyingAddress: vaultConfigList[_i].underlyingAddress,
-        reserveDecimals: vaultConfigList[_i].reserveDecimals,
-        price: underlyingTokenPrice.toFixed(0) //underlyingTokenPriceDatas[i]
-      };
+        var underlyingTokenPrice = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_6__["default"])(0);
+        if (vaultConfigList[_i].underlyingAddress.toLowerCase() != vaultConfigList[_i].lpAddress.toLowerCase()) {
+          // if underlying is rTrava or Trava, it is calculated above
+          if (vaultConfigList[_i].priceUnderlyingAddress.toLowerCase() == (0,_utils_address__WEBPACK_IMPORTED_MODULE_3__.getAddr)("TRAVA_TOKEN_IN_STAKING", appState.chainId).toLowerCase()) {
+            underlyingTokenPrice = travaPrice;
+          } else {
+            var priceUnderlyingTokenContract = new ethers__WEBPACK_IMPORTED_MODULE_0__.Contract(vaultConfigList[_i].priceUnderlyingAddress, _abis_BEP20_json__WEBPACK_IMPORTED_MODULE_9__, appState.web3);
+            var balanceOfUnderlyingTokenInVault = yield priceUnderlyingTokenContract.balanceOf(vaultConfigList[_i].lpAddress);
+            underlyingTokenPrice = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_6__["default"])(bnbPrice).multipliedBy(bnbBalanceInVaults[_i]).div(balanceOfUnderlyingTokenInVault);
+          }
+        } else {
+          var lpContract = new ethers__WEBPACK_IMPORTED_MODULE_0__.Contract(vaultConfigList[_i].lpAddress, _abis_StakedToken_json__WEBPACK_IMPORTED_MODULE_1__, appState.web3);
+          var totalSupply = yield lpContract.totalSupply();
+          underlyingTokenPrice = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_6__["default"])(bnbPrice).multipliedBy(bnbBalanceInVaults[_i]).multipliedBy(2).div(totalSupply);
+        }
+        if (underlyingTokenPrice.isNaN()) {
+          underlyingTokenPrice = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_6__["default"])(0);
+        }
 
-      /**Caculate reward token price
-       * if reward token price is trava, rewardTokenPrice = trava price which is caculated above
-       */
-      var rewardTokenPrice = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_6__["default"])("0");
-      if (vaultConfigList[_i].rewardToken.address.toLowerCase() == (0,_utils_address__WEBPACK_IMPORTED_MODULE_3__.getAddr)("TRAVA_TOKEN_IN_STAKING", appState.chainId).toLowerCase()) {
-        rewardTokenPrice = travaPrice;
-      }
-      // init state rewardToken
-      var rewardToken = {
-        address: vaultConfigList[_i].rewardToken.address,
-        decimals: vaultConfigList[_i].rewardToken.decimals,
-        price: rewardTokenPrice.toFixed(0) // rewardTokenPriceDatas[i]
-      };
+        // init state stakeToken
+        var stakedToken = {
+          id: vaultConfigList[_i].id,
+          name: vaultConfigList[_i].name,
+          code: vaultConfigList[_i].code,
+          stakedTokenAddress: vaultConfigList[_i].stakedTokenAddress,
+          eps: eps,
+          reserveDecimals: vaultConfigList[_i].reserveDecimals
+        };
 
-      // Calculate TVL = TVL amount * price
-      var TVL = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_6__["default"])(TVLDatas[_i]).div(underlyingToken.reserveDecimals).multipliedBy(underlyingToken.price);
+        // init state underlyingToken
+        var underlyingToken = {
+          underlyingAddress: vaultConfigList[_i].underlyingAddress,
+          reserveDecimals: vaultConfigList[_i].reserveDecimals,
+          price: underlyingTokenPrice.toFixed(0) //underlyingTokenPriceDatas[i]
+        };
 
-      // Calculate APR = eps * Reward token price * 1 year to seconds / TVL / 100 
-      var APR = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_6__["default"])(eps).multipliedBy(rewardToken.price).multipliedBy(_utils_config__WEBPACK_IMPORTED_MODULE_5__.YEAR_TO_SECONDS).div(TVL);
-      if (APR.isNaN()) {
-        APR = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_6__["default"])(0);
-      }
+        /**Caculate reward token price
+         * if reward token price is trava, rewardTokenPrice = trava price which is caculated above
+         */
+        var rewardTokenPrice = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_6__["default"])("0");
+        if (vaultConfigList[_i].rewardToken.address.toLowerCase() == (0,_utils_address__WEBPACK_IMPORTED_MODULE_3__.getAddr)("TRAVA_TOKEN_IN_STAKING", appState.chainId).toLowerCase()) {
+          rewardTokenPrice = travaPrice;
+        }
+        // init state rewardToken
+        var rewardToken = {
+          address: vaultConfigList[_i].rewardToken.address,
+          decimals: vaultConfigList[_i].rewardToken.decimals,
+          price: rewardTokenPrice.toFixed(0) // rewardTokenPriceDatas[i]
+        };
 
-      // Init state smart wallet in vault[i]
-      var accountVaults = {
-        claimable: vaultConfigList[_i].claimable,
-        claimableReward: claimableReward.toString(),
-        deposited: depositedDatas[_i].toString(),
-        TVL: TVL.toFixed(0),
-        APR: APR.toFixed(),
-        underlyingToken: underlyingToken,
-        stakedToken: stakedToken,
-        rewardToken: rewardToken
-      };
+        // Calculate TVL = TVL amount * price
+        var TVL = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_6__["default"])(TVLDatas[_i]).div(underlyingToken.reserveDecimals).multipliedBy(underlyingToken.price);
 
-      //store sate
-      appState.smartWalletState.travaLPStakingStateList.set(vaultConfigList[_i].stakedTokenAddress.toLowerCase(), accountVaults);
-      if (!appState.smartWalletState.tokenBalances.has(vaultConfigList[_i].stakedTokenAddress.toLowerCase())) {
-        // store balance of stakedTokenAddress
-        appState = yield (0,_basic_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_8__.updateSmartWalletTokenBalance)(appState, vaultConfigList[_i].stakedTokenAddress.toLowerCase());
+        // Calculate APR = eps * Reward token price * 1 year to seconds / TVL / 100 
+        var APR = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_6__["default"])(eps).multipliedBy(rewardToken.price).multipliedBy(_utils_config__WEBPACK_IMPORTED_MODULE_5__.YEAR_TO_SECONDS).div(TVL);
+        if (APR.isNaN()) {
+          APR = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_6__["default"])(0);
+        }
+
+        // Init state smart wallet in vault[i]
+        var accountVaults = {
+          claimable: vaultConfigList[_i].claimable,
+          claimableReward: claimableReward.toString(),
+          deposited: depositedDatas[_i].toString(),
+          TVL: TVL.toFixed(0),
+          APR: APR.toFixed(),
+          underlyingToken: underlyingToken,
+          stakedToken: stakedToken,
+          rewardToken: rewardToken
+        };
+
+        //store sate
+        appState.smartWalletState.travaLPStakingStateList.set(vaultConfigList[_i].stakedTokenAddress.toLowerCase(), accountVaults);
+        if (!appState.smartWalletState.tokenBalances.has(vaultConfigList[_i].stakedTokenAddress.toLowerCase())) {
+          // store balance of stakedTokenAddress
+          appState = yield (0,_basic_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_8__.updateSmartWalletTokenBalance)(appState, vaultConfigList[_i].stakedTokenAddress.toLowerCase());
+        }
       }
     }
     return appState;
@@ -61477,6 +61544,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   _fetchList: () => (/* reexport safe */ _Simulation__WEBPACK_IMPORTED_MODULE_1__._fetchList),
 /* harmony export */   _fetchNormal: () => (/* reexport safe */ _Simulation__WEBPACK_IMPORTED_MODULE_1__._fetchNormal),
 /* harmony export */   armourySort: () => (/* reexport safe */ _Simulation__WEBPACK_IMPORTED_MODULE_1__.armourySort),
+/* harmony export */   caculateValue: () => (/* reexport safe */ _Simulation__WEBPACK_IMPORTED_MODULE_1__.caculateValue),
 /* harmony export */   calcVotingPower: () => (/* reexport safe */ _Simulation__WEBPACK_IMPORTED_MODULE_1__.calcVotingPower),
 /* harmony export */   calculateKnightApr: () => (/* reexport safe */ _Simulation__WEBPACK_IMPORTED_MODULE_1__.calculateKnightApr),
 /* harmony export */   calculateMaxAmountBorrow: () => (/* reexport safe */ _Simulation__WEBPACK_IMPORTED_MODULE_1__.calculateMaxAmountBorrow),
