@@ -405,16 +405,36 @@ appState = // update token locked balance cua from address
 
 ### Tương tác với veTrava NFT Marketplace
 
-Khi chọn bất cứ action nào của veTrava NFT Marketplace, update user lock balance của from address
+Khi chọn bất cứ action nào của veTrava NFT Marketplace, update selling veTrava NFT
+
+```
+appState = await updateSellingVeTrava(appState);
+```
+
+Khi chọn action Create Sale
 
 ```
 appState = await updateUserLockBalance(appState, fromAddress);
 ```
 
-Khi chọn action Create Sale, veTrava Buy, Cancel Sale
+Khi chọn action veTrava Buy
 
 ```
-appState = await updateSellingVeTrava(appState);
+appState = await updateTokenBalance(appState, _from, priceTokenAddress);
+appState = await updateUserLockBalance(appState, toAddress);
+```
+
+Khi chọn action Cancel Sale
+
+```
+appState = await updateUserLockBalance(appState, toAddress);
+```
+
+Khi chọn action Tranfer veTrava NFT
+
+```
+appState = await updateUserLockBalance(appState, walletAddress);
+appState = await updateUserLockBalance(appState, smartWalletAddress);
 ```
 
 # Simulate state
