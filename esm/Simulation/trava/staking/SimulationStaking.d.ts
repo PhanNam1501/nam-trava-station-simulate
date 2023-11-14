@@ -7,6 +7,7 @@ export declare function simulateStakeStaking(appState1: ApplicationState, _staki
     smartWalletState: import("../../..").SmartWalletState;
     NFTSellingState: import("../../..").NFTSellingState;
     NFTAuctioningState: import("../../..").NFTAuctioningState;
+    NFTVeTravaMarketSellingState: import("../../..").NFTVeTravaSellingState;
     TravaGovernanceState: import("../../..").TravaGovernanceState;
     web3: import("ethers").JsonRpcProvider;
     chainId: number;
@@ -18,6 +19,7 @@ export declare function simulateStakingRedeem(appState1: ApplicationState, _stak
     smartWalletState: import("../../..").SmartWalletState;
     NFTSellingState: import("../../..").NFTSellingState;
     NFTAuctioningState: import("../../..").NFTAuctioningState;
+    NFTVeTravaMarketSellingState: import("../../..").NFTVeTravaSellingState;
     TravaGovernanceState: import("../../..").TravaGovernanceState;
     web3: import("ethers").JsonRpcProvider;
     chainId: number;
@@ -29,6 +31,7 @@ export declare function simulateStakingClaimRewards(appState1: ApplicationState,
     smartWalletState: import("../../..").SmartWalletState;
     NFTSellingState: import("../../..").NFTSellingState;
     NFTAuctioningState: import("../../..").NFTAuctioningState;
+    NFTVeTravaMarketSellingState: import("../../..").NFTVeTravaSellingState;
     TravaGovernanceState: import("../../..").TravaGovernanceState;
     web3: import("ethers").JsonRpcProvider;
     chainId: number;

@@ -1,4 +1,5 @@
-import { EthAddress, uint256 } from "trava-station-sdk";
+
+import { EthAddress, uint256 } from "../../../../utils/types";
 import { Vault } from "../missions";
 
 // Selling
@@ -137,3 +138,18 @@ export type CollectionArmouryFromGraph = {
   exp: string | null;
 };
 
+// VeTrava
+export type tokenInfo = {
+  address: EthAddress;
+  amount: uint256;
+}
+
+export type SellingVeTravaType = {
+  id: uint256;
+  rwAmount: uint256;
+  end: uint256;
+  lockedToken: tokenInfo;
+  votingPower: uint256;
+  seller: EthAddress;
+  priceToken: tokenInfo;
+};

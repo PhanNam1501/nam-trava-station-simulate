@@ -1,3 +1,4 @@
+"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -7,33 +8,38 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-import TravaNFTCoreABI from "../../../../abis/TravaNFTCore.json";
-import NFTCollectionABI from "../../../../abis/NFTCollection.json";
-import TravaNFTSellABI from "../../../../abis/TravaNFTSell.json";
-import { getAddr } from "../../../../utils/address";
-import { CollectionName, RarityMapping, TypeMapping } from "./KnightConfig";
-import BigNumber from "bignumber.js";
-import { multiCall } from "../../../../utils/helper";
-export function fetchNormalItems(armorTokenIds, helmetTokenIds, shieldTokenIds, weaponTokenIds, appState) {
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.shuffleArray = exports.collectionSort = exports.armourySort = exports._fetchNormal = exports.fetchBasicCollections = exports.fetchNormalItems = void 0;
+const TravaNFTCore_json_1 = __importDefault(require("../../../../abis/TravaNFTCore.json"));
+const NFTCollection_json_1 = __importDefault(require("../../../../abis/NFTCollection.json"));
+const TravaNFTSell_json_1 = __importDefault(require("../../../../abis/TravaNFTSell.json"));
+const address_1 = require("../../../../utils/address");
+const KnightConfig_1 = require("./KnightConfig");
+const bignumber_js_1 = __importDefault(require("bignumber.js"));
+const helper_1 = require("../../../../utils/helper");
+function fetchNormalItems(armorTokenIds, helmetTokenIds, shieldTokenIds, weaponTokenIds, appState) {
     return __awaiter(this, void 0, void 0, function* () {
         let [armorTokensMetadata, helmetTokensMetadata, shieldTokensMetadata, weaponTokensMetadata] = yield Promise.all([
-            multiCall(TravaNFTCoreABI, armorTokenIds.map((tokenId) => ({
-                address: getAddr("NFT_CORE_ADDRESS", appState.chainId),
+            (0, helper_1.multiCall)(TravaNFTCore_json_1.default, armorTokenIds.map((tokenId) => ({
+                address: (0, address_1.getAddr)("NFT_CORE_ADDRESS", appState.chainId),
                 name: 'getTokenMetadata',
                 params: [tokenId],
             })), appState.web3, appState.chainId),
-            multiCall(TravaNFTCoreABI, helmetTokenIds.map((tokenId) => ({
-                address: getAddr("NFT_CORE_ADDRESS", appState.chainId),
+            (0, helper_1.multiCall)(TravaNFTCore_json_1.default, helmetTokenIds.map((tokenId) => ({
+                address: (0, address_1.getAddr)("NFT_CORE_ADDRESS", appState.chainId),
                 name: 'getTokenMetadata',
                 params: [tokenId],
             })), appState.web3, appState.chainId),
-            multiCall(TravaNFTCoreABI, shieldTokenIds.map((tokenId) => ({
-                address: getAddr("NFT_CORE_ADDRESS", appState.chainId),
+            (0, helper_1.multiCall)(TravaNFTCore_json_1.default, shieldTokenIds.map((tokenId) => ({
+                address: (0, address_1.getAddr)("NFT_CORE_ADDRESS", appState.chainId),
                 name: 'getTokenMetadata',
                 params: [tokenId],
             })), appState.web3, appState.chainId),
-            multiCall(TravaNFTCoreABI, weaponTokenIds.map((tokenId) => ({
-                address: getAddr("NFT_CORE_ADDRESS", appState.chainId),
+            (0, helper_1.multiCall)(TravaNFTCore_json_1.default, weaponTokenIds.map((tokenId) => ({
+                address: (0, address_1.getAddr)("NFT_CORE_ADDRESS", appState.chainId),
                 name: 'getTokenMetadata',
                 params: [tokenId],
             })), appState.web3, appState.chainId),
@@ -70,22 +76,23 @@ export function fetchNormalItems(armorTokenIds, helmetTokenIds, shieldTokenIds, 
         return collections;
     });
 }
+exports.fetchNormalItems = fetchNormalItems;
 ;
-export function fetchBasicCollections(collectionIds, appState) {
+function fetchBasicCollections(collectionIds, appState) {
     return __awaiter(this, void 0, void 0, function* () {
         const [collectionSetIds, collectionsMetadata, collectionsExp] = yield Promise.all([
-            multiCall(NFTCollectionABI, collectionIds.map((collectionId) => ({
-                address: getAddr("NFT_COLLECTION_ADDRESS", appState.chainId),
+            (0, helper_1.multiCall)(NFTCollection_json_1.default, collectionIds.map((collectionId) => ({
+                address: (0, address_1.getAddr)("NFT_COLLECTION_ADDRESS", appState.chainId),
                 name: 'getCollectionSetId',
                 params: [collectionId],
             })), appState.web3, appState.chainId),
-            multiCall(NFTCollectionABI, collectionIds.map((collectionId) => ({
-                address: getAddr("NFT_COLLECTION_ADDRESS", appState.chainId),
+            (0, helper_1.multiCall)(NFTCollection_json_1.default, collectionIds.map((collectionId) => ({
+                address: (0, address_1.getAddr)("NFT_COLLECTION_ADDRESS", appState.chainId),
                 name: 'getCollectionMetadata',
                 params: [collectionId],
             })), appState.web3, appState.chainId),
-            multiCall(NFTCollectionABI, collectionIds.map((collectionId) => ({
-                address: getAddr("NFT_COLLECTION_ADDRESS", appState.chainId),
+            (0, helper_1.multiCall)(NFTCollection_json_1.default, collectionIds.map((collectionId) => ({
+                address: (0, address_1.getAddr)("NFT_COLLECTION_ADDRESS", appState.chainId),
                 name: 'getCollectionExperience',
                 params: [collectionId],
             })), appState.web3, appState.chainId),
@@ -107,8 +114,8 @@ export function fetchBasicCollections(collectionIds, appState) {
         let specialCollections = _collectionsMetadata.filter((item) => item.rarity > 5);
         // fetch special collections metadata
         let [tokenURIList] = yield Promise.all([
-            multiCall(NFTCollectionABI, specialCollections.map((item) => ({
-                address: getAddr("NFT_COLLECTION_ADDRESS", appState.chainId),
+            (0, helper_1.multiCall)(NFTCollection_json_1.default, specialCollections.map((item) => ({
+                address: (0, address_1.getAddr)("NFT_COLLECTION_ADDRESS", appState.chainId),
                 name: 'tokenURI',
                 params: [item.id],
             })), appState.web3, appState.chainId),
@@ -118,18 +125,19 @@ export function fetchBasicCollections(collectionIds, appState) {
         return { normalCollections, specialCollections };
     });
 }
+exports.fetchBasicCollections = fetchBasicCollections;
 ;
 // Fetch tất cả nft đang bán trên chợ
-export function _fetchNormal(appState, tokenIds) {
+function _fetchNormal(appState, tokenIds) {
     return __awaiter(this, void 0, void 0, function* () {
         let [tokenOrders, tokenMetadata] = yield Promise.all([
-            multiCall(TravaNFTSellABI, tokenIds.map((tokenId) => ({
-                address: getAddr("NFT_SELL_ADDRESS", appState.chainId),
+            (0, helper_1.multiCall)(TravaNFTSell_json_1.default, tokenIds.map((tokenId) => ({
+                address: (0, address_1.getAddr)("NFT_SELL_ADDRESS", appState.chainId),
                 name: "getTokenOrder",
                 params: [tokenId],
             })), appState.web3, appState.chainId),
-            multiCall(TravaNFTCoreABI, tokenIds.map((tokenId) => ({
-                address: getAddr("NFT_CORE_ADDRESS", appState.chainId),
+            (0, helper_1.multiCall)(TravaNFTCore_json_1.default, tokenIds.map((tokenId) => ({
+                address: (0, address_1.getAddr)("NFT_CORE_ADDRESS", appState.chainId),
                 name: "getTokenMetadata",
                 params: [tokenId],
             })), appState.web3, appState.chainId),
@@ -141,15 +149,15 @@ export function _fetchNormal(appState, tokenIds) {
         let counter = 0;
         for (const tokenData of tokenMetadata) {
             const collectionId = parseInt(tokenData.collectionId);
-            const collectionName = CollectionName[collectionId - 1];
+            const collectionName = KnightConfig_1.CollectionName[collectionId - 1];
             const rarity = parseInt(tokenData.tokenRarity);
             if (rarity >= 1 && collectionName) {
                 const type = parseInt(tokenData.tokenType);
-                const tType = TypeMapping[type - 1];
-                const tRarity = RarityMapping[rarity - 1];
+                const tType = KnightConfig_1.TypeMapping[type - 1];
+                const tRarity = KnightConfig_1.RarityMapping[rarity - 1];
                 const id = parseInt(tokenIds[counter]);
                 const exp = parseInt(tokenData.experiencePoint);
-                const price = BigNumber(tokenOrders[counter].price).toFixed(0);
+                const price = (0, bignumber_js_1.default)(tokenOrders[counter].price).toFixed(0);
                 const seller = tokenOrders[counter].nftSeller;
                 const data = {
                     id,
@@ -175,19 +183,23 @@ export function _fetchNormal(appState, tokenIds) {
         return { v1, v2 };
     });
 }
-export function armourySort(item1, item2) {
+exports._fetchNormal = _fetchNormal;
+function armourySort(item1, item2) {
     return item2.nRarity - item1.nRarity || item2.exp - item1.exp || item1.nType - item2.nType;
 }
-export function collectionSort(item1, item2) {
+exports.armourySort = armourySort;
+function collectionSort(item1, item2) {
     if (item1.rarity < item2.rarity)
         return 1;
     else
         return -1;
 }
-export function shuffleArray(array) {
+exports.collectionSort = collectionSort;
+function shuffleArray(array) {
     const n = array.length;
     for (let i = n - 1; i > 0; --i) {
         const j = Math.floor(Math.random() * (i + 1));
         [array[i], array[j]] = [array[j], array[i]];
     }
 }
+exports.shuffleArray = shuffleArray;

@@ -1,7 +1,10 @@
-import { NETWORKS, CONFIG } from "./config";
-import { toChecksumAddress } from 'ethereumjs-util';
-export const listAddr = {
-    [NETWORKS.bscTestnet.chainId]: {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.convertHexStringToAddress = exports.getAddr = exports.listAddr = void 0;
+const config_1 = require("./config");
+const ethereumjs_util_1 = require("ethereumjs-util");
+exports.listAddr = {
+    [config_1.NETWORKS.bscTestnet.chainId]: {
         TRAVA_LENDING_POOL_MARKET: "0x50794d89dbdb2d3aba83820bc3557ff076ca481b",
         ORACLE_ADDRESS: "0x3e2320C81FdB8919bC5771CBA897B9C683506140",
         TRAVA_TOKEN_IN_MARKET: "0xE1F005623934D3D8C724EC68Cc9bFD95498D4435",
@@ -23,10 +26,12 @@ export const listAddr = {
         TOKEN_VALUATOR_ADDRESS: '0x1b2E2a052980D31F9E31fdd5253B562dB248DCB2',
         LP_VALUATOR_ADDRESS: '0x677e8Ecb6Cf81b680CbaAF60571e9Fe2028A8CbD',
         RTRAVA_TOKEN_ADDRESS: '0x4a9901cdAfDFB2aC614c12627E0A5B45A63929d6',
+        VE_TRAVA_MARKETPLACE_ADDRESS: "0x642e9fD16cA66db2747695dc0DddD0ce54aB3AB1",
+        BUSD_TOKEN_ADDRESS: "0x8ADE9A293528EB21f2fD9d7fF6eD919Adf1AdEC7",
         NFT_FARMING_BASE_EXP: "0xb0c3137d7C7d8cf994b9931359A97605dF277815"
     },
     // MUST BE FILL MAINNET ADDRESS HERE. NOW IS TESTNET
-    [NETWORKS.bscMainnet.chainId]: {
+    [config_1.NETWORKS.bscMainnet.chainId]: {
         TRAVA_LENDING_POOL_MARKET: "0x75de5f7c91a89c16714017c7443eca20c7a8c295",
         ORACLE_ADDRESS: "0x7Cd53b71Bf56Cc6C9c9B43719FE98e7c360c35DF",
         TRAVA_TOKEN_IN_MARKET: "0x0391bE54E72F7e001f6BBc331777710b4f2999Ef",
@@ -48,14 +53,16 @@ export const listAddr = {
         TOKEN_VALUATOR_ADDRESS: '0x6a16D2019A938Cdb5666784d605c08FafC4b8DFB',
         LP_VALUATOR_ADDRESS: '0xb551b74044dfe4ebac72298fb383BEF9152fd8C4',
         RTRAVA_TOKEN_ADDRESS: '0x170772A06aFfC0d375cE90Ef59C8eC04c7ebF5D2',
+        VE_TRAVA_MARKETPLACE_ADDRESS: "0x65c62822940C1a57C90Ac8BF0874730624ec7Fb7",
+        BUSD_TOKEN_ADDRESS: "0xe9e7cea3dedca5984780bafc599bd69add087d56",
         NFT_FARMING_BASE_EXP: "0xc7a3a214206d6677b3321865AfbD84a417414Db3",
     },
 };
-export const getAddr = (name, chainId) => {
-    const _chainId = typeof chainId === "undefined" ? CONFIG.chainId : chainId;
-    const addr = listAddr[_chainId];
+const getAddr = (name, chainId) => {
+    const _chainId = typeof chainId === "undefined" ? config_1.CONFIG.chainId : chainId;
+    const addr = exports.listAddr[_chainId];
     // skip this check if we're in testing mode
-    if (!CONFIG.testingMode) {
+    if (!config_1.CONFIG.testingMode) {
         if (!addr)
             throw new Error(`Cannot find address for chainId: ${_chainId}.`);
         if (!addr[name])
@@ -66,8 +73,10 @@ export const getAddr = (name, chainId) => {
     else
         throw new Error(`Invalid addr`);
 };
-export const convertHexStringToAddress = (hexString) => {
+exports.getAddr = getAddr;
+const convertHexStringToAddress = (hexString) => {
     String(hexString).toLowerCase();
     const strippedHex = hexString.replace(/^0x/, '');
-    return toChecksumAddress(`0x${strippedHex}`);
+    return (0, ethereumjs_util_1.toChecksumAddress)(`0x${strippedHex}`);
 };
+exports.convertHexStringToAddress = convertHexStringToAddress;

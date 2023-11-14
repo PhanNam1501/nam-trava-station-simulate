@@ -9,7 +9,7 @@ import { getMode, multiCall } from "../../../utils/helper";
 import { TokenInVeTrava } from '../../../State/trava/lending/TravaGovenanceState';
 import ValuatorABI from "../../../abis/IValuator.json";
 import { Contract } from "ethers";
-import { tokenLockOptions } from "./travaGovernanceConfig";
+import { TokenLockOption, tokenLockOptions } from "./travaGovernanceConfig";
 import { EthAddress } from "../../../utils/types";
 
 export async function updateTravaGovernanceState(appState1: ApplicationState, force = false) {
@@ -218,9 +218,15 @@ export async function updateUserLockBalance(appState1: ApplicationState, _userAd
 
         // init token in governance
         let tokenLockOption = appState.TravaGovernanceState.tokensInGovernance.get(lockedValues[i][3].toLowerCase())!;
+        let tokenLockOption1: TokenLockOption = {
+          address: tokenLockOption.address,
+          symbol: tokenLockOption.symbol,
+          name: tokenLockOption.name,
+          decimals: tokenLockOption.decimals,
+        }
         let tokenInVeTrava: TokenInVeTrava = {
           balances: lockedValues[i][1].toString(),
-          tokenLockOption: tokenLockOption
+          tokenLockOption: tokenLockOption1
         }
         // init reward
         let rewardTokenBalance: RewardTokenBalance = {

@@ -31,6 +31,7 @@ export declare function updateOwnedAuctioningNFT(appState1: ApplicationState): P
     smartWalletState: import("../../../../..").SmartWalletState;
     NFTSellingState: import("../../../../..").NFTSellingState;
     NFTAuctioningState: import("../../../../..").NFTAuctioningState;
+    NFTVeTravaMarketSellingState: import("../../../../..").NFTVeTravaSellingState;
     TravaGovernanceState: import("../../../../..").TravaGovernanceState;
     web3: import("ethers").JsonRpcProvider;
     chainId: number;

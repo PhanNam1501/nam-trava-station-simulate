@@ -22,6 +22,8 @@ export declare const listAddr: {
         TOKEN_VALUATOR_ADDRESS: string;
         LP_VALUATOR_ADDRESS: string;
         RTRAVA_TOKEN_ADDRESS: string;
+        VE_TRAVA_MARKETPLACE_ADDRESS: string;
+        BUSD_TOKEN_ADDRESS: string;
         NFT_FARMING_BASE_EXP: string;
     };
 };

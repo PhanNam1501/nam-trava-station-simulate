@@ -8,6 +8,7 @@ export declare function updateOwnedSellingNFTFromContract(appState1: Application
     smartWalletState: import("../../../../..").SmartWalletState;
     NFTSellingState: NFTSellingState;
     NFTAuctioningState: import("../../../../../State/trava/nft/TravaNFTState").NFTAuctioningState;
+    NFTVeTravaMarketSellingState: import("../../../../../State/trava/nft/TravaNFTState").NFTVeTravaSellingState;
     TravaGovernanceState: import("../../../../..").TravaGovernanceState;
     web3: import("ethers").JsonRpcProvider;
     chainId: number;
@@ -19,6 +20,7 @@ export declare function updateOwnedSellingNFT(appState1: ApplicationState): Prom
     smartWalletState: import("../../../../..").SmartWalletState;
     NFTSellingState: NFTSellingState;
     NFTAuctioningState: import("../../../../../State/trava/nft/TravaNFTState").NFTAuctioningState;
+    NFTVeTravaMarketSellingState: import("../../../../../State/trava/nft/TravaNFTState").NFTVeTravaSellingState;
     TravaGovernanceState: import("../../../../..").TravaGovernanceState;
     web3: import("ethers").JsonRpcProvider;
     chainId: number;

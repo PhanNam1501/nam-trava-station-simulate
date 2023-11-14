@@ -1,3 +1,4 @@
+"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -7,15 +8,17 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-import { updateSmartWalletTokenBalance, updateUserTokenBalance } from "../../../../basic/UpdateStateAccount";
-import { getAddr } from "../../../../../utils/address";
-import { FEE_AUCTION_PERCENTAGE, MAX_UINT256, MINIMUM_BID_STEP_PERCENT, ZERO_ADDRESS } from '../../../../../utils/config';
-import { AuthorizeError, BidPriceError, BidStepsError, BidderError, ExpireAuctionError, FromAddressError, HighestBidderError, InexpireAuctionError, NFTNotFoundError, OngoingAuctionError, OwnerAuctionError } from '../../../../../utils/error';
-import { updateAuctioningNFTFromContract, updateOwnedAuctioningNFT } from "./UpdateStateAccount";
-import { updateCollectionBalanceFromContract } from '../../utilities';
-import { BigNumber } from 'bignumber.js';
-import { getMode } from '../../../../../utils/helper';
-export function findTravaNFTKnightAuctioning(_tokenId, _nftAuctioning) {
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.simulateTravaNFTFinalizeAuction = exports.simulateTravaNFTCancelAuction = exports.simulateTravaNFTEditAuctionPrice = exports.simulateTravaNFTMakeBidAuction = exports.simulateTravaNFTCreateAuction = exports.findTravaNFTKnightAuctioning = void 0;
+const UpdateStateAccount_1 = require("../../../../basic/UpdateStateAccount");
+const address_1 = require("../../../../../utils/address");
+const config_1 = require("../../../../../utils/config");
+const error_1 = require("../../../../../utils/error");
+const UpdateStateAccount_2 = require("./UpdateStateAccount");
+const utilities_1 = require("../../utilities");
+const bignumber_js_1 = require("bignumber.js");
+const helper_1 = require("../../../../../utils/helper");
+function findTravaNFTKnightAuctioning(_tokenId, _nftAuctioning) {
     let currentVersion = "v1";
     let curentIndex = _nftAuctioning.v1.findIndex((n) => n.id == _tokenId);
     if (curentIndex == -1) {
@@ -27,7 +30,7 @@ export function findTravaNFTKnightAuctioning(_tokenId, _nftAuctioning) {
         currentVersion = "specials";
     }
     if (curentIndex == -1) {
-        throw new NFTNotFoundError("Token not on sale");
+        throw new error_1.NFTNotFoundError("Token not on sale");
     }
     let currentNFT = _nftAuctioning[currentVersion][curentIndex];
     return {
@@ -36,26 +39,27 @@ export function findTravaNFTKnightAuctioning(_tokenId, _nftAuctioning) {
         currentNFT: currentNFT
     };
 }
-export function simulateTravaNFTCreateAuction(appState1, _tokenId, _startingBid, _duration, _from) {
+exports.findTravaNFTKnightAuctioning = findTravaNFTKnightAuctioning;
+function simulateTravaNFTCreateAuction(appState1, _tokenId, _startingBid, _duration, _from) {
     var _a;
     return __awaiter(this, void 0, void 0, function* () {
         let appState = Object.assign({}, appState1);
         try {
-            let mode = getMode(appState, _from);
+            let mode = (0, helper_1.getMode)(appState, _from);
             if (!appState[mode].collection.isFetch) {
-                appState = yield updateCollectionBalanceFromContract(appState, mode);
+                appState = yield (0, utilities_1.updateCollectionBalanceFromContract)(appState, mode);
             }
             if (!appState.NFTAuctioningState.isFetch) {
-                appState = yield updateAuctioningNFTFromContract(appState);
+                appState = yield (0, UpdateStateAccount_2.updateAuctioningNFTFromContract)(appState);
             }
             if (!appState.smartWalletState.auctioningState) {
-                appState = yield updateOwnedAuctioningNFT(appState);
+                appState = yield (0, UpdateStateAccount_2.updateOwnedAuctioningNFT)(appState);
             }
             let changeAuctionKnightData = {
                 newStartingBid: _startingBid
             };
             let startTime = ((_a = (yield appState.web3.getBlock('latest'))) === null || _a === void 0 ? void 0 : _a.timestamp) * 1000;
-            let auctionKnightData = Object.assign(Object.assign({}, changeAuctionKnightData), { nftSeller: _from, startingBid: _startingBid, currentBidder: ZERO_ADDRESS, currentBid: _startingBid, startTime: startTime, endTime: startTime + _duration, bidSteps: 0 });
+            let auctionKnightData = Object.assign(Object.assign({}, changeAuctionKnightData), { nftSeller: _from, startingBid: _startingBid, currentBidder: config_1.ZERO_ADDRESS, currentBid: _startingBid, startTime: startTime, endTime: startTime + _duration, bidSteps: 0 });
             let currentVersion = "v1";
             let currentNFT = appState[mode].collection.v1.find((n) => n.id == _tokenId);
             if (!currentNFT) {
@@ -72,7 +76,7 @@ export function simulateTravaNFTCreateAuction(appState1, _tokenId, _startingBid,
                     appState[mode].collection[currentVersion] = appState[mode].collection[currentVersion].filter(x => x.id != _tokenId);
                 }
                 else {
-                    throw new NFTNotFoundError("Knight is not found!");
+                    throw new error_1.NFTNotFoundError("Knight is not found!");
                 }
             }
             else {
@@ -88,7 +92,8 @@ export function simulateTravaNFTCreateAuction(appState1, _tokenId, _startingBid,
         return appState;
     });
 }
-export function simulateTravaNFTMakeBidAuction(appState1, _tokenId, _bidPrice, _from, _minimumBidStepPercent = MINIMUM_BID_STEP_PERCENT) {
+exports.simulateTravaNFTCreateAuction = simulateTravaNFTCreateAuction;
+function simulateTravaNFTMakeBidAuction(appState1, _tokenId, _bidPrice, _from, _minimumBidStepPercent = config_1.MINIMUM_BID_STEP_PERCENT) {
     var _a;
     return __awaiter(this, void 0, void 0, function* () {
         let appState = Object.assign({}, appState1);
@@ -101,21 +106,21 @@ export function simulateTravaNFTMakeBidAuction(appState1, _tokenId, _bidPrice, _
                 mode = "smartWalletState";
             }
             else {
-                throw new FromAddressError();
+                throw new error_1.FromAddressError();
             }
-            const travaAddress = getAddr("TRAVA_TOKEN", appState1.chainId).toLowerCase();
+            const travaAddress = (0, address_1.getAddr)("TRAVA_TOKEN", appState1.chainId).toLowerCase();
             // check tokenAddress:string is exist on appState.walletState.tokenBalances : Array<Map<string, string>>
             if (!appState[mode].tokenBalances.has(travaAddress)) {
-                yield updateUserTokenBalance(appState, travaAddress);
-                yield updateSmartWalletTokenBalance(appState, travaAddress);
+                yield (0, UpdateStateAccount_1.updateUserTokenBalance)(appState, travaAddress);
+                yield (0, UpdateStateAccount_1.updateSmartWalletTokenBalance)(appState, travaAddress);
             }
             if (!appState.NFTAuctioningState.isFetch) {
-                appState = yield updateAuctioningNFTFromContract(appState);
+                appState = yield (0, UpdateStateAccount_2.updateAuctioningNFTFromContract)(appState);
             }
             let travaBalance = appState[mode].tokenBalances.get(travaAddress);
-            let bidPrice = BigNumber(_bidPrice);
-            if (bidPrice.toFixed(0) == MAX_UINT256 || bidPrice.isEqualTo(MAX_UINT256)) {
-                bidPrice = BigNumber(travaBalance);
+            let bidPrice = (0, bignumber_js_1.BigNumber)(_bidPrice);
+            if (bidPrice.toFixed(0) == config_1.MAX_UINT256 || bidPrice.isEqualTo(config_1.MAX_UINT256)) {
+                bidPrice = (0, bignumber_js_1.BigNumber)(travaBalance);
             }
             let auctionKnight = findTravaNFTKnightAuctioning(_tokenId, appState.NFTAuctioningState);
             let currentVersion = auctionKnight.currentVersion;
@@ -123,22 +128,22 @@ export function simulateTravaNFTMakeBidAuction(appState1, _tokenId, _bidPrice, _
             let currentNFT = auctionKnight.currentNFT;
             let currentTime = ((_a = (yield appState.web3.getBlock('latest'))) === null || _a === void 0 ? void 0 : _a.timestamp) * 1000;
             if (currentTime > currentNFT.endTime) {
-                throw new ExpireAuctionError();
+                throw new error_1.ExpireAuctionError();
             }
             if (currentNFT.currentBidder.toLowerCase() == appState.smartWalletState.address.toLowerCase()) {
-                throw new HighestBidderError();
+                throw new error_1.HighestBidderError();
             }
             if (currentNFT.nftSeller.toLowerCase() == appState.smartWalletState.address.toLowerCase()) {
-                throw new BidderError();
+                throw new error_1.BidderError();
             }
             if (currentNFT.bidSteps == 0 && bidPrice.isLessThan(currentNFT.currentBid)) {
-                throw new BidPriceError("Bid price too low");
+                throw new error_1.BidPriceError("Bid price too low");
             }
-            else if (currentNFT.bidSteps > 0 && bidPrice.isLessThan(BigNumber(currentNFT.currentBid).multipliedBy(1 + _minimumBidStepPercent))) {
-                throw new BidPriceError("Bid price too low");
+            else if (currentNFT.bidSteps > 0 && bidPrice.isLessThan((0, bignumber_js_1.BigNumber)(currentNFT.currentBid).multipliedBy(1 + _minimumBidStepPercent))) {
+                throw new error_1.BidPriceError("Bid price too low");
             }
             const balance = appState[mode].tokenBalances.get(travaAddress);
-            appState[mode].tokenBalances.set(travaAddress, BigNumber(balance).minus(bidPrice).toFixed(0));
+            appState[mode].tokenBalances.set(travaAddress, (0, bignumber_js_1.BigNumber)(balance).minus(bidPrice).toFixed(0));
             appState.NFTAuctioningState[currentVersion][currentIndex].currentBid = bidPrice.toFixed(0);
             appState.NFTAuctioningState[currentVersion][currentIndex].currentBidder = _from;
             appState.NFTAuctioningState[currentVersion][currentIndex].bidSteps = currentNFT.bidSteps + 1;
@@ -149,16 +154,17 @@ export function simulateTravaNFTMakeBidAuction(appState1, _tokenId, _bidPrice, _
         return appState;
     });
 }
-export function simulateTravaNFTEditAuctionPrice(appState1, _tokenId, _startingBid) {
+exports.simulateTravaNFTMakeBidAuction = simulateTravaNFTMakeBidAuction;
+function simulateTravaNFTEditAuctionPrice(appState1, _tokenId, _startingBid) {
     var _a;
     return __awaiter(this, void 0, void 0, function* () {
         let appState = Object.assign({}, appState1);
         try {
             if (!appState.NFTAuctioningState.isFetch) {
-                appState = yield updateAuctioningNFTFromContract(appState);
+                appState = yield (0, UpdateStateAccount_2.updateAuctioningNFTFromContract)(appState);
             }
             if (!appState.smartWalletState.auctioningState) {
-                appState = yield updateOwnedAuctioningNFT(appState);
+                appState = yield (0, UpdateStateAccount_2.updateOwnedAuctioningNFT)(appState);
             }
             let auctionKnight = findTravaNFTKnightAuctioning(_tokenId, appState.NFTAuctioningState);
             let currentVersion = auctionKnight.currentVersion;
@@ -166,13 +172,13 @@ export function simulateTravaNFTEditAuctionPrice(appState1, _tokenId, _startingB
             let currentNFT = auctionKnight.currentNFT;
             let currentTime = ((_a = (yield appState.web3.getBlock('latest'))) === null || _a === void 0 ? void 0 : _a.timestamp) * 1000;
             if (currentTime > currentNFT.endTime) {
-                throw new ExpireAuctionError();
+                throw new error_1.ExpireAuctionError();
             }
             if (currentNFT.nftSeller.toLowerCase() != appState.smartWalletState.address.toLowerCase()) {
-                throw new OwnerAuctionError();
+                throw new error_1.OwnerAuctionError();
             }
             if (currentNFT.bidSteps != 0) {
-                throw new OngoingAuctionError();
+                throw new error_1.OngoingAuctionError();
             }
             appState.NFTAuctioningState[currentVersion][currentIndex].newStartingBid = _startingBid;
             appState.smartWalletState.auctioningState[currentVersion][currentIndex].newStartingBid = _startingBid;
@@ -183,31 +189,32 @@ export function simulateTravaNFTEditAuctionPrice(appState1, _tokenId, _startingB
         return appState;
     });
 }
-export function simulateTravaNFTCancelAuction(appState1, _tokenId, _to) {
+exports.simulateTravaNFTEditAuctionPrice = simulateTravaNFTEditAuctionPrice;
+function simulateTravaNFTCancelAuction(appState1, _tokenId, _to) {
     return __awaiter(this, void 0, void 0, function* () {
         let appState = Object.assign({}, appState1);
         try {
             if (_to.toLowerCase() == appState.walletState.address.toLowerCase() && !appState.walletState.collection.isFetch) {
-                appState = yield updateCollectionBalanceFromContract(appState, "walletState");
+                appState = yield (0, utilities_1.updateCollectionBalanceFromContract)(appState, "walletState");
             }
             else if (_to.toLowerCase() == appState.smartWalletState.address.toLowerCase() && !appState.smartWalletState.collection.isFetch) {
-                appState = yield updateCollectionBalanceFromContract(appState, "smartWalletState");
+                appState = yield (0, utilities_1.updateCollectionBalanceFromContract)(appState, "smartWalletState");
             }
             if (!appState.NFTAuctioningState.isFetch) {
-                appState = yield updateAuctioningNFTFromContract(appState);
+                appState = yield (0, UpdateStateAccount_2.updateAuctioningNFTFromContract)(appState);
             }
             if (!appState.smartWalletState.auctioningState) {
-                appState = yield updateOwnedAuctioningNFT(appState);
+                appState = yield (0, UpdateStateAccount_2.updateOwnedAuctioningNFT)(appState);
             }
             let auctionKnight = findTravaNFTKnightAuctioning(_tokenId, appState.NFTAuctioningState);
             let currentVersion = auctionKnight.currentVersion;
             let currentIndex = auctionKnight.curentIndex;
             let currentNFT = auctionKnight.currentNFT;
             if (currentNFT.nftSeller.toLowerCase() != appState.smartWalletState.address.toLowerCase()) {
-                throw new OwnerAuctionError();
+                throw new error_1.OwnerAuctionError();
             }
             if (currentNFT.bidSteps != 0) {
-                throw new OngoingAuctionError();
+                throw new error_1.OngoingAuctionError();
             }
             delete appState.NFTAuctioningState[currentVersion][currentIndex];
             delete appState.smartWalletState.auctioningState[currentVersion][currentIndex];
@@ -234,16 +241,17 @@ export function simulateTravaNFTCancelAuction(appState1, _tokenId, _to) {
         return appState;
     });
 }
-export function simulateTravaNFTFinalizeAuction(appState1, _tokenId, _to, _feePercentage = FEE_AUCTION_PERCENTAGE) {
+exports.simulateTravaNFTCancelAuction = simulateTravaNFTCancelAuction;
+function simulateTravaNFTFinalizeAuction(appState1, _tokenId, _to, _feePercentage = config_1.FEE_AUCTION_PERCENTAGE) {
     var _a;
     return __awaiter(this, void 0, void 0, function* () {
         let appState = Object.assign({}, appState1);
         try {
             if (!appState.NFTAuctioningState.isFetch) {
-                appState = yield updateAuctioningNFTFromContract(appState);
+                appState = yield (0, UpdateStateAccount_2.updateAuctioningNFTFromContract)(appState);
             }
             if (!appState.smartWalletState.auctioningState) {
-                appState = yield updateOwnedAuctioningNFT(appState);
+                appState = yield (0, UpdateStateAccount_2.updateOwnedAuctioningNFT)(appState);
             }
             let auctionKnight = findTravaNFTKnightAuctioning(_tokenId, appState.NFTAuctioningState);
             let currentVersion = auctionKnight.currentVersion;
@@ -251,31 +259,31 @@ export function simulateTravaNFTFinalizeAuction(appState1, _tokenId, _to, _feePe
             let currentNFT = auctionKnight.currentNFT;
             let currentTime = ((_a = (yield appState.web3.getBlock('latest'))) === null || _a === void 0 ? void 0 : _a.timestamp) * 1000;
             if (currentTime <= currentNFT.endTime) {
-                throw new InexpireAuctionError();
+                throw new error_1.InexpireAuctionError();
             }
             if (currentNFT.bidSteps == 0) {
-                throw new BidStepsError();
+                throw new error_1.BidStepsError();
             }
             if (currentNFT.nftSeller.toLowerCase() == appState.smartWalletState.address.toLowerCase()) {
                 delete appState.smartWalletState.auctioningState[currentVersion][currentIndex];
-                const travaAddress = getAddr("TRAVA_TOKEN_IN_MARKET", appState.chainId).toLowerCase();
-                let hammerPrice = BigNumber(currentNFT.currentBid);
+                const travaAddress = (0, address_1.getAddr)("TRAVA_TOKEN_IN_MARKET", appState.chainId).toLowerCase();
+                let hammerPrice = (0, bignumber_js_1.BigNumber)(currentNFT.currentBid);
                 if (currentNFT.bidSteps > 1) {
                     hammerPrice = hammerPrice.multipliedBy(1 - _feePercentage);
                 }
                 if (_to.toLowerCase() == appState.walletState.address.toLowerCase()) {
                     if (!appState.walletState.tokenBalances.has(travaAddress)) {
-                        appState = yield updateUserTokenBalance(appState, travaAddress);
+                        appState = yield (0, UpdateStateAccount_1.updateUserTokenBalance)(appState, travaAddress);
                     }
                     let travaBalance = appState.walletState.tokenBalances.get(travaAddress);
-                    appState.walletState.tokenBalances.set(travaAddress, BigNumber(travaBalance).plus(hammerPrice).toFixed(0));
+                    appState.walletState.tokenBalances.set(travaAddress, (0, bignumber_js_1.BigNumber)(travaBalance).plus(hammerPrice).toFixed(0));
                 }
                 else if (_to.toLowerCase() == appState.smartWalletState.address.toLowerCase()) {
                     if (!appState.smartWalletState.tokenBalances.has(travaAddress)) {
-                        appState = yield updateSmartWalletTokenBalance(appState, travaAddress);
+                        appState = yield (0, UpdateStateAccount_1.updateSmartWalletTokenBalance)(appState, travaAddress);
                     }
                     let travaBalance = appState.smartWalletState.tokenBalances.get(travaAddress);
-                    appState.smartWalletState.tokenBalances.set(travaAddress, BigNumber(travaBalance).plus(hammerPrice).toFixed(0));
+                    appState.smartWalletState.tokenBalances.set(travaAddress, (0, bignumber_js_1.BigNumber)(travaBalance).plus(hammerPrice).toFixed(0));
                 }
             }
             else {
@@ -295,13 +303,13 @@ export function simulateTravaNFTFinalizeAuction(appState1, _tokenId, _to, _feePe
                         const collection = Object.assign({ metadataLink: auctionKnight.metadataLink }, baseKnight);
                         if (_to.toLowerCase() == appState.walletState.address.toLowerCase()) {
                             if (!appState.walletState.collection.isFetch) {
-                                appState = yield updateCollectionBalanceFromContract(appState, "walletState");
+                                appState = yield (0, utilities_1.updateCollectionBalanceFromContract)(appState, "walletState");
                             }
                             appState.walletState.collection[currentVersion].push(collection);
                         }
                         else if (_to.toLowerCase() == appState.smartWalletState.address.toLowerCase()) {
                             if (!appState.smartWalletState.collection.isFetch) {
-                                appState = yield updateCollectionBalanceFromContract(appState, "smartWalletState");
+                                appState = yield (0, utilities_1.updateCollectionBalanceFromContract)(appState, "smartWalletState");
                             }
                             appState.smartWalletState.collection[currentVersion].push(collection);
                         }
@@ -311,20 +319,20 @@ export function simulateTravaNFTFinalizeAuction(appState1, _tokenId, _to, _feePe
                         const collection = Object.assign({ armor: auctionKnight.armor, helmet: auctionKnight.helmet, shield: auctionKnight.shield, weapon: auctionKnight.weapon }, baseKnight);
                         if (_to.toLowerCase() == appState.walletState.address.toLowerCase()) {
                             if (!appState.walletState.collection.isFetch) {
-                                appState = yield updateCollectionBalanceFromContract(appState, "walletState");
+                                appState = yield (0, utilities_1.updateCollectionBalanceFromContract)(appState, "walletState");
                             }
                             appState.walletState.collection[currentVersion].push(collection);
                         }
                         else if (_to.toLowerCase() == appState.smartWalletState.address.toLowerCase()) {
                             if (!appState.smartWalletState.collection.isFetch) {
-                                appState = yield updateCollectionBalanceFromContract(appState, "smartWalletState");
+                                appState = yield (0, utilities_1.updateCollectionBalanceFromContract)(appState, "smartWalletState");
                             }
                             appState.smartWalletState.collection[currentVersion].push(collection);
                         }
                     }
                 }
                 else {
-                    throw new AuthorizeError();
+                    throw new error_1.AuthorizeError();
                 }
             }
             delete appState.NFTAuctioningState[currentVersion][currentIndex];
@@ -335,3 +343,4 @@ export function simulateTravaNFTFinalizeAuction(appState1, _tokenId, _to, _feePe
         return appState;
     });
 }
+exports.simulateTravaNFTFinalizeAuction = simulateTravaNFTFinalizeAuction;

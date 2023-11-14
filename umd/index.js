@@ -24,6 +24,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   NFTFarmingsState: () => (/* reexport safe */ _trava__WEBPACK_IMPORTED_MODULE_3__.NFTFarmingsState),
 /* harmony export */   NFTOwned: () => (/* reexport safe */ _WalletState__WEBPACK_IMPORTED_MODULE_2__.NFTOwned),
 /* harmony export */   NFTSellingState: () => (/* reexport safe */ _trava__WEBPACK_IMPORTED_MODULE_3__.NFTSellingState),
+/* harmony export */   NFTVeTravaSellingState: () => (/* reexport safe */ _trava__WEBPACK_IMPORTED_MODULE_3__.NFTVeTravaSellingState),
 /* harmony export */   SmartWalletState: () => (/* reexport safe */ _SmartWalletState__WEBPACK_IMPORTED_MODULE_1__.SmartWalletState),
 /* harmony export */   TravaGovernanceState: () => (/* reexport safe */ _trava__WEBPACK_IMPORTED_MODULE_3__.TravaGovernanceState),
 /* harmony export */   TravaLPStakingState: () => (/* reexport safe */ _trava__WEBPACK_IMPORTED_MODULE_3__.TravaLPStakingState),
@@ -67,6 +68,7 @@ class ApplicationState {
     _defineProperty(this, "smartWalletState", void 0);
     _defineProperty(this, "NFTSellingState", void 0);
     _defineProperty(this, "NFTAuctioningState", void 0);
+    _defineProperty(this, "NFTVeTravaMarketSellingState", void 0);
     _defineProperty(this, "TravaGovernanceState", void 0);
     _defineProperty(this, "web3", void 0);
     _defineProperty(this, "chainId", void 0);
@@ -76,6 +78,7 @@ class ApplicationState {
     this.smartWalletState = new _SmartWalletState__WEBPACK_IMPORTED_MODULE_1__.SmartWalletState(smartWalletAddress);
     this.NFTSellingState = new _trava_nft_TravaNFTState__WEBPACK_IMPORTED_MODULE_2__.NFTSellingState();
     this.NFTAuctioningState = new _trava_nft_TravaNFTState__WEBPACK_IMPORTED_MODULE_2__.NFTAuctioningState();
+    this.NFTVeTravaMarketSellingState = new _trava_nft_TravaNFTState__WEBPACK_IMPORTED_MODULE_2__.NFTVeTravaSellingState();
     this.TravaGovernanceState = new _trava_lending_TravaGovenanceState__WEBPACK_IMPORTED_MODULE_3__.TravaGovernanceState();
     this.web3 = web3;
     this.chainId = chainId;
@@ -212,7 +215,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   NFTAuctioningState: () => (/* binding */ NFTAuctioningState),
 /* harmony export */   NFTFarmingsState: () => (/* binding */ NFTFarmingsState),
-/* harmony export */   NFTSellingState: () => (/* binding */ NFTSellingState)
+/* harmony export */   NFTSellingState: () => (/* binding */ NFTSellingState),
+/* harmony export */   NFTVeTravaSellingState: () => (/* binding */ NFTVeTravaSellingState)
 /* harmony export */ });
 function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return typeof key === "symbol" ? key : String(key); }
@@ -236,6 +240,16 @@ class NFTAuctioningState {
     this.v1 = new Array();
     this.v2 = new Array();
     this.specials = new Array();
+    this.isFetch = false;
+  }
+}
+class NFTVeTravaSellingState {
+  constructor() {
+    _defineProperty(this, "sellingVeTrava", void 0);
+    _defineProperty(this, "priceTokens", void 0);
+    _defineProperty(this, "isFetch", void 0);
+    this.sellingVeTrava = new Array();
+    this.priceTokens = new Map();
     this.isFetch = false;
   }
 }
@@ -461,6 +475,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   NFTAuctioningState: () => (/* reexport safe */ _nft__WEBPACK_IMPORTED_MODULE_1__.NFTAuctioningState),
 /* harmony export */   NFTFarmingsState: () => (/* reexport safe */ _nft__WEBPACK_IMPORTED_MODULE_1__.NFTFarmingsState),
 /* harmony export */   NFTSellingState: () => (/* reexport safe */ _nft__WEBPACK_IMPORTED_MODULE_1__.NFTSellingState),
+/* harmony export */   NFTVeTravaSellingState: () => (/* reexport safe */ _nft__WEBPACK_IMPORTED_MODULE_1__.NFTVeTravaSellingState),
 /* harmony export */   TravaGovernanceState: () => (/* reexport safe */ _lending__WEBPACK_IMPORTED_MODULE_0__.TravaGovernanceState),
 /* harmony export */   TravaLPStakingState: () => (/* reexport safe */ _lending__WEBPACK_IMPORTED_MODULE_0__.TravaLPStakingState),
 /* harmony export */   VeTravaListState: () => (/* reexport safe */ _lending__WEBPACK_IMPORTED_MODULE_0__.VeTravaListState),
@@ -498,7 +513,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   NFTAuctioningState: () => (/* reexport safe */ _TravaNFTState__WEBPACK_IMPORTED_MODULE_0__.NFTAuctioningState),
 /* harmony export */   NFTFarmingsState: () => (/* reexport safe */ _TravaNFTState__WEBPACK_IMPORTED_MODULE_0__.NFTFarmingsState),
-/* harmony export */   NFTSellingState: () => (/* reexport safe */ _TravaNFTState__WEBPACK_IMPORTED_MODULE_0__.NFTSellingState)
+/* harmony export */   NFTSellingState: () => (/* reexport safe */ _TravaNFTState__WEBPACK_IMPORTED_MODULE_0__.NFTSellingState),
+/* harmony export */   NFTVeTravaSellingState: () => (/* reexport safe */ _TravaNFTState__WEBPACK_IMPORTED_MODULE_0__.NFTVeTravaSellingState)
 /* harmony export */ });
 /* harmony import */ var _TravaNFTState__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(4);
 
@@ -553,6 +569,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   isAuctionOngoing: () => (/* reexport safe */ _trava__WEBPACK_IMPORTED_MODULE_2__.isAuctionOngoing),
 /* harmony export */   roundDown: () => (/* reexport safe */ _trava__WEBPACK_IMPORTED_MODULE_2__.roundDown),
 /* harmony export */   shuffleArray: () => (/* reexport safe */ _trava__WEBPACK_IMPORTED_MODULE_2__.shuffleArray),
+/* harmony export */   simulateNFTVeTravaBuy: () => (/* reexport safe */ _trava__WEBPACK_IMPORTED_MODULE_2__.simulateNFTVeTravaBuy),
+/* harmony export */   simulateNFTVeTravaCancelSale: () => (/* reexport safe */ _trava__WEBPACK_IMPORTED_MODULE_2__.simulateNFTVeTravaCancelSale),
+/* harmony export */   simulateNFTVeTravaCreateSale: () => (/* reexport safe */ _trava__WEBPACK_IMPORTED_MODULE_2__.simulateNFTVeTravaCreateSale),
 /* harmony export */   simulateSendToken: () => (/* reexport safe */ _basic__WEBPACK_IMPORTED_MODULE_0__.simulateSendToken),
 /* harmony export */   simulateSendTokenV2: () => (/* reexport safe */ _basic__WEBPACK_IMPORTED_MODULE_0__.simulateSendTokenV2),
 /* harmony export */   simulateStakeStaking: () => (/* reexport safe */ _trava__WEBPACK_IMPORTED_MODULE_2__.simulateStakeStaking),
@@ -584,6 +603,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   simulateWrapV2: () => (/* reexport safe */ _basic__WEBPACK_IMPORTED_MODULE_0__.simulateWrapV2),
 /* harmony export */   timeRemaining: () => (/* reexport safe */ _trava__WEBPACK_IMPORTED_MODULE_2__.timeRemaining),
 /* harmony export */   tokenLockOptions: () => (/* reexport safe */ _trava__WEBPACK_IMPORTED_MODULE_2__.tokenLockOptions),
+/* harmony export */   tokenSellOptions: () => (/* reexport safe */ _trava__WEBPACK_IMPORTED_MODULE_2__.tokenSellOptions),
 /* harmony export */   updateAllAccountVault: () => (/* reexport safe */ _trava__WEBPACK_IMPORTED_MODULE_2__.updateAllAccountVault),
 /* harmony export */   updateAuctioningNFTFromContract: () => (/* reexport safe */ _trava__WEBPACK_IMPORTED_MODULE_2__.updateAuctioningNFTFromContract),
 /* harmony export */   updateCollectionBalanceFromContract: () => (/* reexport safe */ _trava__WEBPACK_IMPORTED_MODULE_2__.updateCollectionBalanceFromContract),
@@ -599,6 +619,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   updateRTravaAndTravaForReward: () => (/* reexport safe */ _trava__WEBPACK_IMPORTED_MODULE_2__.updateRTravaAndTravaForReward),
 /* harmony export */   updateSellingNFTFromContract: () => (/* reexport safe */ _trava__WEBPACK_IMPORTED_MODULE_2__.updateSellingNFTFromContract),
 /* harmony export */   updateSellingNFTFromGraph: () => (/* reexport safe */ _trava__WEBPACK_IMPORTED_MODULE_2__.updateSellingNFTFromGraph),
+/* harmony export */   updateSellingVeTrava: () => (/* reexport safe */ _trava__WEBPACK_IMPORTED_MODULE_2__.updateSellingVeTrava),
 /* harmony export */   updateSmartWalletEthBalance: () => (/* reexport safe */ _basic__WEBPACK_IMPORTED_MODULE_0__.updateSmartWalletEthBalance),
 /* harmony export */   updateSmartWalletTokenBalance: () => (/* reexport safe */ _basic__WEBPACK_IMPORTED_MODULE_0__.updateSmartWalletTokenBalance),
 /* harmony export */   updateTokenBalance: () => (/* reexport safe */ _basic__WEBPACK_IMPORTED_MODULE_0__.updateTokenBalance),
@@ -808,6 +829,8 @@ var listAddr = {
     TOKEN_VALUATOR_ADDRESS: '0x1b2E2a052980D31F9E31fdd5253B562dB248DCB2',
     LP_VALUATOR_ADDRESS: '0x677e8Ecb6Cf81b680CbaAF60571e9Fe2028A8CbD',
     RTRAVA_TOKEN_ADDRESS: '0x4a9901cdAfDFB2aC614c12627E0A5B45A63929d6',
+    VE_TRAVA_MARKETPLACE_ADDRESS: "0x642e9fD16cA66db2747695dc0DddD0ce54aB3AB1",
+    BUSD_TOKEN_ADDRESS: "0x8ADE9A293528EB21f2fD9d7fF6eD919Adf1AdEC7",
     NFT_FARMING_BASE_EXP: "0xb0c3137d7C7d8cf994b9931359A97605dF277815"
   },
   // MUST BE FILL MAINNET ADDRESS HERE. NOW IS TESTNET
@@ -850,6 +873,8 @@ var listAddr = {
     TOKEN_VALUATOR_ADDRESS: '0x6a16D2019A938Cdb5666784d605c08FafC4b8DFB',
     LP_VALUATOR_ADDRESS: '0xb551b74044dfe4ebac72298fb383BEF9152fd8C4',
     RTRAVA_TOKEN_ADDRESS: '0x170772A06aFfC0d375cE90Ef59C8eC04c7ebF5D2',
+    VE_TRAVA_MARKETPLACE_ADDRESS: "0x65c62822940C1a57C90Ac8BF0874730624ec7Fb7",
+    BUSD_TOKEN_ADDRESS: "0xe9e7cea3dedca5984780bafc599bd69add087d56",
     NFT_FARMING_BASE_EXP: "0xc7a3a214206d6677b3321865AfbD84a417414Db3"
   }
 };
@@ -55413,6 +55438,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   isAuctionOngoing: () => (/* reexport safe */ _nft__WEBPACK_IMPORTED_MODULE_1__.isAuctionOngoing),
 /* harmony export */   roundDown: () => (/* reexport safe */ _governance__WEBPACK_IMPORTED_MODULE_3__.roundDown),
 /* harmony export */   shuffleArray: () => (/* reexport safe */ _nft__WEBPACK_IMPORTED_MODULE_1__.shuffleArray),
+/* harmony export */   simulateNFTVeTravaBuy: () => (/* reexport safe */ _nft__WEBPACK_IMPORTED_MODULE_1__.simulateNFTVeTravaBuy),
+/* harmony export */   simulateNFTVeTravaCancelSale: () => (/* reexport safe */ _nft__WEBPACK_IMPORTED_MODULE_1__.simulateNFTVeTravaCancelSale),
+/* harmony export */   simulateNFTVeTravaCreateSale: () => (/* reexport safe */ _nft__WEBPACK_IMPORTED_MODULE_1__.simulateNFTVeTravaCreateSale),
 /* harmony export */   simulateStakeStaking: () => (/* reexport safe */ _staking__WEBPACK_IMPORTED_MODULE_2__.simulateStakeStaking),
 /* harmony export */   simulateStakingClaimRewards: () => (/* reexport safe */ _staking__WEBPACK_IMPORTED_MODULE_2__.simulateStakingClaimRewards),
 /* harmony export */   simulateStakingRedeem: () => (/* reexport safe */ _staking__WEBPACK_IMPORTED_MODULE_2__.simulateStakingRedeem),
@@ -55437,6 +55465,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   simulateTravaNFTTransfer: () => (/* reexport safe */ _nft__WEBPACK_IMPORTED_MODULE_1__.simulateTravaNFTTransfer),
 /* harmony export */   timeRemaining: () => (/* reexport safe */ _governance__WEBPACK_IMPORTED_MODULE_3__.timeRemaining),
 /* harmony export */   tokenLockOptions: () => (/* reexport safe */ _governance__WEBPACK_IMPORTED_MODULE_3__.tokenLockOptions),
+/* harmony export */   tokenSellOptions: () => (/* reexport safe */ _nft__WEBPACK_IMPORTED_MODULE_1__.tokenSellOptions),
 /* harmony export */   updateAllAccountVault: () => (/* reexport safe */ _staking__WEBPACK_IMPORTED_MODULE_2__.updateAllAccountVault),
 /* harmony export */   updateAuctioningNFTFromContract: () => (/* reexport safe */ _nft__WEBPACK_IMPORTED_MODULE_1__.updateAuctioningNFTFromContract),
 /* harmony export */   updateCollectionBalanceFromContract: () => (/* reexport safe */ _nft__WEBPACK_IMPORTED_MODULE_1__.updateCollectionBalanceFromContract),
@@ -55452,6 +55481,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   updateRTravaAndTravaForReward: () => (/* reexport safe */ _market__WEBPACK_IMPORTED_MODULE_0__.updateRTravaAndTravaForReward),
 /* harmony export */   updateSellingNFTFromContract: () => (/* reexport safe */ _nft__WEBPACK_IMPORTED_MODULE_1__.updateSellingNFTFromContract),
 /* harmony export */   updateSellingNFTFromGraph: () => (/* reexport safe */ _nft__WEBPACK_IMPORTED_MODULE_1__.updateSellingNFTFromGraph),
+/* harmony export */   updateSellingVeTrava: () => (/* reexport safe */ _nft__WEBPACK_IMPORTED_MODULE_1__.updateSellingVeTrava),
 /* harmony export */   updateTravaBalance: () => (/* reexport safe */ _nft__WEBPACK_IMPORTED_MODULE_1__.updateTravaBalance),
 /* harmony export */   updateTravaGovernanceState: () => (/* reexport safe */ _governance__WEBPACK_IMPORTED_MODULE_3__.updateTravaGovernanceState),
 /* harmony export */   updateTravaLPInfo: () => (/* reexport safe */ _market__WEBPACK_IMPORTED_MODULE_0__.updateTravaLPInfo),
@@ -55459,8 +55489,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _market__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(340);
 /* harmony import */ var _nft__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(349);
-/* harmony import */ var _staking__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(387);
-/* harmony import */ var _governance__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(392);
+/* harmony import */ var _staking__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(400);
+/* harmony import */ var _governance__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(383);
 
 
 
@@ -56638,6 +56668,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   heuristicFamingConfig: () => (/* reexport safe */ _missions__WEBPACK_IMPORTED_MODULE_2__.heuristicFamingConfig),
 /* harmony export */   isAuctionOngoing: () => (/* reexport safe */ _marketplace__WEBPACK_IMPORTED_MODULE_1__.isAuctionOngoing),
 /* harmony export */   shuffleArray: () => (/* reexport safe */ _helpers__WEBPACK_IMPORTED_MODULE_0__.shuffleArray),
+/* harmony export */   simulateNFTVeTravaBuy: () => (/* reexport safe */ _marketplace__WEBPACK_IMPORTED_MODULE_1__.simulateNFTVeTravaBuy),
+/* harmony export */   simulateNFTVeTravaCancelSale: () => (/* reexport safe */ _marketplace__WEBPACK_IMPORTED_MODULE_1__.simulateNFTVeTravaCancelSale),
+/* harmony export */   simulateNFTVeTravaCreateSale: () => (/* reexport safe */ _marketplace__WEBPACK_IMPORTED_MODULE_1__.simulateNFTVeTravaCreateSale),
 /* harmony export */   simulateTravaNFTBuy: () => (/* reexport safe */ _marketplace__WEBPACK_IMPORTED_MODULE_1__.simulateTravaNFTBuy),
 /* harmony export */   simulateTravaNFTCancelAuction: () => (/* reexport safe */ _marketplace__WEBPACK_IMPORTED_MODULE_1__.simulateTravaNFTCancelAuction),
 /* harmony export */   simulateTravaNFTCancelSale: () => (/* reexport safe */ _marketplace__WEBPACK_IMPORTED_MODULE_1__.simulateTravaNFTCancelSale),
@@ -56651,6 +56684,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   simulateTravaNFTMakeBidAuction: () => (/* reexport safe */ _marketplace__WEBPACK_IMPORTED_MODULE_1__.simulateTravaNFTMakeBidAuction),
 /* harmony export */   simulateTravaNFTSell: () => (/* reexport safe */ _marketplace__WEBPACK_IMPORTED_MODULE_1__.simulateTravaNFTSell),
 /* harmony export */   simulateTravaNFTTransfer: () => (/* reexport safe */ _utilities__WEBPACK_IMPORTED_MODULE_3__.simulateTravaNFTTransfer),
+/* harmony export */   tokenSellOptions: () => (/* reexport safe */ _marketplace__WEBPACK_IMPORTED_MODULE_1__.tokenSellOptions),
 /* harmony export */   updateAuctioningNFTFromContract: () => (/* reexport safe */ _marketplace__WEBPACK_IMPORTED_MODULE_1__.updateAuctioningNFTFromContract),
 /* harmony export */   updateCollectionBalanceFromContract: () => (/* reexport safe */ _utilities__WEBPACK_IMPORTED_MODULE_3__.updateCollectionBalanceFromContract),
 /* harmony export */   updateCollectionBalanceFromGraph: () => (/* reexport safe */ _utilities__WEBPACK_IMPORTED_MODULE_3__.updateCollectionBalanceFromGraph),
@@ -56661,11 +56695,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   updateOwnedSellingNFTFromContract: () => (/* reexport safe */ _marketplace__WEBPACK_IMPORTED_MODULE_1__.updateOwnedSellingNFTFromContract),
 /* harmony export */   updateSellingNFTFromContract: () => (/* reexport safe */ _marketplace__WEBPACK_IMPORTED_MODULE_1__.updateSellingNFTFromContract),
 /* harmony export */   updateSellingNFTFromGraph: () => (/* reexport safe */ _marketplace__WEBPACK_IMPORTED_MODULE_1__.updateSellingNFTFromGraph),
+/* harmony export */   updateSellingVeTrava: () => (/* reexport safe */ _marketplace__WEBPACK_IMPORTED_MODULE_1__.updateSellingVeTrava),
 /* harmony export */   updateTravaBalance: () => (/* reexport safe */ _utilities__WEBPACK_IMPORTED_MODULE_3__.updateTravaBalance)
 /* harmony export */ });
 /* harmony import */ var _helpers__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(350);
 /* harmony import */ var _marketplace__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(365);
-/* harmony import */ var _missions__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(381);
+/* harmony import */ var _missions__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(394);
 /* harmony import */ var _utilities__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(377);
 
 
@@ -57633,6 +57668,8 @@ __webpack_require__.r(__webpack_exports__);
 
 // The graph type
 
+// VeTrava
+
 
 /***/ }),
 /* 365 */
@@ -57644,6 +57681,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   _fetchList: () => (/* reexport safe */ _auction__WEBPACK_IMPORTED_MODULE_1__._fetchList),
 /* harmony export */   findTravaNFTKnightAuctioning: () => (/* reexport safe */ _auction__WEBPACK_IMPORTED_MODULE_1__.findTravaNFTKnightAuctioning),
 /* harmony export */   isAuctionOngoing: () => (/* reexport safe */ _auction__WEBPACK_IMPORTED_MODULE_1__.isAuctionOngoing),
+/* harmony export */   simulateNFTVeTravaBuy: () => (/* reexport safe */ _veTrava__WEBPACK_IMPORTED_MODULE_2__.simulateNFTVeTravaBuy),
+/* harmony export */   simulateNFTVeTravaCancelSale: () => (/* reexport safe */ _veTrava__WEBPACK_IMPORTED_MODULE_2__.simulateNFTVeTravaCancelSale),
+/* harmony export */   simulateNFTVeTravaCreateSale: () => (/* reexport safe */ _veTrava__WEBPACK_IMPORTED_MODULE_2__.simulateNFTVeTravaCreateSale),
 /* harmony export */   simulateTravaNFTBuy: () => (/* reexport safe */ _sell__WEBPACK_IMPORTED_MODULE_0__.simulateTravaNFTBuy),
 /* harmony export */   simulateTravaNFTCancelAuction: () => (/* reexport safe */ _auction__WEBPACK_IMPORTED_MODULE_1__.simulateTravaNFTCancelAuction),
 /* harmony export */   simulateTravaNFTCancelSale: () => (/* reexport safe */ _sell__WEBPACK_IMPORTED_MODULE_0__.simulateTravaNFTCancelSale),
@@ -57652,15 +57692,19 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   simulateTravaNFTFinalizeAuction: () => (/* reexport safe */ _auction__WEBPACK_IMPORTED_MODULE_1__.simulateTravaNFTFinalizeAuction),
 /* harmony export */   simulateTravaNFTMakeBidAuction: () => (/* reexport safe */ _auction__WEBPACK_IMPORTED_MODULE_1__.simulateTravaNFTMakeBidAuction),
 /* harmony export */   simulateTravaNFTSell: () => (/* reexport safe */ _sell__WEBPACK_IMPORTED_MODULE_0__.simulateTravaNFTSell),
+/* harmony export */   tokenSellOptions: () => (/* reexport safe */ _veTrava__WEBPACK_IMPORTED_MODULE_2__.tokenSellOptions),
 /* harmony export */   updateAuctioningNFTFromContract: () => (/* reexport safe */ _auction__WEBPACK_IMPORTED_MODULE_1__.updateAuctioningNFTFromContract),
 /* harmony export */   updateOwnedAuctioningNFT: () => (/* reexport safe */ _auction__WEBPACK_IMPORTED_MODULE_1__.updateOwnedAuctioningNFT),
 /* harmony export */   updateOwnedSellingNFT: () => (/* reexport safe */ _sell__WEBPACK_IMPORTED_MODULE_0__.updateOwnedSellingNFT),
 /* harmony export */   updateOwnedSellingNFTFromContract: () => (/* reexport safe */ _sell__WEBPACK_IMPORTED_MODULE_0__.updateOwnedSellingNFTFromContract),
 /* harmony export */   updateSellingNFTFromContract: () => (/* reexport safe */ _sell__WEBPACK_IMPORTED_MODULE_0__.updateSellingNFTFromContract),
-/* harmony export */   updateSellingNFTFromGraph: () => (/* reexport safe */ _sell__WEBPACK_IMPORTED_MODULE_0__.updateSellingNFTFromGraph)
+/* harmony export */   updateSellingNFTFromGraph: () => (/* reexport safe */ _sell__WEBPACK_IMPORTED_MODULE_0__.updateSellingNFTFromGraph),
+/* harmony export */   updateSellingVeTrava: () => (/* reexport safe */ _veTrava__WEBPACK_IMPORTED_MODULE_2__.updateSellingVeTrava)
 /* harmony export */ });
 /* harmony import */ var _sell__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(366);
 /* harmony import */ var _auction__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(373);
+/* harmony import */ var _veTrava__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(381);
+
 
 
 
@@ -59283,17 +59327,17 @@ module.exports = JSON.parse('[{"anonymous":false,"inputs":[{"indexed":false,"int
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   calculateKnightApr: () => (/* reexport safe */ _heuristicFarming__WEBPACK_IMPORTED_MODULE_0__.calculateKnightApr),
-/* harmony export */   calculateVaultApr: () => (/* reexport safe */ _heuristicFarming__WEBPACK_IMPORTED_MODULE_0__.calculateVaultApr),
-/* harmony export */   getNormalKinghtFromFarmingKnight: () => (/* reexport safe */ _heuristicFarming__WEBPACK_IMPORTED_MODULE_0__.getNormalKinghtFromFarmingKnight),
-/* harmony export */   heuristicFamingConfig: () => (/* reexport safe */ _heuristicFarming__WEBPACK_IMPORTED_MODULE_0__.heuristicFamingConfig),
-/* harmony export */   simulateTravaNFTHeuristicFarmingClaim: () => (/* reexport safe */ _heuristicFarming__WEBPACK_IMPORTED_MODULE_0__.simulateTravaNFTHeuristicFarmingClaim),
-/* harmony export */   simulateTravaNFTHeuristicFarmingPolish: () => (/* reexport safe */ _heuristicFarming__WEBPACK_IMPORTED_MODULE_0__.simulateTravaNFTHeuristicFarmingPolish),
-/* harmony export */   simulateTravaNFTHeuristicFarmingStake: () => (/* reexport safe */ _heuristicFarming__WEBPACK_IMPORTED_MODULE_0__.simulateTravaNFTHeuristicFarmingStake),
-/* harmony export */   simulateTravaNFTHeuristicFarmingWithdraw: () => (/* reexport safe */ _heuristicFarming__WEBPACK_IMPORTED_MODULE_0__.simulateTravaNFTHeuristicFarmingWithdraw),
-/* harmony export */   updateFarmingState: () => (/* reexport safe */ _heuristicFarming__WEBPACK_IMPORTED_MODULE_0__.updateFarmingState)
+/* harmony export */   simulateNFTVeTravaBuy: () => (/* reexport safe */ _SimulationNFTVeTrava__WEBPACK_IMPORTED_MODULE_0__.simulateNFTVeTravaBuy),
+/* harmony export */   simulateNFTVeTravaCancelSale: () => (/* reexport safe */ _SimulationNFTVeTrava__WEBPACK_IMPORTED_MODULE_0__.simulateNFTVeTravaCancelSale),
+/* harmony export */   simulateNFTVeTravaCreateSale: () => (/* reexport safe */ _SimulationNFTVeTrava__WEBPACK_IMPORTED_MODULE_0__.simulateNFTVeTravaCreateSale),
+/* harmony export */   tokenSellOptions: () => (/* reexport safe */ _veTravaConfig__WEBPACK_IMPORTED_MODULE_2__.tokenSellOptions),
+/* harmony export */   updateSellingVeTrava: () => (/* reexport safe */ _UpdateStateAccount__WEBPACK_IMPORTED_MODULE_1__.updateSellingVeTrava)
 /* harmony export */ });
-/* harmony import */ var _heuristicFarming__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(382);
+/* harmony import */ var _SimulationNFTVeTrava__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(382);
+/* harmony import */ var _UpdateStateAccount__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(390);
+/* harmony import */ var _veTravaConfig__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(392);
+
+
 
 
 /***/ }),
@@ -59303,893 +59347,186 @@ __webpack_require__.r(__webpack_exports__);
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   calculateKnightApr: () => (/* reexport safe */ _UpdateStateAccount__WEBPACK_IMPORTED_MODULE_0__.calculateKnightApr),
-/* harmony export */   calculateVaultApr: () => (/* reexport safe */ _UpdateStateAccount__WEBPACK_IMPORTED_MODULE_0__.calculateVaultApr),
-/* harmony export */   getNormalKinghtFromFarmingKnight: () => (/* reexport safe */ _simulateHeuristicFarming__WEBPACK_IMPORTED_MODULE_2__.getNormalKinghtFromFarmingKnight),
-/* harmony export */   heuristicFamingConfig: () => (/* reexport safe */ _heuristicFarmingConfig__WEBPACK_IMPORTED_MODULE_1__.heuristicFamingConfig),
-/* harmony export */   simulateTravaNFTHeuristicFarmingClaim: () => (/* reexport safe */ _simulateHeuristicFarming__WEBPACK_IMPORTED_MODULE_2__.simulateTravaNFTHeuristicFarmingClaim),
-/* harmony export */   simulateTravaNFTHeuristicFarmingPolish: () => (/* reexport safe */ _simulateHeuristicFarming__WEBPACK_IMPORTED_MODULE_2__.simulateTravaNFTHeuristicFarmingPolish),
-/* harmony export */   simulateTravaNFTHeuristicFarmingStake: () => (/* reexport safe */ _simulateHeuristicFarming__WEBPACK_IMPORTED_MODULE_2__.simulateTravaNFTHeuristicFarmingStake),
-/* harmony export */   simulateTravaNFTHeuristicFarmingWithdraw: () => (/* reexport safe */ _simulateHeuristicFarming__WEBPACK_IMPORTED_MODULE_2__.simulateTravaNFTHeuristicFarmingWithdraw),
-/* harmony export */   updateFarmingState: () => (/* reexport safe */ _UpdateStateAccount__WEBPACK_IMPORTED_MODULE_0__.updateFarmingState)
+/* harmony export */   simulateNFTVeTravaBuy: () => (/* binding */ simulateNFTVeTravaBuy),
+/* harmony export */   simulateNFTVeTravaCancelSale: () => (/* binding */ simulateNFTVeTravaCancelSale),
+/* harmony export */   simulateNFTVeTravaCreateSale: () => (/* binding */ simulateNFTVeTravaCreateSale)
 /* harmony export */ });
-/* harmony import */ var _UpdateStateAccount__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(383);
-/* harmony import */ var _heuristicFarmingConfig__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(384);
-/* harmony import */ var _simulateHeuristicFarming__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(386);
+/* harmony import */ var _utils_helper__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(118);
+/* harmony import */ var _governance__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(383);
+/* harmony import */ var _UpdateStateAccount__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(390);
+/* harmony import */ var bignumber_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(19);
+/* harmony import */ var _basic__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(12);
+/* harmony import */ var _utils_error__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(20);
+/* harmony import */ var _utilities_SimulationVeTravaNFTUtilities__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(393);
+function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
+function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
+function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return typeof key === "symbol" ? key : String(key); }
+function _toPrimitive(input, hint) { if (typeof input !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (typeof res !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
+function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
 
 
 
+
+
+
+
+function simulateNFTVeTravaCreateSale(_x, _x2, _x3, _x4, _x5) {
+  return _simulateNFTVeTravaCreateSale.apply(this, arguments);
+}
+function _simulateNFTVeTravaCreateSale() {
+  _simulateNFTVeTravaCreateSale = _asyncToGenerator(function* (_appState1, _NFTId, _from, _price, _priceTokenAddress) {
+    var appState = _objectSpread({}, _appState1);
+    try {
+      _priceTokenAddress = _priceTokenAddress.toLowerCase();
+      if (appState.TravaGovernanceState.totalSupply == "") {
+        appState = yield (0,_governance__WEBPACK_IMPORTED_MODULE_1__.updateTravaGovernanceState)(appState);
+      }
+      if (appState.NFTVeTravaMarketSellingState.isFetch == false) {
+        appState = yield (0,_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_2__.updateSellingVeTrava)(appState);
+      }
+      var modeFrom = (0,_utils_helper__WEBPACK_IMPORTED_MODULE_0__.getMode)(appState, _from);
+      if (!appState[modeFrom].veTravaListState.veTravaList.has(_NFTId)) {
+        throw new _utils_error__WEBPACK_IMPORTED_MODULE_5__.NFTNotFoundError("NFT not found");
+      }
+      if (appState[modeFrom].veTravaListState.veTravaList.has(_NFTId)) {
+        var data = appState[modeFrom].veTravaListState.veTravaList.get(_NFTId);
+        var priceToken = {
+          address: _priceTokenAddress,
+          amount: _price
+        };
+        var tokenLocked = {
+          address: data.tokenInVeTrava.tokenLockOption.address,
+          amount: data.tokenInVeTrava.balances
+        };
+        var sellVeToken = {
+          id: _NFTId,
+          rwAmount: data.rewardTokenBalance.compoundAbleRewards,
+          end: data.unlockTime,
+          lockedToken: tokenLocked,
+          votingPower: data.votingPower,
+          seller: _from,
+          priceToken: priceToken
+        };
+        appState[modeFrom].veTravaListState.veTravaList.delete(_NFTId);
+        appState.NFTVeTravaMarketSellingState.sellingVeTrava.push(sellVeToken);
+      }
+    } catch (err) {
+      throw err;
+    }
+    return appState;
+  });
+  return _simulateNFTVeTravaCreateSale.apply(this, arguments);
+}
+function simulateNFTVeTravaCancelSale(_x6, _x7, _x8) {
+  return _simulateNFTVeTravaCancelSale.apply(this, arguments);
+}
+function _simulateNFTVeTravaCancelSale() {
+  _simulateNFTVeTravaCancelSale = _asyncToGenerator(function* (_appState1, _NFTId, _to) {
+    var appState = _objectSpread({}, _appState1);
+    try {
+      _to = _to.toLowerCase();
+      if (appState.TravaGovernanceState.totalSupply == "") {
+        appState = yield (0,_governance__WEBPACK_IMPORTED_MODULE_1__.updateTravaGovernanceState)(appState);
+      }
+      if (appState.NFTVeTravaMarketSellingState.isFetch == false) {
+        appState = yield (0,_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_2__.updateSellingVeTrava)(appState);
+      }
+      var _from = appState.smartWalletState.address.toLowerCase();
+      if (!appState.NFTVeTravaMarketSellingState.sellingVeTrava.find(x => x.id == _NFTId)) {
+        throw new _utils_error__WEBPACK_IMPORTED_MODULE_5__.NFTNotFoundError("NFT not found");
+      }
+      if (!(_from == appState.NFTVeTravaMarketSellingState.sellingVeTrava.find(x => x.id == _NFTId).seller.toLowerCase())) {
+        throw new Error("Not owner error");
+      }
+      var data = appState.NFTVeTravaMarketSellingState.sellingVeTrava.find(x => x.id == _NFTId);
+      var tokenLock = _governance__WEBPACK_IMPORTED_MODULE_1__.tokenLockOptions[appState.chainId].find(x => x.address == data.lockedToken.address);
+      var data1 = {
+        id: data.id,
+        votingPower: data.votingPower,
+        tokenInVeTrava: {
+          balances: data.lockedToken.amount,
+          tokenLockOption: tokenLock
+        },
+        unlockTime: data.end,
+        rewardTokenBalance: {
+          compoundAbleRewards: data.rwAmount,
+          compoundedRewards: data.rwAmount,
+          balances: data.rwAmount
+        }
+      };
+      appState.smartWalletState.veTravaListState.veTravaList.set(_NFTId, data1);
+      appState.NFTVeTravaMarketSellingState.sellingVeTrava = appState.NFTVeTravaMarketSellingState.sellingVeTrava.filter(x => x.id != _NFTId);
+      appState = yield (0,_utilities_SimulationVeTravaNFTUtilities__WEBPACK_IMPORTED_MODULE_6__.simulateNFTVeTravaTranfer)(appState, _NFTId, _from, _to);
+    } catch (err) {
+      throw err;
+    }
+    return appState;
+  });
+  return _simulateNFTVeTravaCancelSale.apply(this, arguments);
+}
+function simulateNFTVeTravaBuy(_x9, _x10, _x11, _x12) {
+  return _simulateNFTVeTravaBuy.apply(this, arguments);
+}
+function _simulateNFTVeTravaBuy() {
+  _simulateNFTVeTravaBuy = _asyncToGenerator(function* (_appState1, _NFTId, _from, _to) {
+    var appState = _objectSpread({}, _appState1);
+    try {
+      if (appState.TravaGovernanceState.totalSupply == "") {
+        appState = yield (0,_governance__WEBPACK_IMPORTED_MODULE_1__.updateTravaGovernanceState)(appState);
+      }
+      if (appState.NFTVeTravaMarketSellingState.isFetch == false) {
+        appState = yield (0,_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_2__.updateSellingVeTrava)(appState);
+      }
+      var modeFrom = (0,_utils_helper__WEBPACK_IMPORTED_MODULE_0__.getMode)(appState, _from);
+      if (!appState.NFTVeTravaMarketSellingState.sellingVeTrava.find(x => x.id == _NFTId)) {
+        throw new _utils_error__WEBPACK_IMPORTED_MODULE_5__.NFTNotFoundError("NFT not found");
+      }
+      _from = _from.toLowerCase();
+      if (_from != appState.NFTVeTravaMarketSellingState.sellingVeTrava.find(x => x.id == _NFTId).seller.toLowerCase()) {
+        var data = appState.NFTVeTravaMarketSellingState.sellingVeTrava.find(x => x.id == _NFTId);
+        var tokenLock = _governance__WEBPACK_IMPORTED_MODULE_1__.tokenLockOptions[appState.chainId].find(x => x.address == data.lockedToken.address);
+        var data1 = {
+          id: data.id,
+          votingPower: data.votingPower,
+          tokenInVeTrava: {
+            balances: data.lockedToken.amount,
+            tokenLockOption: tokenLock
+          },
+          unlockTime: data.end,
+          rewardTokenBalance: {
+            compoundAbleRewards: data.rwAmount,
+            compoundedRewards: data.rwAmount,
+            balances: data.rwAmount
+          }
+        };
+        var price = data.priceToken.amount;
+        var priceTokenAddress = data.priceToken.address.toLowerCase();
+        if (modeFrom == "walletState") {
+          appState = yield (0,_basic__WEBPACK_IMPORTED_MODULE_4__.updateUserTokenBalance)(appState, priceTokenAddress);
+        } else if (modeFrom == "smartWalletState") {
+          appState = yield (0,_basic__WEBPACK_IMPORTED_MODULE_4__.updateSmartWalletTokenBalance)(appState, priceTokenAddress);
+        }
+        var balanceOfToken = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_3__["default"])(0);
+        if (appState[modeFrom].tokenBalances.has(priceTokenAddress.toLowerCase())) {
+          balanceOfToken = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_3__["default"])(appState[modeFrom].tokenBalances.get(priceTokenAddress.toLowerCase()));
+        }
+        var newBalance = balanceOfToken.minus(price).toFixed();
+        appState[modeFrom].tokenBalances.set(priceTokenAddress.toLowerCase(), newBalance);
+        appState[modeFrom].veTravaListState.veTravaList.set(_NFTId, data1);
+        appState.NFTVeTravaMarketSellingState.sellingVeTrava = appState.NFTVeTravaMarketSellingState.sellingVeTrava.filter(x => x.id != _NFTId);
+      }
+    } catch (err) {
+      throw err;
+    }
+    return appState;
+  });
+  return _simulateNFTVeTravaBuy.apply(this, arguments);
+}
 
 /***/ }),
 /* 383 */
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   calculateKnightApr: () => (/* binding */ calculateKnightApr),
-/* harmony export */   calculateVaultApr: () => (/* binding */ calculateVaultApr),
-/* harmony export */   updateFarmingState: () => (/* binding */ updateFarmingState)
-/* harmony export */ });
-/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(368);
-/* harmony import */ var _heuristicFarmingConfig__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(384);
-/* harmony import */ var _abis_NFTFarmingBaseExp_json__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(385);
-/* harmony import */ var _abis_NFTCollection_json__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(362);
-/* harmony import */ var _abis_TravaNFTCore_json__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(361);
-/* harmony import */ var ethers__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(15);
-/* harmony import */ var ethers__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(ethers__WEBPACK_IMPORTED_MODULE_5__);
-/* harmony import */ var bignumber_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(19);
-/* harmony import */ var _utils_helper__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(118);
-/* harmony import */ var _helpers__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(350);
-function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
-function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
-function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return typeof key === "symbol" ? key : String(key); }
-function _toPrimitive(input, hint) { if (typeof input !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (typeof res !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
-function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
-function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
-
-
-
-
-
-
-
-
-
-function updateFarmingState(_x) {
-  return _updateFarmingState.apply(this, arguments);
-}
-function _updateFarmingState() {
-  _updateFarmingState = _asyncToGenerator(function* (appState1) {
-    var force = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
-    var appState = appState1;
-    try {
-      if (!appState.smartWalletState.NFTFarmingsState.isFetch || force) {
-        var vaults = _heuristicFarmingConfig__WEBPACK_IMPORTED_MODULE_1__.heuristicFamingConfig[appState.chainId];
-        var nftHeuristicFamringAddress = (0,_utils__WEBPACK_IMPORTED_MODULE_0__.getAddr)("NFT_FARMING_BASE_EXP", appState.chainId);
-        var nftCollectionAddress = (0,_utils__WEBPACK_IMPORTED_MODULE_0__.getAddr)("NFT_COLLECTION_ADDRESS", appState.chainId);
-        var nftCoreAddress = (0,_utils__WEBPACK_IMPORTED_MODULE_0__.getAddr)("NFT_CORE_ADDRESS", appState.chainId);
-        var NFTHeuristicContract = new ethers__WEBPACK_IMPORTED_MODULE_5__.Contract(nftHeuristicFamringAddress, _abis_NFTFarmingBaseExp_json__WEBPACK_IMPORTED_MODULE_2__, appState.web3);
-        var NFTCollectionContract = new ethers__WEBPACK_IMPORTED_MODULE_5__.Contract(nftCollectionAddress, _abis_NFTCollection_json__WEBPACK_IMPORTED_MODULE_3__, appState.web3);
-        var _loop = function* _loop() {
-          if (vaults.hasOwnProperty(vaultId)) {
-            var vault = vaults[vaultId];
-            var [idList, poolInfos, eps] = yield Promise.all([NFTHeuristicContract.getStakingNFTinALevel(appState.smartWalletState.address, vault.level), NFTHeuristicContract.poolInfos(vault.level), NFTHeuristicContract.getEmissionPerSecond(vault.level)]);
-            var dailyReward = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_6__["default"])(eps).multipliedBy(_utils__WEBPACK_IMPORTED_MODULE_0__.DAY_TO_SECONDS).dividedBy(_utils__WEBPACK_IMPORTED_MODULE_0__.BASE18).toNumber();
-            var numberKnightOfUser = idList.length;
-            var totalNFTs = poolInfos.nftCount;
-            var totalVaultValue = Number(poolInfos.totalValue);
-            var idList1 = [];
-            for (var i = 0; i < idList.length; i++) {
-              idList1.push(idList[i].toString());
-            }
-            var totalRewardOfUser = yield NFTHeuristicContract.getTotalRewardsBalance(idList1);
-            var [nftInformation, expEarned, exp, balance] = yield Promise.all([(0,_utils_helper__WEBPACK_IMPORTED_MODULE_7__.multiCall)(_abis_NFTFarmingBaseExp_json__WEBPACK_IMPORTED_MODULE_2__, idList.map((id, _) => ({
-              address: nftHeuristicFamringAddress,
-              name: "nftInfos",
-              params: [id]
-            })), appState.web3, appState.chainId), (0,_utils_helper__WEBPACK_IMPORTED_MODULE_7__.multiCall)(_abis_NFTFarmingBaseExp_json__WEBPACK_IMPORTED_MODULE_2__, idList.map((id, _) => ({
-              address: nftHeuristicFamringAddress,
-              name: "getExpEarnedAndValueEarned",
-              params: [id]
-            })), appState.web3, appState.chainId), (0,_utils_helper__WEBPACK_IMPORTED_MODULE_7__.multiCall)(_abis_NFTCollection_json__WEBPACK_IMPORTED_MODULE_3__, idList.map((id, _) => ({
-              address: nftCollectionAddress,
-              name: "getCollectionExperience",
-              params: [id]
-            })), appState.web3, appState.chainId), (0,_utils_helper__WEBPACK_IMPORTED_MODULE_7__.multiCall)(_abis_NFTFarmingBaseExp_json__WEBPACK_IMPORTED_MODULE_2__, idList.map((id, _) => ({
-              address: nftHeuristicFamringAddress,
-              name: "getTotalRewardsBalance",
-              params: [[id]]
-            })), appState.web3, appState.chainId)]);
-            var nftInfos = new Array();
-            nftInformation.forEach((data, index) => {
-              nftInfos.push({
-                attainedExp: parseInt(exp[index][0]),
-                depositedTime: parseInt(data["depositTime"]) * 1000,
-                id: Number(idList[index]),
-                exp: Number(expEarned[index][0]),
-                earn: (0,bignumber_js__WEBPACK_IMPORTED_MODULE_6__["default"])(balance[index]).dividedBy(_utils__WEBPACK_IMPORTED_MODULE_0__.BASE18).toNumber(),
-                value: Number(expEarned[index][1])
-              });
-            });
-            var collectionMetadataArray = yield Promise.all(idList1.map( /*#__PURE__*/function () {
-              var _ref = _asyncToGenerator(function* (id, index) {
-                var collectionMetadata = yield NFTCollectionContract.getCollectionMetadata(id);
-                var itemIdList = [collectionMetadata[0][0], collectionMetadata[0][1], collectionMetadata[0][2], collectionMetadata[0][3]];
-                var [itemsMetadata] = yield Promise.all([(0,_utils_helper__WEBPACK_IMPORTED_MODULE_7__.multiCall)(_abis_TravaNFTCore_json__WEBPACK_IMPORTED_MODULE_4__, itemIdList.map((tokenId, _) => ({
-                  address: nftCoreAddress,
-                  name: "getTokenMetadata",
-                  params: [tokenId]
-                })), appState.web3, appState.chainId)]);
-                var armorMetadata = itemsMetadata[0];
-                var helmetMetadata = itemsMetadata[1];
-                var shieldMetadata = itemsMetadata[2];
-                var weaponMetadata = itemsMetadata[3];
-                var rarityStr = _helpers__WEBPACK_IMPORTED_MODULE_8__.RarityMapping[parseInt(collectionMetadata[1]) - 1];
-                var price = vaults["".concat(rarityStr, "-vault")].collectionPrice;
-                return {
-                  armorMetadata,
-                  helmetMetadata,
-                  shieldMetadata,
-                  weaponMetadata,
-                  collectionMetadata,
-                  apr: calculateKnightApr(dailyReward, nftInformation[index]["value"], totalVaultValue, price)
-                };
-              });
-              return function (_x2, _x3) {
-                return _ref.apply(this, arguments);
-              };
-            }()));
-            var farmingKnightDetailInfos = new Array();
-            for (var _i = 0; _i < nftInfos.length; _i++) {
-              var farmingKnightDetailInfo = _objectSpread(_objectSpread({}, nftInfos[_i]), {}, {
-                apr: collectionMetadataArray[_i].apr,
-                rarity: collectionMetadataArray[_i].collectionMetadata.rarity,
-                armor: {
-                  tokenId: collectionMetadataArray[_i].collectionMetadata.armorTokenId,
-                  rarity: parseInt(collectionMetadataArray[_i].armorMetadata[0].tokenRarity),
-                  exp: parseInt(collectionMetadataArray[_i].armorMetadata[0].experiencePoint)
-                },
-                helmet: {
-                  tokenId: collectionMetadataArray[_i].collectionMetadata.helmetTokenId,
-                  rarity: parseInt(collectionMetadataArray[_i].helmetMetadata[0].tokenRarity),
-                  exp: parseInt(collectionMetadataArray[_i].helmetMetadata[0].experiencePoint)
-                },
-                shield: {
-                  tokenId: collectionMetadataArray[_i].collectionMetadata.shieldTokenId,
-                  rarity: parseInt(collectionMetadataArray[_i].shieldMetadata[0].tokenRarity),
-                  exp: parseInt(collectionMetadataArray[_i].shieldMetadata[0].experiencePoint)
-                },
-                weapon: {
-                  tokenId: collectionMetadataArray[_i].collectionMetadata.weaponTokenId,
-                  rarity: parseInt(collectionMetadataArray[_i].weaponMetadata[0].tokenRarity),
-                  exp: parseInt(collectionMetadataArray[_i].weaponMetadata[0].experiencePoint)
-                }
-              });
-              farmingKnightDetailInfos.push(farmingKnightDetailInfo);
-            }
-            var nftFarming = {
-              vault: vault,
-              aprAvg: calculateVaultApr(dailyReward, Number(totalNFTs), vault.collectionPrice),
-              numberKnightOfUser: Number(numberKnightOfUser),
-              totalNFTs: Number(totalNFTs),
-              totalRewardOfUser: String(totalRewardOfUser),
-              totalVaultValue: totalVaultValue,
-              dailyReward: dailyReward,
-              farmingState: farmingKnightDetailInfos
-            };
-            appState.smartWalletState.NFTFarmingsState.nftFarmings.set(vaultId, nftFarming);
-          }
-        };
-        for (var vaultId in vaults) {
-          yield* _loop();
-        }
-        appState.smartWalletState.NFTFarmingsState.isFetch = true;
-      }
-    } catch (err) {
-      console.log(err);
-    }
-    return appState;
-  });
-  return _updateFarmingState.apply(this, arguments);
-}
-function calculateKnightApr(dailyReward, collectionVaultValue, totalVaultValue, collectionPrice) {
-  return (0,bignumber_js__WEBPACK_IMPORTED_MODULE_6__["default"])(dailyReward).multipliedBy(collectionVaultValue).div(totalVaultValue).multipliedBy(365).div(collectionPrice).multipliedBy(100).toNumber();
-}
-function calculateVaultApr(dailyReward, totalNFTs, collectionPrice) {
-  return (0,bignumber_js__WEBPACK_IMPORTED_MODULE_6__["default"])(dailyReward).multipliedBy(365).div(totalNFTs).div(collectionPrice).multipliedBy(100).toNumber();
-}
-
-/***/ }),
-/* 384 */
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   heuristicFamingConfig: () => (/* binding */ heuristicFamingConfig)
-/* harmony export */ });
-/* harmony import */ var _utils_config__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(17);
-
-var heuristicFamingConfig = {
-  [_utils_config__WEBPACK_IMPORTED_MODULE_0__.NETWORKS.bscTestnet.chainId]: {
-    "copper-vault": {
-      id: "copper-vault",
-      level: 1,
-      name: "Copper",
-      rarity: "copper",
-      collectionPrice: 4000
-    },
-    "silver-vault": {
-      id: "silver-vault",
-      level: 2,
-      name: "Silver",
-      rarity: "silver",
-      collectionPrice: 10600
-    },
-    "gold-vault": {
-      id: "gold-vault",
-      level: 3,
-      name: "Gold",
-      rarity: "gold",
-      collectionPrice: 23600,
-      disabled: true
-    },
-    "diamond-vault": {
-      id: "diamond-vault",
-      level: 4,
-      name: "Diamond",
-      rarity: "diamond",
-      collectionPrice: 52000,
-      disabled: true
-    },
-    "crystal-vault": {
-      id: "crystal-vault",
-      level: 5,
-      name: "Crystal",
-      rarity: "crystal",
-      collectionPrice: 150000,
-      disabled: true
-    }
-  },
-  [_utils_config__WEBPACK_IMPORTED_MODULE_0__.NETWORKS.bscMainnet.chainId]: {
-    "copper-vault": {
-      id: "copper-vault",
-      level: 1,
-      name: "Copper",
-      rarity: "copper",
-      collectionPrice: 9000
-    },
-    "silver-vault": {
-      id: "silver-vault",
-      level: 2,
-      name: "Silver",
-      rarity: "silver",
-      collectionPrice: 22000
-    },
-    "gold-vault": {
-      id: "gold-vault",
-      level: 3,
-      name: "Gold",
-      rarity: "gold",
-      collectionPrice: 64000
-    },
-    "diamond-vault": {
-      id: "diamond-vault",
-      level: 4,
-      name: "Diamond",
-      rarity: "diamond",
-      collectionPrice: 150000
-    },
-    "crystal-vault": {
-      id: "crystal-vault",
-      level: 5,
-      name: "Crystal",
-      rarity: "crystal",
-      collectionPrice: 820000
-    }
-  }
-};
-
-/***/ }),
-/* 385 */
-/***/ ((module) => {
-
-"use strict";
-module.exports = JSON.parse('[{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"user","type":"address"},{"indexed":false,"internalType":"uint256[]","name":"nftIds","type":"uint256[]"},{"indexed":true,"internalType":"uint128","name":"level","type":"uint128"},{"indexed":false,"internalType":"uint256","name":"amout","type":"uint256"}],"name":"ClaimReward","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"uint256","name":"nft","type":"uint256"},{"indexed":true,"internalType":"uint128","name":"poolNumber","type":"uint128"},{"indexed":false,"internalType":"uint256","name":"index","type":"uint256"}],"name":"NFTIndexUpdated","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"previousOwner","type":"address"},{"indexed":true,"internalType":"address","name":"newOwner","type":"address"}],"name":"OwnershipTransferred","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"user","type":"address"},{"indexed":false,"internalType":"uint256[]","name":"nftIds","type":"uint256[]"},{"indexed":false,"internalType":"uint128","name":"level","type":"uint128"}],"name":"PolishNFT","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"uint128","name":"poolNumber","type":"uint128"},{"indexed":false,"internalType":"uint256","name":"index","type":"uint256"}],"name":"PoolIndexUpdated","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"user","type":"address"},{"indexed":false,"internalType":"uint256[]","name":"nftIds","type":"uint256[]"},{"indexed":true,"internalType":"uint256","name":"level","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"}],"name":"RedeemAndClaim","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"user","type":"address"},{"indexed":false,"internalType":"uint256[]","name":"nftIds","type":"uint256[]"},{"indexed":false,"internalType":"uint128","name":"level","type":"uint128"}],"name":"Stake","type":"event"},{"inputs":[],"name":"PRECISION","outputs":[{"internalType":"uint8","name":"","type":"uint8"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"},{"internalType":"uint128","name":"","type":"uint128"}],"name":"balances","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256[]","name":"_ids","type":"uint256[]"},{"internalType":"uint128","name":"_level","type":"uint128"}],"name":"claimReward","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"cooldownTime","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"distributionEnd","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint128","name":"","type":"uint128"}],"name":"emissionParameters","outputs":[{"internalType":"uint64","name":"coefficientX","type":"uint64"},{"internalType":"uint64","name":"coefficientY","type":"uint64"},{"internalType":"uint64","name":"coefficientZ","type":"uint64"},{"internalType":"uint64","name":"coefficientM","type":"uint64"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint128","name":"_level","type":"uint128"}],"name":"getEmissionPerSecond","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"_id","type":"uint256"}],"name":"getExpEarnedAndValueEarned","outputs":[{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint128","name":"","type":"uint128"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"nft","type":"uint256"},{"internalType":"uint128","name":"poolNumber","type":"uint128"}],"name":"getNFTPoolData","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"_user","type":"address"},{"internalType":"uint128","name":"_level","type":"uint128"}],"name":"getStakingNFTinALevel","outputs":[{"internalType":"uint256[]","name":"","type":"uint256[]"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256[]","name":"_ids","type":"uint256[]"}],"name":"getTotalRewardsBalance","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"distributionDuration","type":"uint256"}],"name":"increaseDistribution","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_distributionDuration","type":"uint256"},{"internalType":"uint256","name":"_cooldownTime","type":"uint256"},{"internalType":"uint256","name":"_percentageFee","type":"uint256"},{"internalType":"contract INFTCollection","name":"_nftContract","type":"address"},{"internalType":"contract IERC20Upgradeable","name":"_rewardToken","type":"address"},{"internalType":"address","name":"_receiveVault","type":"address"},{"internalType":"address","name":"_rewardsVault","type":"address"}],"name":"initialize","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"nftInfos","outputs":[{"internalType":"address","name":"owner","type":"address"},{"internalType":"uint128","name":"value","type":"uint128"},{"internalType":"uint128","name":"level","type":"uint128"},{"internalType":"uint128","name":"lastPolishTime","type":"uint128"},{"internalType":"uint128","name":"depositTime","type":"uint128"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"nftRewardsToClaim","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"operator","type":"address"},{"internalType":"address","name":"from","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"},{"internalType":"bytes","name":"data","type":"bytes"}],"name":"onERC721Received","outputs":[{"internalType":"bytes4","name":"","type":"bytes4"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"owner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"percentageFee","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256[]","name":"_ids","type":"uint256[]"},{"internalType":"uint128","name":"_level","type":"uint128"}],"name":"polishNFT","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint128","name":"","type":"uint128"}],"name":"poolInfos","outputs":[{"internalType":"uint128","name":"totalValue","type":"uint128"},{"internalType":"uint128","name":"nftCount","type":"uint128"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint128","name":"","type":"uint128"}],"name":"pools","outputs":[{"internalType":"uint256","name":"lastUpdateTimestamp","type":"uint256"},{"internalType":"uint256","name":"index","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256[]","name":"_ids","type":"uint256[]"},{"internalType":"uint128","name":"_level","type":"uint128"}],"name":"redeemAndClaim","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"renounceOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint128[]","name":"_level","type":"uint128[]"},{"internalType":"uint64[]","name":"_x","type":"uint64[]"},{"internalType":"uint64[]","name":"_y","type":"uint64[]"},{"internalType":"uint64[]","name":"_z","type":"uint64[]"},{"internalType":"uint64[]","name":"_m","type":"uint64[]"}],"name":"setCoefficient","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_cooldownTime","type":"uint256"}],"name":"setCooldownTime","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_percentageFee","type":"uint256"}],"name":"setPercentageFee","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"_receiveVault","type":"address"}],"name":"setReceiveVault","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"contract IERC20Upgradeable","name":"_rewardToken","type":"address"}],"name":"setRewardToken","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"_rewardsVault","type":"address"}],"name":"setRewardsVault","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256[]","name":"_ids","type":"uint256[]"},{"internalType":"uint128","name":"_level","type":"uint128"}],"name":"stake","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"_receiver","type":"address"}],"name":"transferAllRewardToken","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"}]');
-
-/***/ }),
-/* 386 */
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   getNormalKinghtFromFarmingKnight: () => (/* binding */ getNormalKinghtFromFarmingKnight),
-/* harmony export */   simulateTravaNFTHeuristicFarmingClaim: () => (/* binding */ simulateTravaNFTHeuristicFarmingClaim),
-/* harmony export */   simulateTravaNFTHeuristicFarmingPolish: () => (/* binding */ simulateTravaNFTHeuristicFarmingPolish),
-/* harmony export */   simulateTravaNFTHeuristicFarmingStake: () => (/* binding */ simulateTravaNFTHeuristicFarmingStake),
-/* harmony export */   simulateTravaNFTHeuristicFarmingWithdraw: () => (/* binding */ simulateTravaNFTHeuristicFarmingWithdraw)
-/* harmony export */ });
-/* harmony import */ var bignumber_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(19);
-/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(368);
-/* harmony import */ var _utils_helper__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(118);
-/* harmony import */ var _helpers__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(350);
-/* harmony import */ var _utilities__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(377);
-/* harmony import */ var _UpdateStateAccount__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(383);
-function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
-function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
-function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return typeof key === "symbol" ? key : String(key); }
-function _toPrimitive(input, hint) { if (typeof input !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (typeof res !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
-function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
-function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
-
-
-
-
-
-
-function getNormalKinghtFromFarmingKnight(farmingKnightDetailInfo) {
-  var armor = farmingKnightDetailInfo.armor;
-  var helmet = farmingKnightDetailInfo.helmet;
-  var shield = farmingKnightDetailInfo.shield;
-  var weapon = farmingKnightDetailInfo.weapon;
-  var exp = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_0__["default"])(armor.exp).plus(helmet.exp).plus(shield.exp).plus(weapon.exp);
-  var normalKnight = {
-    armorTokenId: armor.tokenId,
-    helmetTokenId: helmet.tokenId,
-    shieldTokenId: shield.tokenId,
-    weaponTokenId: weapon.tokenId,
-    rarity: farmingKnightDetailInfo.rarity,
-    id: farmingKnightDetailInfo.id,
-    setId: 1,
-    exp: exp.toNumber(),
-    armor: armor,
-    helmet: helmet,
-    shield: shield,
-    weapon: weapon
-  };
-  return normalKnight;
-}
-function simulateTravaNFTHeuristicFarmingStake(_x, _x2, _x3, _x4) {
-  return _simulateTravaNFTHeuristicFarmingStake.apply(this, arguments);
-}
-function _simulateTravaNFTHeuristicFarmingStake() {
-  _simulateTravaNFTHeuristicFarmingStake = _asyncToGenerator(function* (appState1, _ids, _vaultId, _from) {
-    var appState = appState1;
-    try {
-      if (!appState.smartWalletState.NFTFarmingsState.isFetch) {
-        appState = yield (0,_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_5__.updateFarmingState)(appState);
-      }
-      var mode = (0,_utils_helper__WEBPACK_IMPORTED_MODULE_2__.getMode)(appState, _from);
-      if (!appState[mode].collection.isFetch) {
-        appState = yield (0,_utilities__WEBPACK_IMPORTED_MODULE_4__.updateCollectionBalanceFromContract)(appState, mode);
-      }
-      var heuristicFarmingVault = appState.smartWalletState.NFTFarmingsState.nftFarmings.get(_vaultId.toLowerCase());
-      var totalNFTs = heuristicFarmingVault.totalNFTs;
-      var totalVaultValue = heuristicFarmingVault.totalVaultValue;
-      var dailyReward = heuristicFarmingVault.dailyReward;
-      var newTotalVaultValue = totalVaultValue + 100 * _ids.length;
-      var _loop = function* _loop(i) {
-        var currentNFT = appState[mode].collection.v1.find(n => n.id == _ids[i]);
-        if (!currentNFT) {
-          throw new _utils__WEBPACK_IMPORTED_MODULE_1__.NFTNotFoundError("Knight is not found!");
-        }
-        var rarityStr = _helpers__WEBPACK_IMPORTED_MODULE_3__.RarityMapping[currentNFT.rarity - 1];
-        var collectionFarmingVault = appState.smartWalletState.NFTFarmingsState.nftFarmings.get("".concat(rarityStr, "-vault"));
-        var kinghtApr = (0,_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_5__.calculateKnightApr)(dailyReward, 100, newTotalVaultValue, collectionFarmingVault.vault.collectionPrice);
-        var nftInfo = {
-          attainedExp: 0,
-          depositedTime: 0,
-          // lastPolishTime: appState.createdTime,
-          id: _ids[i],
-          exp: currentNFT.exp,
-          earn: 0,
-          value: 100
-        };
-        var farmingKnightDetailInfo = _objectSpread(_objectSpread({}, nftInfo), {}, {
-          apr: kinghtApr,
-          rarity: currentNFT.rarity,
-          armor: currentNFT.armor,
-          helmet: currentNFT.helmet,
-          shield: currentNFT.shield,
-          weapon: currentNFT.weapon
-        });
-        heuristicFarmingVault.farmingState.push(farmingKnightDetailInfo);
-        appState[mode].collection.v1 = appState[mode].collection.v1.filter(x => x.id != _ids[i]);
-      };
-      for (var i = 0; i < _ids.length; i++) {
-        yield* _loop(i);
-      }
-      heuristicFarmingVault.numberKnightOfUser = heuristicFarmingVault.numberKnightOfUser + _ids.length;
-      heuristicFarmingVault.totalNFTs = totalNFTs + _ids.length;
-      heuristicFarmingVault.aprAvg = (0,_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_5__.calculateVaultApr)(dailyReward, totalNFTs + _ids.length, heuristicFarmingVault.vault.collectionPrice);
-      heuristicFarmingVault.totalVaultValue = newTotalVaultValue;
-      appState.smartWalletState.NFTFarmingsState.nftFarmings.set(_vaultId, heuristicFarmingVault);
-    } catch (err) {
-      console.log(err);
-    }
-    return appState;
-  });
-  return _simulateTravaNFTHeuristicFarmingStake.apply(this, arguments);
-}
-function simulateTravaNFTHeuristicFarmingWithdraw(_x5, _x6, _x7, _x8) {
-  return _simulateTravaNFTHeuristicFarmingWithdraw.apply(this, arguments);
-}
-function _simulateTravaNFTHeuristicFarmingWithdraw() {
-  _simulateTravaNFTHeuristicFarmingWithdraw = _asyncToGenerator(function* (appState1, _ids, _vaultId, _to) {
-    var appState = appState1;
-    try {
-      var heuristicFarmingVault = appState.smartWalletState.NFTFarmingsState.nftFarmings.get(_vaultId.toLowerCase());
-      var totalNFTs = heuristicFarmingVault.totalNFTs;
-      var totalVaultValue = heuristicFarmingVault.totalVaultValue;
-      var dailyReward = heuristicFarmingVault.dailyReward;
-      var withdrawValue = 0;
-      for (var _id = 0; _id < _ids.length; _id++) {
-        for (var sellingId = 0; sellingId < heuristicFarmingVault.farmingState.length; sellingId++) {
-          if (_id == sellingId) {
-            withdrawValue += heuristicFarmingVault.farmingState[sellingId].value;
-          }
-        }
-      }
-      for (var _id2 = 0; _id2 < _ids.length; _id2++) {
-        var _loop2 = function* _loop2(_sellingId2) {
-          if (_id2 == _sellingId2) {
-            heuristicFarmingVault.farmingState = heuristicFarmingVault.farmingState.filter(n => n.id != _sellingId2);
-            if ((0,_utils_helper__WEBPACK_IMPORTED_MODULE_2__.isWallet)(appState, _to)) {
-              var toMode = (0,_utils_helper__WEBPACK_IMPORTED_MODULE_2__.getMode)(appState, _to);
-              var normalKnight = getNormalKinghtFromFarmingKnight(heuristicFarmingVault.farmingState[_sellingId2]);
-              if (!appState[toMode].collection.isFetch) {
-                appState = yield (0,_utilities__WEBPACK_IMPORTED_MODULE_4__.updateCollectionBalanceFromContract)(appState, toMode);
-              }
-              appState[toMode].collection.v1.push(normalKnight);
-            }
-            _sellingId2--;
-          } else {
-            var rarityStr = _helpers__WEBPACK_IMPORTED_MODULE_3__.RarityMapping[heuristicFarmingVault.farmingState[_sellingId2].rarity - 1];
-            var collectionFarmingVault = appState.smartWalletState.NFTFarmingsState.nftFarmings.get("".concat(rarityStr, "-vault"));
-            var knightApr = (0,_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_5__.calculateKnightApr)(dailyReward, heuristicFarmingVault.farmingState[_sellingId2].value, totalVaultValue - withdrawValue, collectionFarmingVault.vault.collectionPrice);
-            heuristicFarmingVault.farmingState[_sellingId2].apr = knightApr;
-          }
-          _sellingId = _sellingId2;
-        };
-        for (var _sellingId = 0; _sellingId < heuristicFarmingVault.farmingState.length; _sellingId++) {
-          yield* _loop2(_sellingId);
-        }
-      }
-      heuristicFarmingVault.numberKnightOfUser = heuristicFarmingVault.numberKnightOfUser - _ids.length;
-      heuristicFarmingVault.totalNFTs = totalNFTs - _ids.length;
-      heuristicFarmingVault.aprAvg = (0,_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_5__.calculateVaultApr)(dailyReward, totalNFTs - _ids.length, heuristicFarmingVault.vault.collectionPrice);
-      heuristicFarmingVault.totalVaultValue = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_0__["default"])(totalVaultValue).minus(withdrawValue).toNumber();
-      appState.smartWalletState.NFTFarmingsState.nftFarmings.set(_vaultId, heuristicFarmingVault);
-    } catch (err) {
-      console.log(err);
-    }
-    return appState;
-  });
-  return _simulateTravaNFTHeuristicFarmingWithdraw.apply(this, arguments);
-}
-function simulateTravaNFTHeuristicFarmingClaim(_x9, _x10, _x11) {
-  return _simulateTravaNFTHeuristicFarmingClaim.apply(this, arguments);
-}
-function _simulateTravaNFTHeuristicFarmingClaim() {
-  _simulateTravaNFTHeuristicFarmingClaim = _asyncToGenerator(function* (appState1, _ids, _vaultId) {
-    var appState = appState1;
-    try {} catch (err) {
-      console.log(err);
-    }
-    return appState;
-  });
-  return _simulateTravaNFTHeuristicFarmingClaim.apply(this, arguments);
-}
-function simulateTravaNFTHeuristicFarmingPolish(_x12, _x13, _x14) {
-  return _simulateTravaNFTHeuristicFarmingPolish.apply(this, arguments);
-}
-function _simulateTravaNFTHeuristicFarmingPolish() {
-  _simulateTravaNFTHeuristicFarmingPolish = _asyncToGenerator(function* (appState1, _ids, _vaultId) {
-    var appState = appState1;
-    try {
-      for (var i = 0; i < _ids.length; i++) {}
-    } catch (err) {
-      console.log(err);
-    }
-    return appState;
-  });
-  return _simulateTravaNFTHeuristicFarmingPolish.apply(this, arguments);
-}
-
-/***/ }),
-/* 387 */
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   calculateNewAPR: () => (/* reexport safe */ _SimulationStaking__WEBPACK_IMPORTED_MODULE_1__.calculateNewAPR),
-/* harmony export */   simulateStakeStaking: () => (/* reexport safe */ _SimulationStaking__WEBPACK_IMPORTED_MODULE_1__.simulateStakeStaking),
-/* harmony export */   simulateStakingClaimRewards: () => (/* reexport safe */ _SimulationStaking__WEBPACK_IMPORTED_MODULE_1__.simulateStakingClaimRewards),
-/* harmony export */   simulateStakingRedeem: () => (/* reexport safe */ _SimulationStaking__WEBPACK_IMPORTED_MODULE_1__.simulateStakingRedeem),
-/* harmony export */   updateAllAccountVault: () => (/* reexport safe */ _UpdateStateAccount__WEBPACK_IMPORTED_MODULE_0__.updateAllAccountVault)
-/* harmony export */ });
-/* harmony import */ var _UpdateStateAccount__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(388);
-/* harmony import */ var _SimulationStaking__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(391);
-
-
-
-/***/ }),
-/* 388 */
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   updateAllAccountVault: () => (/* binding */ updateAllAccountVault)
-/* harmony export */ });
-/* harmony import */ var ethers__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(15);
-/* harmony import */ var ethers__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(ethers__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _abis_StakedToken_json__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(389);
-/* harmony import */ var _abis_VestingTrava_json__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(390);
-/* harmony import */ var _utils_address__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(16);
-/* harmony import */ var _utils_stakingVaultConfig__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(369);
-/* harmony import */ var _utils_config__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(17);
-/* harmony import */ var bignumber_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(19);
-/* harmony import */ var _abis_AaveOracle_json__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(345);
-/* harmony import */ var _basic_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(13);
-/* harmony import */ var _abis_BEP20_json__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(344);
-/* harmony import */ var _utils_helper__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(118);
-function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
-function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
-function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return typeof key === "symbol" ? key : String(key); }
-function _toPrimitive(input, hint) { if (typeof input !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (typeof res !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
-function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
-function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
-
-
-
-
-
-
-
-
-
-
-
-function updateAllAccountVault(_x) {
-  return _updateAllAccountVault.apply(this, arguments);
-}
-function _updateAllAccountVault() {
-  _updateAllAccountVault = _asyncToGenerator(function* (appState1) {
-    var vaultConfigList = _utils_stakingVaultConfig__WEBPACK_IMPORTED_MODULE_4__.listStakingVault[appState1.chainId];
-    var appState = _objectSpread({}, appState1);
-    var underlyingAddress = new Array();
-    var priceUnderlyingAddress = new Array();
-    var lpAddress = new Array();
-    var stakedTokenAddress = new Array();
-    var rewardTokenAddress = new Array();
-    for (var i = 0; i < vaultConfigList.length; i++) {
-      underlyingAddress.push(vaultConfigList[i].underlyingAddress);
-      priceUnderlyingAddress.push(vaultConfigList[i].priceUnderlyingAddress);
-      lpAddress.push(vaultConfigList[i].lpAddress);
-      stakedTokenAddress.push(vaultConfigList[i].stakedTokenAddress);
-      rewardTokenAddress.push(vaultConfigList[i].rewardToken.address);
-    }
-    var [depositedDatas,
-    // data of total deposit in all vaults
-    TVLDatas,
-    // data of total supply all staked tokens
-    bnbBalanceInVaults // balance of bnb in all vaults
-    ] = yield Promise.all([(0,_utils_helper__WEBPACK_IMPORTED_MODULE_10__.multiCall)(_abis_StakedToken_json__WEBPACK_IMPORTED_MODULE_1__, stakedTokenAddress.map((address, _) => ({
-      address: address,
-      name: "balanceOf",
-      params: [appState.smartWalletState.address]
-    })), appState.web3, appState.chainId), (0,_utils_helper__WEBPACK_IMPORTED_MODULE_10__.multiCall)(_abis_StakedToken_json__WEBPACK_IMPORTED_MODULE_1__, stakedTokenAddress.map((address, _) => ({
-      address: address,
-      name: "totalSupply",
-      params: []
-    })), appState.web3, appState.chainId), (0,_utils_helper__WEBPACK_IMPORTED_MODULE_10__.multiCall)(_abis_BEP20_json__WEBPACK_IMPORTED_MODULE_9__, lpAddress.map((address, _) => ({
-      address: (0,_utils_address__WEBPACK_IMPORTED_MODULE_3__.getAddr)("WBNB_ADDRESS", appState.chainId),
-      name: "balanceOf",
-      params: [address]
-    })), appState.web3, appState.chainId)]);
-    var oracleContract = new ethers__WEBPACK_IMPORTED_MODULE_0__.Contract((0,_utils_address__WEBPACK_IMPORTED_MODULE_3__.getAddr)("ORACLE_ADDRESS", appState.chainId), _abis_AaveOracle_json__WEBPACK_IMPORTED_MODULE_7__, appState.web3);
-    var bnbPrice = yield oracleContract.getAssetPrice((0,_utils_address__WEBPACK_IMPORTED_MODULE_3__.getAddr)("WBNB_ADDRESS", appState.chainId));
-    var wbnbContract = new ethers__WEBPACK_IMPORTED_MODULE_0__.Contract((0,_utils_address__WEBPACK_IMPORTED_MODULE_3__.getAddr)("WBNB_ADDRESS", appState.chainId), _abis_BEP20_json__WEBPACK_IMPORTED_MODULE_9__, appState.web3);
-    var wbnbBalanceTravalp = yield wbnbContract.balanceOf((0,_utils_address__WEBPACK_IMPORTED_MODULE_3__.getAddr)("WBNB_TRAVA_LP_ADDRESS", appState.chainId));
-    var travaContract = new ethers__WEBPACK_IMPORTED_MODULE_0__.Contract((0,_utils_address__WEBPACK_IMPORTED_MODULE_3__.getAddr)("TRAVA_TOKEN_IN_STAKING", appState.chainId), _abis_BEP20_json__WEBPACK_IMPORTED_MODULE_9__, appState.web3);
-    var travaBalanceTravalp = yield travaContract.balanceOf((0,_utils_address__WEBPACK_IMPORTED_MODULE_3__.getAddr)("WBNB_TRAVA_LP_ADDRESS", appState.chainId));
-    var travaPrice = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_6__["default"])(bnbPrice).multipliedBy(wbnbBalanceTravalp).div(travaBalanceTravalp);
-    if (travaPrice.isNaN()) {
-      travaPrice = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_6__["default"])(0);
-    }
-    for (var _i = 0; _i < vaultConfigList.length; _i++) {
-      //calculate claimable reward and eps (epoch permit seconds)
-      var claimableReward = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_6__["default"])(0);
-      var eps = "0";
-      if (vaultConfigList[_i].id == "orai") {
-        var vestingCR = new ethers__WEBPACK_IMPORTED_MODULE_0__.Contract((0,_utils_address__WEBPACK_IMPORTED_MODULE_3__.getAddr)("VESTING_TRAVA_ADDRESS", appState.chainId), _abis_VestingTrava_json__WEBPACK_IMPORTED_MODULE_2__, appState.web3);
-        claimableReward = yield vestingCR.getClaimableReward(appState.smartWalletState.address, vaultConfigList[_i].underlyingAddress);
-        eps = "0.005549";
-      } else {
-        var stakedCR = new ethers__WEBPACK_IMPORTED_MODULE_0__.Contract(vaultConfigList[_i].stakedTokenAddress, _abis_StakedToken_json__WEBPACK_IMPORTED_MODULE_1__, appState.web3);
-        claimableReward = yield stakedCR.getTotalRewardsBalance(appState.smartWalletState.address);
-        eps = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_6__["default"])(yield stakedCR.getAssetEmissionPerSecond(vaultConfigList[_i].stakedTokenAddress)).div(vaultConfigList[_i].reserveDecimals).toFixed();
-      }
-
-      /** calculate underlying token price
-       * Consider vault underlying token / BNB, we have:
-       * + bnb price * bnb balance in vault = underlying price * underlying balance in vault
-       * + bnb price * bnb balance in vault + underlying price * underlying balance in vault = lp pair token price * lp pair token total supply
-       * => 2 * bnb price * bnb balance in vault = 2 * underlying price * underlying balance in vault = lp pair token price * lp pair token total supply
-       * if underlying token is not pair 
-       *      return underlying price = bnb price * bnb balance in vault / underlying balance in vault
-       *  else: 
-       *      return lp pair token price = 2 * bnb price * bnb balance in vault / lp pair token total supply
-       */
-
-      var underlyingTokenPrice = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_6__["default"])(0);
-      if (vaultConfigList[_i].underlyingAddress.toLowerCase() != vaultConfigList[_i].lpAddress.toLowerCase()) {
-        // if underlying is rTrava or Trava, it is calculated above
-        if (vaultConfigList[_i].priceUnderlyingAddress.toLowerCase() == (0,_utils_address__WEBPACK_IMPORTED_MODULE_3__.getAddr)("TRAVA_TOKEN_IN_STAKING", appState.chainId).toLowerCase()) {
-          underlyingTokenPrice = travaPrice;
-        } else {
-          var priceUnderlyingTokenContract = new ethers__WEBPACK_IMPORTED_MODULE_0__.Contract(vaultConfigList[_i].priceUnderlyingAddress, _abis_BEP20_json__WEBPACK_IMPORTED_MODULE_9__, appState.web3);
-          var balanceOfUnderlyingTokenInVault = yield priceUnderlyingTokenContract.balanceOf(vaultConfigList[_i].lpAddress);
-          underlyingTokenPrice = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_6__["default"])(bnbPrice).multipliedBy(bnbBalanceInVaults[_i]).div(balanceOfUnderlyingTokenInVault);
-        }
-      } else {
-        var lpContract = new ethers__WEBPACK_IMPORTED_MODULE_0__.Contract(vaultConfigList[_i].lpAddress, _abis_StakedToken_json__WEBPACK_IMPORTED_MODULE_1__, appState.web3);
-        var totalSupply = yield lpContract.totalSupply();
-        underlyingTokenPrice = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_6__["default"])(bnbPrice).multipliedBy(bnbBalanceInVaults[_i]).multipliedBy(2).div(totalSupply);
-      }
-      if (underlyingTokenPrice.isNaN()) {
-        underlyingTokenPrice = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_6__["default"])(0);
-      }
-
-      // init state stakeToken
-      var stakedToken = {
-        id: vaultConfigList[_i].id,
-        name: vaultConfigList[_i].name,
-        code: vaultConfigList[_i].code,
-        stakedTokenAddress: vaultConfigList[_i].stakedTokenAddress,
-        eps: eps,
-        reserveDecimals: vaultConfigList[_i].reserveDecimals
-      };
-
-      // init state underlyingToken
-      var underlyingToken = {
-        underlyingAddress: vaultConfigList[_i].underlyingAddress,
-        reserveDecimals: vaultConfigList[_i].reserveDecimals,
-        price: underlyingTokenPrice.toFixed(0) //underlyingTokenPriceDatas[i]
-      };
-
-      /**Caculate reward token price
-       * if reward token price is trava, rewardTokenPrice = trava price which is caculated above
-       */
-      var rewardTokenPrice = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_6__["default"])("0");
-      if (vaultConfigList[_i].rewardToken.address.toLowerCase() == (0,_utils_address__WEBPACK_IMPORTED_MODULE_3__.getAddr)("TRAVA_TOKEN_IN_STAKING", appState.chainId).toLowerCase()) {
-        rewardTokenPrice = travaPrice;
-      }
-      // init state rewardToken
-      var rewardToken = {
-        address: vaultConfigList[_i].rewardToken.address,
-        decimals: vaultConfigList[_i].rewardToken.decimals,
-        price: rewardTokenPrice.toFixed(0) // rewardTokenPriceDatas[i]
-      };
-
-      // Calculate TVL = TVL amount * price
-      var TVL = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_6__["default"])(TVLDatas[_i]).div(underlyingToken.reserveDecimals).multipliedBy(underlyingToken.price);
-
-      // Calculate APR = eps * Reward token price * 1 year to seconds / TVL / 100 
-      var APR = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_6__["default"])(eps).multipliedBy(rewardToken.price).multipliedBy(_utils_config__WEBPACK_IMPORTED_MODULE_5__.YEAR_TO_SECONDS).div(TVL);
-      if (APR.isNaN()) {
-        APR = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_6__["default"])(0);
-      }
-
-      // Init state smart wallet in vault[i]
-      var accountVaults = {
-        claimable: vaultConfigList[_i].claimable,
-        claimableReward: claimableReward.toString(),
-        deposited: depositedDatas[_i].toString(),
-        TVL: TVL.toFixed(0),
-        APR: APR.toFixed(),
-        underlyingToken: underlyingToken,
-        stakedToken: stakedToken,
-        rewardToken: rewardToken
-      };
-
-      //store sate
-      appState.smartWalletState.travaLPStakingStateList.set(vaultConfigList[_i].stakedTokenAddress.toLowerCase(), accountVaults);
-      if (!appState.smartWalletState.tokenBalances.has(vaultConfigList[_i].stakedTokenAddress.toLowerCase())) {
-        // store balance of stakedTokenAddress
-        appState = yield (0,_basic_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_8__.updateSmartWalletTokenBalance)(appState, vaultConfigList[_i].stakedTokenAddress.toLowerCase());
-      }
-    }
-    return appState;
-  });
-  return _updateAllAccountVault.apply(this, arguments);
-}
-
-/***/ }),
-/* 389 */
-/***/ ((module) => {
-
-"use strict";
-module.exports = JSON.parse('[{"inputs":[{"internalType":"contract IBEP20","name":"stakedToken","type":"address"},{"internalType":"contract IBEP20","name":"rewardToken","type":"address"},{"internalType":"uint256","name":"cooldownSeconds","type":"uint256"},{"internalType":"uint256","name":"unstakeWindow","type":"uint256"},{"internalType":"address","name":"rewardsVault","type":"address"},{"internalType":"address","name":"emissionManager","type":"address"},{"internalType":"uint128","name":"distributionDuration","type":"uint128"},{"internalType":"string","name":"name","type":"string"},{"internalType":"string","name":"symbol","type":"string"},{"internalType":"uint8","name":"decimals","type":"uint8"},{"internalType":"address","name":"governance","type":"address"}],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":true,"internalType":"address","name":"spender","type":"address"},{"indexed":false,"internalType":"uint256","name":"value","type":"uint256"}],"name":"Approval","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"asset","type":"address"},{"indexed":false,"internalType":"uint256","name":"emission","type":"uint256"}],"name":"AssetConfigUpdated","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"asset","type":"address"},{"indexed":false,"internalType":"uint256","name":"index","type":"uint256"}],"name":"AssetIndexUpdated","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"user","type":"address"}],"name":"Cooldown","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"previousOwner","type":"address"},{"indexed":true,"internalType":"address","name":"newOwner","type":"address"}],"name":"OwnershipTransferred","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"from","type":"address"},{"indexed":true,"internalType":"address","name":"to","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"}],"name":"Redeem","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"user","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"}],"name":"RewardsAccrued","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"from","type":"address"},{"indexed":true,"internalType":"address","name":"to","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"}],"name":"RewardsClaimed","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"from","type":"address"},{"indexed":true,"internalType":"address","name":"onBehalfOf","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"}],"name":"Staked","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"from","type":"address"},{"indexed":true,"internalType":"address","name":"to","type":"address"},{"indexed":false,"internalType":"uint256","name":"value","type":"uint256"}],"name":"Transfer","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"user","type":"address"},{"indexed":true,"internalType":"address","name":"asset","type":"address"},{"indexed":false,"internalType":"uint256","name":"index","type":"uint256"}],"name":"UserIndexUpdated","type":"event"},{"inputs":[],"name":"COOLDOWN_SECONDS","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"DISTRIBUTION_END","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"DOMAIN_SEPARATOR","outputs":[{"internalType":"bytes32","name":"","type":"bytes32"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"EIP712_REVISION","outputs":[{"internalType":"bytes","name":"","type":"bytes"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"EMISSION_MANAGER","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"GOVERNANCE","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"PERMIT_TYPEHASH","outputs":[{"internalType":"bytes32","name":"","type":"bytes32"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"PRECISION","outputs":[{"internalType":"uint8","name":"","type":"uint8"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"REVISION","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"REWARDS_VAULT","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"REWARD_TOKEN","outputs":[{"internalType":"contract IBEP20","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"STAKED_TOKEN","outputs":[{"internalType":"contract IBEP20","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"START_TIME_CLAIM","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"UNSTAKE_WINDOW","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"VESTING_TIME_INTERVAL","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"_nonces","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"owner","type":"address"},{"internalType":"address","name":"spender","type":"address"}],"name":"allowance","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"spender","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"approve","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"assets","outputs":[{"internalType":"uint128","name":"emissionPerSecond","type":"uint128"},{"internalType":"uint128","name":"lastUpdateTimestamp","type":"uint128"},{"internalType":"uint256","name":"index","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"lendingPool","type":"address"}],"name":"authorizeLendingPool","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"account","type":"address"}],"name":"balanceOf","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"claimRewards","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"components":[{"internalType":"uint104","name":"emissionPerSecond","type":"uint104"},{"internalType":"uint256","name":"totalStaked","type":"uint256"},{"internalType":"address","name":"underlyingAsset","type":"address"}],"internalType":"struct DistributionTypes.AssetConfigInput[]","name":"assetsConfigInput","type":"tuple[]"}],"name":"configureAssets","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"cooldown","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"decimals","outputs":[{"internalType":"uint8","name":"","type":"uint8"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"spender","type":"address"},{"internalType":"uint256","name":"subtractedValue","type":"uint256"}],"name":"decreaseAllowance","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"lendingPoolAddress","type":"address"},{"internalType":"address","name":"onBehalfOf","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"depositToPool","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"underlyingAsset","type":"address"}],"name":"getAssetEmissionPerSecond","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"fromCooldownTimestamp","type":"uint256"},{"internalType":"uint256","name":"amountToReceive","type":"uint256"},{"internalType":"address","name":"toAddress","type":"address"},{"internalType":"uint256","name":"toBalance","type":"uint256"}],"name":"getNextCooldownTimestamp","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"getOwner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"staker","type":"address"}],"name":"getTotalRewardsBalance","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"user","type":"address"},{"internalType":"address","name":"asset","type":"address"}],"name":"getUserAssetData","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"amount","type":"uint256"},{"internalType":"address","name":"to","type":"address"}],"name":"harvest","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"spender","type":"address"},{"internalType":"uint256","name":"addedValue","type":"uint256"}],"name":"increaseAllowance","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"string","name":"name","type":"string"},{"internalType":"string","name":"symbol","type":"string"},{"internalType":"uint8","name":"decimals","type":"uint8"}],"name":"initialize","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"mint","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"name","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"owner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"owner","type":"address"},{"internalType":"address","name":"spender","type":"address"},{"internalType":"uint256","name":"value","type":"uint256"},{"internalType":"uint256","name":"deadline","type":"uint256"},{"internalType":"uint8","name":"v","type":"uint8"},{"internalType":"bytes32","name":"r","type":"bytes32"},{"internalType":"bytes32","name":"s","type":"bytes32"}],"name":"permit","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"redeem","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"renounceOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_startTimeClaim","type":"uint256"},{"internalType":"uint256","name":"_vestingTimeInterval","type":"uint256"}],"name":"setClaimRewardsTimeline","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_coolDownSecond","type":"uint256"}],"name":"setCoolDownSecond","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_distributionEnd","type":"uint256"}],"name":"setDistributionEnd","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"_emissionManager","type":"address"}],"name":"setEmissionManager","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"_gov","type":"address"}],"name":"setGovernance","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"contract IBEP20","name":"_trava","type":"address"}],"name":"setRewardToken","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"_reward_vault","type":"address"}],"name":"setRewardVault","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_unstake_window","type":"uint256"}],"name":"setUnstakeWindow","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"onBehalfOf","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"stake","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"stakerRewarded","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"stakerRewardsToClaim","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"stakersCooldowns","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"symbol","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"totalSupply","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"recipient","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"transfer","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"sender","type":"address"},{"internalType":"address","name":"recipient","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"transferFrom","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"}]');
-
-/***/ }),
-/* 390 */
-/***/ ((module) => {
-
-"use strict";
-module.exports = JSON.parse('[{"inputs":[{"internalType":"contract IBEP20","name":"rewardToken","type":"address"},{"internalType":"address","name":"rewardsVault","type":"address"},{"internalType":"address","name":"governance","type":"address"}],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"user","type":"address"}],"name":"Cooldown","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"user","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"}],"name":"RewardsAccrued","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"from","type":"address"},{"indexed":true,"internalType":"address","name":"to","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"}],"name":"RewardsClaimed","type":"event"},{"inputs":[],"name":"DOMAIN_SEPARATOR","outputs":[{"internalType":"bytes32","name":"","type":"bytes32"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"EIP712_REVISION","outputs":[{"internalType":"bytes","name":"","type":"bytes"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"GOVERNANCE","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"REVISION","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"REWARDS_VAULT","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"REWARD_TOKEN","outputs":[{"internalType":"contract IBEP20","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"START_TIME_CLAIM","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"VESTING_TIME_INTERVAL","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"reserve","type":"address"},{"internalType":"address","name":"to","type":"address"}],"name":"claimRewards","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"userAddress","type":"address"},{"internalType":"address","name":"reserve","type":"address"}],"name":"getClaimableReward","outputs":[{"internalType":"uint256","name":"claimableReward","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"userAddress","type":"address"},{"internalType":"address","name":"reserve","type":"address"}],"name":"getClaimedReward","outputs":[{"internalType":"uint256","name":"claimedBalance","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"userAddress","type":"address"},{"internalType":"address","name":"reserve","type":"address"}],"name":"getTotalReward","outputs":[{"internalType":"uint256","name":"rewardBalance","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"userAddress","type":"address"},{"internalType":"address","name":"reserve","type":"address"}],"name":"getVestingReward","outputs":[{"internalType":"uint256","name":"vestingBalance","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"initialize","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_startTimeClaim","type":"uint256"},{"internalType":"uint256","name":"_vestingTimeInterval","type":"uint256"}],"name":"setClaimRewardsTimeline","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"_gov","type":"address"}],"name":"setGovernance","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"contract IBEP20","name":"_trava","type":"address"}],"name":"setRewardToken","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"_reward_vault","type":"address"}],"name":"setRewardVault","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"reserve","type":"address"},{"components":[{"internalType":"address","name":"userAddress","type":"address"},{"internalType":"uint256","name":"rewardBalance","type":"uint256"}],"internalType":"struct VestingToken.UserRewardInput[]","name":"userRewardInput","type":"tuple[]"}],"name":"setRewards","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"reserve","type":"address"},{"internalType":"uint256","name":"_reserveIndex","type":"uint256"},{"internalType":"uint256","name":"_vestingAmount","type":"uint256"}],"name":"setVestingAmount","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"},{"internalType":"address","name":"","type":"address"}],"name":"stakerRewardClaimed","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"},{"internalType":"address","name":"","type":"address"}],"name":"stakerRewardsToClaim","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"vestingAmount","outputs":[{"internalType":"uint256","name":"reserveIndex","type":"uint256"},{"internalType":"uint256","name":"reserveVesting","type":"uint256"}],"stateMutability":"view","type":"function"}]');
-
-/***/ }),
-/* 391 */
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   calculateNewAPR: () => (/* binding */ calculateNewAPR),
-/* harmony export */   simulateStakeStaking: () => (/* binding */ simulateStakeStaking),
-/* harmony export */   simulateStakingClaimRewards: () => (/* binding */ simulateStakingClaimRewards),
-/* harmony export */   simulateStakingRedeem: () => (/* binding */ simulateStakingRedeem)
-/* harmony export */ });
-/* harmony import */ var _basic_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(13);
-/* harmony import */ var _utils_config__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(17);
-/* harmony import */ var bignumber_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(19);
-function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
-function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
-function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return typeof key === "symbol" ? key : String(key); }
-function _toPrimitive(input, hint) { if (typeof input !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (typeof res !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
-function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
-function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
-
-
-
-function calculateNewAPR(oldAPR, oldTVL, newTVL) {
-  if (newTVL == "0") {
-    return "0";
-  }
-  return (0,bignumber_js__WEBPACK_IMPORTED_MODULE_2__["default"])(oldAPR).multipliedBy(oldTVL).div(newTVL).toFixed();
-}
-function simulateStakeStaking(_x, _x2, _x3, _x4) {
-  return _simulateStakeStaking.apply(this, arguments);
-}
-function _simulateStakeStaking() {
-  _simulateStakeStaking = _asyncToGenerator(function* (appState1, _stakingPool, from, _amount) {
-    var appState = _objectSpread({}, appState1);
-    var stakingPool = _stakingPool.toLowerCase();
-    var amount = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_2__["default"])(_amount);
-    var stakedTokenAddress = stakingPool;
-    var vault = appState.smartWalletState.travaLPStakingStateList.get(stakingPool);
-    if (vault && vault.stakedToken.stakedTokenAddress.toLowerCase() == stakedTokenAddress) {
-      var underlyingToken = vault.underlyingToken.underlyingAddress.toLowerCase();
-      if (!appState.smartWalletState.tokenBalances.has(stakedTokenAddress.toLowerCase())) {
-        appState = yield (0,_basic_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_0__.updateSmartWalletTokenBalance)(appState, stakedTokenAddress);
-      }
-      if (from == appState.walletState.address) {
-        if (!appState.walletState.tokenBalances.has(underlyingToken)) {
-          appState = yield (0,_basic_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_0__.updateUserTokenBalance)(appState, underlyingToken);
-          appState = yield (0,_basic_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_0__.updateSmartWalletTokenBalance)(appState, underlyingToken);
-        }
-        if (amount.toFixed(0) == _utils_config__WEBPACK_IMPORTED_MODULE_1__.MAX_UINT256 || amount.isEqualTo(_utils_config__WEBPACK_IMPORTED_MODULE_1__.MAX_UINT256)) {
-          amount = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_2__["default"])(appState.walletState.tokenBalances.get(underlyingToken));
-        }
-        var newUnderLyingBalance = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_2__["default"])(appState.walletState.tokenBalances.get(underlyingToken)).minus(amount);
-        appState.walletState.tokenBalances.set(underlyingToken, newUnderLyingBalance.toFixed(0));
-      } else if (from == appState.smartWalletState.address) {
-        if (!appState.smartWalletState.tokenBalances.has(underlyingToken)) {
-          appState = yield (0,_basic_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_0__.updateUserTokenBalance)(appState, underlyingToken);
-          appState = yield (0,_basic_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_0__.updateSmartWalletTokenBalance)(appState, underlyingToken);
-        }
-        if (amount.toFixed(0) == _utils_config__WEBPACK_IMPORTED_MODULE_1__.MAX_UINT256 || amount.isEqualTo(_utils_config__WEBPACK_IMPORTED_MODULE_1__.MAX_UINT256)) {
-          amount = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_2__["default"])(appState.smartWalletState.tokenBalances.get(underlyingToken));
-        }
-        var _newUnderLyingBalance = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_2__["default"])(appState.smartWalletState.tokenBalances.get(underlyingToken)).minus(amount);
-        appState.smartWalletState.tokenBalances.set(underlyingToken, _newUnderLyingBalance.toFixed(0));
-      }
-      var newRewardBalance = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_2__["default"])(appState.smartWalletState.tokenBalances.get(stakedTokenAddress.toLowerCase())).plus(amount);
-      var amountUSD = amount.div(vault.underlyingToken.reserveDecimals).multipliedBy(vault.underlyingToken.price);
-      var oldTVL = vault.TVL;
-      var newTVL = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_2__["default"])(oldTVL).plus(amountUSD).toFixed();
-      var oldAPR = vault.APR;
-      vault.deposited = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_2__["default"])(vault.deposited).plus(amount).toFixed(0);
-      vault.TVL = newTVL;
-      vault.APR = calculateNewAPR(oldAPR, oldTVL, newTVL);
-      appState.smartWalletState.travaLPStakingStateList.set(stakingPool, vault);
-      appState.smartWalletState.tokenBalances.set(stakedTokenAddress.toLowerCase(), newRewardBalance.toFixed(0));
-    }
-    return appState;
-  });
-  return _simulateStakeStaking.apply(this, arguments);
-}
-function simulateStakingRedeem(_x5, _x6, _x7, _x8) {
-  return _simulateStakingRedeem.apply(this, arguments);
-}
-function _simulateStakingRedeem() {
-  _simulateStakingRedeem = _asyncToGenerator(function* (appState1, _stakingPool, to, _amount) {
-    var appState = _objectSpread({}, appState1);
-    var stakingPool = _stakingPool.toLowerCase();
-    var amount = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_2__["default"])(_amount);
-    var stakedTokenAddress = stakingPool.toLowerCase();
-    var vault = appState.smartWalletState.travaLPStakingStateList.get(stakingPool);
-    if (vault && vault.stakedToken.stakedTokenAddress.toLowerCase() == stakedTokenAddress) {
-      var underlyingToken = vault.underlyingToken.underlyingAddress.toLowerCase();
-      if (!appState.smartWalletState.tokenBalances.has(stakedTokenAddress)) {
-        appState = yield (0,_basic_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_0__.updateSmartWalletTokenBalance)(appState, stakedTokenAddress);
-      }
-      if (!appState.walletState.tokenBalances.has(underlyingToken)) {
-        appState = yield (0,_basic_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_0__.updateUserTokenBalance)(appState, underlyingToken);
-        appState = yield (0,_basic_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_0__.updateSmartWalletTokenBalance)(appState, underlyingToken);
-      }
-      if (amount.toFixed(0) == _utils_config__WEBPACK_IMPORTED_MODULE_1__.MAX_UINT256 || amount.isEqualTo(_utils_config__WEBPACK_IMPORTED_MODULE_1__.MAX_UINT256)) {
-        amount = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_2__["default"])(vault.deposited);
-      }
-      if (to.toLowerCase() == appState.walletState.address.toLowerCase()) {
-        to = appState.walletState.address;
-        var newUnderLyingBalance = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_2__["default"])(appState.walletState.tokenBalances.get(underlyingToken)).plus(amount);
-        appState.walletState.tokenBalances.set(underlyingToken, newUnderLyingBalance.toFixed(0));
-      } else if (to.toLowerCase() == appState.smartWalletState.address.toLowerCase()) {
-        to = appState.smartWalletState.address;
-        var _newUnderLyingBalance2 = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_2__["default"])(appState.smartWalletState.tokenBalances.get(underlyingToken)).plus(amount);
-        appState.smartWalletState.tokenBalances.set(underlyingToken, _newUnderLyingBalance2.toFixed(0));
-      }
-      var newRewardBalance = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_2__["default"])(appState.smartWalletState.tokenBalances.get(stakedTokenAddress)).minus(amount);
-      var amountUSD = amount.div(vault.underlyingToken.reserveDecimals).multipliedBy(vault.underlyingToken.price);
-      var oldTVL = vault.TVL;
-      var newTVL = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_2__["default"])(oldTVL).minus(amountUSD).toFixed();
-      var oldAPR = vault.APR;
-      vault.deposited = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_2__["default"])(vault.deposited).minus(amount).toFixed(0);
-      vault.TVL = newTVL;
-      vault.APR = calculateNewAPR(oldAPR, oldTVL, newTVL);
-      appState.smartWalletState.tokenBalances.set(stakedTokenAddress.toLowerCase(), newRewardBalance.toFixed(0));
-    }
-    return appState;
-  });
-  return _simulateStakingRedeem.apply(this, arguments);
-}
-function simulateStakingClaimRewards(_x9, _x10, _x11, _x12) {
-  return _simulateStakingClaimRewards.apply(this, arguments);
-}
-function _simulateStakingClaimRewards() {
-  _simulateStakingClaimRewards = _asyncToGenerator(function* (appState1, _stakingPool, _to, _amount) {
-    /// ???
-    var appState = _objectSpread({}, appState1);
-    var stakingPool = _stakingPool.toLowerCase();
-    var amount = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_2__["default"])(_amount);
-    var stakedTokenAddress = stakingPool.toLowerCase();
-    var vault = appState.smartWalletState.travaLPStakingStateList.get(stakingPool);
-    if (vault && vault.stakedToken.stakedTokenAddress.toLowerCase() == stakedTokenAddress) {
-      var rewardTokenAddress = vault.rewardToken.address.toLowerCase();
-      if (amount.toFixed(0) == _utils_config__WEBPACK_IMPORTED_MODULE_1__.MAX_UINT256 || amount.isEqualTo(_utils_config__WEBPACK_IMPORTED_MODULE_1__.MAX_UINT256)) {
-        amount = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_2__["default"])(vault.claimableReward);
-      }
-      if (_to.toLowerCase() == appState.walletState.address.toLowerCase()) {
-        if (!appState.walletState.tokenBalances.has(rewardTokenAddress)) {
-          appState = yield (0,_basic_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_0__.updateUserTokenBalance)(appState, rewardTokenAddress);
-        }
-        appState.walletState.tokenBalances.set(rewardTokenAddress, (0,bignumber_js__WEBPACK_IMPORTED_MODULE_2__["default"])(appState.walletState.tokenBalances.get(rewardTokenAddress)).plus(amount).toFixed(0));
-      } else if (_to.toLowerCase() == appState.smartWalletState.address.toLowerCase()) {
-        if (!appState.smartWalletState.tokenBalances.has(rewardTokenAddress)) {
-          appState = yield (0,_basic_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_0__.updateUserTokenBalance)(appState, rewardTokenAddress);
-        }
-        appState.smartWalletState.tokenBalances.set(rewardTokenAddress, (0,bignumber_js__WEBPACK_IMPORTED_MODULE_2__["default"])(appState.smartWalletState.tokenBalances.get(rewardTokenAddress)).plus(amount).toFixed(0));
-      }
-      vault.claimableReward = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_2__["default"])(vault.claimableReward).minus(amount).toFixed(0);
-      appState.smartWalletState.travaLPStakingStateList.set(stakingPool, vault);
-    }
-    return appState;
-  });
-  return _simulateStakingClaimRewards.apply(this, arguments);
-}
-
-/***/ }),
-/* 392 */
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -60212,15 +59549,15 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   updateTravaGovernanceState: () => (/* reexport safe */ _UpdateStateAccount__WEBPACK_IMPORTED_MODULE_0__.updateTravaGovernanceState),
 /* harmony export */   updateUserLockBalance: () => (/* reexport safe */ _UpdateStateAccount__WEBPACK_IMPORTED_MODULE_0__.updateUserLockBalance)
 /* harmony export */ });
-/* harmony import */ var _UpdateStateAccount__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(393);
-/* harmony import */ var _SimulationGovernance__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(398);
-/* harmony import */ var _travaGovernanceConfig__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(397);
+/* harmony import */ var _UpdateStateAccount__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(384);
+/* harmony import */ var _SimulationGovernance__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(389);
+/* harmony import */ var _travaGovernanceConfig__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(388);
 
 
 
 
 /***/ }),
-/* 393 */
+/* 384 */
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -60232,15 +59569,15 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   updateUserLockBalance: () => (/* binding */ updateUserLockBalance)
 /* harmony export */ });
 /* harmony import */ var _utils_address__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(16);
-/* harmony import */ var _abis_Ve_json__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(394);
-/* harmony import */ var _abis_Incentive_json__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(395);
+/* harmony import */ var _abis_Ve_json__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(385);
+/* harmony import */ var _abis_Incentive_json__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(386);
 /* harmony import */ var bignumber_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(19);
 /* harmony import */ var _utils_config__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(17);
 /* harmony import */ var _utils_helper__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(118);
-/* harmony import */ var _abis_IValuator_json__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(396);
+/* harmony import */ var _abis_IValuator_json__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(387);
 /* harmony import */ var ethers__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(15);
 /* harmony import */ var ethers__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(ethers__WEBPACK_IMPORTED_MODULE_7__);
-/* harmony import */ var _travaGovernanceConfig__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(397);
+/* harmony import */ var _travaGovernanceConfig__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(388);
 function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
 function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
 function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
@@ -60382,9 +59719,15 @@ function _updateUserLockBalance() {
 
           // init token in governance
           var tokenLockOption = appState.TravaGovernanceState.tokensInGovernance.get(lockedValues[_i][3].toLowerCase());
+          var tokenLockOption1 = {
+            address: tokenLockOption.address,
+            symbol: tokenLockOption.symbol,
+            name: tokenLockOption.name,
+            decimals: tokenLockOption.decimals
+          };
           var tokenInVeTrava = {
             balances: lockedValues[_i][1].toString(),
-            tokenLockOption: tokenLockOption
+            tokenLockOption: tokenLockOption1
           };
           // init reward
           var rewardTokenBalance = {
@@ -60443,28 +59786,28 @@ function _getTokenRatio() {
 }
 
 /***/ }),
-/* 394 */
+/* 385 */
 /***/ ((module) => {
 
 "use strict";
 module.exports = JSON.parse('[{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":true,"internalType":"address","name":"approved","type":"address"},{"indexed":true,"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"Approval","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":true,"internalType":"address","name":"operator","type":"address"},{"indexed":false,"internalType":"bool","name":"approved","type":"bool"}],"name":"ApprovalForAll","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"token","type":"address"},{"indexed":true,"internalType":"address","name":"provider","type":"address"},{"indexed":false,"internalType":"uint256","name":"tokenId","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"value","type":"uint256"},{"indexed":true,"internalType":"uint256","name":"locktime","type":"uint256"},{"indexed":false,"internalType":"enum ve.DepositType","name":"deposit_type","type":"uint8"},{"indexed":false,"internalType":"uint256","name":"ts","type":"uint256"}],"name":"Deposit","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"oldOwner","type":"address"},{"indexed":true,"internalType":"address","name":"newOwner","type":"address"}],"name":"OwnerSet","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"token","type":"address"},{"indexed":false,"internalType":"uint256","name":"prevSupply","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"supply","type":"uint256"}],"name":"Supply","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"from","type":"address"},{"indexed":true,"internalType":"address","name":"to","type":"address"},{"indexed":true,"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"Transfer","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"provider","type":"address"},{"indexed":false,"internalType":"address","name":"token","type":"address"},{"indexed":false,"internalType":"uint256","name":"tokenId","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"rewardValue","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"value","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"ts","type":"uint256"}],"name":"Withdraw","type":"event"},{"inputs":[],"name":"MAXTIME","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"MAXVENFT","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"WEEK","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256[]","name":"_tokenId","type":"uint256[]"},{"internalType":"uint256[]","name":"_baseAmount","type":"uint256[]"},{"internalType":"uint256[]","name":"_startTime","type":"uint256[]"}],"name":"_setWarmupValueByAddmin","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_tokenId","type":"uint256"}],"name":"abstain","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_t","type":"uint256"}],"name":"addTimeRange","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"_token","type":"address"},{"internalType":"address","name":"_valuator","type":"address"}],"name":"addToken","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"_approved","type":"address"},{"internalType":"uint256","name":"_tokenId","type":"uint256"}],"name":"approve","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_tokenId","type":"uint256"}],"name":"attach","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"attachments","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"_owner","type":"address"}],"name":"balanceOf","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"_tokenId","type":"uint256"},{"internalType":"uint256","name":"_block","type":"uint256"}],"name":"balanceOfAtNFT","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"_tokenId","type":"uint256"}],"name":"balanceOfNFT","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"_tokenId","type":"uint256"},{"internalType":"uint256","name":"_t","type":"uint256"}],"name":"balanceOfNFTAt","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"block_number","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"_newOwner","type":"address"}],"name":"changeOwner","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"checkpoint","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"_token","type":"address"},{"internalType":"uint256","name":"_value","type":"uint256"},{"internalType":"uint256","name":"_lock_duration","type":"uint256"}],"name":"create_lock","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"_token","type":"address"},{"internalType":"uint256","name":"_value","type":"uint256"},{"internalType":"uint256","name":"_lock_duration","type":"uint256"},{"internalType":"address","name":"_to","type":"address"}],"name":"create_lock_for","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"decimals","outputs":[{"internalType":"uint8","name":"","type":"uint8"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"_tokenId","type":"uint256"},{"internalType":"uint256","name":"_value","type":"uint256"}],"name":"deposit_for","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_tokenId","type":"uint256"},{"internalType":"uint256","name":"_rewardValue","type":"uint256"}],"name":"deposit_for_reward_distribution","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_tokenId","type":"uint256"}],"name":"detach","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"distributor","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"epoch","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"getAllTimeRangeAllow","outputs":[{"internalType":"uint256[]","name":"","type":"uint256[]"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"getAllToken","outputs":[{"internalType":"address[]","name":"","type":"address[]"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"_tokenId","type":"uint256"}],"name":"getApproved","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"getOwner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"_tokenId","type":"uint256"}],"name":"get_last_user_slope","outputs":[{"internalType":"int128","name":"","type":"int128"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"_user","type":"address"}],"name":"getveNFTOfUser","outputs":[{"internalType":"uint256[]","name":"","type":"uint256[]"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"iMAXTIME","outputs":[{"internalType":"int128","name":"","type":"int128"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"_tokenId","type":"uint256"},{"internalType":"uint256","name":"_value","type":"uint256"}],"name":"increase_amount","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_tokenId","type":"uint256"},{"internalType":"uint256","name":"_lock_duration","type":"uint256"}],"name":"increase_unlock_time","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"_owner","type":"address"},{"internalType":"address","name":"_rewardToken","type":"address"},{"internalType":"address[]","name":"token_addr","type":"address[]"},{"internalType":"address[]","name":"_valuator","type":"address[]"}],"name":"initialize","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"_owner","type":"address"},{"internalType":"address","name":"_operator","type":"address"}],"name":"isApprovedForAll","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"_spender","type":"address"},{"internalType":"uint256","name":"_tokenId","type":"uint256"}],"name":"isApprovedOrOwner","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"locked","outputs":[{"internalType":"int128","name":"rewardAmount","type":"int128"},{"internalType":"int128","name":"amount","type":"int128"},{"internalType":"uint256","name":"end","type":"uint256"},{"internalType":"address","name":"token","type":"address"},{"internalType":"int128","name":"baseAmount","type":"int128"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"_tokenId","type":"uint256"}],"name":"locked__end","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"_from","type":"uint256"},{"internalType":"uint256","name":"_to","type":"uint256"}],"name":"merge","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"name","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"_tokenId","type":"uint256"}],"name":"ownerOf","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"ownership_change","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"point_history","outputs":[{"internalType":"int128","name":"bias","type":"int128"},{"internalType":"int128","name":"slope","type":"int128"},{"internalType":"uint256","name":"ts","type":"uint256"},{"internalType":"uint256","name":"blk","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"_t","type":"uint256"}],"name":"removeTimeRange","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"_token","type":"address"}],"name":"removeToken","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"rewardToken","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"_t","type":"uint256"}],"name":"roundDown","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"_from","type":"address"},{"internalType":"address","name":"_to","type":"address"},{"internalType":"uint256","name":"_tokenId","type":"uint256"}],"name":"safeTransferFrom","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"_from","type":"address"},{"internalType":"address","name":"_to","type":"address"},{"internalType":"uint256","name":"_tokenId","type":"uint256"},{"internalType":"bytes","name":"_data","type":"bytes"}],"name":"safeTransferFrom","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"_operator","type":"address"},{"internalType":"bool","name":"_approved","type":"bool"}],"name":"setApprovalForAll","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"_distributor","type":"address"}],"name":"setDistributor","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"_token","type":"address"},{"internalType":"address","name":"_valuator","type":"address"}],"name":"setValuator","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"_voter","type":"address"}],"name":"setVoter","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"slope_changes","outputs":[{"internalType":"int128","name":"","type":"int128"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"supplyNFT","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"bytes4","name":"_interfaceID","type":"bytes4"}],"name":"supportsInterface","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"symbol","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"timeRange","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"_owner","type":"address"},{"internalType":"uint256","name":"_tokenIndex","type":"uint256"}],"name":"tokenOfOwnerByIndex","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"_tokenId","type":"uint256"}],"name":"tokenURI","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"tokens","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"totalSupply","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"t","type":"uint256"}],"name":"totalSupplyAtT","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"totalTokenLocked","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"totalWarmupPerWeek","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"_from","type":"address"},{"internalType":"address","name":"_to","type":"address"},{"internalType":"uint256","name":"_tokenId","type":"uint256"}],"name":"transferFrom","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"user_point_epoch","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"}],"name":"user_point_history","outputs":[{"internalType":"int128","name":"bias","type":"int128"},{"internalType":"int128","name":"slope","type":"int128"},{"internalType":"uint256","name":"ts","type":"uint256"},{"internalType":"uint256","name":"blk","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"_tokenId","type":"uint256"},{"internalType":"uint256","name":"_idx","type":"uint256"}],"name":"user_point_history__ts","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"valuator","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"version","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"voted","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"voter","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"_tokenId","type":"uint256"}],"name":"voting","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"_user","type":"address"}],"name":"votingPowerOfUser","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"_user","type":"address"},{"internalType":"uint256","name":"_t","type":"uint256"}],"name":"votingPowerOfUserAt","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"warmupAmount","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"_tokenId","type":"uint256"}],"name":"withdraw","outputs":[],"stateMutability":"nonpayable","type":"function"}]');
 
 /***/ }),
-/* 395 */
+/* 386 */
 /***/ ((module) => {
 
 "use strict";
 module.exports = JSON.parse('[{"anonymous":false,"inputs":[{"indexed":false,"internalType":"uint256","name":"time","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"tokens","type":"uint256"}],"name":"CheckpointToken","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"uint256","name":"tokenId","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"claim_epoch","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"max_epoch","type":"uint256"}],"name":"Claimed","type":"event"},{"inputs":[],"name":"APRBase","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"checkpoint_token","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"checkpoint_total_supply","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_tokenId","type":"uint256"}],"name":"claim","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_tokenId","type":"uint256"}],"name":"claimWarmUpReward","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256[]","name":"_tokenIds","type":"uint256[]"}],"name":"claim_many","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_tokenId","type":"uint256"}],"name":"claimable","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"depositor","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"emissionPerSecond","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"governance","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"_voting_escrow","type":"address"}],"name":"initialize","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"isWarmUp","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"kill_me","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"last_token_time","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"_t","type":"uint256"}],"name":"roundDown","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"_APRBase","type":"uint256"}],"name":"setAPRBase","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"_depositor","type":"address"}],"name":"setDepositor","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_emissionPerSecond","type":"uint256"}],"name":"setEmissionPerSecond","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"_governance","type":"address"}],"name":"setGovernance","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_week_ts","type":"uint256"},{"internalType":"uint256","name":"_warmUpAPR","type":"uint256"}],"name":"setWarmUpAPR","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"start_time","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"time_cursor","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"time_cursor_of","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"timestamp","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"token","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"tokens_per_week","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"update_token","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"user_epoch_of","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"_tokenId","type":"uint256"},{"internalType":"uint256","name":"_timestamp","type":"uint256"}],"name":"ve_for_at","outputs":[{"internalType":"uint256","name":"voting_power","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"ve_supply","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"voting_escrow","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"warmUpAPRWeekly","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"}]');
 
 /***/ }),
-/* 396 */
+/* 387 */
 /***/ ((module) => {
 
 "use strict";
 module.exports = JSON.parse('[{"inputs":[{"internalType":"address","name":"_token","type":"address"}],"name":"ratio","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"_token","type":"address"},{"internalType":"uint256","name":"_amount","type":"uint256"}],"name":"valuation","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"}]');
 
 /***/ }),
-/* 397 */
+/* 388 */
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -60510,7 +59853,7 @@ var tokenLockOptions = {
 };
 
 /***/ }),
-/* 398 */
+/* 389 */
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -60531,7 +59874,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var bignumber_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(19);
 /* harmony import */ var _utils_config__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(17);
 /* harmony import */ var _basic_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(13);
-/* harmony import */ var _UpdateStateAccount__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(393);
+/* harmony import */ var _UpdateStateAccount__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(384);
 /* harmony import */ var _utils_helper__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(118);
 function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
 function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
@@ -60851,6 +60194,1134 @@ function _simulateTravaGovernanceMerge() {
   return _simulateTravaGovernanceMerge.apply(this, arguments);
 }
 
+/***/ }),
+/* 390 */
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   updateSellingVeTrava: () => (/* binding */ updateSellingVeTrava)
+/* harmony export */ });
+/* harmony import */ var ethers__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(15);
+/* harmony import */ var ethers__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(ethers__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _utils_address__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(16);
+/* harmony import */ var bignumber_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(19);
+/* harmony import */ var _utils_helper__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(118);
+/* harmony import */ var _abis_veTravaMarketplaceABI_json__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(391);
+/* harmony import */ var _abis_Ve_json__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(385);
+/* harmony import */ var _veTravaConfig__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(392);
+function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
+function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
+function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return typeof key === "symbol" ? key : String(key); }
+function _toPrimitive(input, hint) { if (typeof input !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (typeof res !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
+function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
+
+
+
+
+
+
+
+function updateSellingVeTrava(_x) {
+  return _updateSellingVeTrava.apply(this, arguments);
+}
+function _updateSellingVeTrava() {
+  _updateSellingVeTrava = _asyncToGenerator(function* (appState1) {
+    var force = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+    var appState = _objectSpread({}, appState1);
+    try {
+      var listTokenSell = _veTravaConfig__WEBPACK_IMPORTED_MODULE_6__.tokenSellOptions[appState.chainId];
+      for (var i = 0; i < listTokenSell.length; i++) {
+        var key = listTokenSell[i].address.toLowerCase();
+        var tokenSell = _objectSpread({}, listTokenSell[i]);
+        appState.NFTVeTravaMarketSellingState.priceTokens.set(key, tokenSell);
+      }
+      if (appState.NFTVeTravaMarketSellingState.isFetch == false || force == true) {
+        var veTravaMarketAddress = (0,_utils_address__WEBPACK_IMPORTED_MODULE_1__.getAddr)("VE_TRAVA_MARKETPLACE_ADDRESS", appState.chainId);
+        var veTravaAddress = (0,_utils_address__WEBPACK_IMPORTED_MODULE_1__.getAddr)("VE_TRAVA_ADDRESS", appState.chainId);
+        var Market = new ethers__WEBPACK_IMPORTED_MODULE_0__.Contract(veTravaMarketAddress, _abis_veTravaMarketplaceABI_json__WEBPACK_IMPORTED_MODULE_4__, appState.web3);
+        var tokenOnMarket = yield Market.getTokenOnSaleCount();
+        var [tokenIdsOnMarket] = yield Promise.all([(0,_utils_helper__WEBPACK_IMPORTED_MODULE_3__.multiCall)(_abis_veTravaMarketplaceABI_json__WEBPACK_IMPORTED_MODULE_4__, new Array(tokenOnMarket).fill(1).map((_, idx) => ({
+          address: veTravaMarketAddress,
+          name: "getTokenOnSaleAtIndex",
+          params: [idx]
+        })), appState.web3, appState.chainId)]);
+        var tokenOnSaleFlattened = tokenIdsOnMarket.flat();
+        var [tokensMetadata, tokenVotingPower, tokenOrder] = yield Promise.all([(0,_utils_helper__WEBPACK_IMPORTED_MODULE_3__.multiCall)(_abis_Ve_json__WEBPACK_IMPORTED_MODULE_5__, tokenOnSaleFlattened.map(id => ({
+          address: veTravaAddress,
+          name: "locked",
+          params: [id]
+        })), appState.web3, appState.chainId), (0,_utils_helper__WEBPACK_IMPORTED_MODULE_3__.multiCall)(_abis_Ve_json__WEBPACK_IMPORTED_MODULE_5__, tokenOnSaleFlattened.map(id => ({
+          address: veTravaAddress,
+          name: "balanceOfNFT",
+          params: [id]
+        })), appState.web3, appState.chainId), (0,_utils_helper__WEBPACK_IMPORTED_MODULE_3__.multiCall)(_abis_veTravaMarketplaceABI_json__WEBPACK_IMPORTED_MODULE_4__, tokenOnSaleFlattened.map(id => ({
+          address: veTravaMarketAddress,
+          name: "getTokenOrder",
+          params: [id]
+        })), appState.web3, appState.chainId)]);
+        var sellingVeTrava = new Array();
+        for (var _i = 0; _i < tokenOnSaleFlattened.length; _i++) {
+          var tokenId = tokenOnSaleFlattened[_i];
+          var tokenMetadata = tokensMetadata[_i];
+          var tokenVoting = tokenVotingPower[_i];
+          var tokenOrderInfo = tokenOrder[_i];
+          var priceTokenAddress = "";
+          if ((0,bignumber_js__WEBPACK_IMPORTED_MODULE_2__["default"])(tokenOrderInfo[0][2]).isEqualTo(1)) {
+            priceTokenAddress = (0,_utils_address__WEBPACK_IMPORTED_MODULE_1__.getAddr)("TRAVA_TOKEN", appState.chainId);
+          } else if ((0,bignumber_js__WEBPACK_IMPORTED_MODULE_2__["default"])(tokenOrderInfo[0][2]).isEqualTo(2)) {
+            priceTokenAddress = (0,_utils_address__WEBPACK_IMPORTED_MODULE_1__.getAddr)("BUSD_TOKEN_ADDRESS", appState.chainId);
+          }
+          var tokenLocked = {
+            address: tokenMetadata[3].toLowerCase(),
+            amount: tokenMetadata[1].toString()
+          };
+          var priceToken = {
+            address: priceTokenAddress.toLowerCase(),
+            amount: tokenOrderInfo[0][1].toString()
+          };
+          var sellingVeTravaItem = {
+            id: tokenId.toString(),
+            rwAmount: tokenMetadata[0].toString(),
+            end: tokenMetadata[2].toString(),
+            lockedToken: tokenLocked,
+            votingPower: tokenVoting[0].toString(),
+            seller: tokenOrderInfo[0][0].toLowerCase(),
+            priceToken: priceToken
+          };
+          sellingVeTrava.push(sellingVeTravaItem);
+        }
+        appState.NFTVeTravaMarketSellingState.sellingVeTrava = sellingVeTrava;
+        appState.NFTVeTravaMarketSellingState.isFetch = true;
+      }
+    } catch (e) {
+      console.log(e);
+    }
+    return appState;
+  });
+  return _updateSellingVeTrava.apply(this, arguments);
+}
+
+/***/ }),
+/* 391 */
+/***/ ((module) => {
+
+"use strict";
+module.exports = JSON.parse('[{"anonymous":false,"inputs":[{"indexed":false,"internalType":"uint8","name":"version","type":"uint8"}],"name":"Initialized","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"previousOwner","type":"address"},{"indexed":true,"internalType":"address","name":"newOwner","type":"address"}],"name":"OwnershipTransferred","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"uint256","name":"tokenId","type":"uint256"},{"indexed":false,"internalType":"address","name":"nftSeller","type":"address"}],"name":"SaleCancelled","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"uint256","name":"tokenId","type":"uint256"},{"indexed":false,"internalType":"address","name":"nftSeller","type":"address"},{"indexed":false,"internalType":"address","name":"nftBuyer","type":"address"},{"indexed":false,"internalType":"uint256","name":"price","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"option","type":"uint256"}],"name":"SaleCompleted","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"uint256","name":"tokenId","type":"uint256"},{"indexed":false,"internalType":"address","name":"nftSeller","type":"address"},{"indexed":false,"internalType":"uint256","name":"price","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"option","type":"uint256"}],"name":"SaleCreated","type":"event"},{"inputs":[{"internalType":"uint256","name":"_tokenId","type":"uint256"}],"name":"cancelSale","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_tokenId","type":"uint256"},{"internalType":"uint256","name":"_price","type":"uint256"},{"internalType":"uint256","name":"_option","type":"uint256"}],"name":"createSale","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"_owner","type":"address"},{"internalType":"uint256","name":"_index","type":"uint256"}],"name":"getTokenOfOwnerAtIndex","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"_owner","type":"address"}],"name":"getTokenOfOwnerBalance","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"_index","type":"uint256"}],"name":"getTokenOnSaleAtIndex","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"getTokenOnSaleCount","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"_tokenId","type":"uint256"}],"name":"getTokenOrder","outputs":[{"components":[{"internalType":"address","name":"nftSeller","type":"address"},{"internalType":"uint256","name":"price","type":"uint256"},{"internalType":"uint256","name":"paymentOption","type":"uint256"}],"internalType":"struct NFTGeneralMarketplace.Sale","name":"","type":"tuple"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"_nftAddress","type":"address"},{"internalType":"address[]","name":"_paymentTokens","type":"address[]"},{"internalType":"uint256[]","name":"_minimumPrices","type":"uint256[]"},{"internalType":"address","name":"_recipient","type":"address"},{"internalType":"uint256","name":"_percent","type":"uint256"}],"name":"initialize","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_tokenId","type":"uint256"}],"name":"makeOrder","outputs":[],"stateMutability":"payable","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"minimumPrices","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"owner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"paymentGovernors","outputs":[{"internalType":"contract IERC20","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"renounceOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_feePercentage","type":"uint256"}],"name":"setFee","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_option","type":"uint256"},{"internalType":"uint256","name":"_minimumPrice","type":"uint256"}],"name":"setMinimumPrice","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"_nftAddress","type":"address"}],"name":"setNFTAddress","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_option","type":"uint256"},{"internalType":"address","name":"_paymentToken","type":"address"}],"name":"setPaymentMethod","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"_feeRecipient","type":"address"}],"name":"setRecipient","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"}]');
+
+/***/ }),
+/* 392 */
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   tokenSellOptions: () => (/* binding */ tokenSellOptions)
+/* harmony export */ });
+/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(368);
+
+var tokenSellOptions = {
+  [_utils__WEBPACK_IMPORTED_MODULE_0__.NETWORKS.bscMainnet.chainId]: [{
+    address: "0x0391be54e72f7e001f6bbc331777710b4f2999ef",
+    symbol: 'TRAVA',
+    name: 'Trava Finance',
+    decimals: "18"
+  }, {
+    address: "0xe9e7cea3dedca5984780bafc599bd69add087d56",
+    symbol: 'BUSD',
+    name: 'Binance USD',
+    decimals: "18"
+  }],
+  [_utils__WEBPACK_IMPORTED_MODULE_0__.NETWORKS.bscTestnet.chainId]: [{
+    address: "0xe1f005623934d3d8c724ec68cc9bfd95498d4435",
+    symbol: 'TRAVA',
+    name: 'Trava Finance',
+    decimals: "18"
+  }, {
+    address: "0xed24fc36d5ee211ea25a80239fb8c4cfd80f12ee",
+    symbol: 'BUSD',
+    name: 'Binance USD',
+    decimals: "18"
+  }]
+};
+
+/***/ }),
+/* 393 */
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   simulateNFTVeTravaTranfer: () => (/* binding */ simulateNFTVeTravaTranfer)
+/* harmony export */ });
+/* harmony import */ var _utils_error__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(20);
+/* harmony import */ var _governance_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(384);
+/* harmony import */ var _utils_helper__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(118);
+/* harmony import */ var _basic__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(12);
+function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
+function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
+function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return typeof key === "symbol" ? key : String(key); }
+function _toPrimitive(input, hint) { if (typeof input !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (typeof res !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
+function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
+
+
+
+
+function simulateNFTVeTravaTranfer(_x, _x2, _x3, _x4) {
+  return _simulateNFTVeTravaTranfer.apply(this, arguments);
+}
+function _simulateNFTVeTravaTranfer() {
+  _simulateNFTVeTravaTranfer = _asyncToGenerator(function* (_appState1, _NFTId, _from, _to) {
+    var appState = _objectSpread({}, _appState1);
+    try {
+      _from = _from.toLowerCase();
+      _to = _to.toLowerCase();
+      var tokenAddress = "";
+      if (appState.TravaGovernanceState.totalSupply == "") {
+        appState = yield (0,_governance_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_1__.updateTravaGovernanceState)(appState);
+      }
+      var modeFrom = (0,_utils_helper__WEBPACK_IMPORTED_MODULE_2__.getMode)(appState, _from);
+      if (!appState[modeFrom].veTravaListState.veTravaList.has(_NFTId)) {
+        throw new _utils_error__WEBPACK_IMPORTED_MODULE_0__.NFTNotFoundError("NFT not found");
+      }
+      if (appState[modeFrom].veTravaListState.veTravaList.has(_NFTId)) {
+        if (_to == appState.walletState.address.toLowerCase() || _to == appState.smartWalletState.address.toLowerCase()) {
+          var data = appState[modeFrom].veTravaListState.veTravaList.get(_NFTId);
+          appState[modeFrom].veTravaListState.veTravaList.delete(_NFTId);
+          appState[(0,_utils_helper__WEBPACK_IMPORTED_MODULE_2__.getMode)(appState, _to)].veTravaListState.veTravaList.set(_NFTId, data);
+          tokenAddress = data.tokenInVeTrava.tokenLockOption.address;
+        } else {
+          appState[modeFrom].veTravaListState.veTravaList.delete(_NFTId);
+        }
+      }
+      if (!appState[modeFrom].tokenBalances.has(tokenAddress)) {
+        appState = yield (0,_basic__WEBPACK_IMPORTED_MODULE_3__.updateTokenBalance)(appState, _from, tokenAddress);
+      }
+    } catch (err) {
+      throw err;
+    }
+    return appState;
+  });
+  return _simulateNFTVeTravaTranfer.apply(this, arguments);
+}
+
+/***/ }),
+/* 394 */
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   calculateKnightApr: () => (/* reexport safe */ _heuristicFarming__WEBPACK_IMPORTED_MODULE_0__.calculateKnightApr),
+/* harmony export */   calculateVaultApr: () => (/* reexport safe */ _heuristicFarming__WEBPACK_IMPORTED_MODULE_0__.calculateVaultApr),
+/* harmony export */   getNormalKinghtFromFarmingKnight: () => (/* reexport safe */ _heuristicFarming__WEBPACK_IMPORTED_MODULE_0__.getNormalKinghtFromFarmingKnight),
+/* harmony export */   heuristicFamingConfig: () => (/* reexport safe */ _heuristicFarming__WEBPACK_IMPORTED_MODULE_0__.heuristicFamingConfig),
+/* harmony export */   simulateTravaNFTHeuristicFarmingClaim: () => (/* reexport safe */ _heuristicFarming__WEBPACK_IMPORTED_MODULE_0__.simulateTravaNFTHeuristicFarmingClaim),
+/* harmony export */   simulateTravaNFTHeuristicFarmingPolish: () => (/* reexport safe */ _heuristicFarming__WEBPACK_IMPORTED_MODULE_0__.simulateTravaNFTHeuristicFarmingPolish),
+/* harmony export */   simulateTravaNFTHeuristicFarmingStake: () => (/* reexport safe */ _heuristicFarming__WEBPACK_IMPORTED_MODULE_0__.simulateTravaNFTHeuristicFarmingStake),
+/* harmony export */   simulateTravaNFTHeuristicFarmingWithdraw: () => (/* reexport safe */ _heuristicFarming__WEBPACK_IMPORTED_MODULE_0__.simulateTravaNFTHeuristicFarmingWithdraw),
+/* harmony export */   updateFarmingState: () => (/* reexport safe */ _heuristicFarming__WEBPACK_IMPORTED_MODULE_0__.updateFarmingState)
+/* harmony export */ });
+/* harmony import */ var _heuristicFarming__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(395);
+
+
+/***/ }),
+/* 395 */
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   calculateKnightApr: () => (/* reexport safe */ _UpdateStateAccount__WEBPACK_IMPORTED_MODULE_0__.calculateKnightApr),
+/* harmony export */   calculateVaultApr: () => (/* reexport safe */ _UpdateStateAccount__WEBPACK_IMPORTED_MODULE_0__.calculateVaultApr),
+/* harmony export */   getNormalKinghtFromFarmingKnight: () => (/* reexport safe */ _simulateHeuristicFarming__WEBPACK_IMPORTED_MODULE_2__.getNormalKinghtFromFarmingKnight),
+/* harmony export */   heuristicFamingConfig: () => (/* reexport safe */ _heuristicFarmingConfig__WEBPACK_IMPORTED_MODULE_1__.heuristicFamingConfig),
+/* harmony export */   simulateTravaNFTHeuristicFarmingClaim: () => (/* reexport safe */ _simulateHeuristicFarming__WEBPACK_IMPORTED_MODULE_2__.simulateTravaNFTHeuristicFarmingClaim),
+/* harmony export */   simulateTravaNFTHeuristicFarmingPolish: () => (/* reexport safe */ _simulateHeuristicFarming__WEBPACK_IMPORTED_MODULE_2__.simulateTravaNFTHeuristicFarmingPolish),
+/* harmony export */   simulateTravaNFTHeuristicFarmingStake: () => (/* reexport safe */ _simulateHeuristicFarming__WEBPACK_IMPORTED_MODULE_2__.simulateTravaNFTHeuristicFarmingStake),
+/* harmony export */   simulateTravaNFTHeuristicFarmingWithdraw: () => (/* reexport safe */ _simulateHeuristicFarming__WEBPACK_IMPORTED_MODULE_2__.simulateTravaNFTHeuristicFarmingWithdraw),
+/* harmony export */   updateFarmingState: () => (/* reexport safe */ _UpdateStateAccount__WEBPACK_IMPORTED_MODULE_0__.updateFarmingState)
+/* harmony export */ });
+/* harmony import */ var _UpdateStateAccount__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(396);
+/* harmony import */ var _heuristicFarmingConfig__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(397);
+/* harmony import */ var _simulateHeuristicFarming__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(399);
+
+
+
+
+/***/ }),
+/* 396 */
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   calculateKnightApr: () => (/* binding */ calculateKnightApr),
+/* harmony export */   calculateVaultApr: () => (/* binding */ calculateVaultApr),
+/* harmony export */   updateFarmingState: () => (/* binding */ updateFarmingState)
+/* harmony export */ });
+/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(368);
+/* harmony import */ var _heuristicFarmingConfig__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(397);
+/* harmony import */ var _abis_NFTFarmingBaseExp_json__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(398);
+/* harmony import */ var _abis_NFTCollection_json__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(362);
+/* harmony import */ var _abis_TravaNFTCore_json__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(361);
+/* harmony import */ var ethers__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(15);
+/* harmony import */ var ethers__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(ethers__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var bignumber_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(19);
+/* harmony import */ var _utils_helper__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(118);
+/* harmony import */ var _helpers__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(350);
+function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
+function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
+function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return typeof key === "symbol" ? key : String(key); }
+function _toPrimitive(input, hint) { if (typeof input !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (typeof res !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
+function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
+
+
+
+
+
+
+
+
+
+function updateFarmingState(_x) {
+  return _updateFarmingState.apply(this, arguments);
+}
+function _updateFarmingState() {
+  _updateFarmingState = _asyncToGenerator(function* (appState1) {
+    var force = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+    var appState = appState1;
+    try {
+      if (!appState.smartWalletState.NFTFarmingsState.isFetch || force) {
+        var vaults = _heuristicFarmingConfig__WEBPACK_IMPORTED_MODULE_1__.heuristicFamingConfig[appState.chainId];
+        var nftHeuristicFamringAddress = (0,_utils__WEBPACK_IMPORTED_MODULE_0__.getAddr)("NFT_FARMING_BASE_EXP", appState.chainId);
+        var nftCollectionAddress = (0,_utils__WEBPACK_IMPORTED_MODULE_0__.getAddr)("NFT_COLLECTION_ADDRESS", appState.chainId);
+        var nftCoreAddress = (0,_utils__WEBPACK_IMPORTED_MODULE_0__.getAddr)("NFT_CORE_ADDRESS", appState.chainId);
+        var NFTHeuristicContract = new ethers__WEBPACK_IMPORTED_MODULE_5__.Contract(nftHeuristicFamringAddress, _abis_NFTFarmingBaseExp_json__WEBPACK_IMPORTED_MODULE_2__, appState.web3);
+        var NFTCollectionContract = new ethers__WEBPACK_IMPORTED_MODULE_5__.Contract(nftCollectionAddress, _abis_NFTCollection_json__WEBPACK_IMPORTED_MODULE_3__, appState.web3);
+        var _loop = function* _loop() {
+          if (vaults.hasOwnProperty(vaultId)) {
+            var vault = vaults[vaultId];
+            var [idList, poolInfos, eps] = yield Promise.all([NFTHeuristicContract.getStakingNFTinALevel(appState.smartWalletState.address, vault.level), NFTHeuristicContract.poolInfos(vault.level), NFTHeuristicContract.getEmissionPerSecond(vault.level)]);
+            var dailyReward = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_6__["default"])(eps).multipliedBy(_utils__WEBPACK_IMPORTED_MODULE_0__.DAY_TO_SECONDS).dividedBy(_utils__WEBPACK_IMPORTED_MODULE_0__.BASE18).toNumber();
+            var numberKnightOfUser = idList.length;
+            var totalNFTs = poolInfos.nftCount;
+            var totalVaultValue = Number(poolInfos.totalValue);
+            var idList1 = [];
+            for (var i = 0; i < idList.length; i++) {
+              idList1.push(idList[i].toString());
+            }
+            var totalRewardOfUser = yield NFTHeuristicContract.getTotalRewardsBalance(idList1);
+            var [nftInformation, expEarned, exp, balance] = yield Promise.all([(0,_utils_helper__WEBPACK_IMPORTED_MODULE_7__.multiCall)(_abis_NFTFarmingBaseExp_json__WEBPACK_IMPORTED_MODULE_2__, idList.map((id, _) => ({
+              address: nftHeuristicFamringAddress,
+              name: "nftInfos",
+              params: [id]
+            })), appState.web3, appState.chainId), (0,_utils_helper__WEBPACK_IMPORTED_MODULE_7__.multiCall)(_abis_NFTFarmingBaseExp_json__WEBPACK_IMPORTED_MODULE_2__, idList.map((id, _) => ({
+              address: nftHeuristicFamringAddress,
+              name: "getExpEarnedAndValueEarned",
+              params: [id]
+            })), appState.web3, appState.chainId), (0,_utils_helper__WEBPACK_IMPORTED_MODULE_7__.multiCall)(_abis_NFTCollection_json__WEBPACK_IMPORTED_MODULE_3__, idList.map((id, _) => ({
+              address: nftCollectionAddress,
+              name: "getCollectionExperience",
+              params: [id]
+            })), appState.web3, appState.chainId), (0,_utils_helper__WEBPACK_IMPORTED_MODULE_7__.multiCall)(_abis_NFTFarmingBaseExp_json__WEBPACK_IMPORTED_MODULE_2__, idList.map((id, _) => ({
+              address: nftHeuristicFamringAddress,
+              name: "getTotalRewardsBalance",
+              params: [[id]]
+            })), appState.web3, appState.chainId)]);
+            var nftInfos = new Array();
+            nftInformation.forEach((data, index) => {
+              nftInfos.push({
+                attainedExp: parseInt(exp[index][0]),
+                depositedTime: parseInt(data["depositTime"]) * 1000,
+                id: Number(idList[index]),
+                exp: Number(expEarned[index][0]),
+                earn: (0,bignumber_js__WEBPACK_IMPORTED_MODULE_6__["default"])(balance[index]).dividedBy(_utils__WEBPACK_IMPORTED_MODULE_0__.BASE18).toNumber(),
+                value: Number(expEarned[index][1])
+              });
+            });
+            var collectionMetadataArray = yield Promise.all(idList1.map( /*#__PURE__*/function () {
+              var _ref = _asyncToGenerator(function* (id, index) {
+                var collectionMetadata = yield NFTCollectionContract.getCollectionMetadata(id);
+                var itemIdList = [collectionMetadata[0][0], collectionMetadata[0][1], collectionMetadata[0][2], collectionMetadata[0][3]];
+                var [itemsMetadata] = yield Promise.all([(0,_utils_helper__WEBPACK_IMPORTED_MODULE_7__.multiCall)(_abis_TravaNFTCore_json__WEBPACK_IMPORTED_MODULE_4__, itemIdList.map((tokenId, _) => ({
+                  address: nftCoreAddress,
+                  name: "getTokenMetadata",
+                  params: [tokenId]
+                })), appState.web3, appState.chainId)]);
+                var armorMetadata = itemsMetadata[0];
+                var helmetMetadata = itemsMetadata[1];
+                var shieldMetadata = itemsMetadata[2];
+                var weaponMetadata = itemsMetadata[3];
+                var rarityStr = _helpers__WEBPACK_IMPORTED_MODULE_8__.RarityMapping[parseInt(collectionMetadata[1]) - 1];
+                var price = vaults["".concat(rarityStr, "-vault")].collectionPrice;
+                return {
+                  armorMetadata,
+                  helmetMetadata,
+                  shieldMetadata,
+                  weaponMetadata,
+                  collectionMetadata,
+                  apr: calculateKnightApr(dailyReward, nftInformation[index]["value"], totalVaultValue, price)
+                };
+              });
+              return function (_x2, _x3) {
+                return _ref.apply(this, arguments);
+              };
+            }()));
+            var farmingKnightDetailInfos = new Array();
+            for (var _i = 0; _i < nftInfos.length; _i++) {
+              var farmingKnightDetailInfo = _objectSpread(_objectSpread({}, nftInfos[_i]), {}, {
+                apr: collectionMetadataArray[_i].apr,
+                rarity: collectionMetadataArray[_i].collectionMetadata.rarity,
+                armor: {
+                  tokenId: collectionMetadataArray[_i].collectionMetadata.armorTokenId,
+                  rarity: parseInt(collectionMetadataArray[_i].armorMetadata[0].tokenRarity),
+                  exp: parseInt(collectionMetadataArray[_i].armorMetadata[0].experiencePoint)
+                },
+                helmet: {
+                  tokenId: collectionMetadataArray[_i].collectionMetadata.helmetTokenId,
+                  rarity: parseInt(collectionMetadataArray[_i].helmetMetadata[0].tokenRarity),
+                  exp: parseInt(collectionMetadataArray[_i].helmetMetadata[0].experiencePoint)
+                },
+                shield: {
+                  tokenId: collectionMetadataArray[_i].collectionMetadata.shieldTokenId,
+                  rarity: parseInt(collectionMetadataArray[_i].shieldMetadata[0].tokenRarity),
+                  exp: parseInt(collectionMetadataArray[_i].shieldMetadata[0].experiencePoint)
+                },
+                weapon: {
+                  tokenId: collectionMetadataArray[_i].collectionMetadata.weaponTokenId,
+                  rarity: parseInt(collectionMetadataArray[_i].weaponMetadata[0].tokenRarity),
+                  exp: parseInt(collectionMetadataArray[_i].weaponMetadata[0].experiencePoint)
+                }
+              });
+              farmingKnightDetailInfos.push(farmingKnightDetailInfo);
+            }
+            var nftFarming = {
+              vault: vault,
+              aprAvg: calculateVaultApr(dailyReward, Number(totalNFTs), vault.collectionPrice),
+              numberKnightOfUser: Number(numberKnightOfUser),
+              totalNFTs: Number(totalNFTs),
+              totalRewardOfUser: String(totalRewardOfUser),
+              totalVaultValue: totalVaultValue,
+              dailyReward: dailyReward,
+              farmingState: farmingKnightDetailInfos
+            };
+            appState.smartWalletState.NFTFarmingsState.nftFarmings.set(vaultId, nftFarming);
+          }
+        };
+        for (var vaultId in vaults) {
+          yield* _loop();
+        }
+        appState.smartWalletState.NFTFarmingsState.isFetch = true;
+      }
+    } catch (err) {
+      console.log(err);
+    }
+    return appState;
+  });
+  return _updateFarmingState.apply(this, arguments);
+}
+function calculateKnightApr(dailyReward, collectionVaultValue, totalVaultValue, collectionPrice) {
+  return (0,bignumber_js__WEBPACK_IMPORTED_MODULE_6__["default"])(dailyReward).multipliedBy(collectionVaultValue).div(totalVaultValue).multipliedBy(365).div(collectionPrice).multipliedBy(100).toNumber();
+}
+function calculateVaultApr(dailyReward, totalNFTs, collectionPrice) {
+  return (0,bignumber_js__WEBPACK_IMPORTED_MODULE_6__["default"])(dailyReward).multipliedBy(365).div(totalNFTs).div(collectionPrice).multipliedBy(100).toNumber();
+}
+
+/***/ }),
+/* 397 */
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   heuristicFamingConfig: () => (/* binding */ heuristicFamingConfig)
+/* harmony export */ });
+/* harmony import */ var _utils_config__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(17);
+
+var heuristicFamingConfig = {
+  [_utils_config__WEBPACK_IMPORTED_MODULE_0__.NETWORKS.bscTestnet.chainId]: {
+    "copper-vault": {
+      id: "copper-vault",
+      level: 1,
+      name: "Copper",
+      rarity: "copper",
+      collectionPrice: 4000
+    },
+    "silver-vault": {
+      id: "silver-vault",
+      level: 2,
+      name: "Silver",
+      rarity: "silver",
+      collectionPrice: 10600
+    },
+    "gold-vault": {
+      id: "gold-vault",
+      level: 3,
+      name: "Gold",
+      rarity: "gold",
+      collectionPrice: 23600,
+      disabled: true
+    },
+    "diamond-vault": {
+      id: "diamond-vault",
+      level: 4,
+      name: "Diamond",
+      rarity: "diamond",
+      collectionPrice: 52000,
+      disabled: true
+    },
+    "crystal-vault": {
+      id: "crystal-vault",
+      level: 5,
+      name: "Crystal",
+      rarity: "crystal",
+      collectionPrice: 150000,
+      disabled: true
+    }
+  },
+  [_utils_config__WEBPACK_IMPORTED_MODULE_0__.NETWORKS.bscMainnet.chainId]: {
+    "copper-vault": {
+      id: "copper-vault",
+      level: 1,
+      name: "Copper",
+      rarity: "copper",
+      collectionPrice: 9000
+    },
+    "silver-vault": {
+      id: "silver-vault",
+      level: 2,
+      name: "Silver",
+      rarity: "silver",
+      collectionPrice: 22000
+    },
+    "gold-vault": {
+      id: "gold-vault",
+      level: 3,
+      name: "Gold",
+      rarity: "gold",
+      collectionPrice: 64000
+    },
+    "diamond-vault": {
+      id: "diamond-vault",
+      level: 4,
+      name: "Diamond",
+      rarity: "diamond",
+      collectionPrice: 150000
+    },
+    "crystal-vault": {
+      id: "crystal-vault",
+      level: 5,
+      name: "Crystal",
+      rarity: "crystal",
+      collectionPrice: 820000
+    }
+  }
+};
+
+/***/ }),
+/* 398 */
+/***/ ((module) => {
+
+"use strict";
+module.exports = JSON.parse('[{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"user","type":"address"},{"indexed":false,"internalType":"uint256[]","name":"nftIds","type":"uint256[]"},{"indexed":true,"internalType":"uint128","name":"level","type":"uint128"},{"indexed":false,"internalType":"uint256","name":"amout","type":"uint256"}],"name":"ClaimReward","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"uint256","name":"nft","type":"uint256"},{"indexed":true,"internalType":"uint128","name":"poolNumber","type":"uint128"},{"indexed":false,"internalType":"uint256","name":"index","type":"uint256"}],"name":"NFTIndexUpdated","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"previousOwner","type":"address"},{"indexed":true,"internalType":"address","name":"newOwner","type":"address"}],"name":"OwnershipTransferred","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"user","type":"address"},{"indexed":false,"internalType":"uint256[]","name":"nftIds","type":"uint256[]"},{"indexed":false,"internalType":"uint128","name":"level","type":"uint128"}],"name":"PolishNFT","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"uint128","name":"poolNumber","type":"uint128"},{"indexed":false,"internalType":"uint256","name":"index","type":"uint256"}],"name":"PoolIndexUpdated","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"user","type":"address"},{"indexed":false,"internalType":"uint256[]","name":"nftIds","type":"uint256[]"},{"indexed":true,"internalType":"uint256","name":"level","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"}],"name":"RedeemAndClaim","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"user","type":"address"},{"indexed":false,"internalType":"uint256[]","name":"nftIds","type":"uint256[]"},{"indexed":false,"internalType":"uint128","name":"level","type":"uint128"}],"name":"Stake","type":"event"},{"inputs":[],"name":"PRECISION","outputs":[{"internalType":"uint8","name":"","type":"uint8"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"},{"internalType":"uint128","name":"","type":"uint128"}],"name":"balances","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256[]","name":"_ids","type":"uint256[]"},{"internalType":"uint128","name":"_level","type":"uint128"}],"name":"claimReward","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"cooldownTime","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"distributionEnd","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint128","name":"","type":"uint128"}],"name":"emissionParameters","outputs":[{"internalType":"uint64","name":"coefficientX","type":"uint64"},{"internalType":"uint64","name":"coefficientY","type":"uint64"},{"internalType":"uint64","name":"coefficientZ","type":"uint64"},{"internalType":"uint64","name":"coefficientM","type":"uint64"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint128","name":"_level","type":"uint128"}],"name":"getEmissionPerSecond","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"_id","type":"uint256"}],"name":"getExpEarnedAndValueEarned","outputs":[{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint128","name":"","type":"uint128"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"nft","type":"uint256"},{"internalType":"uint128","name":"poolNumber","type":"uint128"}],"name":"getNFTPoolData","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"_user","type":"address"},{"internalType":"uint128","name":"_level","type":"uint128"}],"name":"getStakingNFTinALevel","outputs":[{"internalType":"uint256[]","name":"","type":"uint256[]"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256[]","name":"_ids","type":"uint256[]"}],"name":"getTotalRewardsBalance","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"distributionDuration","type":"uint256"}],"name":"increaseDistribution","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_distributionDuration","type":"uint256"},{"internalType":"uint256","name":"_cooldownTime","type":"uint256"},{"internalType":"uint256","name":"_percentageFee","type":"uint256"},{"internalType":"contract INFTCollection","name":"_nftContract","type":"address"},{"internalType":"contract IERC20Upgradeable","name":"_rewardToken","type":"address"},{"internalType":"address","name":"_receiveVault","type":"address"},{"internalType":"address","name":"_rewardsVault","type":"address"}],"name":"initialize","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"nftInfos","outputs":[{"internalType":"address","name":"owner","type":"address"},{"internalType":"uint128","name":"value","type":"uint128"},{"internalType":"uint128","name":"level","type":"uint128"},{"internalType":"uint128","name":"lastPolishTime","type":"uint128"},{"internalType":"uint128","name":"depositTime","type":"uint128"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"nftRewardsToClaim","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"operator","type":"address"},{"internalType":"address","name":"from","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"},{"internalType":"bytes","name":"data","type":"bytes"}],"name":"onERC721Received","outputs":[{"internalType":"bytes4","name":"","type":"bytes4"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"owner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"percentageFee","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256[]","name":"_ids","type":"uint256[]"},{"internalType":"uint128","name":"_level","type":"uint128"}],"name":"polishNFT","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint128","name":"","type":"uint128"}],"name":"poolInfos","outputs":[{"internalType":"uint128","name":"totalValue","type":"uint128"},{"internalType":"uint128","name":"nftCount","type":"uint128"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint128","name":"","type":"uint128"}],"name":"pools","outputs":[{"internalType":"uint256","name":"lastUpdateTimestamp","type":"uint256"},{"internalType":"uint256","name":"index","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256[]","name":"_ids","type":"uint256[]"},{"internalType":"uint128","name":"_level","type":"uint128"}],"name":"redeemAndClaim","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"renounceOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint128[]","name":"_level","type":"uint128[]"},{"internalType":"uint64[]","name":"_x","type":"uint64[]"},{"internalType":"uint64[]","name":"_y","type":"uint64[]"},{"internalType":"uint64[]","name":"_z","type":"uint64[]"},{"internalType":"uint64[]","name":"_m","type":"uint64[]"}],"name":"setCoefficient","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_cooldownTime","type":"uint256"}],"name":"setCooldownTime","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_percentageFee","type":"uint256"}],"name":"setPercentageFee","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"_receiveVault","type":"address"}],"name":"setReceiveVault","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"contract IERC20Upgradeable","name":"_rewardToken","type":"address"}],"name":"setRewardToken","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"_rewardsVault","type":"address"}],"name":"setRewardsVault","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256[]","name":"_ids","type":"uint256[]"},{"internalType":"uint128","name":"_level","type":"uint128"}],"name":"stake","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"_receiver","type":"address"}],"name":"transferAllRewardToken","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"}]');
+
+/***/ }),
+/* 399 */
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   getNormalKinghtFromFarmingKnight: () => (/* binding */ getNormalKinghtFromFarmingKnight),
+/* harmony export */   simulateTravaNFTHeuristicFarmingClaim: () => (/* binding */ simulateTravaNFTHeuristicFarmingClaim),
+/* harmony export */   simulateTravaNFTHeuristicFarmingPolish: () => (/* binding */ simulateTravaNFTHeuristicFarmingPolish),
+/* harmony export */   simulateTravaNFTHeuristicFarmingStake: () => (/* binding */ simulateTravaNFTHeuristicFarmingStake),
+/* harmony export */   simulateTravaNFTHeuristicFarmingWithdraw: () => (/* binding */ simulateTravaNFTHeuristicFarmingWithdraw)
+/* harmony export */ });
+/* harmony import */ var bignumber_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(19);
+/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(368);
+/* harmony import */ var _utils_helper__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(118);
+/* harmony import */ var _helpers__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(350);
+/* harmony import */ var _utilities__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(377);
+/* harmony import */ var _UpdateStateAccount__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(396);
+function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
+function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
+function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return typeof key === "symbol" ? key : String(key); }
+function _toPrimitive(input, hint) { if (typeof input !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (typeof res !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
+function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
+
+
+
+
+
+
+function getNormalKinghtFromFarmingKnight(farmingKnightDetailInfo) {
+  var armor = farmingKnightDetailInfo.armor;
+  var helmet = farmingKnightDetailInfo.helmet;
+  var shield = farmingKnightDetailInfo.shield;
+  var weapon = farmingKnightDetailInfo.weapon;
+  var exp = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_0__["default"])(armor.exp).plus(helmet.exp).plus(shield.exp).plus(weapon.exp);
+  var normalKnight = {
+    armorTokenId: armor.tokenId,
+    helmetTokenId: helmet.tokenId,
+    shieldTokenId: shield.tokenId,
+    weaponTokenId: weapon.tokenId,
+    rarity: farmingKnightDetailInfo.rarity,
+    id: farmingKnightDetailInfo.id,
+    setId: 1,
+    exp: exp.toNumber(),
+    armor: armor,
+    helmet: helmet,
+    shield: shield,
+    weapon: weapon
+  };
+  return normalKnight;
+}
+function simulateTravaNFTHeuristicFarmingStake(_x, _x2, _x3, _x4) {
+  return _simulateTravaNFTHeuristicFarmingStake.apply(this, arguments);
+}
+function _simulateTravaNFTHeuristicFarmingStake() {
+  _simulateTravaNFTHeuristicFarmingStake = _asyncToGenerator(function* (appState1, _ids, _vaultId, _from) {
+    var appState = appState1;
+    try {
+      if (!appState.smartWalletState.NFTFarmingsState.isFetch) {
+        appState = yield (0,_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_5__.updateFarmingState)(appState);
+      }
+      var mode = (0,_utils_helper__WEBPACK_IMPORTED_MODULE_2__.getMode)(appState, _from);
+      if (!appState[mode].collection.isFetch) {
+        appState = yield (0,_utilities__WEBPACK_IMPORTED_MODULE_4__.updateCollectionBalanceFromContract)(appState, mode);
+      }
+      var heuristicFarmingVault = appState.smartWalletState.NFTFarmingsState.nftFarmings.get(_vaultId.toLowerCase());
+      var totalNFTs = heuristicFarmingVault.totalNFTs;
+      var totalVaultValue = heuristicFarmingVault.totalVaultValue;
+      var dailyReward = heuristicFarmingVault.dailyReward;
+      var newTotalVaultValue = totalVaultValue + 100 * _ids.length;
+      var _loop = function* _loop(i) {
+        var currentNFT = appState[mode].collection.v1.find(n => n.id == _ids[i]);
+        if (!currentNFT) {
+          throw new _utils__WEBPACK_IMPORTED_MODULE_1__.NFTNotFoundError("Knight is not found!");
+        }
+        var rarityStr = _helpers__WEBPACK_IMPORTED_MODULE_3__.RarityMapping[currentNFT.rarity - 1];
+        var collectionFarmingVault = appState.smartWalletState.NFTFarmingsState.nftFarmings.get("".concat(rarityStr, "-vault"));
+        var kinghtApr = (0,_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_5__.calculateKnightApr)(dailyReward, 100, newTotalVaultValue, collectionFarmingVault.vault.collectionPrice);
+        var nftInfo = {
+          attainedExp: 0,
+          depositedTime: 0,
+          // lastPolishTime: appState.createdTime,
+          id: _ids[i],
+          exp: currentNFT.exp,
+          earn: 0,
+          value: 100
+        };
+        var farmingKnightDetailInfo = _objectSpread(_objectSpread({}, nftInfo), {}, {
+          apr: kinghtApr,
+          rarity: currentNFT.rarity,
+          armor: currentNFT.armor,
+          helmet: currentNFT.helmet,
+          shield: currentNFT.shield,
+          weapon: currentNFT.weapon
+        });
+        heuristicFarmingVault.farmingState.push(farmingKnightDetailInfo);
+        appState[mode].collection.v1 = appState[mode].collection.v1.filter(x => x.id != _ids[i]);
+      };
+      for (var i = 0; i < _ids.length; i++) {
+        yield* _loop(i);
+      }
+      heuristicFarmingVault.numberKnightOfUser = heuristicFarmingVault.numberKnightOfUser + _ids.length;
+      heuristicFarmingVault.totalNFTs = totalNFTs + _ids.length;
+      heuristicFarmingVault.aprAvg = (0,_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_5__.calculateVaultApr)(dailyReward, totalNFTs + _ids.length, heuristicFarmingVault.vault.collectionPrice);
+      heuristicFarmingVault.totalVaultValue = newTotalVaultValue;
+      appState.smartWalletState.NFTFarmingsState.nftFarmings.set(_vaultId, heuristicFarmingVault);
+    } catch (err) {
+      console.log(err);
+    }
+    return appState;
+  });
+  return _simulateTravaNFTHeuristicFarmingStake.apply(this, arguments);
+}
+function simulateTravaNFTHeuristicFarmingWithdraw(_x5, _x6, _x7, _x8) {
+  return _simulateTravaNFTHeuristicFarmingWithdraw.apply(this, arguments);
+}
+function _simulateTravaNFTHeuristicFarmingWithdraw() {
+  _simulateTravaNFTHeuristicFarmingWithdraw = _asyncToGenerator(function* (appState1, _ids, _vaultId, _to) {
+    var appState = appState1;
+    try {
+      var heuristicFarmingVault = appState.smartWalletState.NFTFarmingsState.nftFarmings.get(_vaultId.toLowerCase());
+      var totalNFTs = heuristicFarmingVault.totalNFTs;
+      var totalVaultValue = heuristicFarmingVault.totalVaultValue;
+      var dailyReward = heuristicFarmingVault.dailyReward;
+      var withdrawValue = 0;
+      for (var _id = 0; _id < _ids.length; _id++) {
+        for (var sellingId = 0; sellingId < heuristicFarmingVault.farmingState.length; sellingId++) {
+          if (_id == sellingId) {
+            withdrawValue += heuristicFarmingVault.farmingState[sellingId].value;
+          }
+        }
+      }
+      for (var _id2 = 0; _id2 < _ids.length; _id2++) {
+        var _loop2 = function* _loop2(_sellingId2) {
+          if (_id2 == _sellingId2) {
+            heuristicFarmingVault.farmingState = heuristicFarmingVault.farmingState.filter(n => n.id != _sellingId2);
+            if ((0,_utils_helper__WEBPACK_IMPORTED_MODULE_2__.isWallet)(appState, _to)) {
+              var toMode = (0,_utils_helper__WEBPACK_IMPORTED_MODULE_2__.getMode)(appState, _to);
+              var normalKnight = getNormalKinghtFromFarmingKnight(heuristicFarmingVault.farmingState[_sellingId2]);
+              if (!appState[toMode].collection.isFetch) {
+                appState = yield (0,_utilities__WEBPACK_IMPORTED_MODULE_4__.updateCollectionBalanceFromContract)(appState, toMode);
+              }
+              appState[toMode].collection.v1.push(normalKnight);
+            }
+            _sellingId2--;
+          } else {
+            var rarityStr = _helpers__WEBPACK_IMPORTED_MODULE_3__.RarityMapping[heuristicFarmingVault.farmingState[_sellingId2].rarity - 1];
+            var collectionFarmingVault = appState.smartWalletState.NFTFarmingsState.nftFarmings.get("".concat(rarityStr, "-vault"));
+            var knightApr = (0,_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_5__.calculateKnightApr)(dailyReward, heuristicFarmingVault.farmingState[_sellingId2].value, totalVaultValue - withdrawValue, collectionFarmingVault.vault.collectionPrice);
+            heuristicFarmingVault.farmingState[_sellingId2].apr = knightApr;
+          }
+          _sellingId = _sellingId2;
+        };
+        for (var _sellingId = 0; _sellingId < heuristicFarmingVault.farmingState.length; _sellingId++) {
+          yield* _loop2(_sellingId);
+        }
+      }
+      heuristicFarmingVault.numberKnightOfUser = heuristicFarmingVault.numberKnightOfUser - _ids.length;
+      heuristicFarmingVault.totalNFTs = totalNFTs - _ids.length;
+      heuristicFarmingVault.aprAvg = (0,_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_5__.calculateVaultApr)(dailyReward, totalNFTs - _ids.length, heuristicFarmingVault.vault.collectionPrice);
+      heuristicFarmingVault.totalVaultValue = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_0__["default"])(totalVaultValue).minus(withdrawValue).toNumber();
+      appState.smartWalletState.NFTFarmingsState.nftFarmings.set(_vaultId, heuristicFarmingVault);
+    } catch (err) {
+      console.log(err);
+    }
+    return appState;
+  });
+  return _simulateTravaNFTHeuristicFarmingWithdraw.apply(this, arguments);
+}
+function simulateTravaNFTHeuristicFarmingClaim(_x9, _x10, _x11) {
+  return _simulateTravaNFTHeuristicFarmingClaim.apply(this, arguments);
+}
+function _simulateTravaNFTHeuristicFarmingClaim() {
+  _simulateTravaNFTHeuristicFarmingClaim = _asyncToGenerator(function* (appState1, _ids, _vaultId) {
+    var appState = appState1;
+    try {} catch (err) {
+      console.log(err);
+    }
+    return appState;
+  });
+  return _simulateTravaNFTHeuristicFarmingClaim.apply(this, arguments);
+}
+function simulateTravaNFTHeuristicFarmingPolish(_x12, _x13, _x14) {
+  return _simulateTravaNFTHeuristicFarmingPolish.apply(this, arguments);
+}
+function _simulateTravaNFTHeuristicFarmingPolish() {
+  _simulateTravaNFTHeuristicFarmingPolish = _asyncToGenerator(function* (appState1, _ids, _vaultId) {
+    var appState = appState1;
+    try {
+      for (var i = 0; i < _ids.length; i++) {}
+    } catch (err) {
+      console.log(err);
+    }
+    return appState;
+  });
+  return _simulateTravaNFTHeuristicFarmingPolish.apply(this, arguments);
+}
+
+/***/ }),
+/* 400 */
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   calculateNewAPR: () => (/* reexport safe */ _SimulationStaking__WEBPACK_IMPORTED_MODULE_1__.calculateNewAPR),
+/* harmony export */   simulateStakeStaking: () => (/* reexport safe */ _SimulationStaking__WEBPACK_IMPORTED_MODULE_1__.simulateStakeStaking),
+/* harmony export */   simulateStakingClaimRewards: () => (/* reexport safe */ _SimulationStaking__WEBPACK_IMPORTED_MODULE_1__.simulateStakingClaimRewards),
+/* harmony export */   simulateStakingRedeem: () => (/* reexport safe */ _SimulationStaking__WEBPACK_IMPORTED_MODULE_1__.simulateStakingRedeem),
+/* harmony export */   updateAllAccountVault: () => (/* reexport safe */ _UpdateStateAccount__WEBPACK_IMPORTED_MODULE_0__.updateAllAccountVault)
+/* harmony export */ });
+/* harmony import */ var _UpdateStateAccount__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(401);
+/* harmony import */ var _SimulationStaking__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(404);
+
+
+
+/***/ }),
+/* 401 */
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   updateAllAccountVault: () => (/* binding */ updateAllAccountVault)
+/* harmony export */ });
+/* harmony import */ var ethers__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(15);
+/* harmony import */ var ethers__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(ethers__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _abis_StakedToken_json__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(402);
+/* harmony import */ var _abis_VestingTrava_json__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(403);
+/* harmony import */ var _utils_address__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(16);
+/* harmony import */ var _utils_stakingVaultConfig__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(369);
+/* harmony import */ var _utils_config__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(17);
+/* harmony import */ var bignumber_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(19);
+/* harmony import */ var _abis_AaveOracle_json__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(345);
+/* harmony import */ var _basic_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(13);
+/* harmony import */ var _abis_BEP20_json__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(344);
+/* harmony import */ var _utils_helper__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(118);
+function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
+function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
+function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return typeof key === "symbol" ? key : String(key); }
+function _toPrimitive(input, hint) { if (typeof input !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (typeof res !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
+function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
+
+
+
+
+
+
+
+
+
+
+
+function updateAllAccountVault(_x) {
+  return _updateAllAccountVault.apply(this, arguments);
+}
+function _updateAllAccountVault() {
+  _updateAllAccountVault = _asyncToGenerator(function* (appState1) {
+    var vaultConfigList = _utils_stakingVaultConfig__WEBPACK_IMPORTED_MODULE_4__.listStakingVault[appState1.chainId];
+    var appState = _objectSpread({}, appState1);
+    var underlyingAddress = new Array();
+    var priceUnderlyingAddress = new Array();
+    var lpAddress = new Array();
+    var stakedTokenAddress = new Array();
+    var rewardTokenAddress = new Array();
+    for (var i = 0; i < vaultConfigList.length; i++) {
+      underlyingAddress.push(vaultConfigList[i].underlyingAddress);
+      priceUnderlyingAddress.push(vaultConfigList[i].priceUnderlyingAddress);
+      lpAddress.push(vaultConfigList[i].lpAddress);
+      stakedTokenAddress.push(vaultConfigList[i].stakedTokenAddress);
+      rewardTokenAddress.push(vaultConfigList[i].rewardToken.address);
+    }
+    var [depositedDatas,
+    // data of total deposit in all vaults
+    TVLDatas,
+    // data of total supply all staked tokens
+    bnbBalanceInVaults // balance of bnb in all vaults
+    ] = yield Promise.all([(0,_utils_helper__WEBPACK_IMPORTED_MODULE_10__.multiCall)(_abis_StakedToken_json__WEBPACK_IMPORTED_MODULE_1__, stakedTokenAddress.map((address, _) => ({
+      address: address,
+      name: "balanceOf",
+      params: [appState.smartWalletState.address]
+    })), appState.web3, appState.chainId), (0,_utils_helper__WEBPACK_IMPORTED_MODULE_10__.multiCall)(_abis_StakedToken_json__WEBPACK_IMPORTED_MODULE_1__, stakedTokenAddress.map((address, _) => ({
+      address: address,
+      name: "totalSupply",
+      params: []
+    })), appState.web3, appState.chainId), (0,_utils_helper__WEBPACK_IMPORTED_MODULE_10__.multiCall)(_abis_BEP20_json__WEBPACK_IMPORTED_MODULE_9__, lpAddress.map((address, _) => ({
+      address: (0,_utils_address__WEBPACK_IMPORTED_MODULE_3__.getAddr)("WBNB_ADDRESS", appState.chainId),
+      name: "balanceOf",
+      params: [address]
+    })), appState.web3, appState.chainId)]);
+    var oracleContract = new ethers__WEBPACK_IMPORTED_MODULE_0__.Contract((0,_utils_address__WEBPACK_IMPORTED_MODULE_3__.getAddr)("ORACLE_ADDRESS", appState.chainId), _abis_AaveOracle_json__WEBPACK_IMPORTED_MODULE_7__, appState.web3);
+    var bnbPrice = yield oracleContract.getAssetPrice((0,_utils_address__WEBPACK_IMPORTED_MODULE_3__.getAddr)("WBNB_ADDRESS", appState.chainId));
+    var wbnbContract = new ethers__WEBPACK_IMPORTED_MODULE_0__.Contract((0,_utils_address__WEBPACK_IMPORTED_MODULE_3__.getAddr)("WBNB_ADDRESS", appState.chainId), _abis_BEP20_json__WEBPACK_IMPORTED_MODULE_9__, appState.web3);
+    var wbnbBalanceTravalp = yield wbnbContract.balanceOf((0,_utils_address__WEBPACK_IMPORTED_MODULE_3__.getAddr)("WBNB_TRAVA_LP_ADDRESS", appState.chainId));
+    var travaContract = new ethers__WEBPACK_IMPORTED_MODULE_0__.Contract((0,_utils_address__WEBPACK_IMPORTED_MODULE_3__.getAddr)("TRAVA_TOKEN_IN_STAKING", appState.chainId), _abis_BEP20_json__WEBPACK_IMPORTED_MODULE_9__, appState.web3);
+    var travaBalanceTravalp = yield travaContract.balanceOf((0,_utils_address__WEBPACK_IMPORTED_MODULE_3__.getAddr)("WBNB_TRAVA_LP_ADDRESS", appState.chainId));
+    var travaPrice = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_6__["default"])(bnbPrice).multipliedBy(wbnbBalanceTravalp).div(travaBalanceTravalp);
+    if (travaPrice.isNaN()) {
+      travaPrice = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_6__["default"])(0);
+    }
+    for (var _i = 0; _i < vaultConfigList.length; _i++) {
+      //calculate claimable reward and eps (epoch permit seconds)
+      var claimableReward = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_6__["default"])(0);
+      var eps = "0";
+      if (vaultConfigList[_i].id == "orai") {
+        var vestingCR = new ethers__WEBPACK_IMPORTED_MODULE_0__.Contract((0,_utils_address__WEBPACK_IMPORTED_MODULE_3__.getAddr)("VESTING_TRAVA_ADDRESS", appState.chainId), _abis_VestingTrava_json__WEBPACK_IMPORTED_MODULE_2__, appState.web3);
+        claimableReward = yield vestingCR.getClaimableReward(appState.smartWalletState.address, vaultConfigList[_i].underlyingAddress);
+        eps = "0.005549";
+      } else {
+        var stakedCR = new ethers__WEBPACK_IMPORTED_MODULE_0__.Contract(vaultConfigList[_i].stakedTokenAddress, _abis_StakedToken_json__WEBPACK_IMPORTED_MODULE_1__, appState.web3);
+        claimableReward = yield stakedCR.getTotalRewardsBalance(appState.smartWalletState.address);
+        eps = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_6__["default"])(yield stakedCR.getAssetEmissionPerSecond(vaultConfigList[_i].stakedTokenAddress)).div(vaultConfigList[_i].reserveDecimals).toFixed();
+      }
+
+      /** calculate underlying token price
+       * Consider vault underlying token / BNB, we have:
+       * + bnb price * bnb balance in vault = underlying price * underlying balance in vault
+       * + bnb price * bnb balance in vault + underlying price * underlying balance in vault = lp pair token price * lp pair token total supply
+       * => 2 * bnb price * bnb balance in vault = 2 * underlying price * underlying balance in vault = lp pair token price * lp pair token total supply
+       * if underlying token is not pair 
+       *      return underlying price = bnb price * bnb balance in vault / underlying balance in vault
+       *  else: 
+       *      return lp pair token price = 2 * bnb price * bnb balance in vault / lp pair token total supply
+       */
+
+      var underlyingTokenPrice = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_6__["default"])(0);
+      if (vaultConfigList[_i].underlyingAddress.toLowerCase() != vaultConfigList[_i].lpAddress.toLowerCase()) {
+        // if underlying is rTrava or Trava, it is calculated above
+        if (vaultConfigList[_i].priceUnderlyingAddress.toLowerCase() == (0,_utils_address__WEBPACK_IMPORTED_MODULE_3__.getAddr)("TRAVA_TOKEN_IN_STAKING", appState.chainId).toLowerCase()) {
+          underlyingTokenPrice = travaPrice;
+        } else {
+          var priceUnderlyingTokenContract = new ethers__WEBPACK_IMPORTED_MODULE_0__.Contract(vaultConfigList[_i].priceUnderlyingAddress, _abis_BEP20_json__WEBPACK_IMPORTED_MODULE_9__, appState.web3);
+          var balanceOfUnderlyingTokenInVault = yield priceUnderlyingTokenContract.balanceOf(vaultConfigList[_i].lpAddress);
+          underlyingTokenPrice = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_6__["default"])(bnbPrice).multipliedBy(bnbBalanceInVaults[_i]).div(balanceOfUnderlyingTokenInVault);
+        }
+      } else {
+        var lpContract = new ethers__WEBPACK_IMPORTED_MODULE_0__.Contract(vaultConfigList[_i].lpAddress, _abis_StakedToken_json__WEBPACK_IMPORTED_MODULE_1__, appState.web3);
+        var totalSupply = yield lpContract.totalSupply();
+        underlyingTokenPrice = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_6__["default"])(bnbPrice).multipliedBy(bnbBalanceInVaults[_i]).multipliedBy(2).div(totalSupply);
+      }
+      if (underlyingTokenPrice.isNaN()) {
+        underlyingTokenPrice = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_6__["default"])(0);
+      }
+
+      // init state stakeToken
+      var stakedToken = {
+        id: vaultConfigList[_i].id,
+        name: vaultConfigList[_i].name,
+        code: vaultConfigList[_i].code,
+        stakedTokenAddress: vaultConfigList[_i].stakedTokenAddress,
+        eps: eps,
+        reserveDecimals: vaultConfigList[_i].reserveDecimals
+      };
+
+      // init state underlyingToken
+      var underlyingToken = {
+        underlyingAddress: vaultConfigList[_i].underlyingAddress,
+        reserveDecimals: vaultConfigList[_i].reserveDecimals,
+        price: underlyingTokenPrice.toFixed(0) //underlyingTokenPriceDatas[i]
+      };
+
+      /**Caculate reward token price
+       * if reward token price is trava, rewardTokenPrice = trava price which is caculated above
+       */
+      var rewardTokenPrice = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_6__["default"])("0");
+      if (vaultConfigList[_i].rewardToken.address.toLowerCase() == (0,_utils_address__WEBPACK_IMPORTED_MODULE_3__.getAddr)("TRAVA_TOKEN_IN_STAKING", appState.chainId).toLowerCase()) {
+        rewardTokenPrice = travaPrice;
+      }
+      // init state rewardToken
+      var rewardToken = {
+        address: vaultConfigList[_i].rewardToken.address,
+        decimals: vaultConfigList[_i].rewardToken.decimals,
+        price: rewardTokenPrice.toFixed(0) // rewardTokenPriceDatas[i]
+      };
+
+      // Calculate TVL = TVL amount * price
+      var TVL = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_6__["default"])(TVLDatas[_i]).div(underlyingToken.reserveDecimals).multipliedBy(underlyingToken.price);
+
+      // Calculate APR = eps * Reward token price * 1 year to seconds / TVL / 100 
+      var APR = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_6__["default"])(eps).multipliedBy(rewardToken.price).multipliedBy(_utils_config__WEBPACK_IMPORTED_MODULE_5__.YEAR_TO_SECONDS).div(TVL);
+      if (APR.isNaN()) {
+        APR = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_6__["default"])(0);
+      }
+
+      // Init state smart wallet in vault[i]
+      var accountVaults = {
+        claimable: vaultConfigList[_i].claimable,
+        claimableReward: claimableReward.toString(),
+        deposited: depositedDatas[_i].toString(),
+        TVL: TVL.toFixed(0),
+        APR: APR.toFixed(),
+        underlyingToken: underlyingToken,
+        stakedToken: stakedToken,
+        rewardToken: rewardToken
+      };
+
+      //store sate
+      appState.smartWalletState.travaLPStakingStateList.set(vaultConfigList[_i].stakedTokenAddress.toLowerCase(), accountVaults);
+      if (!appState.smartWalletState.tokenBalances.has(vaultConfigList[_i].stakedTokenAddress.toLowerCase())) {
+        // store balance of stakedTokenAddress
+        appState = yield (0,_basic_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_8__.updateSmartWalletTokenBalance)(appState, vaultConfigList[_i].stakedTokenAddress.toLowerCase());
+      }
+    }
+    return appState;
+  });
+  return _updateAllAccountVault.apply(this, arguments);
+}
+
+/***/ }),
+/* 402 */
+/***/ ((module) => {
+
+"use strict";
+module.exports = JSON.parse('[{"inputs":[{"internalType":"contract IBEP20","name":"stakedToken","type":"address"},{"internalType":"contract IBEP20","name":"rewardToken","type":"address"},{"internalType":"uint256","name":"cooldownSeconds","type":"uint256"},{"internalType":"uint256","name":"unstakeWindow","type":"uint256"},{"internalType":"address","name":"rewardsVault","type":"address"},{"internalType":"address","name":"emissionManager","type":"address"},{"internalType":"uint128","name":"distributionDuration","type":"uint128"},{"internalType":"string","name":"name","type":"string"},{"internalType":"string","name":"symbol","type":"string"},{"internalType":"uint8","name":"decimals","type":"uint8"},{"internalType":"address","name":"governance","type":"address"}],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":true,"internalType":"address","name":"spender","type":"address"},{"indexed":false,"internalType":"uint256","name":"value","type":"uint256"}],"name":"Approval","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"asset","type":"address"},{"indexed":false,"internalType":"uint256","name":"emission","type":"uint256"}],"name":"AssetConfigUpdated","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"asset","type":"address"},{"indexed":false,"internalType":"uint256","name":"index","type":"uint256"}],"name":"AssetIndexUpdated","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"user","type":"address"}],"name":"Cooldown","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"previousOwner","type":"address"},{"indexed":true,"internalType":"address","name":"newOwner","type":"address"}],"name":"OwnershipTransferred","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"from","type":"address"},{"indexed":true,"internalType":"address","name":"to","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"}],"name":"Redeem","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"user","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"}],"name":"RewardsAccrued","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"from","type":"address"},{"indexed":true,"internalType":"address","name":"to","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"}],"name":"RewardsClaimed","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"from","type":"address"},{"indexed":true,"internalType":"address","name":"onBehalfOf","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"}],"name":"Staked","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"from","type":"address"},{"indexed":true,"internalType":"address","name":"to","type":"address"},{"indexed":false,"internalType":"uint256","name":"value","type":"uint256"}],"name":"Transfer","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"user","type":"address"},{"indexed":true,"internalType":"address","name":"asset","type":"address"},{"indexed":false,"internalType":"uint256","name":"index","type":"uint256"}],"name":"UserIndexUpdated","type":"event"},{"inputs":[],"name":"COOLDOWN_SECONDS","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"DISTRIBUTION_END","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"DOMAIN_SEPARATOR","outputs":[{"internalType":"bytes32","name":"","type":"bytes32"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"EIP712_REVISION","outputs":[{"internalType":"bytes","name":"","type":"bytes"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"EMISSION_MANAGER","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"GOVERNANCE","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"PERMIT_TYPEHASH","outputs":[{"internalType":"bytes32","name":"","type":"bytes32"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"PRECISION","outputs":[{"internalType":"uint8","name":"","type":"uint8"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"REVISION","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"REWARDS_VAULT","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"REWARD_TOKEN","outputs":[{"internalType":"contract IBEP20","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"STAKED_TOKEN","outputs":[{"internalType":"contract IBEP20","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"START_TIME_CLAIM","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"UNSTAKE_WINDOW","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"VESTING_TIME_INTERVAL","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"_nonces","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"owner","type":"address"},{"internalType":"address","name":"spender","type":"address"}],"name":"allowance","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"spender","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"approve","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"assets","outputs":[{"internalType":"uint128","name":"emissionPerSecond","type":"uint128"},{"internalType":"uint128","name":"lastUpdateTimestamp","type":"uint128"},{"internalType":"uint256","name":"index","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"lendingPool","type":"address"}],"name":"authorizeLendingPool","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"account","type":"address"}],"name":"balanceOf","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"claimRewards","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"components":[{"internalType":"uint104","name":"emissionPerSecond","type":"uint104"},{"internalType":"uint256","name":"totalStaked","type":"uint256"},{"internalType":"address","name":"underlyingAsset","type":"address"}],"internalType":"struct DistributionTypes.AssetConfigInput[]","name":"assetsConfigInput","type":"tuple[]"}],"name":"configureAssets","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"cooldown","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"decimals","outputs":[{"internalType":"uint8","name":"","type":"uint8"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"spender","type":"address"},{"internalType":"uint256","name":"subtractedValue","type":"uint256"}],"name":"decreaseAllowance","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"lendingPoolAddress","type":"address"},{"internalType":"address","name":"onBehalfOf","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"depositToPool","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"underlyingAsset","type":"address"}],"name":"getAssetEmissionPerSecond","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"fromCooldownTimestamp","type":"uint256"},{"internalType":"uint256","name":"amountToReceive","type":"uint256"},{"internalType":"address","name":"toAddress","type":"address"},{"internalType":"uint256","name":"toBalance","type":"uint256"}],"name":"getNextCooldownTimestamp","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"getOwner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"staker","type":"address"}],"name":"getTotalRewardsBalance","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"user","type":"address"},{"internalType":"address","name":"asset","type":"address"}],"name":"getUserAssetData","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"amount","type":"uint256"},{"internalType":"address","name":"to","type":"address"}],"name":"harvest","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"spender","type":"address"},{"internalType":"uint256","name":"addedValue","type":"uint256"}],"name":"increaseAllowance","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"string","name":"name","type":"string"},{"internalType":"string","name":"symbol","type":"string"},{"internalType":"uint8","name":"decimals","type":"uint8"}],"name":"initialize","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"mint","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"name","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"owner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"owner","type":"address"},{"internalType":"address","name":"spender","type":"address"},{"internalType":"uint256","name":"value","type":"uint256"},{"internalType":"uint256","name":"deadline","type":"uint256"},{"internalType":"uint8","name":"v","type":"uint8"},{"internalType":"bytes32","name":"r","type":"bytes32"},{"internalType":"bytes32","name":"s","type":"bytes32"}],"name":"permit","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"redeem","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"renounceOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_startTimeClaim","type":"uint256"},{"internalType":"uint256","name":"_vestingTimeInterval","type":"uint256"}],"name":"setClaimRewardsTimeline","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_coolDownSecond","type":"uint256"}],"name":"setCoolDownSecond","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_distributionEnd","type":"uint256"}],"name":"setDistributionEnd","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"_emissionManager","type":"address"}],"name":"setEmissionManager","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"_gov","type":"address"}],"name":"setGovernance","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"contract IBEP20","name":"_trava","type":"address"}],"name":"setRewardToken","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"_reward_vault","type":"address"}],"name":"setRewardVault","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_unstake_window","type":"uint256"}],"name":"setUnstakeWindow","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"onBehalfOf","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"stake","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"stakerRewarded","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"stakerRewardsToClaim","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"stakersCooldowns","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"symbol","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"totalSupply","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"recipient","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"transfer","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"sender","type":"address"},{"internalType":"address","name":"recipient","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"transferFrom","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"}]');
+
+/***/ }),
+/* 403 */
+/***/ ((module) => {
+
+"use strict";
+module.exports = JSON.parse('[{"inputs":[{"internalType":"contract IBEP20","name":"rewardToken","type":"address"},{"internalType":"address","name":"rewardsVault","type":"address"},{"internalType":"address","name":"governance","type":"address"}],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"user","type":"address"}],"name":"Cooldown","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"user","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"}],"name":"RewardsAccrued","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"from","type":"address"},{"indexed":true,"internalType":"address","name":"to","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"}],"name":"RewardsClaimed","type":"event"},{"inputs":[],"name":"DOMAIN_SEPARATOR","outputs":[{"internalType":"bytes32","name":"","type":"bytes32"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"EIP712_REVISION","outputs":[{"internalType":"bytes","name":"","type":"bytes"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"GOVERNANCE","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"REVISION","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"REWARDS_VAULT","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"REWARD_TOKEN","outputs":[{"internalType":"contract IBEP20","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"START_TIME_CLAIM","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"VESTING_TIME_INTERVAL","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"reserve","type":"address"},{"internalType":"address","name":"to","type":"address"}],"name":"claimRewards","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"userAddress","type":"address"},{"internalType":"address","name":"reserve","type":"address"}],"name":"getClaimableReward","outputs":[{"internalType":"uint256","name":"claimableReward","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"userAddress","type":"address"},{"internalType":"address","name":"reserve","type":"address"}],"name":"getClaimedReward","outputs":[{"internalType":"uint256","name":"claimedBalance","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"userAddress","type":"address"},{"internalType":"address","name":"reserve","type":"address"}],"name":"getTotalReward","outputs":[{"internalType":"uint256","name":"rewardBalance","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"userAddress","type":"address"},{"internalType":"address","name":"reserve","type":"address"}],"name":"getVestingReward","outputs":[{"internalType":"uint256","name":"vestingBalance","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"initialize","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_startTimeClaim","type":"uint256"},{"internalType":"uint256","name":"_vestingTimeInterval","type":"uint256"}],"name":"setClaimRewardsTimeline","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"_gov","type":"address"}],"name":"setGovernance","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"contract IBEP20","name":"_trava","type":"address"}],"name":"setRewardToken","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"_reward_vault","type":"address"}],"name":"setRewardVault","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"reserve","type":"address"},{"components":[{"internalType":"address","name":"userAddress","type":"address"},{"internalType":"uint256","name":"rewardBalance","type":"uint256"}],"internalType":"struct VestingToken.UserRewardInput[]","name":"userRewardInput","type":"tuple[]"}],"name":"setRewards","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"reserve","type":"address"},{"internalType":"uint256","name":"_reserveIndex","type":"uint256"},{"internalType":"uint256","name":"_vestingAmount","type":"uint256"}],"name":"setVestingAmount","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"},{"internalType":"address","name":"","type":"address"}],"name":"stakerRewardClaimed","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"},{"internalType":"address","name":"","type":"address"}],"name":"stakerRewardsToClaim","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"vestingAmount","outputs":[{"internalType":"uint256","name":"reserveIndex","type":"uint256"},{"internalType":"uint256","name":"reserveVesting","type":"uint256"}],"stateMutability":"view","type":"function"}]');
+
+/***/ }),
+/* 404 */
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   calculateNewAPR: () => (/* binding */ calculateNewAPR),
+/* harmony export */   simulateStakeStaking: () => (/* binding */ simulateStakeStaking),
+/* harmony export */   simulateStakingClaimRewards: () => (/* binding */ simulateStakingClaimRewards),
+/* harmony export */   simulateStakingRedeem: () => (/* binding */ simulateStakingRedeem)
+/* harmony export */ });
+/* harmony import */ var _basic_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(13);
+/* harmony import */ var _utils_config__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(17);
+/* harmony import */ var bignumber_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(19);
+function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
+function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
+function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return typeof key === "symbol" ? key : String(key); }
+function _toPrimitive(input, hint) { if (typeof input !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (typeof res !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
+function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
+
+
+
+function calculateNewAPR(oldAPR, oldTVL, newTVL) {
+  if (newTVL == "0") {
+    return "0";
+  }
+  return (0,bignumber_js__WEBPACK_IMPORTED_MODULE_2__["default"])(oldAPR).multipliedBy(oldTVL).div(newTVL).toFixed();
+}
+function simulateStakeStaking(_x, _x2, _x3, _x4) {
+  return _simulateStakeStaking.apply(this, arguments);
+}
+function _simulateStakeStaking() {
+  _simulateStakeStaking = _asyncToGenerator(function* (appState1, _stakingPool, from, _amount) {
+    var appState = _objectSpread({}, appState1);
+    var stakingPool = _stakingPool.toLowerCase();
+    var amount = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_2__["default"])(_amount);
+    var stakedTokenAddress = stakingPool;
+    var vault = appState.smartWalletState.travaLPStakingStateList.get(stakingPool);
+    if (vault && vault.stakedToken.stakedTokenAddress.toLowerCase() == stakedTokenAddress) {
+      var underlyingToken = vault.underlyingToken.underlyingAddress.toLowerCase();
+      if (!appState.smartWalletState.tokenBalances.has(stakedTokenAddress.toLowerCase())) {
+        appState = yield (0,_basic_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_0__.updateSmartWalletTokenBalance)(appState, stakedTokenAddress);
+      }
+      if (from == appState.walletState.address) {
+        if (!appState.walletState.tokenBalances.has(underlyingToken)) {
+          appState = yield (0,_basic_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_0__.updateUserTokenBalance)(appState, underlyingToken);
+          appState = yield (0,_basic_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_0__.updateSmartWalletTokenBalance)(appState, underlyingToken);
+        }
+        if (amount.toFixed(0) == _utils_config__WEBPACK_IMPORTED_MODULE_1__.MAX_UINT256 || amount.isEqualTo(_utils_config__WEBPACK_IMPORTED_MODULE_1__.MAX_UINT256)) {
+          amount = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_2__["default"])(appState.walletState.tokenBalances.get(underlyingToken));
+        }
+        var newUnderLyingBalance = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_2__["default"])(appState.walletState.tokenBalances.get(underlyingToken)).minus(amount);
+        appState.walletState.tokenBalances.set(underlyingToken, newUnderLyingBalance.toFixed(0));
+      } else if (from == appState.smartWalletState.address) {
+        if (!appState.smartWalletState.tokenBalances.has(underlyingToken)) {
+          appState = yield (0,_basic_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_0__.updateUserTokenBalance)(appState, underlyingToken);
+          appState = yield (0,_basic_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_0__.updateSmartWalletTokenBalance)(appState, underlyingToken);
+        }
+        if (amount.toFixed(0) == _utils_config__WEBPACK_IMPORTED_MODULE_1__.MAX_UINT256 || amount.isEqualTo(_utils_config__WEBPACK_IMPORTED_MODULE_1__.MAX_UINT256)) {
+          amount = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_2__["default"])(appState.smartWalletState.tokenBalances.get(underlyingToken));
+        }
+        var _newUnderLyingBalance = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_2__["default"])(appState.smartWalletState.tokenBalances.get(underlyingToken)).minus(amount);
+        appState.smartWalletState.tokenBalances.set(underlyingToken, _newUnderLyingBalance.toFixed(0));
+      }
+      var newRewardBalance = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_2__["default"])(appState.smartWalletState.tokenBalances.get(stakedTokenAddress.toLowerCase())).plus(amount);
+      var amountUSD = amount.div(vault.underlyingToken.reserveDecimals).multipliedBy(vault.underlyingToken.price);
+      var oldTVL = vault.TVL;
+      var newTVL = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_2__["default"])(oldTVL).plus(amountUSD).toFixed();
+      var oldAPR = vault.APR;
+      vault.deposited = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_2__["default"])(vault.deposited).plus(amount).toFixed(0);
+      vault.TVL = newTVL;
+      vault.APR = calculateNewAPR(oldAPR, oldTVL, newTVL);
+      appState.smartWalletState.travaLPStakingStateList.set(stakingPool, vault);
+      appState.smartWalletState.tokenBalances.set(stakedTokenAddress.toLowerCase(), newRewardBalance.toFixed(0));
+    }
+    return appState;
+  });
+  return _simulateStakeStaking.apply(this, arguments);
+}
+function simulateStakingRedeem(_x5, _x6, _x7, _x8) {
+  return _simulateStakingRedeem.apply(this, arguments);
+}
+function _simulateStakingRedeem() {
+  _simulateStakingRedeem = _asyncToGenerator(function* (appState1, _stakingPool, to, _amount) {
+    var appState = _objectSpread({}, appState1);
+    var stakingPool = _stakingPool.toLowerCase();
+    var amount = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_2__["default"])(_amount);
+    var stakedTokenAddress = stakingPool.toLowerCase();
+    var vault = appState.smartWalletState.travaLPStakingStateList.get(stakingPool);
+    if (vault && vault.stakedToken.stakedTokenAddress.toLowerCase() == stakedTokenAddress) {
+      var underlyingToken = vault.underlyingToken.underlyingAddress.toLowerCase();
+      if (!appState.smartWalletState.tokenBalances.has(stakedTokenAddress)) {
+        appState = yield (0,_basic_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_0__.updateSmartWalletTokenBalance)(appState, stakedTokenAddress);
+      }
+      if (!appState.walletState.tokenBalances.has(underlyingToken)) {
+        appState = yield (0,_basic_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_0__.updateUserTokenBalance)(appState, underlyingToken);
+        appState = yield (0,_basic_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_0__.updateSmartWalletTokenBalance)(appState, underlyingToken);
+      }
+      if (amount.toFixed(0) == _utils_config__WEBPACK_IMPORTED_MODULE_1__.MAX_UINT256 || amount.isEqualTo(_utils_config__WEBPACK_IMPORTED_MODULE_1__.MAX_UINT256)) {
+        amount = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_2__["default"])(vault.deposited);
+      }
+      if (to.toLowerCase() == appState.walletState.address.toLowerCase()) {
+        to = appState.walletState.address;
+        var newUnderLyingBalance = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_2__["default"])(appState.walletState.tokenBalances.get(underlyingToken)).plus(amount);
+        appState.walletState.tokenBalances.set(underlyingToken, newUnderLyingBalance.toFixed(0));
+      } else if (to.toLowerCase() == appState.smartWalletState.address.toLowerCase()) {
+        to = appState.smartWalletState.address;
+        var _newUnderLyingBalance2 = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_2__["default"])(appState.smartWalletState.tokenBalances.get(underlyingToken)).plus(amount);
+        appState.smartWalletState.tokenBalances.set(underlyingToken, _newUnderLyingBalance2.toFixed(0));
+      }
+      var newRewardBalance = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_2__["default"])(appState.smartWalletState.tokenBalances.get(stakedTokenAddress)).minus(amount);
+      var amountUSD = amount.div(vault.underlyingToken.reserveDecimals).multipliedBy(vault.underlyingToken.price);
+      var oldTVL = vault.TVL;
+      var newTVL = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_2__["default"])(oldTVL).minus(amountUSD).toFixed();
+      var oldAPR = vault.APR;
+      vault.deposited = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_2__["default"])(vault.deposited).minus(amount).toFixed(0);
+      vault.TVL = newTVL;
+      vault.APR = calculateNewAPR(oldAPR, oldTVL, newTVL);
+      appState.smartWalletState.tokenBalances.set(stakedTokenAddress.toLowerCase(), newRewardBalance.toFixed(0));
+    }
+    return appState;
+  });
+  return _simulateStakingRedeem.apply(this, arguments);
+}
+function simulateStakingClaimRewards(_x9, _x10, _x11, _x12) {
+  return _simulateStakingClaimRewards.apply(this, arguments);
+}
+function _simulateStakingClaimRewards() {
+  _simulateStakingClaimRewards = _asyncToGenerator(function* (appState1, _stakingPool, _to, _amount) {
+    /// ???
+    var appState = _objectSpread({}, appState1);
+    var stakingPool = _stakingPool.toLowerCase();
+    var amount = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_2__["default"])(_amount);
+    var stakedTokenAddress = stakingPool.toLowerCase();
+    var vault = appState.smartWalletState.travaLPStakingStateList.get(stakingPool);
+    if (vault && vault.stakedToken.stakedTokenAddress.toLowerCase() == stakedTokenAddress) {
+      var rewardTokenAddress = vault.rewardToken.address.toLowerCase();
+      if (amount.toFixed(0) == _utils_config__WEBPACK_IMPORTED_MODULE_1__.MAX_UINT256 || amount.isEqualTo(_utils_config__WEBPACK_IMPORTED_MODULE_1__.MAX_UINT256)) {
+        amount = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_2__["default"])(vault.claimableReward);
+      }
+      if (_to.toLowerCase() == appState.walletState.address.toLowerCase()) {
+        if (!appState.walletState.tokenBalances.has(rewardTokenAddress)) {
+          appState = yield (0,_basic_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_0__.updateUserTokenBalance)(appState, rewardTokenAddress);
+        }
+        appState.walletState.tokenBalances.set(rewardTokenAddress, (0,bignumber_js__WEBPACK_IMPORTED_MODULE_2__["default"])(appState.walletState.tokenBalances.get(rewardTokenAddress)).plus(amount).toFixed(0));
+      } else if (_to.toLowerCase() == appState.smartWalletState.address.toLowerCase()) {
+        if (!appState.smartWalletState.tokenBalances.has(rewardTokenAddress)) {
+          appState = yield (0,_basic_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_0__.updateUserTokenBalance)(appState, rewardTokenAddress);
+        }
+        appState.smartWalletState.tokenBalances.set(rewardTokenAddress, (0,bignumber_js__WEBPACK_IMPORTED_MODULE_2__["default"])(appState.smartWalletState.tokenBalances.get(rewardTokenAddress)).plus(amount).toFixed(0));
+      }
+      vault.claimableReward = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_2__["default"])(vault.claimableReward).minus(amount).toFixed(0);
+      appState.smartWalletState.travaLPStakingStateList.set(stakingPool, vault);
+    }
+    return appState;
+  });
+  return _simulateStakingClaimRewards.apply(this, arguments);
+}
+
 /***/ })
 /******/ 	]);
 /************************************************************************/
@@ -60976,6 +61447,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   NFTNotFoundError: () => (/* reexport safe */ _utils__WEBPACK_IMPORTED_MODULE_2__.NFTNotFoundError),
 /* harmony export */   NFTOwned: () => (/* reexport safe */ _State__WEBPACK_IMPORTED_MODULE_0__.NFTOwned),
 /* harmony export */   NFTSellingState: () => (/* reexport safe */ _State__WEBPACK_IMPORTED_MODULE_0__.NFTSellingState),
+/* harmony export */   NFTVeTravaSellingState: () => (/* reexport safe */ _State__WEBPACK_IMPORTED_MODULE_0__.NFTVeTravaSellingState),
 /* harmony export */   NotEnoughBalanceError: () => (/* reexport safe */ _utils__WEBPACK_IMPORTED_MODULE_2__.NotEnoughBalanceError),
 /* harmony export */   OngoingAuctionError: () => (/* reexport safe */ _utils__WEBPACK_IMPORTED_MODULE_2__.OngoingAuctionError),
 /* harmony export */   OwnerAuctionError: () => (/* reexport safe */ _utils__WEBPACK_IMPORTED_MODULE_2__.OwnerAuctionError),
@@ -61043,6 +61515,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   roundDown: () => (/* reexport safe */ _Simulation__WEBPACK_IMPORTED_MODULE_1__.roundDown),
 /* harmony export */   shuffleArray: () => (/* reexport safe */ _Simulation__WEBPACK_IMPORTED_MODULE_1__.shuffleArray),
 /* harmony export */   simulateExecute: () => (/* reexport safe */ _utils__WEBPACK_IMPORTED_MODULE_2__.simulateExecute),
+/* harmony export */   simulateNFTVeTravaBuy: () => (/* reexport safe */ _Simulation__WEBPACK_IMPORTED_MODULE_1__.simulateNFTVeTravaBuy),
+/* harmony export */   simulateNFTVeTravaCancelSale: () => (/* reexport safe */ _Simulation__WEBPACK_IMPORTED_MODULE_1__.simulateNFTVeTravaCancelSale),
+/* harmony export */   simulateNFTVeTravaCreateSale: () => (/* reexport safe */ _Simulation__WEBPACK_IMPORTED_MODULE_1__.simulateNFTVeTravaCreateSale),
 /* harmony export */   simulateSendToken: () => (/* reexport safe */ _Simulation__WEBPACK_IMPORTED_MODULE_1__.simulateSendToken),
 /* harmony export */   simulateSendTokenV2: () => (/* reexport safe */ _Simulation__WEBPACK_IMPORTED_MODULE_1__.simulateSendTokenV2),
 /* harmony export */   simulateStakeStaking: () => (/* reexport safe */ _Simulation__WEBPACK_IMPORTED_MODULE_1__.simulateStakeStaking),
@@ -61074,6 +61549,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   simulateWrapV2: () => (/* reexport safe */ _Simulation__WEBPACK_IMPORTED_MODULE_1__.simulateWrapV2),
 /* harmony export */   timeRemaining: () => (/* reexport safe */ _Simulation__WEBPACK_IMPORTED_MODULE_1__.timeRemaining),
 /* harmony export */   tokenLockOptions: () => (/* reexport safe */ _Simulation__WEBPACK_IMPORTED_MODULE_1__.tokenLockOptions),
+/* harmony export */   tokenSellOptions: () => (/* reexport safe */ _Simulation__WEBPACK_IMPORTED_MODULE_1__.tokenSellOptions),
 /* harmony export */   updateAllAccountVault: () => (/* reexport safe */ _Simulation__WEBPACK_IMPORTED_MODULE_1__.updateAllAccountVault),
 /* harmony export */   updateAuctioningNFTFromContract: () => (/* reexport safe */ _Simulation__WEBPACK_IMPORTED_MODULE_1__.updateAuctioningNFTFromContract),
 /* harmony export */   updateCollectionBalanceFromContract: () => (/* reexport safe */ _Simulation__WEBPACK_IMPORTED_MODULE_1__.updateCollectionBalanceFromContract),
@@ -61089,6 +61565,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   updateRTravaAndTravaForReward: () => (/* reexport safe */ _Simulation__WEBPACK_IMPORTED_MODULE_1__.updateRTravaAndTravaForReward),
 /* harmony export */   updateSellingNFTFromContract: () => (/* reexport safe */ _Simulation__WEBPACK_IMPORTED_MODULE_1__.updateSellingNFTFromContract),
 /* harmony export */   updateSellingNFTFromGraph: () => (/* reexport safe */ _Simulation__WEBPACK_IMPORTED_MODULE_1__.updateSellingNFTFromGraph),
+/* harmony export */   updateSellingVeTrava: () => (/* reexport safe */ _Simulation__WEBPACK_IMPORTED_MODULE_1__.updateSellingVeTrava),
 /* harmony export */   updateSmartWalletEthBalance: () => (/* reexport safe */ _Simulation__WEBPACK_IMPORTED_MODULE_1__.updateSmartWalletEthBalance),
 /* harmony export */   updateSmartWalletTokenBalance: () => (/* reexport safe */ _Simulation__WEBPACK_IMPORTED_MODULE_1__.updateSmartWalletTokenBalance),
 /* harmony export */   updateTokenBalance: () => (/* reexport safe */ _Simulation__WEBPACK_IMPORTED_MODULE_1__.updateTokenBalance),

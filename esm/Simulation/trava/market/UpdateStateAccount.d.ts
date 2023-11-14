@@ -11,6 +11,7 @@ export declare function updateLPtTokenInfo(appState1: ApplicationState, _tokenAd
     smartWalletState: import("../../../State/SmartWalletState").SmartWalletState;
     NFTSellingState: import("../../..").NFTSellingState;
     NFTAuctioningState: import("../../..").NFTAuctioningState;
+    NFTVeTravaMarketSellingState: import("../../..").NFTVeTravaSellingState;
     TravaGovernanceState: import("../../..").TravaGovernanceState;
     web3: import("ethers").JsonRpcProvider;
     chainId: number;
@@ -22,6 +23,7 @@ export declare function updateLPDebtTokenInfo(appState1: ApplicationState, _toke
     smartWalletState: import("../../../State/SmartWalletState").SmartWalletState;
     NFTSellingState: import("../../..").NFTSellingState;
     NFTAuctioningState: import("../../..").NFTAuctioningState;
+    NFTVeTravaMarketSellingState: import("../../..").NFTVeTravaSellingState;
     TravaGovernanceState: import("../../..").TravaGovernanceState;
     web3: import("ethers").JsonRpcProvider;
     chainId: number;
@@ -34,6 +36,7 @@ export declare function updateMaxRewardCanClaims(appState1: ApplicationState): P
     smartWalletState: import("../../../State/SmartWalletState").SmartWalletState;
     NFTSellingState: import("../../..").NFTSellingState;
     NFTAuctioningState: import("../../..").NFTAuctioningState;
+    NFTVeTravaMarketSellingState: import("../../..").NFTVeTravaSellingState;
     TravaGovernanceState: import("../../..").TravaGovernanceState;
     web3: import("ethers").JsonRpcProvider;
     chainId: number;
@@ -45,6 +48,7 @@ export declare function updateRTravaAndTravaForReward(appState1: ApplicationStat
     smartWalletState: import("../../../State/SmartWalletState").SmartWalletState;
     NFTSellingState: import("../../..").NFTSellingState;
     NFTAuctioningState: import("../../..").NFTAuctioningState;
+    NFTVeTravaMarketSellingState: import("../../..").NFTVeTravaSellingState;
     TravaGovernanceState: import("../../..").TravaGovernanceState;
     web3: import("ethers").JsonRpcProvider;
     chainId: number;

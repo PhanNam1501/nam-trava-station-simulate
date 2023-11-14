@@ -7,6 +7,7 @@ export declare function updateTravaGovernanceState(appState1: ApplicationState, 
     smartWalletState: import("../../..").SmartWalletState;
     NFTSellingState: import("../../..").NFTSellingState;
     NFTAuctioningState: import("../../..").NFTAuctioningState;
+    NFTVeTravaMarketSellingState: import("../../..").NFTVeTravaSellingState;
     TravaGovernanceState: import("../../../State/trava/lending/TravaGovenanceState").TravaGovernanceState;
     web3: import("ethers").JsonRpcProvider;
     chainId: number;
@@ -18,6 +19,7 @@ export declare function updateUserLockBalance(appState1: ApplicationState, _user
     smartWalletState: import("../../..").SmartWalletState;
     NFTSellingState: import("../../..").NFTSellingState;
     NFTAuctioningState: import("../../..").NFTAuctioningState;
+    NFTVeTravaMarketSellingState: import("../../..").NFTVeTravaSellingState;
     TravaGovernanceState: import("../../../State/trava/lending/TravaGovenanceState").TravaGovernanceState;
     web3: import("ethers").JsonRpcProvider;
     chainId: number;
