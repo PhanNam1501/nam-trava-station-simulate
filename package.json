@@ -1,6 +1,6 @@
 {
   "name": "trava-simulation-route",
-  "version": "2.0.17",
+  "version": "2.0.21",
   "description": "",
   "main": "./umd/index.js",
   "module": "./esm/index.js",
@@ -36,10 +36,10 @@
     "@types/ws": "^8.5.5",
     "babel-loader": "^8.2.2",
     "chai": "^4.3.7",
-    "ethers": "^6.8.1",
+    "ethers": "6.7.0",
     "mocha": "^10.2.0",
     "ts-node": "^10.9.1",
-    "webpack": "^5.13.0",
+    "webpack": "^5.0.4",
     "webpack-cli": "^5.1.4"
   }
 }

@@ -30,16 +30,16 @@ export async function updateFarmingState(appState1: ApplicationState, force = fa
                 NFTCollectionABI,
                 appState.web3
             )
-
+            
             for (const vaultId in vaults) {
                 if (vaults.hasOwnProperty(vaultId)) {
+                    
                     const vault = vaults[vaultId];
                     const [idList, poolInfos, eps] = await Promise.all([
                         NFTHeuristicContract.getStakingNFTinALevel(appState.smartWalletState.address, vault.level),
                         NFTHeuristicContract.poolInfos(vault.level),
                         NFTHeuristicContract.getEmissionPerSecond(vault.level),
                     ]);
-
                     const dailyReward = BigNumber(eps)
                         .multipliedBy(DAY_TO_SECONDS)
                         .dividedBy(BASE18)
@@ -48,8 +48,13 @@ export async function updateFarmingState(appState1: ApplicationState, force = fa
                     const numberKnightOfUser = idList.length;
                     const totalNFTs = poolInfos.nftCount;
                     const totalVaultValue = Number(poolInfos.totalValue);
-                    const totalRewardOfUser = await NFTHeuristicContract.getTotalRewardsBalance(idList);
-
+                    
+                    const idList1: string[] = [];
+                    for (let i = 0; i < idList.length; i++) {
+                        idList1.push(idList[i].toString());
+                    }
+                    const totalRewardOfUser = await NFTHeuristicContract.getTotalRewardsBalance(idList1);
+                    
                     const [nftInformation, expEarned, exp, balance] = await Promise.all([
                         multiCall(
                             NFTFarmingBaseExpABI,
@@ -92,6 +97,7 @@ export async function updateFarmingState(appState1: ApplicationState, force = fa
                             appState.chainId
                         ),
                     ]);
+
                     const nftInfos: Array<FarmingKinghtInfo> = new Array();
                     nftInformation.forEach((data: any, index: number) => {
                         nftInfos.push({
@@ -103,15 +109,18 @@ export async function updateFarmingState(appState1: ApplicationState, force = fa
                             value: Number(expEarned[index][1]),
                         });
                     });
+                    
                     const collectionMetadataArray = await Promise.all(
-                        idList.map(async (id: any, index: number) => {
+                        idList1.map(async (id: any, index: number) => {
                             const collectionMetadata = await NFTCollectionContract.getCollectionMetadata(id);
+
                             const itemIdList = [
-                                collectionMetadata.armorTokenId,
-                                collectionMetadata.helmetTokenId,
-                                collectionMetadata.shieldTokenId,
-                                collectionMetadata.weaponTokenId,
+                                collectionMetadata[0][0],
+                                collectionMetadata[0][1],
+                                collectionMetadata[0][2],
+                                collectionMetadata[0][3],
                             ];
+
                             const [itemsMetadata] = await Promise.all([
                                 multiCall(
                                     NFTCoreABI,
@@ -124,12 +133,16 @@ export async function updateFarmingState(appState1: ApplicationState, force = fa
                                     appState.chainId
                                 ),
                             ]);
+                            
                             let armorMetadata = itemsMetadata[0];
                             let helmetMetadata = itemsMetadata[1];
                             let shieldMetadata = itemsMetadata[2];
                             let weaponMetadata = itemsMetadata[3];
-                            const rarityStr = RarityMapping[collectionMetadata.rarity - 1];
+                            const rarityStr = RarityMapping[parseInt(collectionMetadata[1]) - 1];
+                        
                             const price = vaults[`${rarityStr}-vault`].collectionPrice;
+                            
+                            
                             return {
                                 armorMetadata,
                                 helmetMetadata,
@@ -140,7 +153,7 @@ export async function updateFarmingState(appState1: ApplicationState, force = fa
                             };
                         })
                     );
-
+                   
                     const farmingKnightDetailInfos: Array<FarmingKnightDetailInfo> = new Array();
 
                     for (let i = 0; i < nftInfos.length; i++) {

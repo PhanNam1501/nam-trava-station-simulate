@@ -45,3 +45,10 @@ export function mul(a: uint256, b: uint256): uint256 {
 export function div(a: uint256, b: uint256): uint256 {
     return BigNumber(a).div(b).toFixed(0);
 }
+
+export function isWallet(appState: ApplicationState, address: EthAddress): boolean {
+    if(appState.walletState.address.toLowerCase() == address.toLowerCase() || appState.smartWalletState.address.toLowerCase() == address.toLowerCase()) {
+        return true;
+    }
+    return false
+}

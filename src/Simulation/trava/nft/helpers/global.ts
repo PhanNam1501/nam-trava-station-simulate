@@ -78,6 +78,7 @@ export interface AuctioningSpecialKnight extends SpecialKnight, AuctionKnightDat
 export interface FarmingKinghtInfo {
   attainedExp: number,
   depositedTime: number,
+  // lastPolishTime: number,
   id: number,
   exp: number,
   earn: number,
