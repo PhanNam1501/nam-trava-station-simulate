@@ -6,7 +6,7 @@ import { TokenLockOption, tokenLockOptions, updateTravaGovernanceState } from ".
 import { SellingVeTravaType, tokenInfo } from "../../helpers";
 import { updateSellingVeTrava } from "./UpdateStateAccount";
 import BigNumber from "bignumber.js";
-import { updateSmartWalletTokenBalance, updateUserTokenBalance } from "../../../../basic";
+import { updateSmartWalletTokenBalance, updateTokenBalance, updateUserTokenBalance } from "../../../../basic";
 import { NFTNotFoundError } from '../../../../../utils/error';
 import { simulateNFTVeTravaTranfer } from "../../utilities/SimulationVeTravaNFTUtilities";
 import _ from "lodash";
@@ -147,16 +147,12 @@ export async function simulateNFTVeTravaBuy(
             let price = data.priceToken.amount;
             let priceTokenAddress = data.priceToken.address.toLowerCase();
 
-            if (modeFrom == "walletState") {
-                appState = await updateUserTokenBalance(appState, priceTokenAddress);
-            }
-            else if (modeFrom == "smartWalletState") {
-                appState = await updateSmartWalletTokenBalance(appState, priceTokenAddress);
-            }
-            let balanceOfToken = BigNumber(0);
-            if (appState[modeFrom].tokenBalances.has(priceTokenAddress.toLowerCase())) {
-                balanceOfToken = BigNumber(appState[modeFrom].tokenBalances.get(priceTokenAddress.toLowerCase())!);
-            }
+            if(!appState[modeFrom].tokenBalances.has(priceTokenAddress.toLowerCase())) {
+                appState = await updateTokenBalance(appState, _from, priceTokenAddress);
+              }
+            let balanceOfToken = BigNumber(0);            
+            balanceOfToken = BigNumber(appState[modeFrom].tokenBalances.get(priceTokenAddress.toLowerCase())!);
+
             let newBalance = balanceOfToken.minus(price).toFixed();
             appState[modeFrom].tokenBalances.set(priceTokenAddress.toLowerCase(), newBalance);  
             appState[modeFrom].veTravaListState.veTravaList.set(_NFTId, data1);
