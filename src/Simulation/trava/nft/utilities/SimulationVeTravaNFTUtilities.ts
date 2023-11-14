@@ -37,9 +37,6 @@ export async function simulateNFTVeTravaTranfer(
                 appState[modeFrom].veTravaListState.veTravaList.delete(_NFTId);
             }
           }
-          if(!appState[modeFrom].tokenBalances.has(tokenAddress)) {
-            appState = await updateTokenBalance(appState, _from, tokenAddress);
-          }
     } catch (err) {
       throw err;
       }
