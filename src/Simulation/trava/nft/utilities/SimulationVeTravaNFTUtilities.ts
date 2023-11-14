@@ -26,17 +26,16 @@ export async function simulateNFTVeTravaTranfer(
           if (!appState[modeFrom].veTravaListState.veTravaList.has(_NFTId)) {
             throw new NFTNotFoundError("NFT not found");
           }
-          if (appState[modeFrom].veTravaListState.veTravaList.has(_NFTId)) {
-            if (_to == appState.walletState.address.toLowerCase() || _to == appState.smartWalletState.address.toLowerCase()) {
-              let data: VeTravaState = appState[modeFrom].veTravaListState.veTravaList.get(_NFTId)!;
-              appState[modeFrom].veTravaListState.veTravaList.delete(_NFTId);
-              appState[getMode(appState, _to)].veTravaListState.veTravaList.set(_NFTId, data);
-              tokenAddress = data.tokenInVeTrava.tokenLockOption.address;
-            }
-            else{
-                appState[modeFrom].veTravaListState.veTravaList.delete(_NFTId);
-            }
+          if (_to == appState.walletState.address.toLowerCase() || _to == appState.smartWalletState.address.toLowerCase()) {
+            let data: VeTravaState = appState[modeFrom].veTravaListState.veTravaList.get(_NFTId)!;
+            appState[modeFrom].veTravaListState.veTravaList.delete(_NFTId);
+            appState[getMode(appState, _to)].veTravaListState.veTravaList.set(_NFTId, data);
+            tokenAddress = data.tokenInVeTrava.tokenLockOption.address;
           }
+          else{
+              appState[modeFrom].veTravaListState.veTravaList.delete(_NFTId);
+          }
+          
     } catch (err) {
       throw err;
       }

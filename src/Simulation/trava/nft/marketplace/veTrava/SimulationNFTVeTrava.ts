@@ -114,6 +114,8 @@ export async function simulateNFTVeTravaBuy(
 ): Promise<ApplicationState> {
     let appState = {..._appState1};
     try{
+        _from = _from.toLowerCase();
+        _to = _to.toLowerCase();
         if (appState.TravaGovernanceState.totalSupply == "") {
             appState = await updateTravaGovernanceState(appState);
         }
@@ -121,10 +123,10 @@ export async function simulateNFTVeTravaBuy(
             appState = await updateSellingVeTrava(appState);
         }
         let modeFrom: wallet_mode = getMode(appState, _from);
+        let modeTo: wallet_mode = getMode(appState, _to);
         if (!appState.NFTVeTravaMarketSellingState.sellingVeTrava.find(x => x.id == _NFTId)) {
             throw new NFTNotFoundError("NFT not found");
         }
-        _from = _from.toLowerCase();
         if (_from == appState.NFTVeTravaMarketSellingState.sellingVeTrava.find(x => x.id == _NFTId)!.seller.toLowerCase()) {
             throw new Error("Seller is Buyer error");
         }
@@ -154,11 +156,16 @@ export async function simulateNFTVeTravaBuy(
             }
         let balanceOfToken = BigNumber(0);            
         balanceOfToken = BigNumber(appState[modeFrom].tokenBalances.get(priceTokenAddress.toLowerCase())!);
-
         let newBalance = balanceOfToken.minus(price).toFixed();
         appState[modeFrom].tokenBalances.set(priceTokenAddress.toLowerCase(), newBalance);  
-        appState[modeFrom].veTravaListState.veTravaList.set(_NFTId, data1);
-        appState.NFTVeTravaMarketSellingState.sellingVeTrava = appState.NFTVeTravaMarketSellingState.sellingVeTrava.filter(x => x.id != _NFTId);
+
+        if (_to == appState.walletState.address.toLowerCase() || _to == appState.smartWalletState.address.toLowerCase()) {
+            appState[modeTo].veTravaListState.veTravaList.set(_NFTId, data1);
+            appState.NFTVeTravaMarketSellingState.sellingVeTrava = appState.NFTVeTravaMarketSellingState.sellingVeTrava.filter(x => x.id != _NFTId);
+        }
+        else{
+            appState.NFTVeTravaMarketSellingState.sellingVeTrava = appState.NFTVeTravaMarketSellingState.sellingVeTrava.filter(x => x.id != _NFTId);
+        }
         
     } catch (err) {
         throw err;
