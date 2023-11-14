@@ -1,2 +1,3 @@
 export * from "./SimulationExpedition"
-export * from "./updateStateAccount"
+export * from "./UpdateStateAccount"
+export * from "./expeditionConfig"

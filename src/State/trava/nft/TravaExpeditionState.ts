@@ -1,11 +1,11 @@
-import { VaultOption } from "../../../Simulation/trava/nft/missions/expedition/expecditionConfig";
+import { VaultOption } from "../../../Simulation/trava/nft/missions/expedition/expeditionConfig";
 import { uint256 } from "../../../utils/types";
 
 export class VaultState {
-    vaults: Array<Vault>;
+    vaults: Map<string,Vault>;
     isFetch: boolean;
     constructor() {
-      this.vaults = new Array<Vault>();
+      this.vaults = new Map<string,Vault>();
       this.isFetch = false;
     }
   }
