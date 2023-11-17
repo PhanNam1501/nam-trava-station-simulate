@@ -33,10 +33,14 @@ export async function updateSellingVeTrava(
                 appState.web3
             );
             const tokenOnMarket = await Market.getTokenOnSaleCount();
+            let arrayCount = Array();
+            for (let i = 0; i < tokenOnMarket; i++) {
+                arrayCount.push(i);
+            }
             const [tokenIdsOnMarket] = await Promise.all([
                 multiCall(
                     veTravaMarketplaceABI,
-                    new Array(tokenOnMarket).fill(1).map((_, idx) => ({
+                    arrayCount.map((_, idx) => ({
                         address: veTravaMarketAddress,
                         name: "getTokenOnSaleAtIndex",
                         params: [idx],

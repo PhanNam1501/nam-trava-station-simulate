@@ -1,24 +1,20 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.SmartWalletState = void 0;
-const TravaNFTState_1 = require("./trava/nft/TravaNFTState");
-const TravaDeFiState_1 = require("./trava/lending/TravaDeFiState");
-const WalletState_1 = require("./WalletState");
-const TravaGovenanceState_1 = require("./trava/lending/TravaGovenanceState");
-class SmartWalletState {
+import { NFTAuctioningState, NFTFarmingsState, NFTSellingState } from "./trava/nft/TravaNFTState";
+import { WalletTravaLPState, } from "./trava/lending/TravaDeFiState";
+import { CollectionOwned, NFTOwned } from "./WalletState";
+import { VeTravaListState } from "./trava/lending/TravaGovenanceState";
+export class SmartWalletState {
     constructor(address) {
         this.address = address;
         this.tokenBalances = new Map();
-        this.nfts = new WalletState_1.NFTOwned();
-        this.travaLPState = new TravaDeFiState_1.WalletTravaLPState();
-        this.collection = new WalletState_1.CollectionOwned();
+        this.nfts = new NFTOwned();
+        this.travaLPState = new WalletTravaLPState();
+        this.collection = new CollectionOwned();
         this.ethBalances = "";
-        this.sellingNFT = new TravaNFTState_1.NFTSellingState();
-        this.auctioningState = new TravaNFTState_1.NFTAuctioningState();
-        this.NFTFarmingsState = new TravaNFTState_1.NFTFarmingsState();
+        this.sellingNFT = new NFTSellingState();
+        this.auctioningState = new NFTAuctioningState();
+        this.NFTFarmingsState = new NFTFarmingsState();
         this.detailTokenInPool = new Map();
         this.travaLPStakingStateList = new Map();
-        this.veTravaListState = new TravaGovenanceState_1.VeTravaListState();
+        this.veTravaListState = new VeTravaListState();
     }
 }
-exports.SmartWalletState = SmartWalletState;

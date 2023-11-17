@@ -1,4 +1,3 @@
-"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -8,34 +7,29 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.isAuctionOngoing = exports.updateOwnedAuctioningNFT = exports.updateAuctioningNFTFromContract = exports._fetchList = void 0;
-const ethers_1 = require("ethers");
-const address_1 = require("../../../../../utils/address");
-const TravaNFTAuction_json_1 = __importDefault(require("../../../../../abis/TravaNFTAuction.json"));
-const utils_1 = require("../../helpers/utils");
-const bignumber_js_1 = __importDefault(require("bignumber.js"));
-const utils_2 = require("../../../../../utils");
-const helper_1 = require("../../../../../utils/helper");
-function _fetchList(auctionOrderIdSlice, appState) {
+import { Contract } from "ethers";
+import { getAddr } from "../../../../../utils/address";
+import TravaNFTAuctionABI from "../../../../../abis/TravaNFTAuction.json";
+import { collectionSort, fetchBasicCollections, fetchNormalItems, shuffleArray } from "../../helpers/utils";
+import BigNumber from "bignumber.js";
+import { BASE18 } from "../../../../../utils";
+import { multiCall } from "../../../../../utils/helper";
+export function _fetchList(auctionOrderIdSlice, appState) {
     return __awaiter(this, void 0, void 0, function* () {
-        const NFTAuctionContract = new ethers_1.Contract((0, address_1.getAddr)("NFT_AUCTION_ADDRESS", appState.chainId), TravaNFTAuction_json_1.default, appState.web3);
-        const auctionOrder = yield (0, helper_1.multiCall)(TravaNFTAuction_json_1.default, auctionOrderIdSlice.map((idx) => ({
-            address: (0, address_1.getAddr)("NFT_AUCTION_ADDRESS", appState.chainId),
+        const NFTAuctionContract = new Contract(getAddr("NFT_AUCTION_ADDRESS", appState.chainId), TravaNFTAuctionABI, appState.web3);
+        const auctionOrder = yield multiCall(TravaNFTAuctionABI, auctionOrderIdSlice.map((idx) => ({
+            address: getAddr("NFT_AUCTION_ADDRESS", appState.chainId),
             name: "getTokenOrder",
             params: [idx],
         })), appState.web3, appState.chainId);
-        let collectionsMetadata = yield (0, utils_1.fetchBasicCollections)(auctionOrderIdSlice, appState);
+        let collectionsMetadata = yield fetchBasicCollections(auctionOrderIdSlice, appState);
         const auctionOrderFlattened = auctionOrder.flat();
         let changeAuctionKnightData = {
             newStartingBid: ""
         };
         let normalCollections = collectionsMetadata.normalCollections.map((item, index) => (Object.assign(Object.assign(Object.assign({}, item), changeAuctionKnightData), { nftSeller: String(auctionOrderFlattened[index].nftSeller), startingBid: String(auctionOrderFlattened[index].startingBid), currentBidder: String(auctionOrderFlattened[index].currentBidder), currentBid: String(auctionOrderFlattened[index].currentBid), startTime: parseInt(auctionOrderFlattened[index].startTime) * 1000, endTime: parseInt(auctionOrderFlattened[index].endTime) * 1000, bidSteps: parseInt(auctionOrderFlattened[index].bidSteps) })));
         normalCollections = normalCollections.map((i) => (Object.assign(Object.assign({}, i), { price: i.currentBid || i.startingBid })));
-        let specialCollections = collectionsMetadata.specialCollections.map((item, index) => (Object.assign(Object.assign(Object.assign({}, item), changeAuctionKnightData), { nftSeller: String(auctionOrderFlattened[index + normalCollections.length].nftSeller), startingBid: (0, bignumber_js_1.default)(auctionOrderFlattened[index + normalCollections.length].startingBid._hex).dividedBy(utils_2.BASE18).toFixed(), currentBidder: String(auctionOrderFlattened[index + normalCollections.length].currentBidder), currentBid: (0, bignumber_js_1.default)(auctionOrderFlattened[index + normalCollections.length].currentBid._hex).dividedBy(utils_2.BASE18).toFixed(), startTime: parseInt(auctionOrderFlattened[index + normalCollections.length].startTime) * 1000, endTime: parseInt(auctionOrderFlattened[index + normalCollections.length].endTime) * 1000, bidSteps: parseInt(auctionOrderFlattened[index + normalCollections.length].bidSteps) })));
+        let specialCollections = collectionsMetadata.specialCollections.map((item, index) => (Object.assign(Object.assign(Object.assign({}, item), changeAuctionKnightData), { nftSeller: String(auctionOrderFlattened[index + normalCollections.length].nftSeller), startingBid: BigNumber(auctionOrderFlattened[index + normalCollections.length].startingBid._hex).dividedBy(BASE18).toFixed(), currentBidder: String(auctionOrderFlattened[index + normalCollections.length].currentBidder), currentBid: BigNumber(auctionOrderFlattened[index + normalCollections.length].currentBid._hex).dividedBy(BASE18).toFixed(), startTime: parseInt(auctionOrderFlattened[index + normalCollections.length].startTime) * 1000, endTime: parseInt(auctionOrderFlattened[index + normalCollections.length].endTime) * 1000, bidSteps: parseInt(auctionOrderFlattened[index + normalCollections.length].bidSteps) })));
         specialCollections = specialCollections.map((i) => (Object.assign(Object.assign({}, i), { price: i.currentBid || i.startingBid })));
         const armorTokenIdArray = [];
         const helmetTokenIdArray = [];
@@ -47,7 +41,7 @@ function _fetchList(auctionOrderIdSlice, appState) {
             shieldTokenIdArray.push(item.shieldTokenId.toString());
             weaponTokenIdArray.push(item.weaponTokenId.toString());
         });
-        const normalItemsCollections = yield (0, utils_1.fetchNormalItems)(armorTokenIdArray, helmetTokenIdArray, shieldTokenIdArray, weaponTokenIdArray, appState);
+        const normalItemsCollections = yield fetchNormalItems(armorTokenIdArray, helmetTokenIdArray, shieldTokenIdArray, weaponTokenIdArray, appState);
         const v1 = [];
         const v2 = [];
         let counter = 0;
@@ -58,25 +52,24 @@ function _fetchList(auctionOrderIdSlice, appState) {
                 v2.push(Object.assign(Object.assign({}, rawCollection), normalItemsCollections[counter]));
             counter++;
         }
-        return { v1: v1.sort(utils_1.collectionSort), v2: v2.sort(utils_1.collectionSort), specials: specialCollections };
+        return { v1: v1.sort(collectionSort), v2: v2.sort(collectionSort), specials: specialCollections };
     });
 }
-exports._fetchList = _fetchList;
-function updateAuctioningNFTFromContract(appState1, chunk = 500) {
+export function updateAuctioningNFTFromContract(appState1, chunk = 500) {
     return __awaiter(this, void 0, void 0, function* () {
         const appState = Object.assign({}, appState1);
         try {
-            const NFTAuctionContract = new ethers_1.Contract((0, address_1.getAddr)("NFT_AUCTION_ADDRESS", appState.chainId), TravaNFTAuction_json_1.default, appState.web3);
+            const NFTAuctionContract = new Contract(getAddr("NFT_AUCTION_ADDRESS", appState.chainId), TravaNFTAuctionABI, appState.web3);
             const total = parseInt(yield NFTAuctionContract.getTokenOnAunctionCount());
             const [auctionOrderIds] = yield Promise.all([
-                (0, helper_1.multiCall)(TravaNFTAuction_json_1.default, new Array(total).fill(1).map((_, idx) => ({
-                    address: (0, address_1.getAddr)("NFT_AUCTION_ADDRESS", appState.chainId),
+                multiCall(TravaNFTAuctionABI, new Array(total).fill(1).map((_, idx) => ({
+                    address: getAddr("NFT_AUCTION_ADDRESS", appState.chainId),
                     name: "getTokenOnAunctionAtIndex",
                     params: [idx],
                 })), appState.web3, appState.chainId),
             ]);
             const auctionOrderIdsFlattened = auctionOrderIds.flat();
-            (0, utils_1.shuffleArray)(auctionOrderIdsFlattened);
+            shuffleArray(auctionOrderIdsFlattened);
             const n = auctionOrderIdsFlattened.length;
             let promises = [];
             for (let i = 0; i < n; i += chunk) {
@@ -105,8 +98,7 @@ function updateAuctioningNFTFromContract(appState1, chunk = 500) {
         return appState;
     });
 }
-exports.updateAuctioningNFTFromContract = updateAuctioningNFTFromContract;
-function updateOwnedAuctioningNFT(appState1) {
+export function updateOwnedAuctioningNFT(appState1) {
     var _a;
     return __awaiter(this, void 0, void 0, function* () {
         const appState = Object.assign({}, appState1);
@@ -129,12 +121,10 @@ function updateOwnedAuctioningNFT(appState1) {
         return appState;
     });
 }
-exports.updateOwnedAuctioningNFT = updateOwnedAuctioningNFT;
-function isAuctionOngoing(appState, _tokenId) {
+export function isAuctionOngoing(appState, _tokenId) {
     return __awaiter(this, void 0, void 0, function* () {
-        const NFTAuctionContract = new ethers_1.Contract((0, address_1.getAddr)("NFT_AUCTION_ADDRESS", appState.chainId), TravaNFTAuction_json_1.default, appState.web3);
+        const NFTAuctionContract = new Contract(getAddr("NFT_AUCTION_ADDRESS", appState.chainId), TravaNFTAuctionABI, appState.web3);
         const isAuctioning = yield NFTAuctionContract.isAuctionOngoing(_tokenId);
         return isAuctioning;
     });
 }
-exports.isAuctionOngoing = isAuctionOngoing;

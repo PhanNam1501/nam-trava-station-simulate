@@ -1,7 +1,4 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.BaseAccountVault = exports.TravaLPStakingState = exports.WalletTravaLPState = void 0;
-class WalletTravaLPState {
+export class WalletTravaLPState {
     constructor() {
         this.totalCollateralUSD = "";
         this.totalDebtUSD = "";
@@ -15,16 +12,14 @@ class WalletTravaLPState {
         };
     }
 }
-exports.WalletTravaLPState = WalletTravaLPState;
-class TravaLPStakingState {
+export class TravaLPStakingState {
     constructor() {
         this.deposited = "";
         this.claimableReward = "";
         this.claimedReward = "";
     }
 }
-exports.TravaLPStakingState = TravaLPStakingState;
-class BaseAccountVault {
+export class BaseAccountVault {
     constructor() {
         this.claimable = false;
         this.claimableReward = "0";
@@ -51,4 +46,3 @@ class BaseAccountVault {
         };
     }
 }
-exports.BaseAccountVault = BaseAccountVault;

@@ -59476,6 +59476,8 @@ function _simulateNFTVeTravaBuy() {
   _simulateNFTVeTravaBuy = _asyncToGenerator(function* (_appState1, _NFTId, _from, _to) {
     var appState = _objectSpread({}, _appState1);
     try {
+      _from = _from.toLowerCase();
+      _to = _to.toLowerCase();
       if (appState.TravaGovernanceState.totalSupply == "") {
         appState = yield (0,_governance__WEBPACK_IMPORTED_MODULE_1__.updateTravaGovernanceState)(appState);
       }
@@ -59486,40 +59488,38 @@ function _simulateNFTVeTravaBuy() {
       if (!appState.NFTVeTravaMarketSellingState.sellingVeTrava.find(x => x.id == _NFTId)) {
         throw new _utils_error__WEBPACK_IMPORTED_MODULE_5__.NFTNotFoundError("NFT not found");
       }
-      _from = _from.toLowerCase();
-      if (_from != appState.NFTVeTravaMarketSellingState.sellingVeTrava.find(x => x.id == _NFTId).seller.toLowerCase()) {
-        var data = appState.NFTVeTravaMarketSellingState.sellingVeTrava.find(x => x.id == _NFTId);
-        var tokenLock = _governance__WEBPACK_IMPORTED_MODULE_1__.tokenLockOptions[appState.chainId].find(x => x.address == data.lockedToken.address);
-        var data1 = {
-          id: data.id,
-          votingPower: data.votingPower,
-          tokenInVeTrava: {
-            balances: data.lockedToken.amount,
-            tokenLockOption: tokenLock
-          },
-          unlockTime: data.end,
-          rewardTokenBalance: {
-            compoundAbleRewards: data.rwAmount,
-            compoundedRewards: data.rwAmount,
-            balances: data.rwAmount
-          }
-        };
-        var price = data.priceToken.amount;
-        var priceTokenAddress = data.priceToken.address.toLowerCase();
-        if (modeFrom == "walletState") {
-          appState = yield (0,_basic__WEBPACK_IMPORTED_MODULE_4__.updateUserTokenBalance)(appState, priceTokenAddress);
-        } else if (modeFrom == "smartWalletState") {
-          appState = yield (0,_basic__WEBPACK_IMPORTED_MODULE_4__.updateSmartWalletTokenBalance)(appState, priceTokenAddress);
-        }
-        var balanceOfToken = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_3__["default"])(0);
-        if (appState[modeFrom].tokenBalances.has(priceTokenAddress.toLowerCase())) {
-          balanceOfToken = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_3__["default"])(appState[modeFrom].tokenBalances.get(priceTokenAddress.toLowerCase()));
-        }
-        var newBalance = balanceOfToken.minus(price).toFixed();
-        appState[modeFrom].tokenBalances.set(priceTokenAddress.toLowerCase(), newBalance);
-        appState[modeFrom].veTravaListState.veTravaList.set(_NFTId, data1);
-        appState.NFTVeTravaMarketSellingState.sellingVeTrava = appState.NFTVeTravaMarketSellingState.sellingVeTrava.filter(x => x.id != _NFTId);
+      if (_from == appState.NFTVeTravaMarketSellingState.sellingVeTrava.find(x => x.id == _NFTId).seller.toLowerCase()) {
+        throw new Error("Seller is Buyer error");
       }
+      var data = appState.NFTVeTravaMarketSellingState.sellingVeTrava.find(x => x.id == _NFTId);
+      var tokenLock = _governance__WEBPACK_IMPORTED_MODULE_1__.tokenLockOptions[appState.chainId].find(x => x.address == data.lockedToken.address);
+      var data1 = {
+        id: data.id,
+        votingPower: data.votingPower,
+        tokenInVeTrava: {
+          balances: data.lockedToken.amount,
+          tokenLockOption: tokenLock
+        },
+        unlockTime: data.end,
+        rewardTokenBalance: {
+          compoundAbleRewards: data.rwAmount,
+          compoundedRewards: data.rwAmount,
+          balances: data.rwAmount
+        }
+      };
+      var price = data.priceToken.amount;
+      var priceTokenAddress = data.priceToken.address.toLowerCase();
+      if (!appState[modeFrom].tokenBalances.has(priceTokenAddress.toLowerCase())) {
+        appState = yield (0,_basic__WEBPACK_IMPORTED_MODULE_4__.updateTokenBalance)(appState, _from, priceTokenAddress);
+      }
+      var balanceOfToken = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_3__["default"])(0);
+      balanceOfToken = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_3__["default"])(appState[modeFrom].tokenBalances.get(priceTokenAddress.toLowerCase()));
+      var newBalance = balanceOfToken.minus(price).toFixed();
+      appState[modeFrom].tokenBalances.set(priceTokenAddress.toLowerCase(), newBalance);
+      if (_to == appState.walletState.address.toLowerCase() || _to == appState.smartWalletState.address.toLowerCase()) {
+        appState[(0,_utils_helper__WEBPACK_IMPORTED_MODULE_0__.getMode)(appState, _to)].veTravaListState.veTravaList.set(_NFTId, data1);
+      }
+      appState.NFTVeTravaMarketSellingState.sellingVeTrava = appState.NFTVeTravaMarketSellingState.sellingVeTrava.filter(x => x.id != _NFTId);
     } catch (err) {
       throw err;
     }
@@ -60247,7 +60247,11 @@ function _updateSellingVeTrava() {
         var veTravaAddress = (0,_utils_address__WEBPACK_IMPORTED_MODULE_1__.getAddr)("VE_TRAVA_ADDRESS", appState.chainId);
         var Market = new ethers__WEBPACK_IMPORTED_MODULE_0__.Contract(veTravaMarketAddress, _abis_veTravaMarketplaceABI_json__WEBPACK_IMPORTED_MODULE_4__, appState.web3);
         var tokenOnMarket = yield Market.getTokenOnSaleCount();
-        var [tokenIdsOnMarket] = yield Promise.all([(0,_utils_helper__WEBPACK_IMPORTED_MODULE_3__.multiCall)(_abis_veTravaMarketplaceABI_json__WEBPACK_IMPORTED_MODULE_4__, new Array(tokenOnMarket).fill(1).map((_, idx) => ({
+        var arrayCount = Array();
+        for (var _i = 0; _i < tokenOnMarket; _i++) {
+          arrayCount.push(_i);
+        }
+        var [tokenIdsOnMarket] = yield Promise.all([(0,_utils_helper__WEBPACK_IMPORTED_MODULE_3__.multiCall)(_abis_veTravaMarketplaceABI_json__WEBPACK_IMPORTED_MODULE_4__, arrayCount.map((_, idx) => ({
           address: veTravaMarketAddress,
           name: "getTokenOnSaleAtIndex",
           params: [idx]
@@ -60267,11 +60271,11 @@ function _updateSellingVeTrava() {
           params: [id]
         })), appState.web3, appState.chainId)]);
         var sellingVeTrava = new Array();
-        for (var _i = 0; _i < tokenOnSaleFlattened.length; _i++) {
-          var tokenId = tokenOnSaleFlattened[_i];
-          var tokenMetadata = tokensMetadata[_i];
-          var tokenVoting = tokenVotingPower[_i];
-          var tokenOrderInfo = tokenOrder[_i];
+        for (var _i2 = 0; _i2 < tokenOnSaleFlattened.length; _i2++) {
+          var tokenId = tokenOnSaleFlattened[_i2];
+          var tokenMetadata = tokensMetadata[_i2];
+          var tokenVoting = tokenVotingPower[_i2];
+          var tokenOrderInfo = tokenOrder[_i2];
           var priceTokenAddress = "";
           if ((0,bignumber_js__WEBPACK_IMPORTED_MODULE_2__["default"])(tokenOrderInfo[0][2]).isEqualTo(1)) {
             priceTokenAddress = (0,_utils_address__WEBPACK_IMPORTED_MODULE_1__.getAddr)("TRAVA_TOKEN", appState.chainId);
@@ -60363,7 +60367,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _utils_error__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(20);
 /* harmony import */ var _governance_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(384);
 /* harmony import */ var _utils_helper__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(118);
-/* harmony import */ var _basic__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(12);
 function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
 function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
 function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
@@ -60371,7 +60374,6 @@ function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return typ
 function _toPrimitive(input, hint) { if (typeof input !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (typeof res !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
-
 
 
 
@@ -60392,18 +60394,13 @@ function _simulateNFTVeTravaTranfer() {
       if (!appState[modeFrom].veTravaListState.veTravaList.has(_NFTId)) {
         throw new _utils_error__WEBPACK_IMPORTED_MODULE_0__.NFTNotFoundError("NFT not found");
       }
-      if (appState[modeFrom].veTravaListState.veTravaList.has(_NFTId)) {
-        if (_to == appState.walletState.address.toLowerCase() || _to == appState.smartWalletState.address.toLowerCase()) {
-          var data = appState[modeFrom].veTravaListState.veTravaList.get(_NFTId);
-          appState[modeFrom].veTravaListState.veTravaList.delete(_NFTId);
-          appState[(0,_utils_helper__WEBPACK_IMPORTED_MODULE_2__.getMode)(appState, _to)].veTravaListState.veTravaList.set(_NFTId, data);
-          tokenAddress = data.tokenInVeTrava.tokenLockOption.address;
-        } else {
-          appState[modeFrom].veTravaListState.veTravaList.delete(_NFTId);
-        }
-      }
-      if (!appState[modeFrom].tokenBalances.has(tokenAddress)) {
-        appState = yield (0,_basic__WEBPACK_IMPORTED_MODULE_3__.updateTokenBalance)(appState, _from, tokenAddress);
+      if (_to == appState.walletState.address.toLowerCase() || _to == appState.smartWalletState.address.toLowerCase()) {
+        var data = appState[modeFrom].veTravaListState.veTravaList.get(_NFTId);
+        appState[modeFrom].veTravaListState.veTravaList.delete(_NFTId);
+        appState[(0,_utils_helper__WEBPACK_IMPORTED_MODULE_2__.getMode)(appState, _to)].veTravaListState.veTravaList.set(_NFTId, data);
+        tokenAddress = data.tokenInVeTrava.tokenLockOption.address;
+      } else {
+        appState[modeFrom].veTravaListState.veTravaList.delete(_NFTId);
       }
     } catch (err) {
       throw err;

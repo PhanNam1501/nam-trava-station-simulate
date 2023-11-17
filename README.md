@@ -434,6 +434,43 @@ Khi chon action increase balance, Trava Governace State cua smart wallet address
 appState = // update token locked balance cua from address
 ```
 
+<<<<<<< HEAD
+=======
+### Tương tác với veTrava NFT Marketplace
+
+Khi chọn bất cứ action nào của veTrava NFT Marketplace, update selling veTrava NFT
+
+```
+appState = await updateSellingVeTrava(appState);
+```
+
+Khi chọn action Create Sale
+
+```
+appState = await updateUserLockBalance(appState, fromAddress);
+```
+
+Khi chọn action veTrava Buy
+
+```
+appState = await updateTokenBalance(appState, _from, priceTokenAddress);
+appState = await updateUserLockBalance(appState, toAddress);
+```
+
+Khi chọn action Cancel Sale
+
+```
+appState = await updateUserLockBalance(appState, toAddress);
+```
+
+Khi chọn action Tranfer veTrava NFT
+
+```
+appState = await updateUserLockBalance(appState, walletAddress);
+appState = await updateUserLockBalance(appState, smartWalletAddress);
+```
+
+>>>>>>> origin/governance
 # Simulate state
 
 Sau khi init state xong. Với mỗi state, các simulate khác nhau

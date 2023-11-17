@@ -1,9 +1,6 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.WalletState = exports.CollectionOwned = exports.NFTOwned = void 0;
-const TravaNFTState_1 = require("./trava/nft/TravaNFTState");
-const TravaDeFiState_1 = require("./trava/lending/TravaDeFiState");
-const TravaGovenanceState_1 = require("./trava/lending/TravaGovenanceState");
+import { NFTAuctioningState, NFTSellingState } from "./trava/nft/TravaNFTState";
+import { WalletTravaLPState } from "./trava/lending/TravaDeFiState";
+import { VeTravaListState } from "./trava/lending/TravaGovenanceState";
 // export class NFTData {
 //   id: string | number;
 //   data?: any;
@@ -20,15 +17,14 @@ const TravaGovenanceState_1 = require("./trava/lending/TravaGovenanceState");
 //     this.v2 = new Array<NFTData>();
 //   }
 // }
-class NFTOwned {
+export class NFTOwned {
     constructor() {
         this.v1 = {};
         this.v2 = {};
         this.isFetch = false;
     }
 }
-exports.NFTOwned = NFTOwned;
-class CollectionOwned {
+export class CollectionOwned {
     constructor() {
         this.v1 = [];
         this.v2 = [];
@@ -36,18 +32,16 @@ class CollectionOwned {
         this.isFetch = false;
     }
 }
-exports.CollectionOwned = CollectionOwned;
-class WalletState {
+export class WalletState {
     constructor(address) {
         this.address = address;
         this.tokenBalances = new Map();
         this.nfts = new NFTOwned();
         this.collection = new CollectionOwned();
-        this.travaLPState = new TravaDeFiState_1.WalletTravaLPState();
+        this.travaLPState = new WalletTravaLPState();
         this.ethBalances = "";
-        this.sellingNFT = new TravaNFTState_1.NFTSellingState();
-        this.auctioningState = new TravaNFTState_1.NFTAuctioningState();
-        this.veTravaListState = new TravaGovenanceState_1.VeTravaListState();
+        this.sellingNFT = new NFTSellingState();
+        this.auctioningState = new NFTAuctioningState();
+        this.veTravaListState = new VeTravaListState();
     }
 }
-exports.WalletState = WalletState;

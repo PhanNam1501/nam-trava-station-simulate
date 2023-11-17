@@ -1,4 +1,3 @@
-"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -8,35 +7,34 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateSellingVeTrava = void 0;
-const ethers_1 = require("ethers");
-const address_1 = require("../../../../../utils/address");
-const bignumber_js_1 = __importDefault(require("bignumber.js"));
-const helper_1 = require("../../../../../utils/helper");
-const veTravaMarketplaceABI_json_1 = __importDefault(require("../../../../../abis/veTravaMarketplaceABI.json"));
-const Ve_json_1 = __importDefault(require("../../../../../abis/Ve.json"));
-const veTravaConfig_1 = require("./veTravaConfig");
-function updateSellingVeTrava(appState1, force = false) {
+import { Contract } from "ethers";
+import { getAddr } from "../../../../../utils/address";
+import BigNumber from "bignumber.js";
+import { multiCall } from "../../../../../utils/helper";
+import veTravaMarketplaceABI from "../../../../../abis/veTravaMarketplaceABI.json";
+import VeABI from "../../../../../abis/Ve.json";
+import { tokenSellOptions } from "./veTravaConfig";
+export function updateSellingVeTrava(appState1, force = false) {
     return __awaiter(this, void 0, void 0, function* () {
         let appState = Object.assign({}, appState1);
         try {
-            const listTokenSell = veTravaConfig_1.tokenSellOptions[appState.chainId];
+            const listTokenSell = tokenSellOptions[appState.chainId];
             for (let i = 0; i < listTokenSell.length; i++) {
                 let key = listTokenSell[i].address.toLowerCase();
                 let tokenSell = Object.assign({}, listTokenSell[i]);
                 appState.NFTVeTravaMarketSellingState.priceTokens.set(key, tokenSell);
             }
             if (appState.NFTVeTravaMarketSellingState.isFetch == false || force == true) {
-                const veTravaMarketAddress = (0, address_1.getAddr)("VE_TRAVA_MARKETPLACE_ADDRESS", appState.chainId);
-                const veTravaAddress = (0, address_1.getAddr)("VE_TRAVA_ADDRESS", appState.chainId);
-                const Market = new ethers_1.Contract(veTravaMarketAddress, veTravaMarketplaceABI_json_1.default, appState.web3);
+                const veTravaMarketAddress = getAddr("VE_TRAVA_MARKETPLACE_ADDRESS", appState.chainId);
+                const veTravaAddress = getAddr("VE_TRAVA_ADDRESS", appState.chainId);
+                const Market = new Contract(veTravaMarketAddress, veTravaMarketplaceABI, appState.web3);
                 const tokenOnMarket = yield Market.getTokenOnSaleCount();
+                let arrayCount = Array();
+                for (let i = 0; i < tokenOnMarket; i++) {
+                    arrayCount.push(i);
+                }
                 const [tokenIdsOnMarket] = yield Promise.all([
-                    (0, helper_1.multiCall)(veTravaMarketplaceABI_json_1.default, new Array(tokenOnMarket).fill(1).map((_, idx) => ({
+                    multiCall(veTravaMarketplaceABI, arrayCount.map((_, idx) => ({
                         address: veTravaMarketAddress,
                         name: "getTokenOnSaleAtIndex",
                         params: [idx],
@@ -44,13 +42,13 @@ function updateSellingVeTrava(appState1, force = false) {
                 ]);
                 const tokenOnSaleFlattened = tokenIdsOnMarket.flat();
                 const [tokensMetadata, tokenVotingPower, tokenOrder] = yield Promise.all([
-                    (0, helper_1.multiCall)(Ve_json_1.default, tokenOnSaleFlattened.map((id) => ({ address: veTravaAddress, name: "locked", params: [id] })), appState.web3, appState.chainId),
-                    (0, helper_1.multiCall)(Ve_json_1.default, tokenOnSaleFlattened.map((id) => ({
+                    multiCall(VeABI, tokenOnSaleFlattened.map((id) => ({ address: veTravaAddress, name: "locked", params: [id] })), appState.web3, appState.chainId),
+                    multiCall(VeABI, tokenOnSaleFlattened.map((id) => ({
                         address: veTravaAddress,
                         name: "balanceOfNFT",
                         params: [id],
                     })), appState.web3, appState.chainId),
-                    (0, helper_1.multiCall)(veTravaMarketplaceABI_json_1.default, tokenOnSaleFlattened.map((id) => ({
+                    multiCall(veTravaMarketplaceABI, tokenOnSaleFlattened.map((id) => ({
                         address: veTravaMarketAddress,
                         name: "getTokenOrder",
                         params: [id],
@@ -63,11 +61,11 @@ function updateSellingVeTrava(appState1, force = false) {
                     let tokenVoting = tokenVotingPower[i];
                     let tokenOrderInfo = tokenOrder[i];
                     let priceTokenAddress = "";
-                    if ((0, bignumber_js_1.default)(tokenOrderInfo[0][2]).isEqualTo(1)) {
-                        priceTokenAddress = (0, address_1.getAddr)("TRAVA_TOKEN", appState.chainId);
+                    if (BigNumber(tokenOrderInfo[0][2]).isEqualTo(1)) {
+                        priceTokenAddress = getAddr("TRAVA_TOKEN", appState.chainId);
                     }
-                    else if ((0, bignumber_js_1.default)(tokenOrderInfo[0][2]).isEqualTo(2)) {
-                        priceTokenAddress = (0, address_1.getAddr)("BUSD_TOKEN_ADDRESS", appState.chainId);
+                    else if (BigNumber(tokenOrderInfo[0][2]).isEqualTo(2)) {
+                        priceTokenAddress = getAddr("BUSD_TOKEN_ADDRESS", appState.chainId);
                     }
                     let tokenLocked = {
                         address: tokenMetadata[3].toLowerCase(),
@@ -98,4 +96,3 @@ function updateSellingVeTrava(appState1, force = false) {
         return appState;
     });
 }
-exports.updateSellingVeTrava = updateSellingVeTrava;
