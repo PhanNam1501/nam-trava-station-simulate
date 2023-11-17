@@ -123,7 +123,7 @@ export async function simulateNFTVeTravaBuy(
             appState = await updateSellingVeTrava(appState);
         }
         let modeFrom: wallet_mode = getMode(appState, _from);
-        let modeTo: wallet_mode = getMode(appState, _to);
+
         if (!appState.NFTVeTravaMarketSellingState.sellingVeTrava.find(x => x.id == _NFTId)) {
             throw new NFTNotFoundError("NFT not found");
         }
@@ -160,12 +160,9 @@ export async function simulateNFTVeTravaBuy(
         appState[modeFrom].tokenBalances.set(priceTokenAddress.toLowerCase(), newBalance);  
 
         if (_to == appState.walletState.address.toLowerCase() || _to == appState.smartWalletState.address.toLowerCase()) {
-            appState[modeTo].veTravaListState.veTravaList.set(_NFTId, data1);
-            appState.NFTVeTravaMarketSellingState.sellingVeTrava = appState.NFTVeTravaMarketSellingState.sellingVeTrava.filter(x => x.id != _NFTId);
+            appState[getMode(appState, _to)].veTravaListState.veTravaList.set(_NFTId, data1);
         }
-        else{
-            appState.NFTVeTravaMarketSellingState.sellingVeTrava = appState.NFTVeTravaMarketSellingState.sellingVeTrava.filter(x => x.id != _NFTId);
-        }
+        appState.NFTVeTravaMarketSellingState.sellingVeTrava = appState.NFTVeTravaMarketSellingState.sellingVeTrava.filter(x => x.id != _NFTId);
         
     } catch (err) {
         throw err;
