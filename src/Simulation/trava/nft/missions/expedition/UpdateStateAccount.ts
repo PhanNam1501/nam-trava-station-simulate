@@ -1,5 +1,6 @@
 import { ApplicationState, Vault, VaultState } from "../../../../../State";
 import { getAddr } from "../../../../../utils";
+import { multiCall } from "../../../../../utils/helper";
 import { vaultOptions } from "./expeditionConfig";
 
 
@@ -91,6 +92,8 @@ export async function updateExpeditionState(appState1: ApplicationState, force =
           }
           appState.VaultState.vaults.set(key, vault)
         }
+        multiCall
+        getAddr
 
         
         
