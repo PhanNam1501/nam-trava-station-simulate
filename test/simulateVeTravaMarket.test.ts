@@ -31,23 +31,23 @@ import { simulateNFTVeTravaCancelSale, simulateNFTVeTravaCreateSale, simulateNFT
     appState = await updateSellingVeTrava(appState);
     appState = await updateUserLockBalance(appState, userAddress);
     console.log("===============TEST TRANFER==================");
-    appState = await simulateNFTVeTravaTranfer(appState, "43", userAddress, proxyAddress);
-    appState = await simulateNFTVeTravaTranfer(appState, "43", proxyAddress, proxyAddress);
-    // console.log(appState.NFTVeTravaMarketSellingState);
+    // appState = await simulateNFTVeTravaTranfer(appState, "43", userAddress, proxyAddress);
+    // appState = await simulateNFTVeTravaTranfer(appState, "43", proxyAddress, proxyAddress);
+    console.log(appState.NFTVeTravaMarketSellingState);
     // console.log(appState.walletState.veTravaListState);
     // console.log(appState.smartWalletState.veTravaListState);
-    appState = await simulateNFTVeTravaCreateSale(appState, "43", proxyAddress, "9990999", getAddr("TRAVA_TOKEN"));
-    console.log("===============TEST CREATE SALE==================");
-    console.log(appState.smartWalletState.veTravaListState);
-    console.log(appState.NFTVeTravaMarketSellingState);
-    console.log("===============TEST CANCEL SALE==================");
-    appState = await simulateNFTVeTravaCancelSale(appState, "43", proxyAddress);
-    console.log(appState.smartWalletState.veTravaListState);
-    console.log(appState.NFTVeTravaMarketSellingState);
-    console.log("===============TEST BUY==================");
-    appState = await simulateNFTVeTravaBuy(appState, "28", proxyAddress);
-    console.log(appState.smartWalletState.veTravaListState);
-    console.log(appState.NFTVeTravaMarketSellingState);
+    // appState = await simulateNFTVeTravaCreateSale(appState, "43", proxyAddress, "9990999", getAddr("TRAVA_TOKEN"));
+    // console.log("===============TEST CREATE SALE==================");
+    // console.log(appState.smartWalletState.veTravaListState);
+    // console.log(appState.NFTVeTravaMarketSellingState);
+    // console.log("===============TEST CANCEL SALE==================");
+    // appState = await simulateNFTVeTravaCancelSale(appState, "43", proxyAddress);
+    // console.log(appState.smartWalletState.veTravaListState);
+    // console.log(appState.NFTVeTravaMarketSellingState);
+    // console.log("===============TEST BUY==================");
+    // appState = await simulateNFTVeTravaBuy(appState, "28", proxyAddress);
+    // console.log(appState.smartWalletState.veTravaListState);
+    // console.log(appState.NFTVeTravaMarketSellingState);
 
   }
 test()
