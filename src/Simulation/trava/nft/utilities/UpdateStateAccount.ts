@@ -46,6 +46,7 @@ export async function updateNFTBalanceFromContract(
 ): Promise<ApplicationState> {
   const appState = { ...appState1 };
   try {
+    if (!appState[mode].nfts.isFetch) {
     const travacore = new Contract(
       getAddr("NFT_CORE_ADDRESS", appState.chainId),
       TravaNFTCoreABI,
@@ -118,6 +119,7 @@ export async function updateNFTBalanceFromContract(
         appState[mode].nfts.isFetch = true;
       }
     });
+  }
   } catch (e) {
     console.log(e);
   }
@@ -131,6 +133,7 @@ export async function updateCollectionBalanceFromContract(
 ): Promise<ApplicationState> {
   const appState = { ...appState1 };
   try {
+    if (!appState[mode].collection.isFetch) {
     const travaCollection = new Contract(
       getAddr("NFT_COLLECTION_ADDRESS", appState.chainId),
       NFTCollectionABI,
@@ -184,6 +187,7 @@ export async function updateCollectionBalanceFromContract(
     appState[mode].collection.v2 = v2;
     appState[mode].collection.specials = specialCollections;
     appState[mode].collection.isFetch = true;
+    }
   } catch (e) {
     console.log(e);
   }
