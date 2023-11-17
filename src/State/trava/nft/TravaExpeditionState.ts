@@ -2,25 +2,25 @@ import { VaultOption } from "../../../Simulation/trava/nft/missions/expedition/e
 import { uint256 } from "../../../utils/types";
 
 export class VaultState {
-    vaults: Map<string,Vault>;
+    vaults: Map<uint256,Vault>;
     isFetch: boolean;
     constructor() {
-      this.vaults = new Map<string,Vault>();
+      this.vaults = new Map<uint256,Vault>();
       this.isFetch = false;
     }
   }
 
 export interface Vault extends VaultOption {
     totalKnight: number;
-    ownedKnight: number;
     raritys: Map<uint256, number>;
-    profession: string;
-    successReward: number;
-    failureRefund: number;
+    profession: uint256;
+    expeditionPrice: uint256;
+    successPayout: uint256;
+    successReward: uint256;
     token: TokenInfo;
 }
 
 export interface TokenInfo {
-    address: string;
+    address: uint256;
     decimals: number;
 }
