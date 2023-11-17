@@ -1,4 +1,5 @@
 import { ApplicationState, Vault, VaultState } from "../../../../../State";
+import { getAddr } from "../../../../../utils";
 import { vaultOptions } from "./expeditionConfig";
 
 
@@ -59,19 +60,39 @@ export async function updateExpeditionState(appState1: ApplicationState, force =
           let key = listvault[i].id
           let vault: Vault = {
             ...listvault[i],
-            totalKnight: 0,
-            ownedKnight: 0,
-            raritys: new Map(),
-            profession: "",
-            successReward: 0,
-            failureRefund: 0,
+            totalKnight: 0, // getExpeditionCount
+            //  @notice  .
+            //  @dev     getExpeditionCount Get count of all knight of that rarity which has been deployed
+            //  @param   _rarity  Rarity
+            //  @return  uint256  
+            // function getExpeditionCount(uint256 _rarity) public view returns (uint256) {
+            //   return expeditionCount[_rarity];
+            // }
+            ownedKnight: 0, // getTokenOfOwnerBalance
+            //   * @notice  .
+            //   * @dev     getTokenOfOwnerBalance Get currently deployed knight count of an address
+            //   * @param   _owner  Owner address
+            //   * @return  uint256  .
+            //   function getTokenOfOwnerBalance(address _owner)
+            //   external
+            //   view
+            //   returns (uint256)
+            // {
+            //   return EnumerableSet.length(_tokenOfOwner[_owner]);
+            // }
+            raritys: new Map(), // 
+            profession: "", // 
+            successReward: 0, //
+            failureRefund: 0, // 
             token: {
-              address: "",
-              decimals: 0
+              address: getAddr("TRAVA_TOKEN_ADDRESS", appState.chainId).toLowerCase(), //
+              decimals: 18, //
             }
           }
           appState.VaultState.vaults.set(key, vault)
         }
+
+        
         
       } catch (err) {
           console.log(err)
