@@ -13,19 +13,10 @@ export async function updateOwnerKnightInVaultState(appState1: ApplicationState,
     try {
       _from = _from.toLowerCase();
       let mode = getMode(appState, _from);
-      let vaultsName = new Map<number, string>([
-        [0, "rookie"],
-        [1, "professional"],
-        [2, "veteran"],
-        [3, "elite"],
-        [4, "master"],
-        [5, "ultimate"],
-      ])
-      
       const listvault = vaultOptions[appState.chainId];
       let vaultsAddress: string[] = [];
       for (let i = 0; i < listvault.length; i++) {
-        vaultsAddress.push(listvault[i].contractAddress);
+        vaultsAddress.push(listvault[i].contractAddress.toLowerCase());
       }
       vaultsAddress = vaultsAddress.filter((address) => address !== "");
       const [tokenOfOwner]
@@ -66,7 +57,6 @@ export async function updateOwnerKnightInVaultState(appState1: ApplicationState,
       }
 
       for (let i = 0; i < NFTInVaults.length; i++) {
-        let name = vaultsName.get(i);
         let collectionIds: string[] = [];
         for ( let j = 0; j < NFTInVaults[i].length; j++) {
           collectionIds.push(NFTInVaults[i][j].toString());
