@@ -133,7 +133,7 @@ export async function updateOwnerKnightInVaultState(appState1: ApplicationState,
           knights.push({ ...rawCollection, ...normalItemsCollections[counter], ...{deployTimestamp: deployTimestamp[counter].toString()}, ...{successRate: successRate[counter].toString()}, ...{accruedExperience: accruedExperience[counter].toString()}});
           counter++;
         }
-        appState[mode].knightInVaultState.vault.set(name!, knights);
+        appState[mode].knightInVaultState.vault.set(vaultsAddress[i], knights);
       }
 
     } catch (err) {
