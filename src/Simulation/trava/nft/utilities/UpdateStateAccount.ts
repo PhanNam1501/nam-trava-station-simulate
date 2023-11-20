@@ -208,14 +208,13 @@ export async function updateCollectionBalanceFromGraph(
   return appState;
 }
 
-export const TICKET_IDS = ['100001', '100002', '100003'];
 
 export async function updateOwnerTicketState(appState1: ApplicationState, _from: EthAddress, force = false) {
   let appState = { ...appState1 };
   try {
     _from = _from.toLowerCase();
     let mode = getMode(appState, _from);
-
+    const TICKET_IDS = ['100001', '100002', '100003'];
     const [ticketOfOwner]
       = await Promise.all([
       multiCall(
