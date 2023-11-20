@@ -1,12 +1,11 @@
-import { Contract } from "ethers";
-import { ApplicationState, Vault, VaultState } from "../../../../../State";
+import { ApplicationState, Vault } from "../../../../../State";
 import { getAddr } from "../../../../../utils";
 import { getMode, multiCall } from "../../../../../utils/helper";
 import { vaultOptions } from "./expeditionConfig";
 import ExpeditionABI from "../../../../../abis/NFTExpeditionABI.json";
 import BigNumber from "bignumber.js";
 import { EthAddress } from "../../../../../utils/types";
-import { NormalKnight, NormalKnightInVault, fetchBasicCollections, fetchNormalItems } from "../../helpers";
+import { NormalKnightInVault, fetchBasicCollections, fetchNormalItems } from "../../helpers";
 
 
 export async function updateOwnerKnightInVaultState(appState1: ApplicationState, _from: EthAddress, force = false) {
@@ -14,19 +13,6 @@ export async function updateOwnerKnightInVaultState(appState1: ApplicationState,
     try {
       _from = _from.toLowerCase();
       let mode = getMode(appState, _from);
-      /*
-      Cập nhật: 
-      - Các NFT đang sở hữu: 
-        + ID NFT
-        + Rarity: diamond
-        + EXP: 702.731
-        + Remainning time: 1 day 15 hours
-        + success rate: 0.68%
-        + porential expentience: 54,000
-      - BOOST:
-        + YOUR TICKET: 0
-      */
-
       let vaultsName = new Map<number, string>([
         [0, "rookie"],
         [1, "professional"],
@@ -149,7 +135,6 @@ export async function updateOwnerKnightInVaultState(appState1: ApplicationState,
         }
         appState[mode].knightInVaultState.vault.set(name!, knights);
       }
-      console.log(appState[mode].knightInVaultState.vault)
 
     } catch (err) {
         console.log(err)
@@ -238,7 +223,6 @@ export async function updateVaultState(appState1: ApplicationState, force = fals
       appState.chainId
     )
     ]);
-    console.log(expeditionDurations)
     for (let i = 0; i < listvault.length; i++) {
       let key = listvault[i].id
       let raritys: Map<string, number> = new Map();
