@@ -165,7 +165,7 @@ export async function updateVaultState(appState1: ApplicationState, force = fals
       let Total = 0;
       for (let j = 0; j < ListAcceptableRarities.length; j++) {
         Total += Number(vaults[i+j*vaults.length/6]);
-        raritys.set(ListAcceptableRarities[j].toString(), vaults[i+j*Number(BigNumber(vaults.length).dividedBy(6))]);
+        raritys.set(ListAcceptableRarities[j].toString(), vaults[i+j*vaults.length/6]);
       }
       listRaritys.push(raritys);
       listTotal.push(Total);
