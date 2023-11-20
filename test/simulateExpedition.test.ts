@@ -25,10 +25,10 @@ async function test(){
         provider,
         chainId
     );
-    // appState = await updateVaultState(appState);
-    // appState = await updateCollectionBalanceFromContract(appState, "walletState"); //Update NFT of Owner
-    // console.log(appState["walletState"].collection.v1);
-    // appState = await updateOwnerKnightInVaultState(appState, userAddress);
+    appState = await updateVaultState(appState);
+    appState = await updateCollectionBalanceFromContract(appState, "walletState"); //Update NFT of Owner
+    console.log(appState["walletState"].collection.v1);
+    appState = await updateOwnerKnightInVaultState(appState, userAddress);
     appState = await updateOwnerTicketState(appState, userAddress);
     console.log(appState["walletState"].ticketState);
 }

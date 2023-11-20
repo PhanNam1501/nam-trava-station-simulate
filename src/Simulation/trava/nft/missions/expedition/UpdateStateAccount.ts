@@ -144,12 +144,12 @@ export async function updateVaultState(appState1: ApplicationState, force = fals
     vaultsAddress = vaultsAddress.filter((address) => address !== "");
     let datas = Array();
     for (let i = 1; i <= 6; i++) {
-      let A = vaultsAddress.map((address: string) => ({
+      let ExpeditionCount = vaultsAddress.map((address: string) => ({
         address: address,
         name: "getExpeditionCount",
         params: [i.toString()],
       }));
-      datas = datas.concat(A);
+      datas = datas.concat(ExpeditionCount);
     }
     const vaults = await multiCall(
       ExpeditionABI,
@@ -157,17 +157,17 @@ export async function updateVaultState(appState1: ApplicationState, force = fals
       appState.web3,
       appState.chainId
     );
-    let listRitys: Array<Map<string, number>> = [];
+    let listRaritys: Array<Map<string, number>> = [];
     let listTotal: Array<number> = [];
     for (let i = 0; i < Number(BigNumber(vaults.length).dividedBy(6)); i++) {
       let raritys: Map<string, number> = new Map();
-      let ListJ = listvault[i].acceptableRarities;
+      let ListAcceptableRarities = listvault[i].acceptableRarities;
       let Total = 0;
-      for (let j = 0; j < ListJ.length; j++) {
-        Total += Number(vaults[i+j*Number(BigNumber(vaults.length).dividedBy(6))]);
-        raritys.set(ListJ[j].toString(), vaults[i+j*Number(BigNumber(vaults.length).dividedBy(6))]);
+      for (let j = 0; j < ListAcceptableRarities.length; j++) {
+        Total += Number(vaults[i+j*vaults.length/6]);
+        raritys.set(ListAcceptableRarities[j].toString(), vaults[i+j*Number(BigNumber(vaults.length).dividedBy(6))]);
       }
-      listRitys.push(raritys);
+      listRaritys.push(raritys);
       listTotal.push(Total);
     }
     const [expeditionPrices, successPayouts, hugeSuccessPayouts, expeditionDurations]
@@ -221,8 +221,8 @@ export async function updateVaultState(appState1: ApplicationState, force = fals
       let hugeSuccessPayout: string = "";
       let successPayout: string = "";
       let profession: string = "";
-      if (i < listRitys.length) {
-        raritys = listRitys[i];
+      if (i < listRaritys.length) {
+        raritys = listRaritys[i];
         total = listTotal[i];
         expeditionPrice = expeditionPrices[i].toString();
         hugeSuccessPayout = hugeSuccessPayouts[i].toString();
