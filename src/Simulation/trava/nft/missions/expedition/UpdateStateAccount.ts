@@ -139,7 +139,7 @@ export async function updateVaultState(appState1: ApplicationState, force = fals
     const listvault = vaultOptions[appState.chainId];
     let vaultsAddress: string[] = [];
     for (let i = 0; i < listvault.length; i++) {
-      vaultsAddress.push(listvault[i].contractAddress);
+      vaultsAddress.push(listvault[i].contractAddress.toLowerCase());
     }
     vaultsAddress = vaultsAddress.filter((address) => address !== "");
     let datas = Array();
