@@ -1,9 +1,9 @@
-import { JsonRpcProvider } from "ethers";
+import { ethers, JsonRpcProvider } from "ethers";
 import { ApplicationState } from "../src/State/ApplicationState";
 import { getAddr } from "../src/utils/address";
 import BigNumber from "bignumber.js";
-import { updateExpeditionState, updateVaultState } from "../src/Simulation";
-
+import { updateCollectionBalanceFromContract, updateOwnerKnightInVaultState, updateOwnerTicketState, updateVaultState } from "../src/Simulation";
+import ExpeditionABI from "../src/abis/NFTExpeditionABI.json";
 
 // start 
 async function test(){
@@ -12,7 +12,7 @@ async function test(){
     const chainId = Number((await provider.getNetwork()).chainId)
     //main net
     //https://bsc.publicnode.com
-    //0x789b21282e83b46e13334623eda2b037a99efdf2
+    //0xeC41349b082fd667b7D5377808A504aeAA9a7A28
     //test net
     //https://bsc-testnet.publicnode.com
     //0x595622cBd0Fc4727DF476a1172AdA30A9dDf8F43
@@ -25,7 +25,11 @@ async function test(){
         provider,
         chainId
     );
-    appState = await updateVaultState(appState);
-    console.log(appState.VaultState);
+    // appState = await updateVaultState(appState);
+    // appState = await updateCollectionBalanceFromContract(appState, "walletState"); //Update NFT of Owner
+    // console.log(appState["walletState"].collection.v1);
+    // appState = await updateOwnerKnightInVaultState(appState, userAddress);
+    appState = await updateOwnerTicketState(appState, userAddress);
+    console.log(appState["walletState"].ticketState);
 }
 test()

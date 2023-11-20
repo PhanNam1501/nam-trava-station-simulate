@@ -1,4 +1,4 @@
-import { ArmouryObject, NormalKnight, SpecialKnight } from "../Simulation/trava/nft/helpers/global";
+import { ArmouryObject, NormalKnight, NormalKnightInVault, SpecialKnight } from "../Simulation/trava/nft/helpers/global";
 import { EthAddress } from "../utils/types";
 import { NFTAuctioningState, NFTSellingState } from "./trava/nft/TravaNFTState";
 import { WalletTravaLPState } from "./trava/lending/TravaDeFiState";
@@ -47,6 +47,24 @@ export class CollectionOwned {
   }
 }
 
+export class KnightInVaultState {
+  vault: Map<string, Array<NormalKnightInVault>>;
+  isFetch: boolean;
+  constructor() {
+    this.vault = new Map();
+    this.isFetch = false;
+  }
+}
+
+export class Ticket {
+  ticket: string;
+  amount: number;
+  constructor() {
+    this.ticket = "";
+    this.amount = 0;
+  }
+}
+
 export class WalletState {
   address: EthAddress;
   tokenBalances: Map<string, string>;
@@ -57,6 +75,8 @@ export class WalletState {
   sellingNFT: NFTSellingState;
   auctioningState: NFTAuctioningState;
   veTravaListState: VeTravaListState;
+  knightInVaultState: KnightInVaultState;
+  ticketState: Map<string, Ticket>;
   constructor(address: string) {
     this.address = address;
     this.tokenBalances = new Map<string, string>();
@@ -67,6 +87,8 @@ export class WalletState {
     this.sellingNFT = new NFTSellingState();
     this.auctioningState = new NFTAuctioningState();
     this.veTravaListState = new VeTravaListState();
+    this.knightInVaultState = new KnightInVaultState();
+    this.ticketState = new Map();
   }
 
   // async getTokenAmount(tokenAddress: string): Promise<string> {

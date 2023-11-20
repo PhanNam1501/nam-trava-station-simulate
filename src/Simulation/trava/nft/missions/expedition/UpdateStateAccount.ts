@@ -1,26 +1,21 @@
 import { Contract } from "ethers";
 import { ApplicationState, Vault, VaultState } from "../../../../../State";
 import { getAddr } from "../../../../../utils";
-import { multiCall } from "../../../../../utils/helper";
+import { getMode, multiCall } from "../../../../../utils/helper";
 import { vaultOptions } from "./expeditionConfig";
 import ExpeditionABI from "../../../../../abis/NFTExpeditionABI.json";
 import BigNumber from "bignumber.js";
 import { EthAddress } from "../../../../../utils/types";
+import { NormalKnight, NormalKnightInVault, fetchBasicCollections, fetchNormalItems } from "../../helpers";
 
 
-export async function updateExpeditionState(appState1: ApplicationState, force = false) {
+export async function updateOwnerKnightInVaultState(appState1: ApplicationState, _from: EthAddress, force = false) {
     let appState = { ...appState1 };
     try {
+      _from = _from.toLowerCase();
+      let mode = getMode(appState, _from);
       /*
       Cập nhật: 
-      - From: smart wallet
-      - EXPENDITIONS: 
-      + id
-      + Raritys: diamond 430, gold 70, silver 0, bronze 0
-      + professional: 3 hour
-      + success reward: 300 TRAVA
-      + Total knights deployed: 502 Knights
-      + Owned Knights: 420 Knights
       - Các NFT đang sở hữu: 
         + ID NFT
         + Rarity: diamond
@@ -31,22 +26,131 @@ export async function updateExpeditionState(appState1: ApplicationState, force =
       - BOOST:
         + YOUR TICKET: 0
       */
+
+      let vaultsName = new Map<number, string>([
+        [0, "rookie"],
+        [1, "professional"],
+        [2, "veteran"],
+        [3, "elite"],
+        [4, "master"],
+        [5, "ultimate"],
+      ])
       
       const listvault = vaultOptions[appState.chainId];
-    //ownedKnight: 0, // getTokenOfOwnerBalance
-    //   * @notice  .
-    //   * @dev     getTokenOfOwnerBalance Get currently deployed knight count of an address
-    //   * @param   _owner  Owner address
-    //   * @return  uint256  .
-    //   function getTokenOfOwnerBalance(address _owner)
-    //   external
-    //   view
-    //   returns (uint256)
-    // {
-    //   return EnumerableSet.length(_tokenOfOwner[_owner]);
-    // }
+      let vaultsAddress: string[] = [];
+      for (let i = 0; i < listvault.length; i++) {
+        vaultsAddress.push(listvault[i].contractAddress);
+      }
+      vaultsAddress = vaultsAddress.filter((address) => address !== "");
+      const [tokenOfOwner]
+      = await Promise.all([
+      multiCall(
+      ExpeditionABI,
+      vaultsAddress.map((address: string) => ({
+        address: address,
+        name: "getTokenOfOwnerBalance",
+        params: [_from],
+      })),
+      appState.web3,
+      appState.chainId
+      )]);
+      let NFTInVaults = [];
+      for (let i = 0; i < tokenOfOwner.length; i++) {
+        let total = parseInt(tokenOfOwner[i]);
+        let list: string[] = [];
+        for (let j = 0; j < total; j++) {
+          list.push(j.toString());
+        }
+        if (list.length == 0) {
+          NFTInVaults.push([]);
+          continue;
+        }
+        let [NFTInVault] = await Promise.all([
+          multiCall(
+            ExpeditionABI,
+            list.map((id: any, _: number) => ({
+                address: vaultsAddress[i],
+                name: "getTokenOfOwnerAtIndex",
+                params: [_from, id],
+            })),
+            appState.web3,
+            appState.chainId
+          )]);
+        NFTInVaults.push(NFTInVault);
+      }
 
-      
+      for (let i = 0; i < NFTInVaults.length; i++) {
+        let name = vaultsName.get(i);
+        let collectionIds: string[] = [];
+        for ( let j = 0; j < NFTInVaults[i].length; j++) {
+          collectionIds.push(NFTInVaults[i][j].toString());
+        }
+        if (collectionIds.length == 0) {
+          continue;
+        }
+        const { normalCollections, specialCollections } = await fetchBasicCollections(
+          collectionIds, appState
+        );
+        const armorTokenIdArray: Array<string> = [];
+        const helmetTokenIdArray: Array<string> = [];
+        const shieldTokenIdArray: Array<string> = [];
+        const weaponTokenIdArray: Array<string> = [];
+        normalCollections.forEach((item, _) => {
+          armorTokenIdArray.push(item.armorTokenId.toString());
+          helmetTokenIdArray.push(item.helmetTokenId.toString());
+          shieldTokenIdArray.push(item.shieldTokenId.toString());
+          weaponTokenIdArray.push(item.weaponTokenId.toString());
+        });
+        const normalItemsCollections = await fetchNormalItems(
+          armorTokenIdArray,
+          helmetTokenIdArray,
+          shieldTokenIdArray,
+          weaponTokenIdArray,
+          appState
+        );
+
+        const [deployTimestamp, successRate, accruedExperience] = await Promise.all([
+          multiCall(
+            ExpeditionABI,
+            collectionIds.map((id: any, _: number) => ({
+              address: vaultsAddress[i],
+              name: 'getDeployTimestamp',
+              params: [id],
+            })),
+            appState.web3,
+            appState.chainId
+          ),
+          multiCall(
+            ExpeditionABI,
+            collectionIds.map((id: any, _: number) => ({
+              address: vaultsAddress[i],
+              name: 'getSuccessRate',
+              params: [id],
+            })),
+            appState.web3,
+            appState.chainId
+          ),
+          multiCall(
+            ExpeditionABI,
+            collectionIds.map((id: any, _: number) => ({
+              address: vaultsAddress[i],
+              name: 'getAccruedExperience',
+              params: [id],
+            })),
+            appState.web3,
+            appState.chainId
+          ),
+        ]);
+        let knights: Array<NormalKnightInVault> = [];
+        let counter = 0;
+        for (const rawCollection of normalCollections) {
+          knights.push({ ...rawCollection, ...normalItemsCollections[counter], ...{deployTimestamp: deployTimestamp[counter].toString()}, ...{successRate: successRate[counter].toString()}, ...{accruedExperience: accruedExperience[counter].toString()}});
+          counter++;
+        }
+        appState[mode].knightInVaultState.vault.set(name!, knights);
+      }
+      console.log(appState[mode].knightInVaultState.vault)
+
     } catch (err) {
         console.log(err)
       }

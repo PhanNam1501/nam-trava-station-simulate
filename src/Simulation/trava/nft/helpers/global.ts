@@ -45,6 +45,12 @@ export interface NormalKnight extends BaseKnight {
   shield: CollectionArmoury;
   weapon: CollectionArmoury;
 }
+
+export interface NormalKnightInVault extends NormalKnight {
+  deployTimestamp: string;
+  successRate: string;
+  accruedExperience: string;
+}
 export type CollectionArmoury = {
   tokenId: number;
   rarity: number;
