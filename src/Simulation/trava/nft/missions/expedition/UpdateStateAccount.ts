@@ -242,7 +242,7 @@ export async function updateVaultState(appState1: ApplicationState, force = fals
           decimals: 18,
         }
       }
-      appState.VaultState.vaults.set(key, vault)
+      appState.VaultState.vaults.set(vaultsAddress[i], vault)
     }
   } catch (err) {
       console.log(err)
