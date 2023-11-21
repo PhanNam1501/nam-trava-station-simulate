@@ -59199,51 +59199,53 @@ function _updateNFTBalanceFromContract() {
   _updateNFTBalanceFromContract = _asyncToGenerator(function* (appState1, mode) {
     var appState = _objectSpread({}, appState1);
     try {
-      var travacore = new ethers__WEBPACK_IMPORTED_MODULE_4__.Contract((0,_utils_address__WEBPACK_IMPORTED_MODULE_5__.getAddr)("NFT_CORE_ADDRESS", appState.chainId), _abis_TravaNFTCore_json__WEBPACK_IMPORTED_MODULE_1__, appState.web3);
-      var nftCount = yield travacore.balanceOf(appState[mode].address);
-      var [nftIds] = yield Promise.all([(0,_utils_helper__WEBPACK_IMPORTED_MODULE_9__.multiCall)(_abis_TravaNFTCore_json__WEBPACK_IMPORTED_MODULE_1__, new Array(parseInt(nftCount.toString())).fill(1).map((_, index) => ({
-        address: (0,_utils_address__WEBPACK_IMPORTED_MODULE_5__.getAddr)("NFT_CORE_ADDRESS", appState.chainId),
-        name: "tokenOfOwnerByIndex",
-        params: [appState[mode].address, index]
-      })), appState.web3, appState.chainId)]);
-      var tokenIdsFlattened = nftIds.flat();
-      var [data] = yield Promise.all([(0,_utils_helper__WEBPACK_IMPORTED_MODULE_9__.multiCall)(_abis_NFTManager_json__WEBPACK_IMPORTED_MODULE_3__, tokenIdsFlattened.map(tokenId => ({
-        address: (0,_utils_address__WEBPACK_IMPORTED_MODULE_5__.getAddr)("NFT_MANAGER_ADDRESS", appState.chainId),
-        name: "checkIfChestOpenedAndSet",
-        params: [tokenId]
-      })), appState.web3, appState.chainId)]);
-      var openedTokens = [];
-      tokenIdsFlattened.forEach((tokenId, index) => {
-        var version = parseInt(data[index][0]);
-        var isOpen = data[index][1];
-        if (isOpen) openedTokens.push({
-          tokenId,
-          version
+      if (!appState[mode].nfts.isFetch) {
+        var travacore = new ethers__WEBPACK_IMPORTED_MODULE_4__.Contract((0,_utils_address__WEBPACK_IMPORTED_MODULE_5__.getAddr)("NFT_CORE_ADDRESS", appState.chainId), _abis_TravaNFTCore_json__WEBPACK_IMPORTED_MODULE_1__, appState.web3);
+        var nftCount = yield travacore.balanceOf(appState[mode].address);
+        var [nftIds] = yield Promise.all([(0,_utils_helper__WEBPACK_IMPORTED_MODULE_9__.multiCall)(_abis_TravaNFTCore_json__WEBPACK_IMPORTED_MODULE_1__, new Array(parseInt(nftCount.toString())).fill(1).map((_, index) => ({
+          address: (0,_utils_address__WEBPACK_IMPORTED_MODULE_5__.getAddr)("NFT_CORE_ADDRESS", appState.chainId),
+          name: "tokenOfOwnerByIndex",
+          params: [appState[mode].address, index]
+        })), appState.web3, appState.chainId)]);
+        var tokenIdsFlattened = nftIds.flat();
+        var [data] = yield Promise.all([(0,_utils_helper__WEBPACK_IMPORTED_MODULE_9__.multiCall)(_abis_NFTManager_json__WEBPACK_IMPORTED_MODULE_3__, tokenIdsFlattened.map(tokenId => ({
+          address: (0,_utils_address__WEBPACK_IMPORTED_MODULE_5__.getAddr)("NFT_MANAGER_ADDRESS", appState.chainId),
+          name: "checkIfChestOpenedAndSet",
+          params: [tokenId]
+        })), appState.web3, appState.chainId)]);
+        var openedTokens = [];
+        tokenIdsFlattened.forEach((tokenId, index) => {
+          var version = parseInt(data[index][0]);
+          var isOpen = data[index][1];
+          if (isOpen) openedTokens.push({
+            tokenId,
+            version
+          });
         });
-      });
-      var [tokensMetadata] = yield Promise.all([(0,_utils_helper__WEBPACK_IMPORTED_MODULE_9__.multiCall)(_abis_TravaNFTCore_json__WEBPACK_IMPORTED_MODULE_1__, openedTokens.map((item, _) => ({
-        address: (0,_utils_address__WEBPACK_IMPORTED_MODULE_5__.getAddr)("NFT_CORE_ADDRESS", appState.chainId),
-        name: 'getTokenMetadata',
-        params: [item.tokenId]
-      })), appState.web3, appState.chainId)]);
-      tokensMetadata = tokensMetadata.flat();
-      tokensMetadata = tokensMetadata.map((item, index) => _objectSpread(_objectSpread({}, item), openedTokens[index]));
-      tokensMetadata.forEach(item => {
-        if (parseInt(item.collectionId) !== 0) {
-          var _data = {
-            tokenId: parseInt(item.tokenId),
-            version: item.version,
-            set: parseInt(item[3]),
-            nRarity: parseInt(item[1]),
-            nType: parseInt(item[2]),
-            rarity: _helpers_KnightConfig__WEBPACK_IMPORTED_MODULE_6__.RarityMapping[parseInt(item[1]) - 1],
-            type: _helpers_KnightConfig__WEBPACK_IMPORTED_MODULE_6__.TypeMapping[parseInt(item[2]) - 1],
-            exp: parseInt(item[4])
-          };
-          if (item.version == 1) appState[mode].nfts.v1[item.tokenId] = _data;else if (item.version == 2) appState[mode].nfts.v2[item.tokenId] = _data;
-          appState[mode].nfts.isFetch = true;
-        }
-      });
+        var [tokensMetadata] = yield Promise.all([(0,_utils_helper__WEBPACK_IMPORTED_MODULE_9__.multiCall)(_abis_TravaNFTCore_json__WEBPACK_IMPORTED_MODULE_1__, openedTokens.map((item, _) => ({
+          address: (0,_utils_address__WEBPACK_IMPORTED_MODULE_5__.getAddr)("NFT_CORE_ADDRESS", appState.chainId),
+          name: 'getTokenMetadata',
+          params: [item.tokenId]
+        })), appState.web3, appState.chainId)]);
+        tokensMetadata = tokensMetadata.flat();
+        tokensMetadata = tokensMetadata.map((item, index) => _objectSpread(_objectSpread({}, item), openedTokens[index]));
+        tokensMetadata.forEach(item => {
+          if (parseInt(item.collectionId) !== 0) {
+            var _data = {
+              tokenId: parseInt(item.tokenId),
+              version: item.version,
+              set: parseInt(item[3]),
+              nRarity: parseInt(item[1]),
+              nType: parseInt(item[2]),
+              rarity: _helpers_KnightConfig__WEBPACK_IMPORTED_MODULE_6__.RarityMapping[parseInt(item[1]) - 1],
+              type: _helpers_KnightConfig__WEBPACK_IMPORTED_MODULE_6__.TypeMapping[parseInt(item[2]) - 1],
+              exp: parseInt(item[4])
+            };
+            if (item.version == 1) appState[mode].nfts.v1[item.tokenId] = _data;else if (item.version == 2) appState[mode].nfts.v2[item.tokenId] = _data;
+            appState[mode].nfts.isFetch = true;
+          }
+        });
+      }
     } catch (e) {
       console.log(e);
     }
@@ -59258,40 +59260,42 @@ function _updateCollectionBalanceFromContract() {
   _updateCollectionBalanceFromContract = _asyncToGenerator(function* (appState1, mode) {
     var appState = _objectSpread({}, appState1);
     try {
-      var travaCollection = new ethers__WEBPACK_IMPORTED_MODULE_4__.Contract((0,_utils_address__WEBPACK_IMPORTED_MODULE_5__.getAddr)("NFT_COLLECTION_ADDRESS", appState.chainId), _abis_NFTCollection_json__WEBPACK_IMPORTED_MODULE_2__, appState.web3);
-      var collectionLen = parseInt(yield travaCollection.balanceOf(appState[mode].address));
-      var [collectionIds] = yield Promise.all([(0,_utils_helper__WEBPACK_IMPORTED_MODULE_9__.multiCall)(_abis_NFTCollection_json__WEBPACK_IMPORTED_MODULE_2__, new Array(collectionLen).fill(1).map((_, index) => ({
-        address: (0,_utils_address__WEBPACK_IMPORTED_MODULE_5__.getAddr)("NFT_COLLECTION_ADDRESS", appState.chainId),
-        name: 'tokenOfOwnerByIndex',
-        params: [appState[mode].address, index]
-      })), appState.web3, appState.chainId)]);
-      var collectionIdsFlattened = collectionIds.flat();
-      var {
-        normalCollections,
-        specialCollections
-      } = yield (0,_helpers_utils__WEBPACK_IMPORTED_MODULE_8__.fetchBasicCollections)(collectionIdsFlattened, appState);
-      var armorTokenIdArray = [];
-      var helmetTokenIdArray = [];
-      var shieldTokenIdArray = [];
-      var weaponTokenIdArray = [];
-      normalCollections.forEach((item, _) => {
-        armorTokenIdArray.push(item.armorTokenId.toString());
-        helmetTokenIdArray.push(item.helmetTokenId.toString());
-        shieldTokenIdArray.push(item.shieldTokenId.toString());
-        weaponTokenIdArray.push(item.weaponTokenId.toString());
-      });
-      var normalItemsCollections = yield (0,_helpers_utils__WEBPACK_IMPORTED_MODULE_8__.fetchNormalItems)(armorTokenIdArray, helmetTokenIdArray, shieldTokenIdArray, weaponTokenIdArray, appState);
-      var v1 = [];
-      var v2 = [];
-      var counter = 0;
-      for (var rawCollection of normalCollections) {
-        if (rawCollection.setId == 1) v1.push(_objectSpread(_objectSpread({}, rawCollection), normalItemsCollections[counter]));else if (rawCollection.setId == 2) v2.push(_objectSpread(_objectSpread({}, rawCollection), normalItemsCollections[counter]));
-        counter++;
+      if (!appState[mode].collection.isFetch) {
+        var travaCollection = new ethers__WEBPACK_IMPORTED_MODULE_4__.Contract((0,_utils_address__WEBPACK_IMPORTED_MODULE_5__.getAddr)("NFT_COLLECTION_ADDRESS", appState.chainId), _abis_NFTCollection_json__WEBPACK_IMPORTED_MODULE_2__, appState.web3);
+        var collectionLen = parseInt(yield travaCollection.balanceOf(appState[mode].address));
+        var [collectionIds] = yield Promise.all([(0,_utils_helper__WEBPACK_IMPORTED_MODULE_9__.multiCall)(_abis_NFTCollection_json__WEBPACK_IMPORTED_MODULE_2__, new Array(collectionLen).fill(1).map((_, index) => ({
+          address: (0,_utils_address__WEBPACK_IMPORTED_MODULE_5__.getAddr)("NFT_COLLECTION_ADDRESS", appState.chainId),
+          name: 'tokenOfOwnerByIndex',
+          params: [appState[mode].address, index]
+        })), appState.web3, appState.chainId)]);
+        var collectionIdsFlattened = collectionIds.flat();
+        var {
+          normalCollections,
+          specialCollections
+        } = yield (0,_helpers_utils__WEBPACK_IMPORTED_MODULE_8__.fetchBasicCollections)(collectionIdsFlattened, appState);
+        var armorTokenIdArray = [];
+        var helmetTokenIdArray = [];
+        var shieldTokenIdArray = [];
+        var weaponTokenIdArray = [];
+        normalCollections.forEach((item, _) => {
+          armorTokenIdArray.push(item.armorTokenId.toString());
+          helmetTokenIdArray.push(item.helmetTokenId.toString());
+          shieldTokenIdArray.push(item.shieldTokenId.toString());
+          weaponTokenIdArray.push(item.weaponTokenId.toString());
+        });
+        var normalItemsCollections = yield (0,_helpers_utils__WEBPACK_IMPORTED_MODULE_8__.fetchNormalItems)(armorTokenIdArray, helmetTokenIdArray, shieldTokenIdArray, weaponTokenIdArray, appState);
+        var v1 = [];
+        var v2 = [];
+        var counter = 0;
+        for (var rawCollection of normalCollections) {
+          if (rawCollection.setId == 1) v1.push(_objectSpread(_objectSpread({}, rawCollection), normalItemsCollections[counter]));else if (rawCollection.setId == 2) v2.push(_objectSpread(_objectSpread({}, rawCollection), normalItemsCollections[counter]));
+          counter++;
+        }
+        appState[mode].collection.v1 = v1.sort(_helpers_utils__WEBPACK_IMPORTED_MODULE_8__.collectionSort);
+        appState[mode].collection.v2 = v2;
+        appState[mode].collection.specials = specialCollections;
+        appState[mode].collection.isFetch = true;
       }
-      appState[mode].collection.v1 = v1.sort(_helpers_utils__WEBPACK_IMPORTED_MODULE_8__.collectionSort);
-      appState[mode].collection.v2 = v2;
-      appState[mode].collection.specials = specialCollections;
-      appState[mode].collection.isFetch = true;
     } catch (e) {
       console.log(e);
     }
@@ -60632,9 +60636,11 @@ function _updateFarmingState() {
   return _updateFarmingState.apply(this, arguments);
 }
 function calculateKnightApr(dailyReward, collectionVaultValue, totalVaultValue, collectionPrice) {
+  if (totalVaultValue == 0 || collectionPrice == 0) return 0;
   return (0,bignumber_js__WEBPACK_IMPORTED_MODULE_6__["default"])(dailyReward).multipliedBy(collectionVaultValue).div(totalVaultValue).multipliedBy(365).div(collectionPrice).multipliedBy(100).toNumber();
 }
 function calculateVaultApr(dailyReward, totalNFTs, collectionPrice) {
+  if (totalNFTs == 0 || collectionPrice == 0) return 0;
   return (0,bignumber_js__WEBPACK_IMPORTED_MODULE_6__["default"])(dailyReward).multipliedBy(365).div(totalNFTs).div(collectionPrice).multipliedBy(100).toNumber();
 }
 

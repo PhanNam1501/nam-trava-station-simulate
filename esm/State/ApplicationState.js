@@ -1,21 +1,25 @@
-import { WalletState } from "./WalletState";
-import { SmartWalletState } from "./SmartWalletState";
-import { NFTAuctioningState, NFTSellingState, NFTVeTravaSellingState } from "./trava/nft/TravaNFTState";
-import { TravaGovernanceState } from "./trava/lending/TravaGovenanceState";
-export class ApplicationState {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.ApplicationState = void 0;
+const WalletState_1 = require("./WalletState");
+const SmartWalletState_1 = require("./SmartWalletState");
+const TravaNFTState_1 = require("./trava/nft/TravaNFTState");
+const TravaGovenanceState_1 = require("./trava/lending/TravaGovenanceState");
+class ApplicationState {
     constructor(userAddress, smartWalletAddress, web3, chainId, simulatorUrl) {
         this.createdTime = Math.floor(new Date().getTime() / 1000);
-        this.walletState = new WalletState(userAddress);
-        this.smartWalletState = new SmartWalletState(smartWalletAddress);
-        this.NFTSellingState = new NFTSellingState();
-        this.NFTAuctioningState = new NFTAuctioningState();
-        this.NFTVeTravaMarketSellingState = new NFTVeTravaSellingState();
-        this.TravaGovernanceState = new TravaGovernanceState();
+        this.walletState = new WalletState_1.WalletState(userAddress);
+        this.smartWalletState = new SmartWalletState_1.SmartWalletState(smartWalletAddress);
+        this.NFTSellingState = new TravaNFTState_1.NFTSellingState();
+        this.NFTAuctioningState = new TravaNFTState_1.NFTAuctioningState();
+        this.NFTVeTravaMarketSellingState = new TravaNFTState_1.NFTVeTravaSellingState();
+        this.TravaGovernanceState = new TravaGovenanceState_1.TravaGovernanceState();
         this.web3 = web3;
         this.chainId = chainId;
         this.simulatorUrl = simulatorUrl || "";
     }
 }
+exports.ApplicationState = ApplicationState;
 // export async function initializeState(userAddress: EthAddress, smartWalletAddress: EthAddress, web3: JsonRpcProvider | null): Promise<ApplicationState> {
 //   const appState = new ApplicationState(
 //     userAddress, smartWalletAddress, web3

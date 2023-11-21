@@ -1,11 +1,15 @@
-export class NFTSellingState {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.NFTFarmingsState = exports.NFTVeTravaSellingState = exports.NFTAuctioningState = exports.NFTSellingState = void 0;
+class NFTSellingState {
     constructor() {
         this.v1 = new Array();
         this.v2 = new Array();
         this.isFetch = false;
     }
 }
-export class NFTAuctioningState {
+exports.NFTSellingState = NFTSellingState;
+class NFTAuctioningState {
     constructor() {
         this.v1 = new Array();
         this.v2 = new Array();
@@ -13,16 +17,19 @@ export class NFTAuctioningState {
         this.isFetch = false;
     }
 }
-export class NFTVeTravaSellingState {
+exports.NFTAuctioningState = NFTAuctioningState;
+class NFTVeTravaSellingState {
     constructor() {
         this.sellingVeTrava = new Array();
         this.priceTokens = new Map();
         this.isFetch = false;
     }
 }
-export class NFTFarmingsState {
+exports.NFTVeTravaSellingState = NFTVeTravaSellingState;
+class NFTFarmingsState {
     constructor() {
         this.nftFarmings = new Map();
         this.isFetch = false;
     }
 }
+exports.NFTFarmingsState = NFTFarmingsState;

@@ -1,3 +1,4 @@
+"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -7,8 +8,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-import { getAddr } from "../../../../utils/address";
-export function simulateTravaNFTTransfer(appState1, from, to, tokenId, contract) {
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.simulateTravaNFTTransfer = void 0;
+const address_1 = require("../../../../utils/address");
+function simulateTravaNFTTransfer(appState1, from, to, tokenId, contract) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const appState = Object.assign({}, appState1);
@@ -16,7 +19,7 @@ export function simulateTravaNFTTransfer(appState1, from, to, tokenId, contract)
             if (from == appState.smartWalletState.address) {
                 mode = "smartWalletState";
             }
-            if (contract.toLowerCase() == getAddr("NFT_CORE_ADDRESS", appState1.chainId).toLowerCase()) {
+            if (contract.toLowerCase() == (0, address_1.getAddr)("NFT_CORE_ADDRESS", appState1.chainId).toLowerCase()) {
                 let currentVersion = "v1";
                 let currentNFT = appState[mode].nfts.v1[tokenId];
                 if (!currentNFT) {
@@ -76,3 +79,4 @@ export function simulateTravaNFTTransfer(appState1, from, to, tokenId, contract)
         }
     });
 }
+exports.simulateTravaNFTTransfer = simulateTravaNFTTransfer;

@@ -1,6 +1,9 @@
-import { NETWORKS } from "../../../../../utils";
-export const tokenSellOptions = {
-    [NETWORKS.bscMainnet.chainId]: [
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.tokenSellOptions = void 0;
+const utils_1 = require("../../../../../utils");
+exports.tokenSellOptions = {
+    [utils_1.NETWORKS.bscMainnet.chainId]: [
         {
             address: "0x0391be54e72f7e001f6bbc331777710b4f2999ef",
             symbol: 'TRAVA',
@@ -14,7 +17,7 @@ export const tokenSellOptions = {
             decimals: "18"
         },
     ],
-    [NETWORKS.bscTestnet.chainId]: [
+    [utils_1.NETWORKS.bscTestnet.chainId]: [
         {
             address: "0xe1f005623934d3d8c724ec68cc9bfd95498d4435",
             symbol: 'TRAVA',

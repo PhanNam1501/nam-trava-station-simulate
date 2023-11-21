@@ -1,6 +1,9 @@
-import { NETWORKS } from "../../../utils/config";
-export const tokenLockOptions = {
-    [NETWORKS.bscMainnet.chainId]: [
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.tokenLockOptions = void 0;
+const config_1 = require("../../../utils/config");
+exports.tokenLockOptions = {
+    [config_1.NETWORKS.bscMainnet.chainId]: [
         {
             address: "0x0391be54e72f7e001f6bbc331777710b4f2999ef",
             symbol: 'TRAVA',
@@ -20,7 +23,7 @@ export const tokenLockOptions = {
             decimals: "18"
         },
     ],
-    [NETWORKS.bscTestnet.chainId]: [
+    [config_1.NETWORKS.bscTestnet.chainId]: [
         {
             address: "0xce9f0487f07988003f511d6651153a6dacc32f50",
             symbol: 'TRAVA',
