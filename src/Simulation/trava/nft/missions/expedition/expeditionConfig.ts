@@ -1,7 +1,7 @@
 import { NETWORKS } from "../../../../../utils";
 import { EthAddress, uint256 } from "../../../../../utils/types";
 
-export interface VaultOption {
+export interface ExpeditionOption {
     id: uint256;
     contractAddress: EthAddress;
     acceptableRarities: Array<number>;
@@ -9,11 +9,11 @@ export interface VaultOption {
     failureRefund: number,
 }
 
-export interface VaultOptions {
-    [chainId: number]: Array<VaultOption>;
+export interface ExpeditionOptions {
+    [chainId: number]: Array<ExpeditionOption>;
 }
 
-export const vaultOptions: VaultOptions = {
+export const expeditionOptions: ExpeditionOptions = {
     [NETWORKS.bscTestnet.chainId]: [
         {
             id: "rookie",

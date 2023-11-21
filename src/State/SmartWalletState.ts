@@ -4,7 +4,7 @@ import {
   BaseAccountVault,
   WalletTravaLPState,
 } from "./trava/lending/TravaDeFiState";
-import { CollectionOwned, NFTOwned } from "./WalletState";
+import { CollectionOwned, KnightInExpeditionState, NFTOwned, Ticket } from "./WalletState";
 import { VeTravaListState, VeTravaState } from "./trava/lending/TravaGovenanceState"
 import { FarmingKnightDetailInfo } from "../Simulation";
 export interface OriginTokenData {
@@ -41,6 +41,8 @@ export class SmartWalletState {
   detailTokenInPool: Map<string, DetailTokenInPool>;
   travaLPStakingStateList: Map<string, BaseAccountVault>;
   veTravaListState: VeTravaListState;
+  knightInExpeditionState: KnightInExpeditionState;
+  ticketState: Map<string, Ticket>;
   constructor(address: EthAddress) {
     this.address = address;
     this.tokenBalances = new Map<string, string>();
@@ -54,6 +56,8 @@ export class SmartWalletState {
     this.detailTokenInPool = new Map();
     this.travaLPStakingStateList = new Map();
     this.veTravaListState = new VeTravaListState();
+    this.knightInExpeditionState = new KnightInExpeditionState();
+    this.ticketState = new Map();
   }
 
   // async getTokenAmount(tokenAddress: string): Promise<string> {
