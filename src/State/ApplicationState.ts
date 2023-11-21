@@ -4,6 +4,7 @@ import { SmartWalletState } from "./SmartWalletState";
 import { NFTAuctioningState, NFTFarmingsState, NFTSellingState, NFTVeTravaSellingState } from "./trava/nft/TravaNFTState";
 import { JsonRpcProvider } from "ethers";
 import { TravaGovernanceState } from "./trava/lending/TravaGovenanceState";
+import { VaultState } from "./trava";
 
 export class ApplicationState {
   createdTime: number;
@@ -13,6 +14,7 @@ export class ApplicationState {
   NFTAuctioningState: NFTAuctioningState;
   NFTVeTravaMarketSellingState: NFTVeTravaSellingState;
   TravaGovernanceState: TravaGovernanceState;
+  VaultState: VaultState;
   web3: JsonRpcProvider;
   chainId: number;
   simulatorUrl: string;
@@ -30,6 +32,7 @@ export class ApplicationState {
     this.NFTAuctioningState = new NFTAuctioningState();
     this.NFTVeTravaMarketSellingState = new NFTVeTravaSellingState();
     this.TravaGovernanceState = new TravaGovernanceState();
+    this.VaultState = new VaultState();
     this.web3 = web3;
     this.chainId = chainId;
     this.simulatorUrl = simulatorUrl || ""
