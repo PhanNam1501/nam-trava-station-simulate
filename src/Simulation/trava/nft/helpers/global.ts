@@ -1,4 +1,6 @@
-import { EthAddress, uint256 } from "trava-station-sdk";
+
+import { EthAddress, uint256 } from "../../../../utils/types";
+import { Vault } from "../missions";
 
 // Selling
 export type SellingArmouryType = {
@@ -74,6 +76,34 @@ export interface AuctioningNormalKnight extends NormalKnight, AuctionKnightData 
 
 export interface AuctioningSpecialKnight extends SpecialKnight, AuctionKnightData { };
 
+export interface FarmingKinghtInfo {
+  attainedExp: number,
+  depositedTime: number,
+  id: number,
+  exp: number,
+  earn: number,
+  value: number
+}
+export interface FarmingKnightDetailInfo extends FarmingKinghtInfo {
+  apr: number,
+  rarity: number,
+  armor: CollectionArmoury;
+  helmet: CollectionArmoury;
+  shield: CollectionArmoury;
+  weapon: CollectionArmoury;
+}
+
+export interface NFTFarming {
+  vault: Vault;
+  aprAvg: number;
+  numberKnightOfUser: number;
+  totalNFTs: number;
+  totalRewardOfUser: uint256;
+  totalVaultValue: number;
+  dailyReward: number;
+  farmingState: Array<FarmingKnightDetailInfo>;
+}
+
 // The graph type
 export type Token = {
   exp: null | number;
@@ -108,14 +138,17 @@ export type CollectionArmouryFromGraph = {
 };
 
 // VeTrava
+export type tokenInfo = {
+  address: EthAddress;
+  amount: uint256;
+}
+
 export type SellingVeTravaType = {
-  id: number;
-  amount: number;
-  rwAmount: number;
-  end: string;
-  token: string;
-  votingPower: number;
-  seller: string;
-  price: number;
-  priceToken: string;
+  id: uint256;
+  rwAmount: uint256;
+  end: uint256;
+  lockedToken: tokenInfo;
+  votingPower: uint256;
+  seller: EthAddress;
+  priceToken: tokenInfo;
 };

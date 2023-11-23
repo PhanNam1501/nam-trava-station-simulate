@@ -1,11 +1,11 @@
 
 import { ApplicationState } from "../../State/ApplicationState";
-import { EthAddress, wallet_mode } from "../../utils/types";
+import { EthAddress } from "../../utils/types";
 import ERC20Mock from "../../abis/ERC20Mock.json";
-import { Contract, JsonRpcProvider } from "ethers";
+import { Contract } from "ethers";
 import _ from "lodash";
 import { convertHexStringToAddress } from "../../utils/address";
-import { FromAddressError } from "../../utils";
+import { getMode } from "../../utils/helper";
 
 
 export async function updateUserEthBalance(appState1: ApplicationState, force?: boolean): Promise<ApplicationState> {
@@ -49,14 +49,7 @@ export async function updateSmartWalletTokenBalance(appState1: ApplicationState,
 export async function updateTokenBalance(appState1: ApplicationState, _from: EthAddress, _tokenAddress?: EthAddress, force?: boolean) {
     const appState = { ...appState1 };
 
-    let mode: wallet_mode;
-    if (_from.toLowerCase() == appState.walletState.address.toLowerCase()) {
-        mode = "walletState"
-    } else if (_from.toLowerCase() == appState.smartWalletState.address.toLowerCase()) {
-        mode = "smartWalletState"
-    } else {
-        throw new FromAddressError()
-    }
+    let mode = getMode(appState, _from);
     if (_tokenAddress) {
 
         if (!appState[mode].tokenBalances.has(_tokenAddress.toLowerCase()) || force) {
