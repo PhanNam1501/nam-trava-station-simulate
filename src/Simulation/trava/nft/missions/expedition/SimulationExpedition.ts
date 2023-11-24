@@ -47,7 +47,7 @@ export async function simulateExpeditionDeploy(
         
         const data: NormalKnightInExpedition = {
             ...currentNFT,
-            deployTimestamp: "0",
+            deployTimestamp: appState.createdTime.toString(),
             successRate: "0",
             accruedExperience: "0",
         };
