@@ -52,7 +52,7 @@ export async function updateDilutionState(appState1: ApplicationState, force = f
           // const dilutionAfterJoining = 100 - 0.04 * power;
           appState.DilutionState.dilutionLimitedKnight.set(_id, {
             id: _id,
-            owner: army.owner,
+            owner: army.owner.toLowerCase(),
             duration: parseInt(detailData.unlockTime) - now,
             dilutionProtection: dilutionProtection / 100,
             dilutionAfterJoining: 0,
