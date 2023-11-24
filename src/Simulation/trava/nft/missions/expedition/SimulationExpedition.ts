@@ -52,13 +52,10 @@ export async function simulateExpeditionDeploy(
             accruedExperience: "0",
         };
         appState[mode].knightInExpeditionState.expedition.set(_expeditionAddress, [data]);
-        //set rarity += 1
-        console.log(appState.ExpeditionState.expeditions)
+        // Set rarity += 1
         const expeditionData = appState.ExpeditionState.expeditions.get(_expeditionAddress);
-        console.log(expeditionData)
         if (expeditionData) {
-            let expeditionDataRaritys = expeditionData.raritys
-            console.log(expeditionData.raritys)
+            let expeditionDataRaritys = expeditionData.raritys;
             let expeditionDataRarity = expeditionDataRaritys.find(x => x.rarity == currentNFT?.rarity.toString());
             if(expeditionDataRarity) {
                 expeditionDataRarity.numberOfKnight = (parseInt(expeditionDataRarity.numberOfKnight) + 1).toString();
@@ -66,7 +63,6 @@ export async function simulateExpeditionDeploy(
                 expeditionDataRaritys.push(expeditionDataRarity);
                 expeditionData.raritys = expeditionDataRaritys;
                 appState.ExpeditionState.expeditions.set(_expeditionAddress, expeditionData);
-                console.log(expeditionData.raritys)
             }
         }
         else{

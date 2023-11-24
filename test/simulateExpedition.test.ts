@@ -32,7 +32,7 @@ async function test(){
     console.log(appState["walletState"].collection.v1);
     console.log("Expedition", appState["walletState"].knightInExpeditionState.expedition);
     console.log(appState["walletState"].ticket);
-    appState = await simulateExpeditionDeploy(appState, "0xCF8B29E9762a8bE82d8Bc9822Ce3096D4F03388c", ["0", "0", "0"], ["0", "0", "0"], userAddress,  3927, userAddress, userAddress);
+    appState = await simulateExpeditionDeploy(appState, "0x5b6f3cad58626d409494a8800f60ec1a10c8e929", ["0", "0", "0"], ["0", "0", "0"], userAddress,  3927, userAddress, userAddress);
     console.log("________________________TEST DEPLOY________________________")
     console.log(appState["walletState"].collection.v1);
     console.log("Expedition", appState["walletState"].knightInExpeditionState.expedition);
