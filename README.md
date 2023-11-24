@@ -12,9 +12,11 @@
     - [Tương tác với các Knight](#tương-tác-với-các-knight)
     - [Tương tác với các Marketplace / Sell armoury](#tương-tác-với-các-marketplace--sell-armoury)
     - [Tương tác với các Marketplace / Auction](#tương-tác-với-các-marketplace--auction)
+    - [Tương tác với NFT Marketplace / VeTrava](#tương-tác-với-nft-marketplace--vetrava)
     - [Tuong tac voi Trava Staking](#tuong-tac-voi-trava-staking)
-    - [Tuưng tác với Trava Governance](#tuưng-tác-với-trava-governance)
-    - [Tương tác với veTrava NFT Marketplace](#tương-tác-với-veTrava-nft-marketplace)
+    - [Tương tác với Trava NFT Mission / Expedition](#tương-tác-với-trava-nft-mission--expedition)
+    - [Tương tác với Trava Governance](#tương-tác-với-trava-governance)
+    - [Tương tác với veTrava NFT Marketplace](#tương-tác-với-vetrava-nft-marketplace)
 - [Simulate state](#simulate-state)
   - [Simulate Utilities actions](#simulate-utilities-actions)
   - [Pull token](#pull-token)
@@ -39,9 +41,19 @@
   - [Make bid auction](#make-bid-auction)
   - [Make cancel auction](#make-cancel-auction)
   - [Fninalize auction](#fninalize-auction)
+- [Simulate Trava NFT Marketplace / VeTrava](#simulate-trava-nft-marketplace--vetrava)
+  - [Simulate Create Sale veTrava NFT](#simulate-create-sale-vetrava-nft)
+  - [Simulate Cancel Sale veTrava NFT](#simulate-cancel-sale-vetrava-nft)
+  - [Simulate Buy veTrava NFT](#simulate-buy-vetrava-nft)
 - [Simulate Trava NFT Utilities](#simulate-trava-nft-utilities)
   - [Transfer armoury](#transfer-armoury)
   - [Transfer collection](#transfer-collection)
+  - [Simulate Tranfer veTrava NFT](#simulate-tranfer-vetrava-nft)
+- [Simulate Trava NFT Mission](#simulate-trava-nft-mission)
+  - [Trava NFT Expedition](#trava-nft-expedition)
+    - [Simulate Trava NFT Expedition Deploy](#simulate-trava-nft-expedition-deploy)
+    - [Simulate Trava NFT Expedition Abandon](#simulate-trava-nft-expedition-abandon)
+    - [Simulate Trava NFT Expedition Withdraw](#simulate-trava-nft-expedition-withdraw)
 - [Simulate Trava Staking](#simulate-trava-staking)
   - [Simulate Trava Staking Stake](#simulate-trava-staking-stake)
   - [Simulate Trava Staking Redeem (Withdraw)](#simulate-trava-staking-redeem-withdraw)
@@ -59,11 +71,6 @@
   - [Sendtoken](#sendtoken-1)
   - [Wrap](#wrap-1)
   - [Unwrap](#unwrap-1)
-- [Simulate veTrava NFT Marketplace](#simulate-veTrava-NFT-marketplace)
-  - [Simulate Tranfer veTrava NFT](#simulate-veTrava-NFT-tranfer)
-  - [Simulate Create Sale veTrava NFT](#simulate-veTrava-NFT-create-sale)
-  - [Simulate Cancel Sale veTrava NFT](#simulate-veTrava-NFT-cancel-sale)
-  - [Simulate Buy veTrava NFT](#simulate-veTrava-NFT-buy)
 
 ```
 import { ApplicationState } from "../State/ApplicationState";
@@ -391,6 +398,31 @@ reward = stakedPool.claimableReward
 deposited = stakedPool.deposited
 ```
 
+<<<<<<< HEAD
+=======
+### Tương tác với Trava NFT Mission / Expedition
+Khi tham gia vào các action của expedition
+```
+appState = await updateExpeditionState(appState)
+
+appState = await updateOwnerKnightInExpeditionState(appState, smartWalletAddress)
+```
+
+***Trava NFT Expedition Deploy*** 
+update trava balance of from address
+update knight balance of from address
+update ticket balance of from address
+```
+appState = await updateOwnerTicketState(appState, fromAddress);
+```
+
+***Trava NFT Expedition Abandon*** 
+update knight balance of to address
+
+***Trava NFT Expedition Abandon*** 
+update knight balance of to address
+update trava balance of to address
+>>>>>>> origin/governance
 
 ### Tương tác với Trava Governance
 
@@ -774,6 +806,53 @@ appState19 = await simulateTravaNFTTransfer(
 )
 ```
 ## Simulate Tranfer veTrava NFT
+<<<<<<< HEAD
+=======
+
+```
+appState1 = await simulateNFTVeTravaTranfer(
+    appState,
+    idVeTrava,
+    fromAddress,
+    toAddress
+);
+```
+
+# Simulate Trava NFT Mission 
+## Trava NFT Expedition
+### Simulate Trava NFT Expedition Deploy
+```
+appState = await simulateExpeditionDeploy(
+    appState,
+    vaultAddress,
+    knightId,
+    buffWinRateTiket array,
+    buffExpTick array,
+    _fromAddress (from kinght),
+    _fromAddress (from fee),
+    _fromAddress (from ticket)
+)
+```
+### Simulate Trava NFT Expedition Abandon
+```
+appState = await simulateExpeditionAbandon(
+    appState,
+    vaultAddress,
+    knightId,
+    toAddress
+)
+```
+
+### Simulate Trava NFT Expedition Withdraw
+```
+appState = await simulateExpeditionWithdraw(
+    appState,
+    vaultAddress,
+    knightId,
+    toAddress
+)
+```
+>>>>>>> origin/governance
 
 ```
 appState1 = await simulateNFTVeTravaTranfer(
@@ -939,4 +1018,8 @@ appState9 = await simulateUnwrapV2(
     amount:  string,
     contractAddress: address of actions
 )
+<<<<<<< HEAD
 ```
+=======
+```
+>>>>>>> origin/governance

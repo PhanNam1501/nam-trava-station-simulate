@@ -1,5 +1,5 @@
 import { EthAddress } from "../utils/types";
-import { NFTAuctioningState, NFTFarmingsState, NFTSellingState } from "./trava/nft/TravaNFTState";
+import { NFTAuctioningState, NFTFarmingsState, NFTSellingState, NFTTicketState } from "./trava/nft/TravaNFTState";
 import {
   BaseAccountVault,
   WalletTravaLPState,
@@ -42,7 +42,7 @@ export class SmartWalletState {
   travaLPStakingStateList: Map<string, BaseAccountVault>;
   veTravaListState: VeTravaListState;
   knightInExpeditionState: KnightInExpeditionState;
-  ticketState: Map<string, Ticket>;
+  ticket: NFTTicketState;
   constructor(address: EthAddress) {
     this.address = address;
     this.tokenBalances = new Map<string, string>();
@@ -57,7 +57,7 @@ export class SmartWalletState {
     this.travaLPStakingStateList = new Map();
     this.veTravaListState = new VeTravaListState();
     this.knightInExpeditionState = new KnightInExpeditionState();
-    this.ticketState = new Map();
+    this.ticket = new NFTTicketState();
   }
 
   // async getTokenAmount(tokenAddress: string): Promise<string> {

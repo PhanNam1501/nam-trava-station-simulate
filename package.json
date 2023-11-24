@@ -1,6 +1,6 @@
 {
   "name": "trava-simulation-route",
-  "version": "2.0.26",
+  "version": "2.0.28",
   "description": "",
   "main": "./umd/index.js",
   "module": "./esm/index.js",
@@ -21,6 +21,7 @@
     "eth-graph-query": "^2.0.0",
     "ethereumjs-util": "^7.1.5",
     "lodash": "^4.17.21",
+    "orchai-combinator-bsc-simulation": "^1.0.3",
     "trava-station-sdk": "1.0.30",
     "typescript": "^5.2.2"
   },
