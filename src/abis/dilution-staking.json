@@ -1,0 +1,1477 @@
+[
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "owner",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "approved",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "tokenId",
+        "type": "uint256"
+      }
+    ],
+    "name": "Approval",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "owner",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "operator",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "bool",
+        "name": "approved",
+        "type": "bool"
+      }
+    ],
+    "name": "ApprovalForAll",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "armyId",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "finishTime",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "finalReward",
+        "type": "uint256"
+      }
+    ],
+    "name": "BattlefieldConcluded",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "armyId",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "enum DilutionStaking.ArmyRank",
+        "name": "stakeType",
+        "type": "uint8"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "startTime",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "lockAmount",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "timeLock",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "powerLevel",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256[]",
+        "name": "components",
+        "type": "uint256[]"
+      }
+    ],
+    "name": "BattlefieldJoined",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint8",
+        "name": "version",
+        "type": "uint8"
+      }
+    ],
+    "name": "Initialized",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "previousOwner",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "newOwner",
+        "type": "address"
+      }
+    ],
+    "name": "OwnershipTransferred",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "uniqueId",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "finishTime",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "finalReward",
+        "type": "uint256"
+      }
+    ],
+    "name": "PrivateBattlefieldConcluded",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "uniqueId",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "knightId",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "joinTime",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "lockAmount",
+        "type": "uint256"
+      }
+    ],
+    "name": "PrivateBattlefieldJoined",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "uniqueId",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "startTime",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "lockAmount",
+        "type": "uint256"
+      }
+    ],
+    "name": "PrivateBattlefieldOpened",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "uniqueId",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "knightId",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "finishTime",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "finalReward",
+        "type": "uint256"
+      }
+    ],
+    "name": "PrivateBattlefieldWithdrawn",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "user",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "tokenId",
+        "type": "uint256"
+      }
+    ],
+    "name": "Redeem",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "user",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
+      }
+    ],
+    "name": "RewardsClaimed",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "user",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "tokenId",
+        "type": "uint256"
+      }
+    ],
+    "name": "Stake",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "from",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "to",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "tokenId",
+        "type": "uint256"
+      }
+    ],
+    "name": "Transfer",
+    "type": "event"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "to",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "tokenId",
+        "type": "uint256"
+      }
+    ],
+    "name": "approve",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "enum DilutionStaking.ArmyRank",
+        "name": "",
+        "type": "uint8"
+      }
+    ],
+    "name": "armyRequirements",
+    "outputs": [
+      {
+        "internalType": "uint128",
+        "name": "minPower",
+        "type": "uint128"
+      },
+      {
+        "internalType": "uint256",
+        "name": "maxLock",
+        "type": "uint256"
+      },
+      {
+        "components": [
+          {
+            "internalType": "uint40",
+            "name": "copper",
+            "type": "uint40"
+          },
+          {
+            "internalType": "uint40",
+            "name": "silver",
+            "type": "uint40"
+          },
+          {
+            "internalType": "uint40",
+            "name": "gold",
+            "type": "uint40"
+          },
+          {
+            "internalType": "uint40",
+            "name": "diamond",
+            "type": "uint40"
+          },
+          {
+            "internalType": "uint40",
+            "name": "crystal",
+            "type": "uint40"
+          },
+          {
+            "internalType": "uint40",
+            "name": "unique",
+            "type": "uint40"
+          }
+        ],
+        "internalType": "struct DilutionStaking.KnightAmount",
+        "name": "knightRequirement",
+        "type": "tuple"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "owner",
+        "type": "address"
+      }
+    ],
+    "name": "balanceOf",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "components": [
+          {
+            "internalType": "uint40",
+            "name": "copper",
+            "type": "uint40"
+          },
+          {
+            "internalType": "uint40",
+            "name": "silver",
+            "type": "uint40"
+          },
+          {
+            "internalType": "uint40",
+            "name": "gold",
+            "type": "uint40"
+          },
+          {
+            "internalType": "uint40",
+            "name": "diamond",
+            "type": "uint40"
+          },
+          {
+            "internalType": "uint40",
+            "name": "crystal",
+            "type": "uint40"
+          },
+          {
+            "internalType": "uint40",
+            "name": "unique",
+            "type": "uint40"
+          }
+        ],
+        "internalType": "struct DilutionStaking.KnightAmount",
+        "name": "_knightAmount",
+        "type": "tuple"
+      }
+    ],
+    "name": "calculateArmyPower",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "totalPower",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "components": [
+          {
+            "internalType": "uint40",
+            "name": "copper",
+            "type": "uint40"
+          },
+          {
+            "internalType": "uint40",
+            "name": "silver",
+            "type": "uint40"
+          },
+          {
+            "internalType": "uint40",
+            "name": "gold",
+            "type": "uint40"
+          },
+          {
+            "internalType": "uint40",
+            "name": "diamond",
+            "type": "uint40"
+          },
+          {
+            "internalType": "uint40",
+            "name": "crystal",
+            "type": "uint40"
+          },
+          {
+            "internalType": "uint40",
+            "name": "unique",
+            "type": "uint40"
+          }
+        ],
+        "internalType": "struct DilutionStaking.KnightAmount",
+        "name": "_knightAmount",
+        "type": "tuple"
+      },
+      {
+        "components": [
+          {
+            "internalType": "uint40",
+            "name": "copper",
+            "type": "uint40"
+          },
+          {
+            "internalType": "uint40",
+            "name": "silver",
+            "type": "uint40"
+          },
+          {
+            "internalType": "uint40",
+            "name": "gold",
+            "type": "uint40"
+          },
+          {
+            "internalType": "uint40",
+            "name": "diamond",
+            "type": "uint40"
+          },
+          {
+            "internalType": "uint40",
+            "name": "crystal",
+            "type": "uint40"
+          },
+          {
+            "internalType": "uint40",
+            "name": "unique",
+            "type": "uint40"
+          }
+        ],
+        "internalType": "struct DilutionStaking.KnightAmount",
+        "name": "_knightRequirement",
+        "type": "tuple"
+      }
+    ],
+    "name": "checkKnightRequirement",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "pure",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "decayRate",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_tokenId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_stakedAmount",
+        "type": "uint256"
+      }
+    ],
+    "name": "deployPrivateBattlefield",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "tokenId",
+        "type": "uint256"
+      }
+    ],
+    "name": "getApproved",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_armyId",
+        "type": "uint256"
+      }
+    ],
+    "name": "getArmyInfo",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "enum DilutionStaking.ArmyRank",
+            "name": "armyRank",
+            "type": "uint8"
+          },
+          {
+            "internalType": "uint128",
+            "name": "unlockTime",
+            "type": "uint128"
+          },
+          {
+            "internalType": "uint128",
+            "name": "dilution",
+            "type": "uint128"
+          },
+          {
+            "internalType": "uint256",
+            "name": "lockAmount",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "lockCirculatingSupply",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "unlockCirculatingSupply",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256[]",
+            "name": "stakedKnight",
+            "type": "uint256[]"
+          }
+        ],
+        "internalType": "struct DilutionStaking.ArmyInfo",
+        "name": "",
+        "type": "tuple"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "components": [
+          {
+            "internalType": "enum DilutionStaking.ArmyRank",
+            "name": "armyRank",
+            "type": "uint8"
+          },
+          {
+            "internalType": "uint128",
+            "name": "unlockTime",
+            "type": "uint128"
+          },
+          {
+            "internalType": "uint128",
+            "name": "dilution",
+            "type": "uint128"
+          },
+          {
+            "internalType": "uint256",
+            "name": "lockAmount",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "lockCirculatingSupply",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "unlockCirculatingSupply",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256[]",
+            "name": "stakedKnight",
+            "type": "uint256[]"
+          }
+        ],
+        "internalType": "struct DilutionStaking.ArmyInfo",
+        "name": "_armyInfo",
+        "type": "tuple"
+      }
+    ],
+    "name": "getBattlefieldReward",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getCurrentCirculatingSupply",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_tokenId",
+        "type": "uint256"
+      }
+    ],
+    "name": "getCurrentMercenaryDilution",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_tokenId",
+        "type": "uint256"
+      }
+    ],
+    "name": "getMercenaryDilutionReward",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_privateBattleId",
+        "type": "uint256"
+      }
+    ],
+    "name": "getUniqueKnightDilutionReward",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_travaToken",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_travaLockContract",
+        "type": "address"
+      }
+    ],
+    "name": "initialize",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "owner",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "operator",
+        "type": "address"
+      }
+    ],
+    "name": "isApprovedForAll",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256[]",
+        "name": "_tokenIds",
+        "type": "uint256[]"
+      },
+      {
+        "internalType": "enum DilutionStaking.ArmyRank",
+        "name": "_stakeType",
+        "type": "uint8"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_lockAmount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_timeLock",
+        "type": "uint256"
+      }
+    ],
+    "name": "joinBattlefield",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_privateBattleId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256[]",
+        "name": "_tokenIds",
+        "type": "uint256[]"
+      },
+      {
+        "internalType": "uint256[]",
+        "name": "_lockAmounts",
+        "type": "uint256[]"
+      }
+    ],
+    "name": "joinPrivateBattlefield",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "mercenaryInfos",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "owner",
+        "type": "address"
+      },
+      {
+        "internalType": "uint64",
+        "name": "index",
+        "type": "uint64"
+      },
+      {
+        "internalType": "uint64",
+        "name": "lockTime",
+        "type": "uint64"
+      },
+      {
+        "internalType": "uint256",
+        "name": "privateBattleId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "lockAmount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "lockCirculatingSupply",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "name",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "nftPower",
+    "outputs": [
+      {
+        "internalType": "uint40",
+        "name": "copper",
+        "type": "uint40"
+      },
+      {
+        "internalType": "uint40",
+        "name": "silver",
+        "type": "uint40"
+      },
+      {
+        "internalType": "uint40",
+        "name": "gold",
+        "type": "uint40"
+      },
+      {
+        "internalType": "uint40",
+        "name": "diamond",
+        "type": "uint40"
+      },
+      {
+        "internalType": "uint40",
+        "name": "crystal",
+        "type": "uint40"
+      },
+      {
+        "internalType": "uint40",
+        "name": "unique",
+        "type": "uint40"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "owner",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "tokenId",
+        "type": "uint256"
+      }
+    ],
+    "name": "ownerOf",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "privateBattleFieldId",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "privateBattleInfos",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "owner",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "tokenId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "lockAmount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "lockCirculatingSupply",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "privateBattleStates",
+    "outputs": [
+      {
+        "internalType": "uint64",
+        "name": "unlockTime",
+        "type": "uint64"
+      },
+      {
+        "internalType": "uint64",
+        "name": "lastUpdate",
+        "type": "uint64"
+      },
+      {
+        "internalType": "uint64",
+        "name": "index",
+        "type": "uint64"
+      },
+      {
+        "internalType": "uint64",
+        "name": "totalPower",
+        "type": "uint64"
+      },
+      {
+        "internalType": "uint256",
+        "name": "totalFee",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "unlockCirculatingSupply",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "renounceOwnership",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_privateBattleFieldId",
+        "type": "uint256"
+      }
+    ],
+    "name": "retreatPrivateBattlefield",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "from",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "to",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "tokenId",
+        "type": "uint256"
+      }
+    ],
+    "name": "safeTransferFrom",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "from",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "to",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "tokenId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "bytes",
+        "name": "data",
+        "type": "bytes"
+      }
+    ],
+    "name": "safeTransferFrom",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "operator",
+        "type": "address"
+      },
+      {
+        "internalType": "bool",
+        "name": "approved",
+        "type": "bool"
+      }
+    ],
+    "name": "setApprovalForAll",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_newDecayRate",
+        "type": "uint256"
+      }
+    ],
+    "name": "setDecayRate",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_time",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_dilution",
+        "type": "uint256"
+      }
+    ],
+    "name": "setDilutionForBattlefield",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes4",
+        "name": "interfaceId",
+        "type": "bytes4"
+      }
+    ],
+    "name": "supportsInterface",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "symbol",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "timeLockToDilution",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "index",
+        "type": "uint256"
+      }
+    ],
+    "name": "tokenByIndex",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "owner",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "index",
+        "type": "uint256"
+      }
+    ],
+    "name": "tokenOfOwnerByIndex",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "tokenId",
+        "type": "uint256"
+      }
+    ],
+    "name": "tokenURI",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "totalSupply",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "from",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "to",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "tokenId",
+        "type": "uint256"
+      }
+    ],
+    "name": "transferFrom",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "newOwner",
+        "type": "address"
+      }
+    ],
+    "name": "transferOwnership",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_armyId",
+        "type": "uint256"
+      }
+    ],
+    "name": "updateUnlockCirculatingSupplyArmy",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_privateBattleId",
+        "type": "uint256"
+      }
+    ],
+    "name": "updateUnlockCirculatingSupplyPrivate",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_armyId",
+        "type": "uint256"
+      }
+    ],
+    "name": "withdrawAndClaimRewardBattlefield",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_privateBattleId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256[]",
+        "name": "_tokenIds",
+        "type": "uint256[]"
+      }
+    ],
+    "name": "withdrawPrivateBattlefield",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  }
+]

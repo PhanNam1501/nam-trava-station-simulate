@@ -10,10 +10,11 @@ export class ExpeditionState {
     }
   }
 
-  export interface NumberKinghtInExpedition {
-    rarity: uint256,
-    numberOfKnight: uint256
-  }
+export interface NumberKinghtInExpedition {
+  rarity: uint256,
+  numberOfKnight: uint256
+}
+
 export interface Expedition extends ExpeditionOption {
     totalKnight: number;
     raritys: Array<NumberKinghtInExpedition>;
