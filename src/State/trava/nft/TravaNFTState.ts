@@ -1,6 +1,7 @@
 import { TokenSellOption } from "../../../Simulation";
 import { AuctioningNormalKnight, AuctioningSpecialKnight, FarmingKnightDetailInfo, NFTFarming, SellingArmouryType, SellingVeTravaType, tokenInfo } from "../../../Simulation/trava/nft/helpers/global";
 import { EthAddress } from "../../../utils/types";
+import { Ticket } from "../../WalletState";
 
 export class NFTSellingState {
   v1: Array<SellingArmouryType>;
@@ -45,3 +46,11 @@ export class NFTFarmingsState {
   }
 }
 
+export class NFTTicketState {
+  ticketState: Map<string, Ticket>;
+  isFetch: boolean;
+  constructor() {
+    this.ticketState = new Map();
+    this.isFetch = false;
+  }
+}

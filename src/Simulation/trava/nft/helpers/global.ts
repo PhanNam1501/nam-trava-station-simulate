@@ -1,4 +1,3 @@
-
 import { EthAddress, uint256 } from "../../../../utils/types";
 import { Vault } from "../missions";
 
@@ -46,6 +45,12 @@ export interface NormalKnight extends BaseKnight {
   shield: CollectionArmoury;
   weapon: CollectionArmoury;
 }
+
+export interface NormalKnightInExpedition extends NormalKnight {
+  deployTimestamp: string;
+  successRate: string;
+  accruedExperience: string;
+}
 export type CollectionArmoury = {
   tokenId: number;
   rarity: number;
@@ -79,6 +84,7 @@ export interface AuctioningSpecialKnight extends SpecialKnight, AuctionKnightDat
 export interface FarmingKinghtInfo {
   attainedExp: number,
   depositedTime: number,
+  lastPolishTime: number,
   id: number,
   exp: number,
   earn: number,

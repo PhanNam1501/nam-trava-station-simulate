@@ -103,6 +103,7 @@ export async function updateFarmingState(appState1: ApplicationState, force = fa
                         nftInfos.push({
                             attainedExp: parseInt(exp[index][0]),
                             depositedTime: parseInt(data["depositTime"]) * 1000,
+                            lastPolishTime: parseInt(data["lastPolishTime"]) * 1000,
                             id: Number(idList[index]),
                             exp: Number(expEarned[index][0]),
                             earn: BigNumber(balance[index]).dividedBy(BASE18).toNumber(),
@@ -210,9 +211,11 @@ export async function updateFarmingState(appState1: ApplicationState, force = fa
 }
 
 export function calculateKnightApr(dailyReward: number,  collectionVaultValue: number, totalVaultValue: number, collectionPrice: number): number {
+    if (totalVaultValue == 0 || collectionPrice == 0) return 0;
     return ((((BigNumber(dailyReward).multipliedBy(collectionVaultValue)).div(totalVaultValue)).multipliedBy(365)).div(collectionPrice)).multipliedBy(100).toNumber()
 }
 
 export function calculateVaultApr(dailyReward: number, totalNFTs: number, collectionPrice: number): number {
+    if (totalNFTs == 0 || collectionPrice == 0) return 0;
     return (((BigNumber(dailyReward).multipliedBy(365)).div(totalNFTs).div(collectionPrice)).multipliedBy(100)).toNumber();
 }

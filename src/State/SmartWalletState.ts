@@ -1,10 +1,10 @@
 import { EthAddress } from "../utils/types";
-import { NFTAuctioningState, NFTFarmingsState, NFTSellingState } from "./trava/nft/TravaNFTState";
+import { NFTAuctioningState, NFTFarmingsState, NFTSellingState, NFTTicketState } from "./trava/nft/TravaNFTState";
 import {
   BaseAccountVault,
   WalletTravaLPState,
 } from "./trava/lending/TravaDeFiState";
-import { CollectionOwned, NFTOwned } from "./WalletState";
+import { CollectionOwned, KnightInExpeditionState, NFTOwned, Ticket } from "./WalletState";
 import { VeTravaListState, VeTravaState } from "./trava/lending/TravaGovenanceState"
 import { FarmingKnightDetailInfo } from "../Simulation";
 export interface OriginTokenData {
@@ -37,11 +37,12 @@ export class SmartWalletState {
   ethBalances: string;
   sellingNFT: NFTSellingState;
   auctioningState: NFTAuctioningState;
-  farmingState: Array<FarmingKnightDetailInfo>;
   NFTFarmingsState: NFTFarmingsState;
   detailTokenInPool: Map<string, DetailTokenInPool>;
   travaLPStakingStateList: Map<string, BaseAccountVault>;
   veTravaListState: VeTravaListState;
+  knightInExpeditionState: KnightInExpeditionState;
+  ticket: NFTTicketState;
   constructor(address: EthAddress) {
     this.address = address;
     this.tokenBalances = new Map<string, string>();
@@ -52,10 +53,11 @@ export class SmartWalletState {
     this.sellingNFT = new NFTSellingState();
     this.auctioningState = new NFTAuctioningState();
     this.NFTFarmingsState = new NFTFarmingsState();
-    this.farmingState = new Array();
     this.detailTokenInPool = new Map();
     this.travaLPStakingStateList = new Map();
     this.veTravaListState = new VeTravaListState();
+    this.knightInExpeditionState = new KnightInExpeditionState();
+    this.ticket = new NFTTicketState();
   }
 
   // async getTokenAmount(tokenAddress: string): Promise<string> {

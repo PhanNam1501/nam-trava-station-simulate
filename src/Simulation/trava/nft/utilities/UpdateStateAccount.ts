@@ -7,10 +7,13 @@ import { Contract } from "ethers";
 import { getAddr } from "../../../../utils/address";
 import _ from "lodash";
 import { ArmouryType, NormalKnight } from "../helpers/global";
-import {  RarityMapping, TypeMapping } from "../helpers/KnightConfig";
+import { RarityMapping, TypeMapping } from "../helpers/KnightConfig";
 import CollectionOwnedGraphQuery from "../helpers/CollectionOwnedGraphQuery";
 import { _fetchNormal, collectionSort, fetchBasicCollections, fetchNormalItems } from "../helpers/utils"
-import { multiCall } from "../../../../utils/helper";
+import { getMode, multiCall } from "../../../../utils/helper";
+import { EthAddress } from "../../../../utils/types";
+import TicketABI from "../../../../abis/NFTTicketABI.json";
+import { Ticket } from "../../../../State";
 
 // Update balance of trava
 export async function updateTravaBalance(
@@ -191,10 +194,6 @@ export async function updateCollectionBalanceFromContract(
 }
 
 
-
-
-
-
 export async function updateCollectionBalanceFromGraph(
   appState1: ApplicationState,
   mode: "walletState" | "smartWalletState"
@@ -210,3 +209,44 @@ export async function updateCollectionBalanceFromGraph(
 }
 
 
+export async function updateOwnerTicketState(appState1: ApplicationState, _from: EthAddress, force = false) {
+  let appState = { ...appState1 };
+  try {
+    _from = _from.toLowerCase();
+    let mode = getMode(appState, _from);
+    if (!appState[mode].ticket.isFetch || force) {
+      const TICKET_IDS = ['100001', '100002', '100003'];
+      const [ticketOfOwner]
+        = await Promise.all([
+          multiCall(
+            TicketABI,
+            TICKET_IDS.map((ticket_id: string) => ({
+              address: getAddr("NFT_TICKET", appState.chainId),
+              name: "balanceOf",
+              params: [_from, ticket_id],
+            })),
+            appState.web3,
+            appState.chainId
+          )]);
+      let Ticket1: Ticket = {
+        ticket: "counter",
+        amount: parseInt(ticketOfOwner[0])
+      }
+      let Ticket2: Ticket = {
+        ticket: "presale",
+        amount: parseInt(ticketOfOwner[1])
+      }
+      let Ticket3: Ticket = {
+        ticket: "incentive",
+        amount: parseInt(ticketOfOwner[2])
+      }
+      appState[mode].ticket.ticketState.set(TICKET_IDS[0], Ticket1);
+      appState[mode].ticket.ticketState.set(TICKET_IDS[1], Ticket2);
+      appState[mode].ticket.ticketState.set(TICKET_IDS[2], Ticket3);
+      appState[mode].ticket.isFetch = true;
+    }
+  } catch (err) {
+    console.log(err)
+  }
+  return appState;
+}
