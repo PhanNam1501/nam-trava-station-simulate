@@ -156,3 +156,22 @@ export async function simulateExpeditionWithdraw(appState1: ApplicationState, _v
     }
     return appState;
 }
+
+export function isOnDuty(appState1: ApplicationState, _fromKnight: EthAddress, _expeditionAddress: EthAddress , _knightId: number) {
+    let appState = appState1;
+    if(appState[getMode(appState, _fromKnight)].knightInExpeditionState.expedition.get(_expeditionAddress)?.find(x => x.id == _knightId)) {
+        let deployTimestamp = appState[getMode(appState, _fromKnight)].knightInExpeditionState.expedition.get(_expeditionAddress)?.find(x => x.id == _knightId)?.deployTimestamp;
+        let time = new Date().getTime();
+        let timeDeploy = new Date(parseInt(deployTimestamp!)).getTime();
+        let timeLeft = time - timeDeploy
+        if (timeLeft >= 0) {
+            return false;
+        }
+        else{
+            return true;
+        }
+    }
+    else{
+        throw new Error("Not have this knight in expedition");
+    }
+}
