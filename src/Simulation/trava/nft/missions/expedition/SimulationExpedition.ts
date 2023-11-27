@@ -2,7 +2,9 @@ import { EthAddress, uint256 } from "../../../../../utils/types";
 import { ApplicationState } from "../../../../../State/ApplicationState";
 import { ArmouryType, NormalKnight, NormalKnightInExpedition } from "../..";
 import _ from "lodash";
-
+import { getMode, multiCall } from "../../../../../utils/helper";
+import ExpeditionABI from "../../../../../abis/NFTExpeditionABI.json";
+import { Ticket } from "../../../../../State";
 export async function simulateExpeditionDeploy(
     appState1: ApplicationState,
     _expeditionAddress: EthAddress, 
@@ -18,6 +20,10 @@ export async function simulateExpeditionDeploy(
         _fromKnight = _fromKnight.toLowerCase();
         _fromFee = _fromFee.toLowerCase();
         _fromTicket = _fromTicket.toLowerCase();
+        let countTickets = 0;
+        for (let i = 0; i < _buffWinRateTickets.length; i++) {
+            countTickets += parseInt(_buffWinRateTickets[i]);
+        }
         const appState = { ...appState1 };
         let currentNFT: NormalKnight | undefined = undefined;
         let mode: "walletState"|"smartWalletState";
@@ -44,12 +50,56 @@ export async function simulateExpeditionDeploy(
         if (appState.walletState.address.toLowerCase() != _fromTicket && appState.smartWalletState.address.toLowerCase() != _fromTicket) {
             throw new Error("Not the owner from ticket");
         }
-        
+
+        const [successRateFromContract, ExpFromContract]
+        = await Promise.all([
+          multiCall(
+            ExpeditionABI,
+            [_expeditionAddress].map((address: string) => ({
+              address: address,
+              name: "getSuccessRate",
+              params: [currentNFT?.id.toString()],
+            })),
+            appState.web3,
+            appState.chainId
+          ),
+          multiCall(
+            ExpeditionABI,
+            [_expeditionAddress].map((address: string) => ({
+              address: address,
+              name: "getAccruedExperience",
+              params: [currentNFT?.id.toString()],
+            })),
+            appState.web3,
+            appState.chainId
+          ),
+        ]);
+
+
+        let successRate = 0;
+        if(successRateFromContract[0]) {
+            successRate = parseInt(successRateFromContract[0].toString());
+        }
+        let persentBuffSuccessRate = appState.ExpeditionState.expeditions.get(_expeditionAddress)?.buffSuccessRate[countTickets];
+        if (!persentBuffSuccessRate) {
+            persentBuffSuccessRate = 0;
+        }
+        let successRateAfterBuff = successRate * (10000 + persentBuffSuccessRate)/10000;
+        let Exp = 0;
+        if(ExpFromContract[0]) {
+            Exp = parseInt(ExpFromContract[0].toString());
+        }
+        let persentBuffExp = appState.ExpeditionState.expeditions.get(_expeditionAddress)?.buffExp[countTickets];
+        if (!persentBuffExp) {
+            persentBuffExp = 0;
+        }
+        let ExpAfterBuff = Exp * (10000 + persentBuffExp)/10000;
+        // Set knight in expedition
         const data: NormalKnightInExpedition = {
             ...currentNFT,
             deployTimestamp: appState.createdTime.toString(),
-            successRate: "0",
-            accruedExperience: "0",
+            successRate: successRateAfterBuff.toString(),
+            accruedExperience: ExpAfterBuff.toString(),
         };
         appState[mode].knightInExpeditionState.expedition.set(_expeditionAddress, [data]);
         // Set rarity += 1
@@ -68,6 +118,17 @@ export async function simulateExpeditionDeploy(
         else{
             throw new Error("Not have this expedition");
         }
+
+        // set Ticket
+        let tickets = appState[getMode(appState, _fromTicket)].ticket.ticketState;
+        let ticketAfterBuff: Map<string, Ticket> = new Map();
+            for (let i = 0; i < _buffWinRateTickets.length; i++) {
+                let ticket = tickets.get((100001+i).toString());
+                if (ticket) {
+                    ticketAfterBuff.set((100001+i).toString(), {ticket: ticket.ticket, amount: ticket.amount - parseInt(_buffWinRateTickets[i]) - parseInt(_buffExpTickets[i])});
+                }
+            }
+        appState[getMode(appState, _fromTicket)].ticket.ticketState = ticketAfterBuff;
         return appState;
     } catch(err) {
         throw err;

@@ -219,6 +219,7 @@ export async function updateExpeditionState(appState1: ApplicationState, force =
           )
         ]);
       for (let i = 0; i < listexpedition.length; i++) {
+        if (expeditionsAddress[i] == undefined) continue;
         // let key = listexpedition[i].id
         let raritys: Array<NumberKinghtInExpedition> = new Array();
         let total: number = 0;
@@ -234,6 +235,38 @@ export async function updateExpeditionState(appState1: ApplicationState, force =
           successPayout = successPayouts[i].toString();
           profession = expeditionDurations[i].toString();
         }
+
+        const [buffSuccessRate]
+        = await Promise.all([
+          multiCall(
+            ExpeditionABI,
+            [1,2,3,4,5].map((id: number) => ({
+              address: expeditionsAddress[i],
+              name: "buffWinRate",
+              params: [id],
+            })),
+            appState.web3,
+            appState.chainId
+          )]);
+        for (let j = 0; j < buffSuccessRate.length; j++) {
+          buffSuccessRate[j] = parseInt(buffSuccessRate[j]);
+        }
+        const [buffExp]
+        = await Promise.all([
+          multiCall(
+            ExpeditionABI,
+            [1,2,3,4,5].map((id: number) => ({
+              address: expeditionsAddress[i],
+              name: "buffExp",
+              params: [id],
+            })),
+            appState.web3,
+            appState.chainId
+          )]);
+        for (let j = 0; j < buffExp.length; j++) {
+          buffExp[j] = parseInt(buffExp[j]);
+        }
+
         let expedition: Expedition = {
           ...listexpedition[i],
           totalKnight: total,
@@ -242,6 +275,8 @@ export async function updateExpeditionState(appState1: ApplicationState, force =
           expeditionPrice: expeditionPrice,
           successPayout: successPayout,
           successReward: hugeSuccessPayout,
+          buffSuccessRate: buffSuccessRate,
+          buffExp: buffExp,
           token: {
             address: getAddr("TRAVA_TOKEN", appState.chainId).toLowerCase(),
             decimals: 18,

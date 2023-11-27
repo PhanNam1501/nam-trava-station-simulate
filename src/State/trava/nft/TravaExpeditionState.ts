@@ -22,6 +22,8 @@ export interface Expedition extends ExpeditionOption {
     expeditionPrice: uint256;
     successPayout: uint256;
     successReward: uint256;
+    buffSuccessRate: Array<number>;
+    buffExp: Array<number>;
     token: TokenInfo;
 }
 
