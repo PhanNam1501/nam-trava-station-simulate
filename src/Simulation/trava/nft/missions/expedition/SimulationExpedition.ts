@@ -162,8 +162,8 @@ export function isOnDuty(appState1: ApplicationState, _fromKnight: EthAddress, _
     if(appState[getMode(appState, _fromKnight)].knightInExpeditionState.expedition.get(_expeditionAddress)?.find(x => x.id == _knightId)) {
         let deployTimestamp = appState[getMode(appState, _fromKnight)].knightInExpeditionState.expedition.get(_expeditionAddress)?.find(x => x.id == _knightId)?.deployTimestamp;
         let time = new Date().getTime();
-        let timeDeploy = new Date(parseInt(deployTimestamp!)).getTime();
-        let timeLeft = time - timeDeploy
+        let timeDeploy = new Date(parseInt(deployTimestamp!+appState.ExpeditionState.expeditions.get(_expeditionAddress)?.profession)).getTime();
+        let timeLeft = time - timeDeploy;
         if (timeLeft >= 0) {
             return false;
         }
