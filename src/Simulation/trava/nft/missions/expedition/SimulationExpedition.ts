@@ -174,4 +174,5 @@ export function isOnDuty(appState1: ApplicationState, _fromKnight: EthAddress, _
     else{
         throw new Error("Not have this knight in expedition");
     }
+    // Chưa hoàn thiện
 }
