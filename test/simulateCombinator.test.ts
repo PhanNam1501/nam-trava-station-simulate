@@ -1,5 +1,5 @@
 import { JsonRpcProvider } from "ethers";
-import { ApplicationState, getUserTokenBalance } from "orchai-combinator-bsc-simulation";
+import { ApplicationState, bnb, getUserTokenBalance, updateOraiLiquidStakingState } from "orchai-combinator-bsc-simulation";
 const test = async () => {
     console.log("=================BEFORE==========================");
     const walletAddress = "0x595622cBd0Fc4727DF476a1172AdA30A9dDf8F43"
@@ -15,8 +15,9 @@ const test = async () => {
         chainId,
         ""
     );
+    console.log(bnb.toLowerCase())
+    appState = await updateOraiLiquidStakingState(appState)
 
-    const amount = await getUserTokenBalance(appState, walletAddress, "0xE1F005623934D3D8C724EC68Cc9bFD95498D4435")
-    console.log(amount)
+    console.log(appState.oraiLSStake)
 }
 test()
