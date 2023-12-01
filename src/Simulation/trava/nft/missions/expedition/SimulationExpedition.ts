@@ -8,10 +8,10 @@ import { Ticket } from "../../../../../State";
 export async function simulateExpeditionDeploy(
     appState1: ApplicationState,
     _expeditionAddress: EthAddress, 
+    _knightId: uint256, 
     _buffWinRateTickets: Array<uint256>, 
     _buffExpTickets: Array<uint256>, 
     _fromKnight: EthAddress, 
-    _knightId: number, 
     _fromFee: EthAddress, 
     _fromTicket: EthAddress
     ): Promise<ApplicationState> {
@@ -27,7 +27,7 @@ export async function simulateExpeditionDeploy(
         if (!appState[getMode(appState, _fromKnight)].knightInExpeditionState.isFetch) {
             appState = await updateOwnerKnightInExpeditionState(appState, _fromKnight);
         }
-        
+
         let countTickets = 0;
         for (let i = 0; i < _buffWinRateTickets.length; i++) {
             countTickets += parseInt(_buffWinRateTickets[i]);
@@ -36,19 +36,19 @@ export async function simulateExpeditionDeploy(
         let currentNFT: NormalKnight | undefined = undefined;
         let mode: "walletState"|"smartWalletState";
         if (_fromKnight == appState.walletState.address.toLowerCase()) {
-          currentNFT = appState.walletState.collection.v1.find((nft) => nft.id == _knightId);
+          currentNFT = appState.walletState.collection.v1.find((nft) => nft.id.toString() == _knightId);
           mode = "walletState";
           if (!currentNFT) {
             throw new Error("Not have this knight");
           }
-          appState.walletState.collection["v1"] = appState.walletState.collection["v1"].filter(x => x.id != _knightId);
+          appState.walletState.collection["v1"] = appState.walletState.collection["v1"].filter(x => x.id.toString() != _knightId);
         } else if (_fromKnight == appState.smartWalletState.address.toLowerCase()) {
             mode = "smartWalletState";
-            currentNFT = appState.walletState.collection.v1.find((nft) => nft.id == _knightId);
+            currentNFT = appState.walletState.collection.v1.find((nft) => nft.id.toString() == _knightId);
           if (!currentNFT) {
             throw new Error("Not have this knight");
           }
-            appState.smartWalletState.collection["v1"] = appState.smartWalletState.collection["v1"].filter(x => x.id != _knightId);
+            appState.smartWalletState.collection["v1"] = appState.smartWalletState.collection["v1"].filter(x => x.id.toString() != _knightId);
         } else{
             throw new Error("Not the owner from knight");
         }
