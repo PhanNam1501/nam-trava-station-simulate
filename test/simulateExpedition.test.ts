@@ -2,7 +2,7 @@ import { ethers, JsonRpcProvider } from "ethers";
 import { ApplicationState } from "../src/State/ApplicationState";
 import { getAddr } from "../src/utils/address";
 import BigNumber from "bignumber.js";
-import { updateCollectionBalanceFromContract, updateOwnerKnightInExpeditionState, updateOwnerTicketState, updateExpeditionState, updateNFTBalanceFromContract, simulateExpeditionDeploy, simulateExpeditionAbandon } from "../src/Simulation";
+import { updateCollectionBalanceFromContract, updateOwnerKnightInExpeditionState, updateOwnerTicketState, updateExpeditionState, updateNFTBalanceFromContract, simulateExpeditionDeploy, simulateExpeditionAbandon, updateUserLockBalance } from "../src/Simulation";
 import ExpeditionABI from "../src/abis/NFTExpeditionABI.json";
 
 // start 
@@ -32,6 +32,7 @@ async function test(){
     appState = await updateCollectionBalanceFromContract(appState, "smartWalletState"); //Update NFT of Owner
     appState = await updateOwnerKnightInExpeditionState(appState, proxyAddress);
     appState = await updateOwnerTicketState(appState, proxyAddress);
+    appState = await updateUserLockBalance(appState, userAddress);
     console.log(appState["walletState"].collection.v1);
     console.log("Expedition", appState.knightInExpeditionState.expedition);
     console.log(appState.ExpeditionState.expeditions)

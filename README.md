@@ -1018,8 +1018,4 @@ appState9 = await simulateUnwrapV2(
     amount:  string,
     contractAddress: address of actions
 )
-<<<<<<< HEAD
 ```
-=======
-```
->>>>>>> origin/governance
