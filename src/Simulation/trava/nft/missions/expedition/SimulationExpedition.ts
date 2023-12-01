@@ -107,16 +107,16 @@ export async function simulateExpeditionDeploy(
                 }
             }
 
-            let priceTokenAddress = getAddr("TRAVA_TOKEN", appState.chainId);
+            let priceTokenAddress = getAddr("TRAVA_TOKEN", appState.chainId).toLowerCase();
             let modeExpeditionFee = getMode(appState, fromExpeditionFee);
-            if(!appState[modeExpeditionFee].tokenBalances.has(priceTokenAddress.toLowerCase())) {
+            if(!appState[modeExpeditionFee].tokenBalances.has(priceTokenAddress)) {
                 appState = await updateTokenBalance(appState, fromExpeditionFee, priceTokenAddress);
             }
             let price = BigNumber(appState.ExpeditionState.expeditions.get(expeditionAddress)!.expeditionPrice);          
-            let oldBalance = BigNumber(appState[modeExpeditionFee].tokenBalances.get(priceTokenAddress.toLowerCase())!);
+            let oldBalance = BigNumber(appState[modeExpeditionFee].tokenBalances.get(priceTokenAddress)!);
             let newBalance = oldBalance.minus(price).toFixed();
 
-            appState[modeExpeditionFee].tokenBalances.set(priceTokenAddress.toLowerCase(), newBalance);
+            appState[modeExpeditionFee].tokenBalances.set(priceTokenAddress, newBalance);
             appState.smartWalletState.knightInExpeditionState.expedition.set(expeditionAddress, [data]);
             appState.ExpeditionState.expeditions.set(expeditionAddress, expeditionData);
             appState[getMode(appState, fromTicket)].ticket.ticketState = ticketAfterBuff;
@@ -132,51 +132,20 @@ export async function simulateExpeditionAbandon(appState1: ApplicationState, _va
     try {
         const expeditionAddress = _vault.toLowerCase();
         const to = _to.toLowerCase();
-        if (!isOnDuty(appState, _vault, _knightId)) {
-            throw new Error("Knight is not on duty");
-        }
         if (!appState.ExpeditionState.isFetch) {
             appState = await updateExpeditionState(appState);
         }
         if (!appState.smartWalletState.knightInExpeditionState.isFetch) {
             appState = await updateOwnerKnightInExpeditionState(appState, to);
         }
-        let expeditionData = appState.ExpeditionState.expeditions.get(expeditionAddress);
-        let expeditionInSmartwalletData = appState.smartWalletState.knightInExpeditionState.expedition.get(expeditionAddress);
-        if (!expeditionData || !expeditionInSmartwalletData) {
-            throw new ExpeditionNotFoundError("Not found this expedition");
+        if (!isOnDuty(appState, _vault, _knightId)) {
+            throw new Error("Knight is not on duty");
         }
-        let currentNFT = expeditionInSmartwalletData.find(x => x.id.toString() == _knightId);
-        if (!currentNFT) {
-            throw new NFTNotFoundError("Knight is not found!");
-        }
-        
-        let expeditionDataRaritys = expeditionData.raritys;
-        let expeditionDataRarity = expeditionDataRaritys.find(x => x.rarity == currentNFT?.rarity.toString());
-        if(expeditionDataRarity) {
-            expeditionDataRarity.numberOfKnight = (parseInt(expeditionDataRarity.numberOfKnight) - 1).toString();
-            expeditionDataRaritys = expeditionDataRaritys.filter(x => x.rarity != currentNFT?.rarity.toString());
-            expeditionDataRaritys.push(expeditionDataRarity);
-            expeditionData.raritys = expeditionDataRaritys;
-            expeditionData.totalKnight -= 1;
-        }
-        else {
-            throw new Error("Not found Knight's rarity");
-        }
-        let newDataNFT: NormalKnight = {
-            armorTokenId: currentNFT.armorTokenId,
-            helmetTokenId: currentNFT.helmetTokenId,
-            shieldTokenId: currentNFT.shieldTokenId,
-            weaponTokenId: currentNFT.weaponTokenId,
-            rarity: currentNFT.rarity,
-            id: currentNFT.id,
-            setId: currentNFT.setId,
-            exp: currentNFT.exp,
-            armor: currentNFT.armor,
-            helmet: currentNFT.helmet,
-            shield: currentNFT.shield,
-            weapon: currentNFT.weapon,
-        };
+        let returnData = getExpeditionData(appState, expeditionAddress, _knightId);
+        let expeditionData = returnData.expeditionData;
+        let expeditionInSmartwalletData = returnData.expeditionInSmartwalletData;
+        let currentNFT = returnData.currentNFT;
+        let newDataNFT: NormalKnight = getNormalKnightInExpedition(currentNFT, false);
         
         let newExpeditionInSmartwalletData = expeditionInSmartwalletData.filter(x => x.id.toString() != _knightId);
         if (isWallet(appState, to)){
@@ -195,60 +164,27 @@ export async function simulateExpeditionWithdraw(appState1: ApplicationState, _v
     try {
         const expeditionAddress = _vault.toLowerCase();
         const to = _to.toLowerCase();
-        if (isOnDuty(appState, _vault, _knightId)) {
-            throw new Error("Knight is on duty");
-        }
         if (!appState.ExpeditionState.isFetch) {
             appState = await updateExpeditionState(appState);
         }
         if (!appState.smartWalletState.knightInExpeditionState.isFetch) {
             appState = await updateOwnerKnightInExpeditionState(appState, to);
         }
-        let expeditionData = appState.ExpeditionState.expeditions.get(expeditionAddress);
-        let expeditionInSmartwalletData = appState.smartWalletState.knightInExpeditionState.expedition.get(expeditionAddress);
-        if (!expeditionData || !expeditionInSmartwalletData) {
-            throw new ExpeditionNotFoundError("Not found this expedition");
+        if (isOnDuty(appState, _vault, _knightId)) {
+            throw new Error("Knight is on duty");
         }
-        let currentNFT = expeditionInSmartwalletData.find(x => x.id.toString() == _knightId);
-        if (!currentNFT) {
-            throw new NFTNotFoundError("Knight is not found!");
-        }
-        let expeditionDataRaritys = expeditionData.raritys;
-        let expeditionDataRarity = expeditionDataRaritys.find(x => x.rarity == currentNFT?.rarity.toString());
-        if(expeditionDataRarity) {
-            expeditionDataRarity.numberOfKnight = (parseInt(expeditionDataRarity.numberOfKnight) - 1).toString();
-            expeditionDataRaritys = expeditionDataRaritys.filter(x => x.rarity != currentNFT?.rarity.toString());
-            expeditionDataRaritys.push(expeditionDataRarity);
-            expeditionData.raritys = expeditionDataRaritys;
-            expeditionData.totalKnight -= 1;
-        }
-        else {
-            throw new Error("Not found Knight's rarity");
-        }
-        let newDataNFT: NormalKnight = {
-            armorTokenId: currentNFT.armorTokenId,
-            helmetTokenId: currentNFT.helmetTokenId,
-            shieldTokenId: currentNFT.shieldTokenId,
-            weaponTokenId: currentNFT.weaponTokenId,
-            rarity: currentNFT.rarity,
-            id: currentNFT.id,
-            setId: currentNFT.setId,
-            exp: currentNFT.exp + parseInt(currentNFT.accruedExperience),
-            armor: currentNFT.armor,
-            helmet: currentNFT.helmet,
-            shield: currentNFT.shield,
-            weapon: currentNFT.weapon,
-        };
-
-        let priceTokenAddress = getAddr("TRAVA_TOKEN", appState.chainId);
+        let returnData = getExpeditionData(appState, expeditionAddress, _knightId);
+        let expeditionData = returnData.expeditionData;
+        let expeditionInSmartwalletData = returnData.expeditionInSmartwalletData;
+        let currentNFT = returnData.currentNFT;
+        let newDataNFT: NormalKnight = getNormalKnightInExpedition(currentNFT, true);
+        let priceTokenAddress = getAddr("TRAVA_TOKEN", appState.chainId).toLowerCase();
         let modeTo = getMode(appState, to);
-        if(!appState[modeTo].tokenBalances.has(priceTokenAddress.toLowerCase())) {
+        if(!appState[modeTo].tokenBalances.has(priceTokenAddress)) {
             appState = await updateTokenBalance(appState, to, priceTokenAddress);
         }
-        let reward = BigNumber(0);
-        let oldBalance = BigNumber(0);
-        reward = BigNumber(appState.ExpeditionState.expeditions.get(expeditionAddress)!.successReward);          
-        oldBalance = BigNumber(appState[modeTo].tokenBalances.get(priceTokenAddress.toLowerCase())!);
+        let reward = BigNumber(appState.ExpeditionState.expeditions.get(expeditionAddress)!.successReward);          
+        let oldBalance = BigNumber(appState[modeTo].tokenBalances.get(priceTokenAddress)!);
         let newBalance = oldBalance.plus(reward).toFixed();
         
         let newExpeditionInSmartwalletData = expeditionInSmartwalletData.filter(x => x.id.toString() != _knightId);
@@ -257,7 +193,7 @@ export async function simulateExpeditionWithdraw(appState1: ApplicationState, _v
         }
         appState.ExpeditionState.expeditions.set(expeditionAddress, expeditionData);
         appState.smartWalletState.knightInExpeditionState.expedition.set(expeditionAddress, newExpeditionInSmartwalletData);
-        appState[modeTo].tokenBalances.set(priceTokenAddress.toLowerCase(), newBalance);
+        appState[modeTo].tokenBalances.set(priceTokenAddress, newBalance);
     } catch(err) {
         console.log(err);
     }
@@ -289,4 +225,48 @@ export function isOnDuty(appState1: ApplicationState, expeditionAddress: EthAddr
     else{
         return false;
     }
+}
+
+export function getExpeditionData(appState1: ApplicationState, expeditionAddress: EthAddress, _knightId: uint256) {
+    let appState = appState1;
+    let expeditionData = appState.ExpeditionState.expeditions.get(expeditionAddress);
+    let expeditionInSmartwalletData = appState.smartWalletState.knightInExpeditionState.expedition.get(expeditionAddress);
+        if (!expeditionData || !expeditionInSmartwalletData) {
+            throw new ExpeditionNotFoundError("Not found this expedition");
+        }
+        let currentNFT = expeditionInSmartwalletData.find(x => x.id.toString() == _knightId);
+        if (!currentNFT) {
+            throw new NFTNotFoundError("Knight is not found!");
+        }
+        let expeditionDataRaritys = expeditionData.raritys;
+        let expeditionDataRarity = expeditionDataRaritys.find(x => x.rarity == currentNFT?.rarity.toString());
+        if(expeditionDataRarity) {
+            expeditionDataRarity.numberOfKnight = (parseInt(expeditionDataRarity.numberOfKnight) - 1).toString();
+            expeditionDataRaritys = expeditionDataRaritys.filter(x => x.rarity != currentNFT?.rarity.toString());
+            expeditionDataRaritys.push(expeditionDataRarity);
+            expeditionData.raritys = expeditionDataRaritys;
+            expeditionData.totalKnight -= 1;
+        }
+        else {
+            throw new Error("Not found Knight's rarity");
+        }
+    return {'expeditionData': expeditionData, 'expeditionInSmartwalletData': expeditionInSmartwalletData, 'currentNFT': currentNFT};
+}
+
+export function getNormalKnightInExpedition(currentNFT: NormalKnightInExpedition, isWithdraw: boolean) {
+    let newDataNFT: NormalKnight = {
+        armorTokenId: currentNFT.armorTokenId,
+        helmetTokenId: currentNFT.helmetTokenId,
+        shieldTokenId: currentNFT.shieldTokenId,
+        weaponTokenId: currentNFT.weaponTokenId,
+        rarity: currentNFT.rarity,
+        id: currentNFT.id,
+        setId: currentNFT.setId,
+        exp: isWithdraw? currentNFT.exp + parseInt(currentNFT.accruedExperience) : currentNFT.exp,
+        armor: currentNFT.armor,
+        helmet: currentNFT.helmet,
+        shield: currentNFT.shield,
+        weapon: currentNFT.weapon,
+    };
+    return newDataNFT;
 }
