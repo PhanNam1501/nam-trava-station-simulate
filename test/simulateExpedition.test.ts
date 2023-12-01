@@ -2,7 +2,7 @@ import { ethers, JsonRpcProvider } from "ethers";
 import { ApplicationState } from "../src/State/ApplicationState";
 import { getAddr } from "../src/utils/address";
 import BigNumber from "bignumber.js";
-import { updateCollectionBalanceFromContract, updateOwnerKnightInExpeditionState, updateOwnerTicketState, updateExpeditionState, updateNFTBalanceFromContract, simulateExpeditionDeploy } from "../src/Simulation";
+import { updateCollectionBalanceFromContract, updateOwnerKnightInExpeditionState, updateOwnerTicketState, updateExpeditionState, updateNFTBalanceFromContract, simulateExpeditionDeploy, simulateExpeditionAbandon } from "../src/Simulation";
 import ExpeditionABI from "../src/abis/NFTExpeditionABI.json";
 
 // start 
@@ -29,13 +29,23 @@ async function test(){
     appState = await updateCollectionBalanceFromContract(appState, "walletState"); //Update NFT of Owner
     appState = await updateOwnerKnightInExpeditionState(appState, userAddress);
     appState = await updateOwnerTicketState(appState, userAddress);
+    appState = await updateCollectionBalanceFromContract(appState, "smartWalletState"); //Update NFT of Owner
+    appState = await updateOwnerKnightInExpeditionState(appState, proxyAddress);
+    appState = await updateOwnerTicketState(appState, proxyAddress);
     console.log(appState["walletState"].collection.v1);
-    console.log("Expedition", appState["walletState"].knightInExpeditionState.expedition);
+    console.log("Expedition", appState.knightInExpeditionState.expedition);
+    console.log(appState.ExpeditionState.expeditions)
     console.log(appState["walletState"].ticket);
     appState = await simulateExpeditionDeploy(appState, "0x5b6f3cad58626d409494a8800f60ec1a10c8e929",  "3927", ["1", "0", "1"], ["0", "3", "2"], userAddress, userAddress, userAddress);
     console.log("________________________TEST DEPLOY________________________")
     console.log(appState["walletState"].collection.v1);
-    console.log("Expedition", appState["walletState"].knightInExpeditionState.expedition);
+    console.log("Expedition", appState.knightInExpeditionState.expedition);
+    console.log(appState.ExpeditionState.expeditions)
+    console.log(appState["walletState"].ticket);
+    console.log("________________________TEST Abandon________________________")
+    appState = await simulateExpeditionAbandon(appState, "0x5b6f3cad58626d409494a8800f60ec1a10c8e929",  "3927", userAddress);
+    console.log(appState["walletState"].collection.v1);
+    console.log("Expedition", appState.knightInExpeditionState.expedition);
     console.log(appState.ExpeditionState.expeditions)
     console.log(appState["walletState"].ticket);
 }

@@ -12,7 +12,7 @@ export async function updateOwnerKnightInExpeditionState(appState1: ApplicationS
   let appState = { ...appState1 };
   try {
     let mode = getMode(appState, _from);
-    if (!appState[mode].knightInExpeditionState.isFetch || force) {
+    if (!appState.knightInExpeditionState.isFetch || force) {
       _from = _from.toLowerCase();
       const listexpedition = expeditionOptions[appState.chainId];
       let expeditionsAddress: EthAddress[] = [];
@@ -124,8 +124,8 @@ export async function updateOwnerKnightInExpeditionState(appState1: ApplicationS
           knights.push({ ...rawCollection, ...normalItemsCollections[counter], ...{ deployTimestamp: deployTimestamp[counter].toString() }, ...{ successRate: successRate[counter].toString() }, ...{ accruedExperience: accruedExperience[counter].toString() } });
           counter++;
         }
-        appState[mode].knightInExpeditionState.expedition.set(expeditionsAddress[i], knights);
-        appState[mode].knightInExpeditionState.isFetch = true;
+        appState.knightInExpeditionState.expedition.set(expeditionsAddress[i], knights);
+        appState.knightInExpeditionState.isFetch = true;
       }
     }
   } catch (err) {
