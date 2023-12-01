@@ -151,10 +151,10 @@ export async function simulateExpeditionAbandon(appState1: ApplicationState, _va
         let expeditionData = returnData.expeditionData;
         let expeditionInSmartwalletData = returnData.expeditionInSmartwalletData;
         let currentNFT = returnData.currentNFT;
-        let newDataNFT: NormalKnight = getNormalKnightInExpedition(currentNFT, false);
         
         let newExpeditionInSmartwalletData = expeditionInSmartwalletData.filter(x => x.id.toString() != _knightId);
         if (isWallet(appState, to)){
+            let newDataNFT: NormalKnight = getNormalKnightInExpedition(currentNFT, false);
             let modeTo = getMode(appState, to);
             if (!appState[modeTo].collection.isFetch){
                 appState = await updateCollectionBalanceFromContract(appState, modeTo); 
