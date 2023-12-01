@@ -201,7 +201,7 @@ export async function simulateExpeditionWithdraw(appState1: ApplicationState, _v
             let reward = BigNumber(appState.ExpeditionState.expeditions.get(expeditionAddress)!.successReward);          
             let oldBalance = BigNumber(appState[modeTo].tokenBalances.get(priceTokenAddress)!);
             let newBalance = oldBalance.plus(reward).toFixed();
-            appState[getMode(appState, toAddress)].collection["v1"].push(newDataNFT);
+            appState[modeTo].collection["v1"].push(newDataNFT);
             appState[modeTo].tokenBalances.set(priceTokenAddress, newBalance);
         }
         appState.ExpeditionState.expeditions.set(expeditionAddress, expeditionData);
