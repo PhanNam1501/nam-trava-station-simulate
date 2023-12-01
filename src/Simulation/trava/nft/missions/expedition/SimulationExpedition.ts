@@ -112,10 +112,8 @@ export async function simulateExpeditionDeploy(
             if(!appState[modeFee].tokenBalances.has(priceTokenAddress.toLowerCase())) {
                 appState = await updateTokenBalance(appState, fromFee, priceTokenAddress);
             }
-            let price = BigNumber(0);
-            let balanceOfToken = BigNumber(0);
-            price = BigNumber(appState.ExpeditionState.expeditions.get(expeditionAddress)!.expeditionPrice);          
-            balanceOfToken = BigNumber(appState[modeFee].tokenBalances.get(priceTokenAddress.toLowerCase())!);
+            let price = BigNumber(appState.ExpeditionState.expeditions.get(expeditionAddress)!.expeditionPrice);          
+            let balanceOfToken = BigNumber(appState[modeFee].tokenBalances.get(priceTokenAddress.toLowerCase())!);
             let newBalance = balanceOfToken.minus(price).toFixed();
 
             appState[modeFee].tokenBalances.set(priceTokenAddress.toLowerCase(), newBalance);
