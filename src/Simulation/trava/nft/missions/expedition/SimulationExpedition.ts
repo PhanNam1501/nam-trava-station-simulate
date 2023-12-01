@@ -2,10 +2,11 @@ import { EthAddress, uint256 } from "../../../../../utils/types";
 import { ApplicationState } from "../../../../../State/ApplicationState";
 import { ArmouryType, NormalKnight, NormalKnightInExpedition, updateExpeditionState, updateOwnerKnightInExpeditionState } from "../..";
 import _ from "lodash";
+import BigNumber from "bignumber.js";
 import { getMode, isWallet, multiCall } from "../../../../../utils/helper";
 import ExpeditionABI from "../../../../../abis/NFTExpeditionABI.json";
 import { Ticket } from "../../../../../State";
-import { ExpeditionNotFoundError, NFTNotFoundError } from "../../../../../utils";
+import { ExpeditionNotFoundError, NFTNotFoundError, getAddr } from "../../../../../utils";
 export async function simulateExpeditionDeploy(
     appState1: ApplicationState,
     _expeditionAddress: EthAddress, 
@@ -76,14 +77,14 @@ export async function simulateExpeditionDeploy(
                 persentBuffExp = 0;
             }
             let ExpAfterBuff = Exp * (10000 + persentBuffExp)/10000;
-            // Knight in expedition
+
             const data: NormalKnightInExpedition = {
                 ...currentNFT,
                 deployTimestamp: appState.createdTime.toString(),
                 successRate: successRateAfterBuff.toString(),
                 accruedExperience: ExpAfterBuff.toString(),
             };
-            // ExpeditionState
+
             let expeditionDataRaritys = expeditionData.raritys;
             let expeditionDataRarity = expeditionDataRaritys.find(x => x.rarity == currentNFT?.rarity.toString());
             if(expeditionDataRarity) {
@@ -96,7 +97,7 @@ export async function simulateExpeditionDeploy(
             else {
                 throw new Error("Not found Knight's rarity");
             }
-            // Ticket
+
             let tickets = appState[getMode(appState, fromTicket)].ticket.ticketState;
             let ticketAfterBuff: Map<string, Ticket> = new Map();
             for (let i = 0; i < _buffWinRateTickets.length; i++) {
@@ -105,7 +106,15 @@ export async function simulateExpeditionDeploy(
                     ticketAfterBuff.set((100001+i).toString(), {ticket: ticket.ticket, amount: ticket.amount - parseInt(_buffWinRateTickets[i]) - parseInt(_buffExpTickets[i])});
                 }
             }
-            // Set all
+            let price = BigNumber(0);
+            let modeFee = getMode(appState, fromFee);
+            let priceTokenAddress = getAddr("TRAVA_TOKEN", appState.chainId);
+            let balanceOfToken = BigNumber(0);
+            price = BigNumber(appState.ExpeditionState.expeditions.get(expeditionAddress)!.expeditionPrice);          
+            balanceOfToken = BigNumber(appState[modeFee].tokenBalances.get(priceTokenAddress.toLowerCase())!);
+            let newBalance = balanceOfToken.minus(price).toFixed();
+
+            appState[modeFee].tokenBalances.set(priceTokenAddress.toLowerCase(), newBalance);
             appState.knightInExpeditionState.expedition.set(expeditionAddress, [data]);
             appState.ExpeditionState.expeditions.set(expeditionAddress, expeditionData);
             appState[getMode(appState, fromTicket)].ticket.ticketState = ticketAfterBuff;
@@ -202,7 +211,6 @@ export async function simulateExpeditionWithdraw(appState1: ApplicationState, _v
         if (!currentNFT) {
             throw new NFTNotFoundError("Knight is not found!");
         }
-        // ExpeditionState
         let expeditionDataRaritys = expeditionData.raritys;
         let expeditionDataRarity = expeditionDataRaritys.find(x => x.rarity == currentNFT?.rarity.toString());
         if(expeditionDataRarity) {
@@ -223,19 +231,27 @@ export async function simulateExpeditionWithdraw(appState1: ApplicationState, _v
             rarity: currentNFT.rarity,
             id: currentNFT.id,
             setId: currentNFT.setId,
-            exp: currentNFT.exp,
+            exp: currentNFT.exp + parseInt(currentNFT.accruedExperience),
             armor: currentNFT.armor,
             helmet: currentNFT.helmet,
             shield: currentNFT.shield,
             weapon: currentNFT.weapon,
         };
+        let reward = BigNumber(0);
+        let modeTo = getMode(appState, to);
+        let priceTokenAddress = getAddr("TRAVA_TOKEN", appState.chainId);
+        let balanceOfToken = BigNumber(0);
+        reward = BigNumber(appState.ExpeditionState.expeditions.get(expeditionAddress)!.successReward);          
+        balanceOfToken = BigNumber(appState[modeTo].tokenBalances.get(priceTokenAddress.toLowerCase())!);
+        let newBalance = balanceOfToken.plus(reward).toFixed();
         
+        let newExpeditionInSmartwalletData = expeditionInSmartwalletData.filter(x => x.id.toString() != _knightId);
         if (isWallet(appState, to)){
             appState[getMode(appState, to)].collection["v1"].push(newDataNFT);
         }
-        let newExpeditionInSmartwalletData = expeditionInSmartwalletData.filter(x => x.id.toString() != _knightId);
         appState.ExpeditionState.expeditions.set(expeditionAddress, expeditionData);
         appState.knightInExpeditionState.expedition.set(expeditionAddress, newExpeditionInSmartwalletData);
+        appState[modeTo].tokenBalances.set(priceTokenAddress.toLowerCase(), newBalance);
     } catch(err) {
         console.log(err);
     }
@@ -261,7 +277,7 @@ export function isOnDuty(appState1: ApplicationState, expeditionAddress: EthAddr
     let duration = parseInt(expeditionData.profession);
     let timeFinish = parseInt(deployTimestamp)+duration;
     let timeLeft = timeFinish - timeNow;
-    if (timeLeft >= 0) {
+    if (timeLeft > 0) {
         return true;
     }
     else{
