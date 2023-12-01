@@ -1,6 +1,6 @@
 import { ApplicationState, Expedition, LimitedKnight, NumberKinghtInExpedition } from "../../../../../State";
 import { getAddr } from "../../../../../utils";
-import { getMode, multiCall } from "../../../../../utils/helper";
+import { getMode, isNullAddress, multiCall } from "../../../../../utils/helper";
 import DilutionABI from "../../../../../abis/dilution-staking.json";
 import BigNumber from "bignumber.js";
 import { EthAddress, uint256 } from "../../../../../utils/types";
@@ -74,7 +74,3 @@ export async function updateDilutionState(appState1: ApplicationState, force = f
   return appState;
 }
 
-
-export function isNullAddress(address: EthAddress) {
-  return "0x0000000000000000000000000000000000000000" === String(address);
-}
