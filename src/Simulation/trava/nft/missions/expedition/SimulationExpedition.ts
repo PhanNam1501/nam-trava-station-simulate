@@ -2,9 +2,10 @@ import { EthAddress, uint256 } from "../../../../../utils/types";
 import { ApplicationState } from "../../../../../State/ApplicationState";
 import { ArmouryType, NormalKnight, NormalKnightInExpedition, updateExpeditionState, updateOwnerKnightInExpeditionState } from "../..";
 import _ from "lodash";
-import { getMode, multiCall } from "../../../../../utils/helper";
+import { getMode, isWallet, multiCall } from "../../../../../utils/helper";
 import ExpeditionABI from "../../../../../abis/NFTExpeditionABI.json";
 import { Ticket } from "../../../../../State";
+import { ExpeditionNotFoundError, NFTNotFoundError } from "../../../../../utils";
 export async function simulateExpeditionDeploy(
     appState1: ApplicationState,
     _expeditionAddress: EthAddress, 
@@ -35,108 +36,92 @@ export async function simulateExpeditionDeploy(
         
         let currentNFT: NormalKnight | undefined = undefined;
         let mode: "walletState"|"smartWalletState";
-        if (fromKnight == appState.walletState.address.toLowerCase()) {
-          currentNFT = appState.walletState.collection.v1.find((nft) => nft.id.toString() == _knightId);
-          mode = "walletState";
-          if (!currentNFT) {
-            throw new Error("Not have this knight");
-          }
-          appState.walletState.collection["v1"] = appState.walletState.collection["v1"].filter(x => x.id.toString() != _knightId);
-        } else if (fromKnight == appState.smartWalletState.address.toLowerCase()) {
-            mode = "smartWalletState";
-            currentNFT = appState.walletState.collection.v1.find((nft) => nft.id.toString() == _knightId);
-          if (!currentNFT) {
-            throw new Error("Not have this knight");
-          }
-            appState.smartWalletState.collection["v1"] = appState.smartWalletState.collection["v1"].filter(x => x.id.toString() != _knightId);
-        } else{
-            throw new Error("Not the owner from knight");
-        }
-        if (appState.walletState.address.toLowerCase() != fromFee && appState.smartWalletState.address.toLowerCase() != fromFee) {
-            throw new Error("Not the owner from fee");
-        }
-        if (appState.walletState.address.toLowerCase() != fromTicket && appState.smartWalletState.address.toLowerCase() != fromTicket) {
-            throw new Error("Not the owner from ticket");
-        }
-
-        const [successRateFromContract, ExpFromContract]
-        = await Promise.all([
-          multiCall(
-            ExpeditionABI,
-            [expeditionAddress].map((address: string) => ({
-              address: address,
-              name: "getSuccessRate",
-              params: [currentNFT?.id.toString()],
-            })),
-            appState.web3,
-            appState.chainId
-          ),
-          multiCall(
-            ExpeditionABI,
-            [expeditionAddress].map((address: string) => ({
-              address: address,
-              name: "getAccruedExperience",
-              params: [currentNFT?.id.toString()],
-            })),
-            appState.web3,
-            appState.chainId
-          ),
-        ]);
-
-
-        let successRate = 0;
-        if(successRateFromContract[0]) {
-            successRate = parseInt(successRateFromContract[0].toString());
-        }
-        let persentBuffSuccessRate = appState.ExpeditionState.expeditions.get(expeditionAddress)?.buffSuccessRate[countTickets];
-        if (!persentBuffSuccessRate) {
-            persentBuffSuccessRate = 0;
-        }
-        let successRateAfterBuff = successRate * (10000 + persentBuffSuccessRate)/10000;
-        let Exp = 0;
-        if(ExpFromContract[0]) {
-            Exp = parseInt(ExpFromContract[0].toString());
-        }
-        let persentBuffExp = appState.ExpeditionState.expeditions.get(expeditionAddress)?.buffExp[countTickets];
-        if (!persentBuffExp) {
-            persentBuffExp = 0;
-        }
-        let ExpAfterBuff = Exp * (10000 + persentBuffExp)/10000;
-        // Set knight in expedition
-        const data: NormalKnightInExpedition = {
-            ...currentNFT,
-            deployTimestamp: appState.createdTime.toString(),
-            successRate: successRateAfterBuff.toString(),
-            accruedExperience: ExpAfterBuff.toString(),
-        };
-        appState[mode].knightInExpeditionState.expedition.set(expeditionAddress, [data]);
-        // Set rarity += 1
-        const expeditionData = appState.ExpeditionState.expeditions.get(expeditionAddress);
-        if (expeditionData) {
-            let expeditionDataRaritys = expeditionData.raritys;
-            let expeditionDataRarity = expeditionDataRaritys.find(x => x.rarity == currentNFT?.rarity.toString());
-            if(expeditionDataRarity) {
-                expeditionDataRarity.numberOfKnight = (parseInt(expeditionDataRarity.numberOfKnight) + 1).toString();
-                expeditionDataRaritys = expeditionDataRaritys.filter(x => x.rarity != currentNFT?.rarity.toString());
-                expeditionDataRaritys.push(expeditionDataRarity);
-                expeditionData.raritys = expeditionDataRaritys;
-                appState.ExpeditionState.expeditions.set(expeditionAddress, expeditionData);
+        if (isWallet(appState, fromKnight) && isWallet(appState, fromFee) && isWallet(appState, fromTicket)) {
+            mode = getMode(appState, fromKnight);
+            currentNFT = appState[mode].collection.v1.find((nft) => nft.id.toString() == _knightId);
+            if (!currentNFT) {
+                throw new NFTNotFoundError("Knight is not found!");
             }
-        }
-        else{
-            throw new Error("Not have this expedition");
-        }
-
-        // set Ticket
-        let tickets = appState[getMode(appState, fromTicket)].ticket.ticketState;
-        let ticketAfterBuff: Map<string, Ticket> = new Map();
-            for (let i = 0; i < _buffWinRateTickets.length; i++) {
-                let ticket = tickets.get((100001+i).toString());
-                if (ticket) {
-                    ticketAfterBuff.set((100001+i).toString(), {ticket: ticket.ticket, amount: ticket.amount - parseInt(_buffWinRateTickets[i]) - parseInt(_buffExpTickets[i])});
+            appState[mode].collection["v1"] = appState[mode].collection["v1"].filter(x => x.id.toString() != _knightId);
+            const [successRateFromContract, ExpFromContract]
+            = await Promise.all([
+              multiCall(
+                ExpeditionABI,
+                [expeditionAddress].map((address: string) => ({
+                  address: address,
+                  name: "getSuccessRate",
+                  params: [currentNFT?.id.toString()],
+                })),
+                appState.web3,
+                appState.chainId
+              ),
+              multiCall(
+                ExpeditionABI,
+                [expeditionAddress].map((address: string) => ({
+                  address: address,
+                  name: "getAccruedExperience",
+                  params: [currentNFT?.id.toString()],
+                })),
+                appState.web3,
+                appState.chainId
+              ),
+            ]);
+    
+    
+            let successRate = 0;
+            if(successRateFromContract[0]) {
+                successRate = parseInt(successRateFromContract[0].toString());
+            }
+            let persentBuffSuccessRate = appState.ExpeditionState.expeditions.get(expeditionAddress)?.buffSuccessRate[countTickets];
+            if (!persentBuffSuccessRate) {
+                persentBuffSuccessRate = 0;
+            }
+            let successRateAfterBuff = successRate * (10000 + persentBuffSuccessRate)/10000;
+            let Exp = 0;
+            if(ExpFromContract[0]) {
+                Exp = parseInt(ExpFromContract[0].toString());
+            }
+            let persentBuffExp = appState.ExpeditionState.expeditions.get(expeditionAddress)?.buffExp[countTickets];
+            if (!persentBuffExp) {
+                persentBuffExp = 0;
+            }
+            let ExpAfterBuff = Exp * (10000 + persentBuffExp)/10000;
+            // Set knight in expedition
+            const data: NormalKnightInExpedition = {
+                ...currentNFT,
+                deployTimestamp: appState.createdTime.toString(),
+                successRate: successRateAfterBuff.toString(),
+                accruedExperience: ExpAfterBuff.toString(),
+            };
+            appState[mode].knightInExpeditionState.expedition.set(expeditionAddress, [data]);
+            // Set rarity += 1
+            const expeditionData = appState.ExpeditionState.expeditions.get(expeditionAddress);
+            if (expeditionData) {
+                let expeditionDataRaritys = expeditionData.raritys;
+                let expeditionDataRarity = expeditionDataRaritys.find(x => x.rarity == currentNFT?.rarity.toString());
+                if(expeditionDataRarity) {
+                    expeditionDataRarity.numberOfKnight = (parseInt(expeditionDataRarity.numberOfKnight) + 1).toString();
+                    expeditionDataRaritys = expeditionDataRaritys.filter(x => x.rarity != currentNFT?.rarity.toString());
+                    expeditionDataRaritys.push(expeditionDataRarity);
+                    expeditionData.raritys = expeditionDataRaritys;
+                    appState.ExpeditionState.expeditions.set(expeditionAddress, expeditionData);
                 }
             }
-        appState[getMode(appState, fromTicket)].ticket.ticketState = ticketAfterBuff;
+            else{
+                throw new ExpeditionNotFoundError("Not found this expedition");
+            }
+    
+            // set Ticket
+            let tickets = appState[getMode(appState, fromTicket)].ticket.ticketState;
+            let ticketAfterBuff: Map<string, Ticket> = new Map();
+                for (let i = 0; i < _buffWinRateTickets.length; i++) {
+                    let ticket = tickets.get((100001+i).toString());
+                    if (ticket) {
+                        ticketAfterBuff.set((100001+i).toString(), {ticket: ticket.ticket, amount: ticket.amount - parseInt(_buffWinRateTickets[i]) - parseInt(_buffExpTickets[i])});
+                    }
+                }
+            appState[getMode(appState, fromTicket)].ticket.ticketState = ticketAfterBuff;
+        }
         return appState;
     } catch(err) {
         throw err;
