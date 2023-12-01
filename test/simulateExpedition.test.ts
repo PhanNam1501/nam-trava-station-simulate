@@ -34,19 +34,19 @@ async function test(){
     appState = await updateOwnerTicketState(appState, proxyAddress);
     appState = await updateUserLockBalance(appState, userAddress);
     console.log(appState["walletState"].collection.v1);
-    console.log("Expedition", appState.knightInExpeditionState.expedition);
+    console.log("Expedition", appState["walletState"].knightInExpeditionState.expedition);
     console.log(appState.ExpeditionState.expeditions)
     console.log(appState["walletState"].ticket);
     appState = await simulateExpeditionDeploy(appState, "0x5b6f3cad58626d409494a8800f60ec1a10c8e929",  "3927", ["1", "0", "1"], ["0", "3", "2"], userAddress, userAddress, userAddress);
     console.log("________________________TEST DEPLOY________________________")
     console.log(appState["walletState"].collection.v1);
-    console.log("Expedition", appState.knightInExpeditionState.expedition);
+    console.log("Expedition", appState["walletState"].knightInExpeditionState.expedition);
     console.log(appState.ExpeditionState.expeditions)
     console.log(appState["walletState"].ticket);
     console.log("________________________TEST Abandon________________________")
     appState = await simulateExpeditionAbandon(appState, "0x5b6f3cad58626d409494a8800f60ec1a10c8e929",  "3927", userAddress);
     console.log(appState["walletState"].collection.v1);
-    console.log("Expedition", appState.knightInExpeditionState.expedition);
+    console.log("Expedition", appState["walletState"].knightInExpeditionState.expedition);
     console.log(appState.ExpeditionState.expeditions)
     console.log(appState["walletState"].ticket);
 }
