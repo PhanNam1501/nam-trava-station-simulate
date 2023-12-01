@@ -97,7 +97,6 @@ export async function simulateExpeditionDeploy(
             else{
                 throw new ExpeditionNotFoundError("Not found this expedition");
             }
-    
             // set Ticket
             let tickets = appState[getMode(appState, fromTicket)].ticket.ticketState;
             let ticketAfterBuff: Map<string, Ticket> = new Map();
