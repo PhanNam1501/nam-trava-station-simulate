@@ -155,10 +155,11 @@ export async function simulateExpeditionAbandon(appState1: ApplicationState, _va
         
         let newExpeditionInSmartwalletData = expeditionInSmartwalletData.filter(x => x.id.toString() != _knightId);
         if (isWallet(appState, to)){
-            if (!appState[getMode(appState, to)].collection.isFetch){
-                appState = await updateCollectionBalanceFromContract(appState, getMode(appState, to)); 
+            let modeTo = getMode(appState, to);
+            if (!appState[modeTo].collection.isFetch){
+                appState = await updateCollectionBalanceFromContract(appState, modeTo); 
             }
-            appState[getMode(appState, to)].collection["v1"].push(newDataNFT);
+            appState[modeTo].collection["v1"].push(newDataNFT);
         }
         appState.ExpeditionState.expeditions.set(expeditionAddress, expeditionData);
         appState.smartWalletState.knightInExpeditionState.expedition.set(expeditionAddress, newExpeditionInSmartwalletData);
@@ -185,12 +186,12 @@ export async function simulateExpeditionWithdraw(appState1: ApplicationState, _v
         let returnData = getExpeditionData(appState, expeditionAddress, _knightId);
         let expeditionData = returnData.expeditionData;
         let expeditionInSmartwalletData = returnData.expeditionInSmartwalletData;
-        let currentNFT = returnData.currentNFT;
-        let newDataNFT: NormalKnight = getNormalKnightInExpedition(currentNFT, true);
         let priceTokenAddress = getAddr("TRAVA_TOKEN", appState.chainId).toLowerCase();
         
         let newExpeditionInSmartwalletData = expeditionInSmartwalletData.filter(x => x.id.toString() != _knightId);
         if (isWallet(appState, toAddress)){
+            let currentNFT = returnData.currentNFT;
+            let newDataNFT: NormalKnight = getNormalKnightInExpedition(currentNFT, true);
             let modeTo = getMode(appState, toAddress);
             if (!appState[modeTo].collection.isFetch){
                 appState = await updateCollectionBalanceFromContract(appState, modeTo); 
