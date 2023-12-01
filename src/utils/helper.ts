@@ -5,6 +5,7 @@ import { ApplicationState } from "../State";
 import { EthAddress, uint256, wallet_mode } from "./types";
 import { FromAddressError } from "./error";
 import BigNumber from "bignumber.js";
+import { ZERO_ADDRESS } from "./config";
 
 export async function multiCall(abi: any, calls: any, provider: any, chainId: any): Promise<any> {
 
@@ -51,4 +52,8 @@ export function isWallet(appState: ApplicationState, address: EthAddress): boole
         return true;
     }
     return false
+}
+
+export function isNullAddress(address: EthAddress) {
+    return ZERO_ADDRESS === address;
 }

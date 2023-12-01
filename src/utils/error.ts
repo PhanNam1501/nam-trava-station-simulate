@@ -102,3 +102,10 @@ export class NFTIsNotOnGoingError extends Error {
         this.name = 'NFTIsNotOnGoing';
     }
 }
+
+export class ExpeditionNotFoundError extends Error {
+    constructor(message: string) {
+        super(message);
+        this.name = 'ExpeditionNotFound';
+    }
+}

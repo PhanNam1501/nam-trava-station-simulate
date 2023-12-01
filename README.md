@@ -344,6 +344,7 @@ appState = await updateCollectionBalanceFromContract(
     to wallet state
 )
 ```
+
 ### Tương tác với NFT Marketplace / VeTrava
 
 Khi chọn bất cứ action nào của veTrava NFT Marketplace, update user lock balance của from address
@@ -361,11 +362,13 @@ appState = await updateUserLockBalance(appState, fromAddress);
 ```
 
 **Khi chon action Cancel sale VeTrava**
+
 ```
 appState = await updateUserLockBalance(appState, toAddress)
 ```
 
 **Khi chon action Buy veTrava**
+
 ```
 appState = await updateUserLockBalance(appState, toAddress)
 
@@ -373,7 +376,6 @@ appState = await updateTokenBalance(appState, from address, busd token address)
 
 appState = await updateTokenBalance(appState, from address, trava token address)
 ```
-
 
 ### Tuong tac voi Trava Staking
 
@@ -398,31 +400,42 @@ reward = stakedPool.claimableReward
 deposited = stakedPool.deposited
 ```
 
-<<<<<<< HEAD
-=======
 ### Tương tác với Trava NFT Mission / Expedition
+
 Khi tham gia vào các action của expedition
+
 ```
 appState = await updateExpeditionState(appState)
 
 appState = await updateOwnerKnightInExpeditionState(appState, smartWalletAddress)
 ```
 
-***Trava NFT Expedition Deploy*** 
+**_Trava NFT Expedition Deploy_**
 update trava balance of from address
 update knight balance of from address
 update ticket balance of from address
+
 ```
+appState = await updateUserLockBalance(appState, fromAddress);
+appState = await updateCollectionBalanceFromContract(appState, fromAddress);
 appState = await updateOwnerTicketState(appState, fromAddress);
 ```
 
-***Trava NFT Expedition Abandon*** 
+**_Trava NFT Expedition Abandon_**
 update knight balance of to address
 
-***Trava NFT Expedition Abandon*** 
+```
+appState = await updateCollectionBalanceFromContract(appState, toAddress);
+```
+
+**_Trava NFT Expedition Abandon_**
 update knight balance of to address
 update trava balance of to address
->>>>>>> origin/governance
+
+```
+appState = await updateCollectionBalanceFromContract(appState, fromAddress);
+appState = await updateUserLockBalance(appState, toAddress);
+```
 
 ### Tương tác với Trava Governance
 
@@ -466,8 +479,6 @@ Khi chon action increase balance, Trava Governace State cua smart wallet address
 appState = // update token locked balance cua from address
 ```
 
-<<<<<<< HEAD
-=======
 ### Tương tác với veTrava NFT Marketplace
 
 Khi chọn bất cứ action nào của veTrava NFT Marketplace, update selling veTrava NFT
@@ -502,7 +513,6 @@ appState = await updateUserLockBalance(appState, walletAddress);
 appState = await updateUserLockBalance(appState, smartWalletAddress);
 ```
 
->>>>>>> origin/governance
 # Simulate state
 
 Sau khi init state xong. Với mỗi state, các simulate khác nhau
@@ -747,7 +757,9 @@ appState = await simulateTravaNFTFinalizeAuction(
     to
 )
 ```
+
 # Simulate Trava NFT Marketplace / VeTrava
+
 ## Simulate Create Sale veTrava NFT
 
 ```
@@ -805,9 +817,8 @@ appState19 = await simulateTravaNFTTransfer(
     contract: NFT_COLLECTION address
 )
 ```
+
 ## Simulate Tranfer veTrava NFT
-<<<<<<< HEAD
-=======
 
 ```
 appState1 = await simulateNFTVeTravaTranfer(
@@ -818,9 +829,12 @@ appState1 = await simulateNFTVeTravaTranfer(
 );
 ```
 
-# Simulate Trava NFT Mission 
+# Simulate Trava NFT Mission
+
 ## Trava NFT Expedition
+
 ### Simulate Trava NFT Expedition Deploy
+
 ```
 appState = await simulateExpeditionDeploy(
     appState,
@@ -833,7 +847,9 @@ appState = await simulateExpeditionDeploy(
     _fromAddress (from ticket)
 )
 ```
+
 ### Simulate Trava NFT Expedition Abandon
+
 ```
 appState = await simulateExpeditionAbandon(
     appState,
@@ -844,6 +860,7 @@ appState = await simulateExpeditionAbandon(
 ```
 
 ### Simulate Trava NFT Expedition Withdraw
+
 ```
 appState = await simulateExpeditionWithdraw(
     appState,
@@ -852,16 +869,7 @@ appState = await simulateExpeditionWithdraw(
     toAddress
 )
 ```
->>>>>>> origin/governance
 
-```
-appState1 = await simulateNFTVeTravaTranfer(
-    appState,
-    idVeTrava,
-    fromAddress,
-    toAddress
-);
-```
 # Simulate Trava Staking
 
 ## Simulate Trava Staking Stake
@@ -1018,8 +1026,15 @@ appState9 = await simulateUnwrapV2(
     amount:  string,
     contractAddress: address of actions
 )
-<<<<<<< HEAD
 ```
-=======
+
+## VeTravaTranfer
+
 ```
->>>>>>> origin/governance
+appState1 = await simulateNFTVeTravaTranfer(
+    appState,
+    idVeTrava,
+    fromAddress,
+    toAddress
+);
+```

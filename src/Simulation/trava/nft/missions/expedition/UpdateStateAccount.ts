@@ -15,7 +15,7 @@ export async function updateOwnerKnightInExpeditionState(appState1: ApplicationS
     if (!appState[mode].knightInExpeditionState.isFetch || force) {
       _from = _from.toLowerCase();
       const listexpedition = expeditionOptions[appState.chainId];
-      let expeditionsAddress: string[] = [];
+      let expeditionsAddress: EthAddress[] = [];
       for (let i = 0; i < listexpedition.length; i++) {
         expeditionsAddress.push(listexpedition[i].contractAddress.toLowerCase());
       }
@@ -139,14 +139,14 @@ export async function updateExpeditionState(appState1: ApplicationState, force =
   try {
     if (!appState.ExpeditionState.isFetch || force) {
       const listexpedition = expeditionOptions[appState.chainId];
-      let expeditionsAddress: string[] = [];
+      let expeditionsAddress: EthAddress[] = [];
       for (let i = 0; i < listexpedition.length; i++) {
         expeditionsAddress.push(listexpedition[i].contractAddress.toLowerCase());
       }
       expeditionsAddress = expeditionsAddress.filter((address) => address !== "");
       let datas = Array();
       for (let i = 1; i <= 6; i++) {
-        let ExpeditionCount = expeditionsAddress.map((address: string) => ({
+        let ExpeditionCount = expeditionsAddress.map((address: EthAddress) => ({
           address: address,
           name: "getExpeditionCount",
           params: [i.toString()],
@@ -179,7 +179,7 @@ export async function updateExpeditionState(appState1: ApplicationState, force =
         = await Promise.all([
           multiCall(
             ExpeditionABI,
-            expeditionsAddress.map((address: string) => ({
+            expeditionsAddress.map((address: EthAddress) => ({
               address: address,
               name: "getExpeditionPrice",
               params: [],
@@ -189,7 +189,7 @@ export async function updateExpeditionState(appState1: ApplicationState, force =
           ),
           multiCall(
             ExpeditionABI,
-            expeditionsAddress.map((address: string) => ({
+            expeditionsAddress.map((address: EthAddress) => ({
               address: address,
               name: "getSuccessPayout",
               params: [],
@@ -199,7 +199,7 @@ export async function updateExpeditionState(appState1: ApplicationState, force =
           ),
           multiCall(
             ExpeditionABI,
-            expeditionsAddress.map((address: string) => ({
+            expeditionsAddress.map((address: EthAddress) => ({
               address: address,
               name: "getHugeSuccessPayout",
               params: [],
@@ -209,7 +209,7 @@ export async function updateExpeditionState(appState1: ApplicationState, force =
           ),
           multiCall(
             ExpeditionABI,
-            expeditionsAddress.map((address: string) => ({
+            expeditionsAddress.map((address: EthAddress) => ({
               address: address,
               name: "getExpeditionDuration",
               params: [],
@@ -219,13 +219,13 @@ export async function updateExpeditionState(appState1: ApplicationState, force =
           )
         ]);
       for (let i = 0; i < listexpedition.length; i++) {
-        // let key = listexpedition[i].id
+        if (expeditionsAddress[i] == undefined) continue;
         let raritys: Array<NumberKinghtInExpedition> = new Array();
         let total: number = 0;
-        let expeditionPrice: string = "";
-        let hugeSuccessPayout: string = "";
-        let successPayout: string = "";
-        let profession: string = "";
+        let expeditionPrice: uint256 = "";
+        let hugeSuccessPayout: uint256 = "";
+        let successPayout: uint256 = "";
+        let profession: uint256 = "";
         if (i < listRaritys.length) {
           raritys = listRaritys[i];
           total = listTotal[i];
@@ -234,6 +234,36 @@ export async function updateExpeditionState(appState1: ApplicationState, force =
           successPayout = successPayouts[i].toString();
           profession = expeditionDurations[i].toString();
         }
+
+        const [buffSuccessRate, buffExp]
+        = await Promise.all([
+          multiCall(
+            ExpeditionABI,
+            [1,2,3,4,5].map((id: number) => ({
+              address: expeditionsAddress[i],
+              name: "buffWinRate",
+              params: [id],
+            })),
+            appState.web3,
+            appState.chainId
+          ),
+          multiCall(
+            ExpeditionABI,
+            [1,2,3,4,5].map((id: number) => ({
+              address: expeditionsAddress[i],
+              name: "buffExp",
+              params: [id],
+            })),
+            appState.web3,
+            appState.chainId
+          )]);
+        for (let j = 0; j < buffSuccessRate.length; j++) {
+          buffSuccessRate[j] = parseInt(buffSuccessRate[j]);
+        }
+        for (let j = 0; j < buffExp.length; j++) {
+          buffExp[j] = parseInt(buffExp[j]);
+        }
+
         let expedition: Expedition = {
           ...listexpedition[i],
           totalKnight: total,
@@ -242,6 +272,8 @@ export async function updateExpeditionState(appState1: ApplicationState, force =
           expeditionPrice: expeditionPrice,
           successPayout: successPayout,
           successReward: hugeSuccessPayout,
+          buffSuccessRate: buffSuccessRate,
+          buffExp: buffExp,
           token: {
             address: getAddr("TRAVA_TOKEN", appState.chainId).toLowerCase(),
             decimals: 18,

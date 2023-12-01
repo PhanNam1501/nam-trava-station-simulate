@@ -1,10 +1,10 @@
-import { WalletState } from "./WalletState";
+import { KnightInExpeditionState, WalletState } from "./WalletState";
 import { EthAddress } from "../utils/types";
 import { SmartWalletState } from "./SmartWalletState";
 import { NFTAuctioningState, NFTFarmingsState, NFTSellingState, NFTVeTravaSellingState } from "./trava/nft/TravaNFTState";
 import { JsonRpcProvider } from "ethers";
 import { TravaGovernanceState } from "./trava/lending/TravaGovenanceState";
-import { ExpeditionState } from "./trava";
+import { DilutionState, ExpeditionState } from "./trava";
 
 export class ApplicationState {
   createdTime: number;
@@ -15,6 +15,7 @@ export class ApplicationState {
   NFTVeTravaMarketSellingState: NFTVeTravaSellingState;
   TravaGovernanceState: TravaGovernanceState;
   ExpeditionState: ExpeditionState;
+  DilutionState: DilutionState;
   web3: JsonRpcProvider;
   chainId: number;
   simulatorUrl: string;
@@ -33,6 +34,7 @@ export class ApplicationState {
     this.NFTVeTravaMarketSellingState = new NFTVeTravaSellingState();
     this.TravaGovernanceState = new TravaGovernanceState();
     this.ExpeditionState = new ExpeditionState();
+    this.DilutionState = new DilutionState();
     this.web3 = web3;
     this.chainId = chainId;
     this.simulatorUrl = simulatorUrl || ""
