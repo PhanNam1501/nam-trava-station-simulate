@@ -40,9 +40,8 @@ export async function simulateExpeditionDeploy(
         }
 
         let currentNFT: NormalKnight | undefined = undefined;
-        let mode: "walletState"|"smartWalletState";
         if (isWallet(appState, fromKnight) && isWallet(appState, fromFee) && isWallet(appState, fromTicket)) {
-            mode = getMode(appState, fromKnight);
+            let mode = getMode(appState, fromKnight);
             currentNFT = appState[mode].collection.v1.find((nft) => nft.id.toString() == _knightId);
             if (!currentNFT) {
                 throw new NFTNotFoundError("Knight is not found!");
@@ -153,7 +152,7 @@ export async function simulateExpeditionAbandon(appState1: ApplicationState, _va
         if (!currentNFT) {
             throw new NFTNotFoundError("Knight is not found!");
         }
-        // ExpeditionState
+        
         let expeditionDataRaritys = expeditionData.raritys;
         let expeditionDataRarity = expeditionDataRaritys.find(x => x.rarity == currentNFT?.rarity.toString());
         if(expeditionDataRarity) {
