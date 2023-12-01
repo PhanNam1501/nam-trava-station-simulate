@@ -28,12 +28,15 @@ export async function simulateExpeditionDeploy(
         if (!appState[getMode(appState, fromKnight)].knightInExpeditionState.isFetch) {
             appState = await updateOwnerKnightInExpeditionState(appState, fromKnight);
         }
-
         let countTickets = 0;
         for (let i = 0; i < _buffWinRateTickets.length; i++) {
             countTickets += parseInt(_buffWinRateTickets[i]);
         }
-        
+        const expeditionData = appState.ExpeditionState.expeditions.get(expeditionAddress);
+        if (!expeditionData) {
+            throw new ExpeditionNotFoundError("Not found this expedition");
+        }
+
         let currentNFT: NormalKnight | undefined = undefined;
         let mode: "walletState"|"smartWalletState";
         if (isWallet(appState, fromKnight) && isWallet(appState, fromFee) && isWallet(appState, fromTicket)) {
@@ -59,7 +62,7 @@ export async function simulateExpeditionDeploy(
             if(successRateAndExpFromContract[0]) {
                 successRate = parseInt(successRateAndExpFromContract[0].toString());
             }
-            let persentBuffSuccessRate = appState.ExpeditionState.expeditions.get(expeditionAddress)?.buffSuccessRate[countTickets];
+            let persentBuffSuccessRate = expeditionData.buffSuccessRate[countTickets];
             if (!persentBuffSuccessRate) {
                 persentBuffSuccessRate = 0;
             }
@@ -68,44 +71,42 @@ export async function simulateExpeditionDeploy(
             if(successRateAndExpFromContract[1]) {
                 Exp = parseInt(successRateAndExpFromContract[1].toString());
             }
-            let persentBuffExp = appState.ExpeditionState.expeditions.get(expeditionAddress)?.buffExp[countTickets];
+            let persentBuffExp = expeditionData.buffExp[countTickets];
             if (!persentBuffExp) {
                 persentBuffExp = 0;
             }
             let ExpAfterBuff = Exp * (10000 + persentBuffExp)/10000;
-            // Set knight in expedition
+            // Knight in expedition
             const data: NormalKnightInExpedition = {
                 ...currentNFT,
                 deployTimestamp: appState.createdTime.toString(),
                 successRate: successRateAfterBuff.toString(),
                 accruedExperience: ExpAfterBuff.toString(),
             };
-            appState[mode].knightInExpeditionState.expedition.set(expeditionAddress, [data]);
-            // Set rarity += 1
-            const expeditionData = appState.ExpeditionState.expeditions.get(expeditionAddress);
-            if (expeditionData) {
-                let expeditionDataRaritys = expeditionData.raritys;
-                let expeditionDataRarity = expeditionDataRaritys.find(x => x.rarity == currentNFT?.rarity.toString());
-                if(expeditionDataRarity) {
-                    expeditionDataRarity.numberOfKnight = (parseInt(expeditionDataRarity.numberOfKnight) + 1).toString();
-                    expeditionDataRaritys = expeditionDataRaritys.filter(x => x.rarity != currentNFT?.rarity.toString());
-                    expeditionDataRaritys.push(expeditionDataRarity);
-                    expeditionData.raritys = expeditionDataRaritys;
-                    appState.ExpeditionState.expeditions.set(expeditionAddress, expeditionData);
-                }
+            // ExpeditionState
+            let expeditionDataRaritys = expeditionData.raritys;
+            let expeditionDataRarity = expeditionDataRaritys.find(x => x.rarity == currentNFT?.rarity.toString());
+            if(expeditionDataRarity) {
+                expeditionDataRarity.numberOfKnight = (parseInt(expeditionDataRarity.numberOfKnight) + 1).toString();
+                expeditionDataRaritys = expeditionDataRaritys.filter(x => x.rarity != currentNFT?.rarity.toString());
+                expeditionDataRaritys.push(expeditionDataRarity);
+                expeditionData.raritys = expeditionDataRaritys;
             }
-            else{
-                throw new ExpeditionNotFoundError("Not found this expedition");
+            else {
+                throw new Error("Not found Knight's rarity");
             }
-            // set Ticket
+            // Ticket
             let tickets = appState[getMode(appState, fromTicket)].ticket.ticketState;
             let ticketAfterBuff: Map<string, Ticket> = new Map();
-                for (let i = 0; i < _buffWinRateTickets.length; i++) {
-                    let ticket = tickets.get((100001+i).toString());
-                    if (ticket) {
-                        ticketAfterBuff.set((100001+i).toString(), {ticket: ticket.ticket, amount: ticket.amount - parseInt(_buffWinRateTickets[i]) - parseInt(_buffExpTickets[i])});
-                    }
+            for (let i = 0; i < _buffWinRateTickets.length; i++) {
+                let ticket = tickets.get((100001+i).toString());
+                if (ticket) {
+                    ticketAfterBuff.set((100001+i).toString(), {ticket: ticket.ticket, amount: ticket.amount - parseInt(_buffWinRateTickets[i]) - parseInt(_buffExpTickets[i])});
                 }
+            }
+            // Set all
+            appState[mode].knightInExpeditionState.expedition.set(expeditionAddress, [data]);
+            appState.ExpeditionState.expeditions.set(expeditionAddress, expeditionData);
             appState[getMode(appState, fromTicket)].ticket.ticketState = ticketAfterBuff;
         }
         return appState;
