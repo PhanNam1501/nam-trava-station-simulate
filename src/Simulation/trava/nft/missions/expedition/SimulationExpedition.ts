@@ -1,6 +1,6 @@
 import { EthAddress, uint256 } from "../../../../../utils/types";
 import { ApplicationState } from "../../../../../State/ApplicationState";
-import { ArmouryType, NormalKnight, NormalKnightInExpedition } from "../..";
+import { ArmouryType, NormalKnight, NormalKnightInExpedition, updateExpeditionState, updateOwnerKnightInExpeditionState } from "../..";
 import _ from "lodash";
 import { getMode, multiCall } from "../../../../../utils/helper";
 import ExpeditionABI from "../../../../../abis/NFTExpeditionABI.json";
@@ -16,15 +16,23 @@ export async function simulateExpeditionDeploy(
     _fromTicket: EthAddress
     ): Promise<ApplicationState> {
     try { 
+        let appState = { ...appState1 };
         _expeditionAddress = _expeditionAddress.toLowerCase();
         _fromKnight = _fromKnight.toLowerCase();
         _fromFee = _fromFee.toLowerCase();
         _fromTicket = _fromTicket.toLowerCase();
+        if (!appState.ExpeditionState.isFetch) {
+            appState = await updateExpeditionState(appState);
+        }
+        if (!appState[getMode(appState, _fromKnight)].knightInExpeditionState.isFetch) {
+            appState = await updateOwnerKnightInExpeditionState(appState, _fromKnight);
+        }
+        
         let countTickets = 0;
         for (let i = 0; i < _buffWinRateTickets.length; i++) {
             countTickets += parseInt(_buffWinRateTickets[i]);
         }
-        const appState = { ...appState1 };
+        
         let currentNFT: NormalKnight | undefined = undefined;
         let mode: "walletState"|"smartWalletState";
         if (_fromKnight == appState.walletState.address.toLowerCase()) {
