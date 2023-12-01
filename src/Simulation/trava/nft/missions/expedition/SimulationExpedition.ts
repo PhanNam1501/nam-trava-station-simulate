@@ -17,15 +17,15 @@ export async function simulateExpeditionDeploy(
     ): Promise<ApplicationState> {
     try { 
         let appState = { ...appState1 };
-        _expeditionAddress = _expeditionAddress.toLowerCase();
-        _fromKnight = _fromKnight.toLowerCase();
-        _fromFee = _fromFee.toLowerCase();
-        _fromTicket = _fromTicket.toLowerCase();
+        const expeditionAddress = _expeditionAddress.toLowerCase();
+        const fromKnight = _fromKnight.toLowerCase();
+        const fromFee = _fromFee.toLowerCase();
+        const fromTicket = _fromTicket.toLowerCase();
         if (!appState.ExpeditionState.isFetch) {
             appState = await updateExpeditionState(appState);
         }
-        if (!appState[getMode(appState, _fromKnight)].knightInExpeditionState.isFetch) {
-            appState = await updateOwnerKnightInExpeditionState(appState, _fromKnight);
+        if (!appState[getMode(appState, fromKnight)].knightInExpeditionState.isFetch) {
+            appState = await updateOwnerKnightInExpeditionState(appState, fromKnight);
         }
 
         let countTickets = 0;
@@ -35,14 +35,14 @@ export async function simulateExpeditionDeploy(
         
         let currentNFT: NormalKnight | undefined = undefined;
         let mode: "walletState"|"smartWalletState";
-        if (_fromKnight == appState.walletState.address.toLowerCase()) {
+        if (fromKnight == appState.walletState.address.toLowerCase()) {
           currentNFT = appState.walletState.collection.v1.find((nft) => nft.id.toString() == _knightId);
           mode = "walletState";
           if (!currentNFT) {
             throw new Error("Not have this knight");
           }
           appState.walletState.collection["v1"] = appState.walletState.collection["v1"].filter(x => x.id.toString() != _knightId);
-        } else if (_fromKnight == appState.smartWalletState.address.toLowerCase()) {
+        } else if (fromKnight == appState.smartWalletState.address.toLowerCase()) {
             mode = "smartWalletState";
             currentNFT = appState.walletState.collection.v1.find((nft) => nft.id.toString() == _knightId);
           if (!currentNFT) {
@@ -52,10 +52,10 @@ export async function simulateExpeditionDeploy(
         } else{
             throw new Error("Not the owner from knight");
         }
-        if (appState.walletState.address.toLowerCase() != _fromFee && appState.smartWalletState.address.toLowerCase() != _fromFee) {
+        if (appState.walletState.address.toLowerCase() != fromFee && appState.smartWalletState.address.toLowerCase() != fromFee) {
             throw new Error("Not the owner from fee");
         }
-        if (appState.walletState.address.toLowerCase() != _fromTicket && appState.smartWalletState.address.toLowerCase() != _fromTicket) {
+        if (appState.walletState.address.toLowerCase() != fromTicket && appState.smartWalletState.address.toLowerCase() != fromTicket) {
             throw new Error("Not the owner from ticket");
         }
 
@@ -63,7 +63,7 @@ export async function simulateExpeditionDeploy(
         = await Promise.all([
           multiCall(
             ExpeditionABI,
-            [_expeditionAddress].map((address: string) => ({
+            [expeditionAddress].map((address: string) => ({
               address: address,
               name: "getSuccessRate",
               params: [currentNFT?.id.toString()],
@@ -73,7 +73,7 @@ export async function simulateExpeditionDeploy(
           ),
           multiCall(
             ExpeditionABI,
-            [_expeditionAddress].map((address: string) => ({
+            [expeditionAddress].map((address: string) => ({
               address: address,
               name: "getAccruedExperience",
               params: [currentNFT?.id.toString()],
@@ -88,7 +88,7 @@ export async function simulateExpeditionDeploy(
         if(successRateFromContract[0]) {
             successRate = parseInt(successRateFromContract[0].toString());
         }
-        let persentBuffSuccessRate = appState.ExpeditionState.expeditions.get(_expeditionAddress)?.buffSuccessRate[countTickets];
+        let persentBuffSuccessRate = appState.ExpeditionState.expeditions.get(expeditionAddress)?.buffSuccessRate[countTickets];
         if (!persentBuffSuccessRate) {
             persentBuffSuccessRate = 0;
         }
@@ -97,7 +97,7 @@ export async function simulateExpeditionDeploy(
         if(ExpFromContract[0]) {
             Exp = parseInt(ExpFromContract[0].toString());
         }
-        let persentBuffExp = appState.ExpeditionState.expeditions.get(_expeditionAddress)?.buffExp[countTickets];
+        let persentBuffExp = appState.ExpeditionState.expeditions.get(expeditionAddress)?.buffExp[countTickets];
         if (!persentBuffExp) {
             persentBuffExp = 0;
         }
@@ -109,9 +109,9 @@ export async function simulateExpeditionDeploy(
             successRate: successRateAfterBuff.toString(),
             accruedExperience: ExpAfterBuff.toString(),
         };
-        appState[mode].knightInExpeditionState.expedition.set(_expeditionAddress, [data]);
+        appState[mode].knightInExpeditionState.expedition.set(expeditionAddress, [data]);
         // Set rarity += 1
-        const expeditionData = appState.ExpeditionState.expeditions.get(_expeditionAddress);
+        const expeditionData = appState.ExpeditionState.expeditions.get(expeditionAddress);
         if (expeditionData) {
             let expeditionDataRaritys = expeditionData.raritys;
             let expeditionDataRarity = expeditionDataRaritys.find(x => x.rarity == currentNFT?.rarity.toString());
@@ -120,7 +120,7 @@ export async function simulateExpeditionDeploy(
                 expeditionDataRaritys = expeditionDataRaritys.filter(x => x.rarity != currentNFT?.rarity.toString());
                 expeditionDataRaritys.push(expeditionDataRarity);
                 expeditionData.raritys = expeditionDataRaritys;
-                appState.ExpeditionState.expeditions.set(_expeditionAddress, expeditionData);
+                appState.ExpeditionState.expeditions.set(expeditionAddress, expeditionData);
             }
         }
         else{
@@ -128,7 +128,7 @@ export async function simulateExpeditionDeploy(
         }
 
         // set Ticket
-        let tickets = appState[getMode(appState, _fromTicket)].ticket.ticketState;
+        let tickets = appState[getMode(appState, fromTicket)].ticket.ticketState;
         let ticketAfterBuff: Map<string, Ticket> = new Map();
             for (let i = 0; i < _buffWinRateTickets.length; i++) {
                 let ticket = tickets.get((100001+i).toString());
@@ -136,7 +136,7 @@ export async function simulateExpeditionDeploy(
                     ticketAfterBuff.set((100001+i).toString(), {ticket: ticket.ticket, amount: ticket.amount - parseInt(_buffWinRateTickets[i]) - parseInt(_buffExpTickets[i])});
                 }
             }
-        appState[getMode(appState, _fromTicket)].ticket.ticketState = ticketAfterBuff;
+        appState[getMode(appState, fromTicket)].ticket.ticketState = ticketAfterBuff;
         return appState;
     } catch(err) {
         throw err;
@@ -165,12 +165,12 @@ export async function simulateExpeditionWithdraw(appState1: ApplicationState, _v
     return appState;
 }
 
-export function isOnDuty(appState1: ApplicationState, _fromKnight: EthAddress, _expeditionAddress: EthAddress , _knightId: number) {
+export function isOnDuty(appState1: ApplicationState, fromKnight: EthAddress, expeditionAddress: EthAddress , _knightId: number) {
     let appState = appState1;
-    if(appState[getMode(appState, _fromKnight)].knightInExpeditionState.expedition.get(_expeditionAddress)?.find(x => x.id == _knightId)) {
-        let deployTimestamp = appState[getMode(appState, _fromKnight)].knightInExpeditionState.expedition.get(_expeditionAddress)?.find(x => x.id == _knightId)?.deployTimestamp;
+    if(appState[getMode(appState, fromKnight)].knightInExpeditionState.expedition.get(expeditionAddress)?.find(x => x.id == _knightId)) {
+        let deployTimestamp = appState[getMode(appState, fromKnight)].knightInExpeditionState.expedition.get(expeditionAddress)?.find(x => x.id == _knightId)?.deployTimestamp;
         let time = new Date().getTime();
-        let timeDeploy = new Date(parseInt(deployTimestamp!+appState.ExpeditionState.expeditions.get(_expeditionAddress)?.profession)).getTime();
+        let timeDeploy = new Date(parseInt(deployTimestamp!+appState.ExpeditionState.expeditions.get(expeditionAddress)?.profession)).getTime();
         let timeLeft = time - timeDeploy;
         if (timeLeft >= 0) {
             return false;
