@@ -19,5 +19,5 @@ export interface LimitedKnight {
     dilutionAfterJoining: number;
     currentPowerLevel: number;
     powerLevelAfterJoining: number;
-    upfrontFee: number;
+    upfrontFee: uint256;
 }
