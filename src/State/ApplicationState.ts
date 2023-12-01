@@ -15,7 +15,6 @@ export class ApplicationState {
   NFTVeTravaMarketSellingState: NFTVeTravaSellingState;
   TravaGovernanceState: TravaGovernanceState;
   ExpeditionState: ExpeditionState;
-  knightInExpeditionState: KnightInExpeditionState;
   DilutionState: DilutionState;
   web3: JsonRpcProvider;
   chainId: number;
@@ -35,7 +34,6 @@ export class ApplicationState {
     this.NFTVeTravaMarketSellingState = new NFTVeTravaSellingState();
     this.TravaGovernanceState = new TravaGovernanceState();
     this.ExpeditionState = new ExpeditionState();
-    this.knightInExpeditionState = new KnightInExpeditionState();
     this.DilutionState = new DilutionState();
     this.web3 = web3;
     this.chainId = chainId;

@@ -27,7 +27,7 @@ export async function simulateExpeditionDeploy(
         if (!appState.ExpeditionState.isFetch) {
             appState = await updateExpeditionState(appState);
         }
-        if (!appState.knightInExpeditionState.isFetch) {
+        if (!appState[getMode(appState, fromKnight)].knightInExpeditionState.isFetch) {
             appState = await updateOwnerKnightInExpeditionState(appState, fromKnight);
         }
         let countTickets = 0;
@@ -119,7 +119,7 @@ export async function simulateExpeditionDeploy(
             let newBalance = balanceOfToken.minus(price).toFixed();
 
             appState[modeFee].tokenBalances.set(priceTokenAddress.toLowerCase(), newBalance);
-            appState.knightInExpeditionState.expedition.set(expeditionAddress, [data]);
+            appState.smartWalletState.knightInExpeditionState.expedition.set(expeditionAddress, [data]);
             appState.ExpeditionState.expeditions.set(expeditionAddress, expeditionData);
             appState[getMode(appState, fromTicket)].ticket.ticketState = ticketAfterBuff;
         }
@@ -140,11 +140,11 @@ export async function simulateExpeditionAbandon(appState1: ApplicationState, _va
         if (!appState.ExpeditionState.isFetch) {
             appState = await updateExpeditionState(appState);
         }
-        if (!appState.knightInExpeditionState.isFetch) {
+        if (!appState.smartWalletState.knightInExpeditionState.isFetch) {
             appState = await updateOwnerKnightInExpeditionState(appState, to);
         }
         let expeditionData = appState.ExpeditionState.expeditions.get(expeditionAddress);
-        let expeditionInSmartwalletData = appState.knightInExpeditionState.expedition.get(expeditionAddress);
+        let expeditionInSmartwalletData = appState.smartWalletState.knightInExpeditionState.expedition.get(expeditionAddress);
         if (!expeditionData || !expeditionInSmartwalletData) {
             throw new ExpeditionNotFoundError("Not found this expedition");
         }
@@ -185,7 +185,7 @@ export async function simulateExpeditionAbandon(appState1: ApplicationState, _va
             appState[getMode(appState, to)].collection["v1"].push(newDataNFT);
         }
         appState.ExpeditionState.expeditions.set(expeditionAddress, expeditionData);
-        appState.knightInExpeditionState.expedition.set(expeditionAddress, newExpeditionInSmartwalletData);
+        appState.smartWalletState.knightInExpeditionState.expedition.set(expeditionAddress, newExpeditionInSmartwalletData);
     } catch(err) {
         console.log(err);
     }
@@ -203,11 +203,11 @@ export async function simulateExpeditionWithdraw(appState1: ApplicationState, _v
         if (!appState.ExpeditionState.isFetch) {
             appState = await updateExpeditionState(appState);
         }
-        if (!appState.knightInExpeditionState.isFetch) {
+        if (!appState.smartWalletState.knightInExpeditionState.isFetch) {
             appState = await updateOwnerKnightInExpeditionState(appState, to);
         }
         let expeditionData = appState.ExpeditionState.expeditions.get(expeditionAddress);
-        let expeditionInSmartwalletData = appState.knightInExpeditionState.expedition.get(expeditionAddress);
+        let expeditionInSmartwalletData = appState.smartWalletState.knightInExpeditionState.expedition.get(expeditionAddress);
         if (!expeditionData || !expeditionInSmartwalletData) {
             throw new ExpeditionNotFoundError("Not found this expedition");
         }
@@ -258,7 +258,7 @@ export async function simulateExpeditionWithdraw(appState1: ApplicationState, _v
             appState[getMode(appState, to)].collection["v1"].push(newDataNFT);
         }
         appState.ExpeditionState.expeditions.set(expeditionAddress, expeditionData);
-        appState.knightInExpeditionState.expedition.set(expeditionAddress, newExpeditionInSmartwalletData);
+        appState.smartWalletState.knightInExpeditionState.expedition.set(expeditionAddress, newExpeditionInSmartwalletData);
         appState[modeTo].tokenBalances.set(priceTokenAddress.toLowerCase(), newBalance);
     } catch(err) {
         console.log(err);
@@ -269,7 +269,7 @@ export async function simulateExpeditionWithdraw(appState1: ApplicationState, _v
 export function isOnDuty(appState1: ApplicationState, expeditionAddress: EthAddress , _knightId: uint256) {
     let appState = appState1;
     let expeditionData = appState.ExpeditionState.expeditions.get(expeditionAddress);
-    let ownerKnightInExpeditionData = appState.knightInExpeditionState.expedition.get(expeditionAddress);
+    let ownerKnightInExpeditionData = appState.smartWalletState.knightInExpeditionState.expedition.get(expeditionAddress);
     if (!ownerKnightInExpeditionData) {
         throw new NFTNotFoundError("Knight is not found!");
     }

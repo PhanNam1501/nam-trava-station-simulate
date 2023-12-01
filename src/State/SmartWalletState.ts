@@ -41,6 +41,7 @@ export class SmartWalletState {
   detailTokenInPool: Map<string, DetailTokenInPool>;
   travaLPStakingStateList: Map<string, BaseAccountVault>;
   veTravaListState: VeTravaListState;
+  knightInExpeditionState: KnightInExpeditionState;
   ticket: NFTTicketState;
   constructor(address: EthAddress) {
     this.address = address;
@@ -55,6 +56,7 @@ export class SmartWalletState {
     this.detailTokenInPool = new Map();
     this.travaLPStakingStateList = new Map();
     this.veTravaListState = new VeTravaListState();
+    this.knightInExpeditionState = new KnightInExpeditionState();
     this.ticket = new NFTTicketState();
   }
 
