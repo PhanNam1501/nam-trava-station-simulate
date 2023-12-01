@@ -220,7 +220,6 @@ export async function updateExpeditionState(appState1: ApplicationState, force =
         ]);
       for (let i = 0; i < listexpedition.length; i++) {
         if (expeditionsAddress[i] == undefined) continue;
-        // let key = listexpedition[i].id
         let raritys: Array<NumberKinghtInExpedition> = new Array();
         let total: number = 0;
         let expeditionPrice: uint256 = "";
