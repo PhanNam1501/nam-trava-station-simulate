@@ -236,7 +236,7 @@ export async function updateExpeditionState(appState1: ApplicationState, force =
           profession = expeditionDurations[i].toString();
         }
 
-        const [buffSuccessRate]
+        const [buffSuccessRate, buffExp]
         = await Promise.all([
           multiCall(
             ExpeditionABI,
@@ -247,12 +247,7 @@ export async function updateExpeditionState(appState1: ApplicationState, force =
             })),
             appState.web3,
             appState.chainId
-          )]);
-        for (let j = 0; j < buffSuccessRate.length; j++) {
-          buffSuccessRate[j] = parseInt(buffSuccessRate[j]);
-        }
-        const [buffExp]
-        = await Promise.all([
+          ),
           multiCall(
             ExpeditionABI,
             [1,2,3,4,5].map((id: number) => ({
@@ -263,6 +258,9 @@ export async function updateExpeditionState(appState1: ApplicationState, force =
             appState.web3,
             appState.chainId
           )]);
+        for (let j = 0; j < buffSuccessRate.length; j++) {
+          buffSuccessRate[j] = parseInt(buffSuccessRate[j]);
+        }
         for (let j = 0; j < buffExp.length; j++) {
           buffExp[j] = parseInt(buffExp[j]);
         }
