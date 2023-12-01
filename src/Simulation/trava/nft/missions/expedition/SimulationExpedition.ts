@@ -43,34 +43,21 @@ export async function simulateExpeditionDeploy(
                 throw new NFTNotFoundError("Knight is not found!");
             }
             appState[mode].collection["v1"] = appState[mode].collection["v1"].filter(x => x.id.toString() != _knightId);
-            const [successRateFromContract, ExpFromContract]
+            const [successRateAndExpFromContract]
             = await Promise.all([
               multiCall(
                 ExpeditionABI,
-                [expeditionAddress].map((address: string) => ({
-                  address: address,
-                  name: "getSuccessRate",
+                ["getSuccessRate","getAccruedExperience"].map((name: string) => ({
+                  address: expeditionAddress,
+                  name: name,
                   params: [currentNFT?.id.toString()],
                 })),
                 appState.web3,
                 appState.chainId
-              ),
-              multiCall(
-                ExpeditionABI,
-                [expeditionAddress].map((address: string) => ({
-                  address: address,
-                  name: "getAccruedExperience",
-                  params: [currentNFT?.id.toString()],
-                })),
-                appState.web3,
-                appState.chainId
-              ),
-            ]);
-    
-    
+              )]);
             let successRate = 0;
-            if(successRateFromContract[0]) {
-                successRate = parseInt(successRateFromContract[0].toString());
+            if(successRateAndExpFromContract[0]) {
+                successRate = parseInt(successRateAndExpFromContract[0].toString());
             }
             let persentBuffSuccessRate = appState.ExpeditionState.expeditions.get(expeditionAddress)?.buffSuccessRate[countTickets];
             if (!persentBuffSuccessRate) {
@@ -78,8 +65,8 @@ export async function simulateExpeditionDeploy(
             }
             let successRateAfterBuff = successRate * (10000 + persentBuffSuccessRate)/10000;
             let Exp = 0;
-            if(ExpFromContract[0]) {
-                Exp = parseInt(ExpFromContract[0].toString());
+            if(successRateAndExpFromContract[1]) {
+                Exp = parseInt(successRateAndExpFromContract[1].toString());
             }
             let persentBuffExp = appState.ExpeditionState.expeditions.get(expeditionAddress)?.buffExp[countTickets];
             if (!persentBuffExp) {

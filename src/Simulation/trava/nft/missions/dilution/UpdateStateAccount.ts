@@ -58,7 +58,7 @@ export async function updateDilutionState(appState1: ApplicationState, force = f
             dilutionAfterJoining: 0,
             currentPowerLevel: parseInt(detailData.totalPower) / 100,
             powerLevelAfterJoining: 0,
-            upfrontFee: 0,
+            upfrontFee: '0',
           });
         }
         counter++;
