@@ -24,10 +24,13 @@ export async function simulateExpeditionDeploy(
         const fromKnight = _fromKnight.toLowerCase();
         const fromExpeditionFee = _fromExpeditionFee.toLowerCase();
         const fromTicket = _fromTicket.toLowerCase();
+        let modeKnight = getMode(appState, fromKnight);
+        let modeExpeditionFee = getMode(appState, fromExpeditionFee);
+        let modeTicket = getMode(appState, fromTicket);
         if (!appState.ExpeditionState.isFetch) {
             appState = await updateExpeditionState(appState);
         }
-        if (!appState[getMode(appState, fromKnight)].knightInExpeditionState.isFetch) {
+        if (!appState[modeKnight].knightInExpeditionState.isFetch) {
             appState = await updateOwnerKnightInExpeditionState(appState, fromKnight);
         }
         let countTickets = 0;
@@ -38,21 +41,24 @@ export async function simulateExpeditionDeploy(
         if (!expeditionData) {
             throw new ExpeditionNotFoundError("Not found this expedition");
         }
-        if (!appState[getMode(appState, _fromKnight)].collection.isFetch){
-            appState = await updateCollectionBalanceFromContract(appState, getMode(appState, _fromKnight)); 
+        if (!appState[modeKnight].collection.isFetch){
+            appState = await updateCollectionBalanceFromContract(appState, modeKnight); 
         }
-        if (!appState[getMode(appState, _fromTicket)].collection.isFetch){
-            appState = await updateOwnerTicketState(appState, getMode(appState, _fromTicket)); 
+        if (!appState[modeTicket].collection.isFetch){
+            appState = await updateOwnerTicketState(appState, modeTicket); 
+        }
+        let priceTokenAddress = getAddr("TRAVA_TOKEN", appState.chainId).toLowerCase();
+            if(!appState[modeExpeditionFee].tokenBalances.has(priceTokenAddress)) {
+                appState = await updateTokenBalance(appState, fromExpeditionFee, priceTokenAddress);
         }
 
         let currentNFT: NormalKnight | undefined = undefined;
         if (isWallet(appState, fromKnight) && isWallet(appState, fromExpeditionFee) && isWallet(appState, fromTicket)) {
-            let knightMode = getMode(appState, fromKnight);
-            currentNFT = appState[knightMode].collection.v1.find((nft) => nft.id.toString() == _knightId);
+            currentNFT = appState[modeKnight].collection.v1.find((nft) => nft.id.toString() == _knightId);
             if (!currentNFT) {
                 throw new NFTNotFoundError("Knight is not found!");
             }
-            appState[knightMode].collection["v1"] = appState[knightMode].collection["v1"].filter(x => x.id.toString() != _knightId);
+            appState[modeKnight].collection["v1"] = appState[modeKnight].collection["v1"].filter(x => x.id.toString() != _knightId);
             const [successRateAndExpFromContract]
             = await Promise.all([
               multiCall(
@@ -104,7 +110,7 @@ export async function simulateExpeditionDeploy(
                 throw new Error("Not found Knight's rarity");
             }
 
-            let tickets = appState[getMode(appState, fromTicket)].ticket.ticketState;
+            let tickets = appState[modeTicket].ticket.ticketState;
             let ticketAfterBuff: Map<string, Ticket> = new Map();
             for (let i = 0; i < _buffWinRateTickets.length; i++) {
                 let ticket = tickets.get((100001+i).toString());
@@ -113,11 +119,7 @@ export async function simulateExpeditionDeploy(
                 }
             }
 
-            let priceTokenAddress = getAddr("TRAVA_TOKEN", appState.chainId).toLowerCase();
-            let modeExpeditionFee = getMode(appState, fromExpeditionFee);
-            if(!appState[modeExpeditionFee].tokenBalances.has(priceTokenAddress)) {
-                appState = await updateTokenBalance(appState, fromExpeditionFee, priceTokenAddress);
-            }
+           
             let price = BigNumber(appState.ExpeditionState.expeditions.get(expeditionAddress)!.expeditionPrice);          
             let oldBalance = BigNumber(appState[modeExpeditionFee].tokenBalances.get(priceTokenAddress)!);
             let newBalance = oldBalance.minus(price).toFixed();
@@ -125,7 +127,7 @@ export async function simulateExpeditionDeploy(
             appState[modeExpeditionFee].tokenBalances.set(priceTokenAddress, newBalance);
             appState.smartWalletState.knightInExpeditionState.expedition.set(expeditionAddress, [data]);
             appState.ExpeditionState.expeditions.set(expeditionAddress, expeditionData);
-            appState[getMode(appState, fromTicket)].ticket.ticketState = ticketAfterBuff;
+            appState[modeTicket].ticket.ticketState = ticketAfterBuff;
         }
         return appState;
     } catch(err) {
