@@ -7,6 +7,7 @@ import { getMode, isWallet, multiCall } from "../../../../../utils/helper";
 import ExpeditionABI from "../../../../../abis/NFTExpeditionABI.json";
 import { Ticket } from "../../../../../State";
 import { ExpeditionNotFoundError, NFTNotFoundError, getAddr } from "../../../../../utils";
+import { updateTokenBalance } from "../../../../basic";
 export async function simulateExpeditionDeploy(
     appState1: ApplicationState,
     _expeditionAddress: EthAddress, 
@@ -106,9 +107,13 @@ export async function simulateExpeditionDeploy(
                     ticketAfterBuff.set((100001+i).toString(), {ticket: ticket.ticket, amount: ticket.amount - parseInt(_buffWinRateTickets[i]) - parseInt(_buffExpTickets[i])});
                 }
             }
-            let price = BigNumber(0);
-            let modeFee = getMode(appState, fromFee);
+
             let priceTokenAddress = getAddr("TRAVA_TOKEN", appState.chainId);
+            let modeFee = getMode(appState, fromFee);
+            if(!appState[modeFee].tokenBalances.has(priceTokenAddress.toLowerCase())) {
+                appState = await updateTokenBalance(appState, fromFee, priceTokenAddress);
+            }
+            let price = BigNumber(0);
             let balanceOfToken = BigNumber(0);
             price = BigNumber(appState.ExpeditionState.expeditions.get(expeditionAddress)!.expeditionPrice);          
             balanceOfToken = BigNumber(appState[modeFee].tokenBalances.get(priceTokenAddress.toLowerCase())!);
@@ -237,9 +242,13 @@ export async function simulateExpeditionWithdraw(appState1: ApplicationState, _v
             shield: currentNFT.shield,
             weapon: currentNFT.weapon,
         };
-        let reward = BigNumber(0);
-        let modeTo = getMode(appState, to);
+
         let priceTokenAddress = getAddr("TRAVA_TOKEN", appState.chainId);
+        let modeTo = getMode(appState, to);
+        if(!appState[modeTo].tokenBalances.has(priceTokenAddress.toLowerCase())) {
+            appState = await updateTokenBalance(appState, to, priceTokenAddress);
+        }
+        let reward = BigNumber(0);
         let balanceOfToken = BigNumber(0);
         reward = BigNumber(appState.ExpeditionState.expeditions.get(expeditionAddress)!.successReward);          
         balanceOfToken = BigNumber(appState[modeTo].tokenBalances.get(priceTokenAddress.toLowerCase())!);
