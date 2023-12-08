@@ -116,6 +116,7 @@ export async function SimulationSupplyForkCompoundLP(
     try {
         let amount = BigNumber(_amount);
         const appState = { ...appState1 };
+        // Comming Soon .......
         // if (amount.toFixed(0) == MAX_UINT256 || amount.isEqualTo(MAX_UINT256)) {
         //     amount = calculateMaxAmountWithdraw(appState, _tokenAddress);
         //   }
@@ -212,6 +213,7 @@ export async function SimulationSupplyForkCompoundLP(
     try {
         let amount = BigNumber(_amount);
         const appState = { ...appState1 };
+        // Comming Soon .......
         // if (amount.toFixed(0) == MAX_UINT256 || amount.isEqualTo(MAX_UINT256)) {
         //     amount = calculateMaxAmountBorrow(
         //       appState,
@@ -312,6 +314,7 @@ export async function SimulationSupplyForkCompoundLP(
     try {
         let amount = BigNumber(_amount);
         const appState = { ...appState1 };
+        // Comming Soon .......
         // if (amount.toFixed(0) == MAX_UINT256 || amount.isEqualTo(MAX_UINT256)) {
         //     amount = calculateMaxAmountRepay(appState, _tokenAddress, "walletState");
         //   }
