@@ -30,8 +30,12 @@ import { updateForkCompoundLPState, updateUserInForkCompoundLPState } from "../s
     // appState = await updateTravaGovernanceState(appState);
     appState = await updateForkCompoundLPState(appState);
     appState = await updateUserInForkCompoundLPState(appState, userAddress);
-    console.log(appState.forkCompoundLPState)
+    console.log(appState.forkCompoundLPState.forkCompoundLP.get("wepiggy")?.markets[0].assets)
+    // console.log(appState.forkCompoundLPState)
     console.log(appState.walletState.forkedCompoundLPState)
+    // console.log(appState.walletState.forkedCompoundLPState.get("venus")?.dapps)
+    // console.log(appState.walletState.forkedCompoundLPState.get("venus")?.dapps[0].reserves)
+    console.log(appState.walletState.forkedCompoundLPState.get("venus")?.dapps[0].reserves[0].deposit)
 
 }
 test()
