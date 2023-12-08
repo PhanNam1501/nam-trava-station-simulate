@@ -7,7 +7,7 @@ import {
 import { CollectionOwned, KnightInExpeditionState, NFTOwned, Ticket } from "./WalletState";
 import { VeTravaListState, VeTravaState } from "./trava/lending/TravaGovenanceState"
 import { FarmingKnightDetailInfo } from "../Simulation";
-import { WalletForkedCompoundLPState } from "./trava";
+import { WalletForkedAaveLPState, WalletForkedCompoundLPState } from "./trava";
 export interface OriginTokenData {
   balances: string;
 }
@@ -36,6 +36,7 @@ export class SmartWalletState {
   collection: CollectionOwned;
   travaLPState: WalletTravaLPState;
   forkedCompoundLPState: Map<string, WalletForkedCompoundLPState>;
+  forkedAaveLPState: Map<string, WalletForkedAaveLPState>;
   ethBalances: string;
   sellingNFT: NFTSellingState;
   auctioningState: NFTAuctioningState;
@@ -51,6 +52,7 @@ export class SmartWalletState {
     this.nfts = new NFTOwned();
     this.travaLPState = new WalletTravaLPState();
     this.forkedCompoundLPState = new Map<string, WalletForkedCompoundLPState>();
+    this.forkedAaveLPState = new Map<string, WalletForkedAaveLPState>();
     this.collection = new CollectionOwned();
     this.ethBalances = "";
     this.sellingNFT = new NFTSellingState();

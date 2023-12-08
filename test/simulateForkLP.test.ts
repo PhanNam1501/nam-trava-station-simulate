@@ -7,6 +7,7 @@ import BigNumber from "bignumber.js";
 import { MONTH_TO_SECONDS, WEEK_TO_SECONDS } from "../src/utils/config";
 import { updateForkCompoundLPState, updateUserInForkCompoundLPState } from "../src/Simulation/forkCompoundLP/UpdateStateAccount";
 import { SimulationBorrowForkCompoundLP, SimulationRepayForkCompoundLP, SimulationSupplyForkCompoundLP } from "../src/Simulation";
+import { updateForkAaveLPState, updateUserInForkAaveLPState } from "../src/Simulation/forkAaveLP";
 
   // start 
   async function test(){
@@ -28,16 +29,23 @@ import { SimulationBorrowForkCompoundLP, SimulationRepayForkCompoundLP, Simulati
     provider,
     chainId
     )
-    // appState = await updateTravaGovernanceState(appState);
-    appState = await updateForkCompoundLPState(appState);
-    appState = await updateUserInForkCompoundLPState(appState, userAddress);
-    // console.log(appState.forkCompoundLPState.forkCompoundLP.get("wepiggy")?.markets[0].assets)
-    // // console.log(appState.forkCompoundLPState)
-    // console.log(appState.walletState.forkedCompoundLPState)
-    console.log(appState.walletState.forkedCompoundLPState.get("venus"))
-    // console.log(appState.walletState.forkedCompoundLPState.get("venus")?.dapps[0].reserves)
-    appState = await SimulationRepayForkCompoundLP(appState, userAddress, "venus", "0xe9e7cea3dedca5984780bafc599bd69add087d56", "1000")
-    console.log(appState.walletState.forkedCompoundLPState.get("venus"))
-    console.log(appState.walletState.forkedCompoundLPState.get("venus")?.dapps[0].reserves[0].borrow)
-}
+    // // appState = await updateTravaGovernanceState(appState);
+    // appState = await updateForkCompoundLPState(appState);
+    // appState = await updateUserInForkCompoundLPState(appState, userAddress);
+    // // console.log(appState.forkCompoundLPState.forkCompoundLP.get("wepiggy")?.markets[0].assets)
+    // // // console.log(appState.forkCompoundLPState)
+    // // console.log(appState.walletState.forkedCompoundLPState)
+    // console.log(appState.walletState.forkedCompoundLPState.get("venus"))
+    // // console.log(appState.walletState.forkedCompoundLPState.get("venus")?.dapps[0].reserves)
+    // appState = await SimulationRepayForkCompoundLP(appState, userAddress, "venus", "0xe9e7cea3dedca5984780bafc599bd69add087d56", "1000")
+    // console.log(appState.walletState.forkedCompoundLPState.get("venus"))
+    // console.log(appState.walletState.forkedCompoundLPState.get("venus")?.dapps[0].reserves[0].borrow)
+    
+    console.log("_______________________TEST AAVE_______________________")
+
+    appState = await updateForkAaveLPState(appState);
+    appState = await updateUserInForkAaveLPState(appState, userAddress);
+    console.log(appState.forkAaveLPState)
+
+  }
 test()
