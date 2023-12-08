@@ -17,6 +17,11 @@ export async function SimulationSupplyForkCompoundLP(
     try {
         let amount = BigNumber(_amount);
         const appState = { ...appState1 };
+        if (
+            amount.toFixed(0) == MAX_UINT256 || amount.isEqualTo(MAX_UINT256)
+            ) {
+            amount = calculateMaxAmountSupply(appState, _tokenAddress, "walletState")
+            }
 
         _tokenAddress = _tokenAddress.toLowerCase();
         _from = _from.toLowerCase();
@@ -111,7 +116,9 @@ export async function SimulationSupplyForkCompoundLP(
     try {
         let amount = BigNumber(_amount);
         const appState = { ...appState1 };
-
+        // if (amount.toFixed(0) == MAX_UINT256 || amount.isEqualTo(MAX_UINT256)) {
+        //     amount = calculateMaxAmountWithdraw(appState, _tokenAddress);
+        //   }
         _tokenAddress = _tokenAddress.toLowerCase();
         _from = _from.toLowerCase();
         let  modeFrom = getMode(appState, _from);
@@ -205,7 +212,12 @@ export async function SimulationSupplyForkCompoundLP(
     try {
         let amount = BigNumber(_amount);
         const appState = { ...appState1 };
-
+        // if (amount.toFixed(0) == MAX_UINT256 || amount.isEqualTo(MAX_UINT256)) {
+        //     amount = calculateMaxAmountBorrow(
+        //       appState,
+        //       _tokenAddress
+        //     )
+        //   }
         _tokenAddress = _tokenAddress.toLowerCase();
         _from = _from.toLowerCase();
         let  modeFrom = getMode(appState, _from);
@@ -300,7 +312,9 @@ export async function SimulationSupplyForkCompoundLP(
     try {
         let amount = BigNumber(_amount);
         const appState = { ...appState1 };
-
+        // if (amount.toFixed(0) == MAX_UINT256 || amount.isEqualTo(MAX_UINT256)) {
+        //     amount = calculateMaxAmountRepay(appState, _tokenAddress, "walletState");
+        //   }
         _tokenAddress = _tokenAddress.toLowerCase();
         _from = _from.toLowerCase();
         let  modeFrom = getMode(appState, _from);
