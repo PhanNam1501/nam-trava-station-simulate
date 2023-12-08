@@ -6,7 +6,7 @@ import { getAddr } from "../src/utils/address";
 import BigNumber from "bignumber.js";
 import { MONTH_TO_SECONDS, WEEK_TO_SECONDS } from "../src/utils/config";
 import { updateForkCompoundLPState, updateUserInForkCompoundLPState } from "../src/Simulation/forkCompoundLP/UpdateStateAccount";
-import { SimulationSupplyForkCompoundLP } from "../src/Simulation";
+import { SimulationBorrowForkCompoundLP, SimulationRepayForkCompoundLP, SimulationSupplyForkCompoundLP } from "../src/Simulation";
 
   // start 
   async function test(){
@@ -34,10 +34,10 @@ import { SimulationSupplyForkCompoundLP } from "../src/Simulation";
     // console.log(appState.forkCompoundLPState.forkCompoundLP.get("wepiggy")?.markets[0].assets)
     // // console.log(appState.forkCompoundLPState)
     // console.log(appState.walletState.forkedCompoundLPState)
-    console.log(appState.walletState.forkedCompoundLPState.get("venus")?.dapps)
-    // console.log(appState.walletState.forkedCompoundLPState.get("venus")?.dapps[0].reserves)
-    appState = await SimulationSupplyForkCompoundLP(appState, userAddress, "venus", "0x0e09fabb73bd3ade0a17ecc321fd13a19e81ce82", "1000")
-    // console.log(appState.walletState.forkedCompoundLPState.get("venus")?.dapps[0].reserves[0].deposit)
     console.log(appState.walletState.forkedCompoundLPState.get("venus"))
+    // console.log(appState.walletState.forkedCompoundLPState.get("venus")?.dapps[0].reserves)
+    appState = await SimulationRepayForkCompoundLP(appState, userAddress, "venus", "0xe9e7cea3dedca5984780bafc599bd69add087d56", "1000")
+    console.log(appState.walletState.forkedCompoundLPState.get("venus"))
+    console.log(appState.walletState.forkedCompoundLPState.get("venus")?.dapps[0].reserves[0].borrow)
 }
 test()

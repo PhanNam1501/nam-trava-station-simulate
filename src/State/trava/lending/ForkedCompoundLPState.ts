@@ -127,10 +127,12 @@ export class Reserve {
   category: string;
   healthFactor: number;
   deposit: Array<UserAsset>;
+  borrow: Array<UserAsset>;
   constructor() {
     this.category = "";
     this.healthFactor = 0;
     this.deposit = [];
+    this.borrow = [];
   }
 }
 
