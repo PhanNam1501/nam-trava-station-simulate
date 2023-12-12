@@ -22,13 +22,13 @@ export async function SimulationSupplyForkCompoundLP(
             updateForkCompoundLPState(appState, _idLP);
         }
         const tokenAddress = _tokenAddress.toLowerCase();
+        let  modeFrom = getMode(appState, _from.toLowerCase());
         if (
             amount.toFixed(0) == MAX_UINT256 || amount.isEqualTo(MAX_UINT256)
             ) {
-            amount = calculateMaxAmountSupply(appState, tokenAddress, "walletState")
+            amount = calculateMaxAmountSupply(appState, tokenAddress, modeFrom)
             }
 
-        let  modeFrom = getMode(appState, _from.toLowerCase());
 
         if (!appState[modeFrom].tokenBalances.has(tokenAddress)) {
             await updateUserTokenBalance(appState, tokenAddress);
