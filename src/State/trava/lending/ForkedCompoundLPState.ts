@@ -1,16 +1,16 @@
 import { EthAddress, uint256 } from "../../../utils/types";
 
 export interface Asset {
-    key: string;
+    // key: string;
     id: string;
     type: string;
-    name: string;
+    // name: string;
     address: EthAddress;
     symbol: string;
-    imgUrl: string;
+    // imgUrl: string;
     price: number;
     totalSupplyInUSD: number;
-    supplyAPY: number;
+    // supplyAPY: number;
     numberOfLenders: number;
     totalBorrowInUSD: number;
     borrowAPY: number;
@@ -22,27 +22,27 @@ export interface Asset {
 export interface Market {
   id: string;
   type: string;
-  projectType: string;
-  name: string;
-  imgUrl: string;
-  key: string;
-  chainId: string;
+  // projectType: string;
+  // name: string;
+  // imgUrl: string;
+  // key: string;
+  // chainId: string;
   value: number;
   assets: Array<Asset>;
 }
 export interface ForkedCompound{ 
   id: string;
   chain: string;
-  numberOfUsers: number;
-  realUsersRatio: number;
+  // numberOfUsers: number;
+  // realUsersRatio: number;
   totalSupplyInUSD: number;
   numberOfLenders: number;
   totalBorrowInUSD: number;
-  numberOfBorrowers: number;
+  // numberOfBorrowers: number;
   markets: Array<Market>;
   totalTVL: number;
-  tvlChangeRate: number;
-  lastUpdatedAt: number;
+  // tvlChangeRate: number;
+  // lastUpdatedAt: number;
 }
 
 export class ForkedCompoundLPState {
@@ -57,15 +57,15 @@ export class ForkedCompoundLPState {
 // User
 
 export interface UserAsset {
-  key: string;
+  // key: string;
   id: string;
-  name: string;
+  // name: string;
   type: string;
   address: EthAddress;
   symbol: string;
   amount: number;
   valueInUSD: number;
-  imgUrl: string;
+  // imgUrl: string;
   totalValue: number;
 }
 
@@ -77,18 +77,18 @@ export interface Reserve {
 }
 
 export interface Dapp {
-  key: string;
+  // key: string;
   id: string;
   type: string;
-  projectType: string;
-  chainId: string;
-  name: string;
-  imgUrl: string;
+  // projectType: string;
+  // chainId: string;
+  // name: string;
+  // imgUrl: string;
   value: number;
   depositInUSD: number;
   borrowInUSD: number;
   claimable: number;
-  claimable24hAgo: number;
+  // claimable24hAgo: number;
   reserves: Array<Reserve>;
 }
 
@@ -97,10 +97,10 @@ export interface WalletForkedCompoundLPState {
   address: EthAddress;
   chain: string;
   totalAssets: number;
-  totalAssets24hAgo: number;
+  // totalAssets24hAgo: number;
   totalClaimable: number;
-  totalClaimable24hAgo: number;
+  // totalClaimable24hAgo: number;
   totalDebts: number;
-  totalDebts24hAgo: number;
+  // totalDebts24hAgo: number;
   dapps: Array<Dapp>;
 }

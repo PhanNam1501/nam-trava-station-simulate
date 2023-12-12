@@ -6,6 +6,7 @@ import _ from "lodash";
 import { convertHexStringToAddress } from "../../utils/address";
 import { getMode } from "../../utils/helper";
 import axios from "axios";
+import { WalletForkedCompoundLPState } from "../../State";
 
 
 export async function updateForkCompoundLPState(appState1: ApplicationState, force?: boolean): Promise<ApplicationState> {
@@ -28,7 +29,7 @@ export async function updateUserInForkCompoundLPState(appState1: ApplicationStat
     try {
         let entity_ids: Array<string> = ["venus", "liqee", "cream-lending", "apeswap-lending", "wepiggy"];
         for (let entity_id of entity_ids) {
-            let data = await getDataUserByAxios(_from, entity_id, "0x38");
+            let data: WalletForkedCompoundLPState = await getDataUserByAxios(_from, entity_id, "0x38");
             appState[mode].forkedCompoundLPState.set(entity_id, data);
         }
     } catch (error) {

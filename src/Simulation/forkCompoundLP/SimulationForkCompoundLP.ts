@@ -59,32 +59,32 @@ export async function SimulationSupplyForkCompoundLP(
         let dataInWallet = dataWallet.dapps[0].reserves[0].deposit.find((reserve) => reserve.address == _tokenAddress);
         if (!dataInWallet) {
             data.numberOfLenders = Number(BigNumber(data.numberOfLenders || 0).plus(1).toFixed(0));
-            data.numberOfUsers = Number(BigNumber(data.numberOfUsers || 0).plus(1).toFixed(0));
+            // data.numberOfUsers = Number(BigNumber(data.numberOfUsers || 0).plus(1).toFixed(0));
             let newData: UserAsset = {
-                key: data.markets[0].assets.find((asset) => asset.address == _tokenAddress)?.key || "",
+                // key: data.markets[0].assets.find((asset) => asset.address == _tokenAddress)?.key || "",
                 id: data.markets[0].assets.find((asset) => asset.address == _tokenAddress)?.id || "",
-                name: data.markets[0].assets.find((asset) => asset.address == _tokenAddress)?.name || "",
+                // name: data.markets[0].assets.find((asset) => asset.address == _tokenAddress)?.name || "",
                 type: "token",
                 address: _tokenAddress,
                 symbol: data.markets[0].assets.find((asset) => asset.address == _tokenAddress)?.symbol || "",
                 amount: Number(amount.toFixed()),
                 valueInUSD: Number(amount.multipliedBy(price).toFixed(0)),
-                imgUrl: data.markets[0].assets.find((asset) => asset.address == _tokenAddress)?.imgUrl || "",
+                // imgUrl: data.markets[0].assets.find((asset) => asset.address == _tokenAddress)?.imgUrl || "",
                 totalValue: Number(amount.multipliedBy(price).toFixed(0)),
             };
             dataWallet.dapps[0].reserves[0].deposit.push(newData);
         }
         else{
             let newData: UserAsset = {
-                key: data.markets[0].assets.find((asset) => asset.address == _tokenAddress)?.key || "",
+                // key: data.markets[0].assets.find((asset) => asset.address == _tokenAddress)?.key || "",
                 id: data.markets[0].assets.find((asset) => asset.address == _tokenAddress)?.id || "",
-                name: data.markets[0].assets.find((asset) => asset.address == _tokenAddress)?.name || "",
+                // name: data.markets[0].assets.find((asset) => asset.address == _tokenAddress)?.name || "",
                 type: "token",
                 address: _tokenAddress,
                 symbol: data.markets[0].assets.find((asset) => asset.address == _tokenAddress)?.symbol || "",
                 amount: Number(amount.toFixed())+dataInWallet.amount,
                 valueInUSD: Number(amount.plus(dataInWallet.amount).multipliedBy(price).toFixed()),
-                imgUrl: data.markets[0].assets.find((asset) => asset.address == _tokenAddress)?.imgUrl || "",
+                // imgUrl: data.markets[0].assets.find((asset) => asset.address == _tokenAddress)?.imgUrl || "",
                 totalValue: Number(amount.plus(dataInWallet.amount).multipliedBy(price).toFixed()),
             };
             dataWallet.dapps[0].value = Number(BigNumber(dataWallet.dapps[0].value || 0).plus(amount).toFixed());
@@ -156,32 +156,32 @@ export async function SimulationSupplyForkCompoundLP(
         let dataInWallet = dataWallet.dapps[0].reserves[0].deposit.find((reserve) => reserve.address == _tokenAddress);
         if (!dataInWallet) {
             data.numberOfLenders = Number(BigNumber(data.numberOfLenders || 0).plus(1).toFixed(0));
-            data.numberOfUsers = Number(BigNumber(data.numberOfUsers || 0).plus(1).toFixed(0));
+            // data.numberOfUsers = Number(BigNumber(data.numberOfUsers || 0).plus(1).toFixed(0));
             let newData: UserAsset = {
-                key: data.markets[0].assets.find((asset) => asset.address == _tokenAddress)?.key || "",
+                // key: data.markets[0].assets.find((asset) => asset.address == _tokenAddress)?.key || "",
                 id: data.markets[0].assets.find((asset) => asset.address == _tokenAddress)?.id || "",
-                name: data.markets[0].assets.find((asset) => asset.address == _tokenAddress)?.name || "",
+                // name: data.markets[0].assets.find((asset) => asset.address == _tokenAddress)?.name || "",
                 type: "token",
                 address: _tokenAddress,
                 symbol: data.markets[0].assets.find((asset) => asset.address == _tokenAddress)?.symbol || "",
                 amount: -Number(amount.toFixed()),
                 valueInUSD: -Number(amount.multipliedBy(price).toFixed(0)),
-                imgUrl: data.markets[0].assets.find((asset) => asset.address == _tokenAddress)?.imgUrl || "",
+                // imgUrl: data.markets[0].assets.find((asset) => asset.address == _tokenAddress)?.imgUrl || "",
                 totalValue: -Number(amount.multipliedBy(price).toFixed(0)),
             };
             dataWallet.dapps[0].reserves[0].deposit.push(newData);
         }
         else{
             let newData: UserAsset = {
-                key: data.markets[0].assets.find((asset) => asset.address == _tokenAddress)?.key || "",
+                // key: data.markets[0].assets.find((asset) => asset.address == _tokenAddress)?.key || "",
                 id: data.markets[0].assets.find((asset) => asset.address == _tokenAddress)?.id || "",
-                name: data.markets[0].assets.find((asset) => asset.address == _tokenAddress)?.name || "",
+                // name: data.markets[0].assets.find((asset) => asset.address == _tokenAddress)?.name || "",
                 type: "token",
                 address: _tokenAddress,
                 symbol: data.markets[0].assets.find((asset) => asset.address == _tokenAddress)?.symbol || "",
                 amount: -Number(amount.toFixed())+dataInWallet.amount,
                 valueInUSD: Number(amount.multipliedBy(-1).plus(dataInWallet.amount).multipliedBy(price).toFixed()),
-                imgUrl: data.markets[0].assets.find((asset) => asset.address == _tokenAddress)?.imgUrl || "",
+                // imgUrl: data.markets[0].assets.find((asset) => asset.address == _tokenAddress)?.imgUrl || "",
                 totalValue: Number(amount.multipliedBy(-1).plus(dataInWallet.amount).multipliedBy(price).toFixed()),
             };
             dataWallet.dapps[0].value = Number(BigNumber(dataWallet.dapps[0].value || 0).minus(amount).toFixed());
@@ -256,32 +256,32 @@ export async function SimulationSupplyForkCompoundLP(
         let dataInWallet = dataWallet.dapps[0].reserves[0].borrow.find((reserve) => reserve.address == _tokenAddress);
         if (!dataInWallet) {
             data.numberOfLenders = Number(BigNumber(data.numberOfLenders || 0).plus(1).toFixed(0));
-            data.numberOfUsers = Number(BigNumber(data.numberOfUsers || 0).plus(1).toFixed(0));
+            // data.numberOfUsers = Number(BigNumber(data.numberOfUsers || 0).plus(1).toFixed(0));
             let newData: UserAsset = {
-                key: data.markets[0].assets.find((asset) => asset.address == _tokenAddress)?.key || "",
+                // key: data.markets[0].assets.find((asset) => asset.address == _tokenAddress)?.key || "",
                 id: data.markets[0].assets.find((asset) => asset.address == _tokenAddress)?.id || "",
-                name: data.markets[0].assets.find((asset) => asset.address == _tokenAddress)?.name || "",
+                // name: data.markets[0].assets.find((asset) => asset.address == _tokenAddress)?.name || "",
                 type: "token",
                 address: _tokenAddress,
                 symbol: data.markets[0].assets.find((asset) => asset.address == _tokenAddress)?.symbol || "",
                 amount: Number(amount.toFixed()),
                 valueInUSD: Number(amount.multipliedBy(price).toFixed(0)),
-                imgUrl: data.markets[0].assets.find((asset) => asset.address == _tokenAddress)?.imgUrl || "",
+                // imgUrl: data.markets[0].assets.find((asset) => asset.address == _tokenAddress)?.imgUrl || "",
                 totalValue: Number(amount.multipliedBy(price).toFixed(0)),
             };
             dataWallet.dapps[0].reserves[0].borrow.push(newData);
         }
         else{
             let newData: UserAsset = {
-                key: data.markets[0].assets.find((asset) => asset.address == _tokenAddress)?.key || "",
+                // key: data.markets[0].assets.find((asset) => asset.address == _tokenAddress)?.key || "",
                 id: data.markets[0].assets.find((asset) => asset.address == _tokenAddress)?.id || "",
-                name: data.markets[0].assets.find((asset) => asset.address == _tokenAddress)?.name || "",
+                // name: data.markets[0].assets.find((asset) => asset.address == _tokenAddress)?.name || "",
                 type: "token",
                 address: _tokenAddress,
                 symbol: data.markets[0].assets.find((asset) => asset.address == _tokenAddress)?.symbol || "",
                 amount: Number(amount.toFixed())+dataInWallet.amount,
                 valueInUSD: Number(amount.plus(dataInWallet.amount).multipliedBy(price).toFixed()),
-                imgUrl: data.markets[0].assets.find((asset) => asset.address == _tokenAddress)?.imgUrl || "",
+                // imgUrl: data.markets[0].assets.find((asset) => asset.address == _tokenAddress)?.imgUrl || "",
                 totalValue: Number(amount.plus(dataInWallet.amount).multipliedBy(price).toFixed()),
             };
             dataWallet.dapps[0].value = Number(BigNumber(dataWallet.dapps[0].value || 0).plus(amount).toFixed());
@@ -354,32 +354,32 @@ export async function SimulationSupplyForkCompoundLP(
         let dataInWallet = dataWallet.dapps[0].reserves[0].borrow.find((reserve) => reserve.address == _tokenAddress);
         if (!dataInWallet) {
             data.numberOfLenders = Number(BigNumber(data.numberOfLenders || 0).plus(1).toFixed(0));
-            data.numberOfUsers = Number(BigNumber(data.numberOfUsers || 0).plus(1).toFixed(0));
+            // data.numberOfUsers = Number(BigNumber(data.numberOfUsers || 0).plus(1).toFixed(0));
             let newData: UserAsset = {
-                key: data.markets[0].assets.find((asset) => asset.address == _tokenAddress)?.key || "",
+                // key: data.markets[0].assets.find((asset) => asset.address == _tokenAddress)?.key || "",
                 id: data.markets[0].assets.find((asset) => asset.address == _tokenAddress)?.id || "",
-                name: data.markets[0].assets.find((asset) => asset.address == _tokenAddress)?.name || "",
+                // name: data.markets[0].assets.find((asset) => asset.address == _tokenAddress)?.name || "",
                 type: "token",
                 address: _tokenAddress,
                 symbol: data.markets[0].assets.find((asset) => asset.address == _tokenAddress)?.symbol || "",
                 amount: -Number(amount.toFixed()),
                 valueInUSD: -Number(amount.multipliedBy(price).toFixed(0)),
-                imgUrl: data.markets[0].assets.find((asset) => asset.address == _tokenAddress)?.imgUrl || "",
+                // imgUrl: data.markets[0].assets.find((asset) => asset.address == _tokenAddress)?.imgUrl || "",
                 totalValue: -Number(amount.multipliedBy(price).toFixed(0)),
             };
             dataWallet.dapps[0].reserves[0].borrow.push(newData);
         }
         else{
             let newData: UserAsset = {
-                key: data.markets[0].assets.find((asset) => asset.address == _tokenAddress)?.key || "",
+                // key: data.markets[0].assets.find((asset) => asset.address == _tokenAddress)?.key || "",
                 id: data.markets[0].assets.find((asset) => asset.address == _tokenAddress)?.id || "",
-                name: data.markets[0].assets.find((asset) => asset.address == _tokenAddress)?.name || "",
+                // name: data.markets[0].assets.find((asset) => asset.address == _tokenAddress)?.name || "",
                 type: "token",
                 address: _tokenAddress,
                 symbol: data.markets[0].assets.find((asset) => asset.address == _tokenAddress)?.symbol || "",
                 amount: -Number(amount.toFixed())+dataInWallet.amount,
                 valueInUSD: Number(amount.multipliedBy(-1).plus(dataInWallet.amount).multipliedBy(price).toFixed()),
-                imgUrl: data.markets[0].assets.find((asset) => asset.address == _tokenAddress)?.imgUrl || "",
+                // imgUrl: data.markets[0].assets.find((asset) => asset.address == _tokenAddress)?.imgUrl || "",
                 totalValue: Number(amount.multipliedBy(-1).plus(dataInWallet.amount).multipliedBy(price).toFixed()),
             };
             dataWallet.dapps[0].value = Number(BigNumber(dataWallet.dapps[0].value || 0).minus(amount).toFixed());
