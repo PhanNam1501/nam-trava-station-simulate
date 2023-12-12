@@ -1,14 +1,14 @@
 import BigNumber from "bignumber.js";
-import { ApplicationState, ForkedCompound, UserAsset } from "../../State";
+import { ApplicationState, ForkedAave, UserAsset } from "../../State";
 import { EthAddress } from "../../utils/types";
 import { updateSmartWalletTokenBalance, updateUserTokenBalance } from "../basic";
 import { MAX_UINT256 } from "../../utils";
 import { calculateMaxAmountSupply, updateLPtTokenInfo } from "../trava";
 import _ from "lodash";
 import { getMode } from "../../utils/helper";
-import { updateForkCompoundLPState } from "./UpdateStateAccount";
+import { updateForkAaveLPState } from "./UpdateStateAccount";
 
-export async function SimulationSupplyForkCompoundLP(
+export async function SimulationSupplyForkAaveLP(
     appState1: ApplicationState,
     _from: EthAddress,
     _idLP: string,
@@ -19,7 +19,7 @@ export async function SimulationSupplyForkCompoundLP(
         let amount = BigNumber(_amount);
         const appState = { ...appState1 };
         if (appState.NFTVeTravaMarketSellingState.isFetch == false ){
-            updateForkCompoundLPState(appState, _idLP);
+            updateForkAaveLPState(appState, _idLP);
         }
         const tokenAddress = _tokenAddress.toLowerCase();
         let  modeFrom = getMode(appState, _from.toLowerCase());
@@ -38,7 +38,7 @@ export async function SimulationSupplyForkCompoundLP(
             appState[modeFrom].tokenBalances.get(tokenAddress)!
         );
 
-        let data: ForkedCompound | undefined = appState.forkCompoundLPState.forkCompoundLP.get(_idLP);
+        let data: ForkedAave | undefined = appState.forkAaveLPState.forkAaveLP.get(_idLP);
         if (!data) {
             throw new Error("data not found");
         }
@@ -52,7 +52,7 @@ export async function SimulationSupplyForkCompoundLP(
             }
             data.totalSupplyInUSD = Number(BigNumber(data.totalSupplyInUSD || 0).plus(amount.multipliedBy(price)).toFixed(0));
             
-            let dataWallet = appState[modeFrom].forkedCompoundLPState.get(_idLP);
+            let dataWallet = appState[modeFrom].forkedAaveLPState.get(_idLP);
         if (!dataWallet) {
             throw new Error("data not found");
         }
@@ -99,8 +99,8 @@ export async function SimulationSupplyForkCompoundLP(
         }
         const newAmount = tokenAmount.minus(amount).toFixed(0);
         appState[modeFrom].tokenBalances.set(tokenAddress, newAmount); 
-        appState[modeFrom].forkedCompoundLPState.set(_idLP, dataWallet);
-        appState.forkCompoundLPState.forkCompoundLP.set(_idLP, data!);
+        appState[modeFrom].forkedAaveLPState.set(_idLP, dataWallet);
+        appState.forkAaveLPState.forkAaveLP.set(_idLP, data!);
 
       return appState;
     } catch (err) {
@@ -108,7 +108,7 @@ export async function SimulationSupplyForkCompoundLP(
     }
   }
 
-  export async function SimulationWithdrawForkCompoundLP(
+  export async function SimulationWithdrawForkAaveLP(
     appState1: ApplicationState,
     _from: EthAddress,
     _idLP: string,
@@ -119,7 +119,7 @@ export async function SimulationSupplyForkCompoundLP(
         let amount = BigNumber(_amount);
         const appState = { ...appState1 };
         if (appState.NFTVeTravaMarketSellingState.isFetch == false ){
-            updateForkCompoundLPState(appState, _idLP);
+            updateForkAaveLPState(appState, _idLP);
         }
         const tokenAddress = _tokenAddress.toLowerCase();
         let  modeFrom = getMode(appState, _from.toLowerCase());
@@ -136,7 +136,7 @@ export async function SimulationSupplyForkCompoundLP(
             appState[modeFrom].tokenBalances.get(tokenAddress)!
         );
 
-        let data: ForkedCompound | undefined = appState.forkCompoundLPState.forkCompoundLP.get(_idLP);
+        let data: ForkedAave | undefined = appState.forkAaveLPState.forkAaveLP.get(_idLP);
         if (!data) {
             throw new Error("data not found");
         }
@@ -150,7 +150,7 @@ export async function SimulationSupplyForkCompoundLP(
             }
             data.totalSupplyInUSD = Number(BigNumber(data.totalSupplyInUSD || 0).minus(amount.multipliedBy(price)).toFixed(0));
             
-            let dataWallet = appState[modeFrom].forkedCompoundLPState.get(_idLP);
+            let dataWallet = appState[modeFrom].forkedAaveLPState.get(_idLP);
         if (!dataWallet) {
             throw new Error("data not found");
         }
@@ -197,8 +197,8 @@ export async function SimulationSupplyForkCompoundLP(
         }
         const newAmount = tokenAmount.plus(amount).toFixed(0);
         appState[modeFrom].tokenBalances.set(tokenAddress, newAmount);
-        appState[modeFrom].forkedCompoundLPState.set(_idLP, dataWallet);
-        appState.forkCompoundLPState.forkCompoundLP.set(_idLP, data!);
+        appState[modeFrom].forkedAaveLPState.set(_idLP, dataWallet);
+        appState.forkAaveLPState.forkAaveLP.set(_idLP, data!);
 
       return appState;
     } catch (err) {
@@ -206,7 +206,7 @@ export async function SimulationSupplyForkCompoundLP(
     }
   }
 
-  export async function SimulationBorrowForkCompoundLP(
+  export async function SimulationBorrowForkAaveLP(
     appState1: ApplicationState,
     _from: EthAddress,
     _idLP: string,
@@ -217,7 +217,7 @@ export async function SimulationSupplyForkCompoundLP(
         let amount = BigNumber(_amount);
         const appState = { ...appState1 };
         if (appState.NFTVeTravaMarketSellingState.isFetch == false ){
-            updateForkCompoundLPState(appState, _idLP);
+            updateForkAaveLPState(appState, _idLP);
         }
         const tokenAddress = _tokenAddress.toLowerCase();
         let  modeFrom = getMode(appState, _from.toLowerCase());
@@ -238,7 +238,7 @@ export async function SimulationSupplyForkCompoundLP(
             appState[modeFrom].tokenBalances.get(tokenAddress)!
         );
 
-        let data: ForkedCompound | undefined = appState.forkCompoundLPState.forkCompoundLP.get(_idLP);
+        let data: ForkedAave | undefined = appState.forkAaveLPState.forkAaveLP.get(_idLP);
         if (!data) {
             throw new Error("data not found");
         }
@@ -252,7 +252,7 @@ export async function SimulationSupplyForkCompoundLP(
             }
             data.totalBorrowInUSD = Number(BigNumber(data.totalBorrowInUSD || 0).plus(amount.multipliedBy(price)).toFixed(0));
             
-            let dataWallet = appState[modeFrom].forkedCompoundLPState.get(_idLP);
+            let dataWallet = appState[modeFrom].forkedAaveLPState.get(_idLP);
         if (!dataWallet) {
             throw new Error("data not found");
         }
@@ -299,8 +299,8 @@ export async function SimulationSupplyForkCompoundLP(
         }
         const newAmount = tokenAmount.plus(amount).toFixed(0);
         appState[modeFrom].tokenBalances.set(tokenAddress, newAmount);
-        appState[modeFrom].forkedCompoundLPState.set(_idLP, dataWallet);
-        appState.forkCompoundLPState.forkCompoundLP.set(_idLP, data!);
+        appState[modeFrom].forkedAaveLPState.set(_idLP, dataWallet);
+        appState.forkAaveLPState.forkAaveLP.set(_idLP, data!);
 
       return appState;
     } catch (err) {
@@ -309,7 +309,7 @@ export async function SimulationSupplyForkCompoundLP(
   }
 
 
-  export async function SimulationRepayForkCompoundLP(
+  export async function SimulationRepayForkAaveLP(
     appState1: ApplicationState,
     _from: EthAddress,
     _idLP: string,
@@ -320,7 +320,7 @@ export async function SimulationSupplyForkCompoundLP(
         let amount = BigNumber(_amount);
         const appState = { ...appState1 };
         if (appState.NFTVeTravaMarketSellingState.isFetch == false ){
-            updateForkCompoundLPState(appState, _idLP);
+            updateForkAaveLPState(appState, _idLP);
         }
         const tokenAddress = _tokenAddress.toLowerCase();
         // Comming Soon .......
@@ -337,7 +337,7 @@ export async function SimulationSupplyForkCompoundLP(
             appState[modeFrom].tokenBalances.get(tokenAddress)!
         );
 
-        let data: ForkedCompound | undefined = appState.forkCompoundLPState.forkCompoundLP.get(_idLP);
+        let data: ForkedAave | undefined = appState.forkAaveLPState.forkAaveLP.get(_idLP);
         if (!data) {
             throw new Error("data not found");
         }
@@ -351,7 +351,7 @@ export async function SimulationSupplyForkCompoundLP(
             }
             data.totalBorrowInUSD = Number(BigNumber(data.totalBorrowInUSD || 0).minus(amount.multipliedBy(price)).toFixed(0));
             
-            let dataWallet = appState[modeFrom].forkedCompoundLPState.get(_idLP);
+            let dataWallet = appState[modeFrom].forkedAaveLPState.get(_idLP);
         if (!dataWallet) {
             throw new Error("data not found");
         }
@@ -398,8 +398,8 @@ export async function SimulationSupplyForkCompoundLP(
         }
         const newAmount = tokenAmount.minus(amount).toFixed(0);
         appState[modeFrom].tokenBalances.set(tokenAddress, newAmount);
-        appState[modeFrom].forkedCompoundLPState.set(_idLP, dataWallet);
-        appState.forkCompoundLPState.forkCompoundLP.set(_idLP, data!);
+        appState[modeFrom].forkedAaveLPState.set(_idLP, dataWallet);
+        appState.forkAaveLPState.forkAaveLP.set(_idLP, data!);
 
       return appState;
     } catch (err) {
