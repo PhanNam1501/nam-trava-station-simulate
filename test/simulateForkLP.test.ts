@@ -13,7 +13,7 @@ import { updateForkAaveLPState, updateUserInForkAaveLPState } from "../src/Simul
   async function test(){
     console.log(BigNumber(0.1).toFixed())
     const provider = new JsonRpcProvider("https://bsc.publicnode.com");
-    const chainId = Number((await provider.getNetwork()).chainId)
+    const chainId = 38
     //main net
     //https://bsc.publicnode.com
     //0x871DBcE2b9923A35716e7E83ee402B535298538E
@@ -43,8 +43,8 @@ import { updateForkAaveLPState, updateUserInForkAaveLPState } from "../src/Simul
     
     console.log("_______________________TEST AAVE_______________________")
 
-    appState = await updateForkAaveLPState(appState);
-    appState = await updateUserInForkAaveLPState(appState, userAddress);
+    appState = await updateForkAaveLPState(appState, "valas-finance");
+    appState = await updateUserInForkAaveLPState(appState, userAddress, "valas-finance");
     console.log(appState.forkAaveLPState)
 
   }

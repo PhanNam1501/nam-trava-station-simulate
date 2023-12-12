@@ -6,32 +6,40 @@ import _ from "lodash";
 import { convertHexStringToAddress } from "../../utils/address";
 import { getMode } from "../../utils/helper";
 import axios from "axios";
-import { WalletForkedCompoundLPState } from "../../State";
+import { ForkedCompound, WalletForkedCompoundLPState } from "../../State";
 
 
-export async function updateForkCompoundLPState(appState1: ApplicationState, force?: boolean): Promise<ApplicationState> {
+export async function updateForkCompoundLPState(appState1: ApplicationState, entity_id: string, force?: boolean): Promise<ApplicationState> {
     let appState = { ...appState1 };
     try {
+        if (appState.NFTVeTravaMarketSellingState.isFetch == false || force == true){
         let entity_ids: Array<string> = ["venus", "liqee", "cream-lending", "apeswap-lending", "wepiggy"];
-        for (let entity_id of entity_ids) {
-            let data = await getDataLendingByAxios(entity_id, "0x38");
+        if (entity_ids.some(x => x === entity_id)){
+            let data1 = await getDataLendingByAxios(entity_id, "0x" + appState.chainId);
+            let data: ForkedCompound = {...data1}
             appState.forkCompoundLPState.forkCompoundLP.set(entity_id, data);
         }
+        appState.NFTVeTravaMarketSellingState.isFetch = true;
+    }
     } catch (error) {
         console.error(error);
     }
     return appState;
 }
 
-export async function updateUserInForkCompoundLPState(appState1: ApplicationState, _from: EthAddress ,force?: boolean): Promise<ApplicationState> {
+export async function updateUserInForkCompoundLPState(appState1: ApplicationState, _from: EthAddress , entity_id: string ,force?: boolean): Promise<ApplicationState> {
     let appState = { ...appState1 };
-    let mode = getMode(appState, _from);
     try {
+        if (appState.NFTVeTravaMarketSellingState.isFetch == false || force == true){
+        let mode = getMode(appState, _from);
         let entity_ids: Array<string> = ["venus", "liqee", "cream-lending", "apeswap-lending", "wepiggy"];
-        for (let entity_id of entity_ids) {
-            let data: WalletForkedCompoundLPState = await getDataUserByAxios(_from, entity_id, "0x38");
+        if (entity_ids.some(x => x === entity_id)){
+            let data1 = await getDataUserByAxios(_from, entity_id, "0x" + appState.chainId);
+            let data: WalletForkedCompoundLPState = {...data1}
             appState[mode].forkedCompoundLPState.set(entity_id, data);
         }
+        appState.NFTVeTravaMarketSellingState.isFetch = true;
+    }
     } catch (error) {
         console.error(error);
     }
