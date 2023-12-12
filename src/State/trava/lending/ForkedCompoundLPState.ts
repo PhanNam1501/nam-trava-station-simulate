@@ -46,10 +46,10 @@ export interface ForkedCompound{
 }
 
 export class ForkedCompoundLPState {
-    forkCompoundLP: Map<uint256, ForkedCompound>;
+    forkCompoundLP: Map<string, ForkedCompound>;
     isFetch: boolean;
     constructor() {
-      this.forkCompoundLP = new Map<uint256,ForkedCompound>();
+      this.forkCompoundLP = new Map<string,ForkedCompound>();
       this.isFetch = false;
     }
 }

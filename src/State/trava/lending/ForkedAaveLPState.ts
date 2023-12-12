@@ -48,10 +48,10 @@ export interface ForkedAave{
 }
 
 export class ForkedAaveLPState {
-    forkAaveLP: Map<uint256, ForkedAave>;
+    forkAaveLP: Map<string, ForkedAave>;
     isFetch: boolean;
     constructor() {
-      this.forkAaveLP = new Map<uint256,ForkedAave>();
+      this.forkAaveLP = new Map<string,ForkedAave>();
       this.isFetch = false;
     }
 }
