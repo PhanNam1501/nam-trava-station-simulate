@@ -30,8 +30,8 @@ import { updateForkAaveLPState, updateUserInForkAaveLPState } from "../src/Simul
     chainId
     )
     // // appState = await updateTravaGovernanceState(appState);
-    // appState = await updateForkCompoundLPState(appState);
-    // appState = await updateUserInForkCompoundLPState(appState, userAddress);
+    // appState = await updateForkCompoundLPState(appState, "venus");
+    // appState = await updateUserInForkCompoundLPState(appState, userAddress, "venus");
     // // console.log(appState.forkCompoundLPState.forkCompoundLP.get("wepiggy")?.markets[0].assets)
     // // // console.log(appState.forkCompoundLPState)
     // // console.log(appState.walletState.forkedCompoundLPState)

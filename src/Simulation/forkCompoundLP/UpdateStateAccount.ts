@@ -30,7 +30,6 @@ export async function updateForkCompoundLPState(appState1: ApplicationState, ent
 export async function updateUserInForkCompoundLPState(appState1: ApplicationState, _from: EthAddress , entity_id: string ,force?: boolean): Promise<ApplicationState> {
     let appState = { ...appState1 };
     try {
-        if (appState.NFTVeTravaMarketSellingState.isFetch == false || force == true){
         let mode = getMode(appState, _from);
         let entity_ids: Array<string> = ["venus", "liqee", "cream-lending", "apeswap-lending", "wepiggy"];
         if (entity_ids.some(x => x === entity_id)){
@@ -38,8 +37,6 @@ export async function updateUserInForkCompoundLPState(appState1: ApplicationStat
             let data: WalletForkedCompoundLPState = {...data1}
             appState[mode].forkedCompoundLPState.set(entity_id, data);
         }
-        appState.NFTVeTravaMarketSellingState.isFetch = true;
-    }
     } catch (error) {
         console.error(error);
     }

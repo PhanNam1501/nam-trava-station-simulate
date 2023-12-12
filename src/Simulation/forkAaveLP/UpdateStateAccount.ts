@@ -30,15 +30,12 @@ export async function updateForkAaveLPState(appState1: ApplicationState, entity_
 export async function updateUserInForkAaveLPState(appState1: ApplicationState, _from: EthAddress , entity_id: string, force?: boolean): Promise<ApplicationState> {
     let appState = { ...appState1 };
     try {
-        if (appState.NFTVeTravaMarketSellingState.isFetch == false || force == true){
         let mode = getMode(appState, _from);
         let entity_ids: Array<string> = ["valas-finance", "radiant-v2", "granary-finance"];
         if (entity_ids.some(x => x === entity_id)){
             let data1 = await getDataUserByAxios(_from, entity_id, "0x" + appState.chainId);
             let data: WalletForkedAaveLPState = {...data1}
             appState[mode].forkedCompoundLPState.set(entity_id, data);
-        }
-        appState.NFTVeTravaMarketSellingState.isFetch = true;
     }
     } catch (error) {
         console.error(error);
