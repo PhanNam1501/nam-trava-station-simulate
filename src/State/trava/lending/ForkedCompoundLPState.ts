@@ -66,6 +66,7 @@ export interface UserAsset {
   amount: number;
   valueInUSD: number;
   imgUrl: string;
+  totalValue: number;
 }
 
 export interface Reserve {
