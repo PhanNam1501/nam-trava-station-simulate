@@ -8,8 +8,6 @@ export interface ForkedAave{
   totalBorrowInUSD: number;
   markets: Array<Market>;
   totalTVL: number;
-  tTokenAddress: EthAddress;
-  debtTokenAddress: EthAddress;
 }
 
 export class ForkedAaveLPState {

@@ -44,8 +44,10 @@ import { getTTokenAddress, updateForkAaveLPState, updateUserInForkAaveLPState } 
     console.log("_______________________TEST AAVE_______________________")
 
       
-    appState = await updateForkAaveLPState(appState, "valas-finance");
-    let a = await getTTokenAddress(appState, "valas-finance", "0x2170ed0880ac9a755fd29b2688956bd959f933f8")
+    appState = await updateForkAaveLPState(appState, "venus");
+    appState = await updateUserInForkAaveLPState(appState, userAddress, "venus");
+    console.log(appState.walletState.forkedAaveLPState.get("venus"))
+    let a = await getTTokenAddress(appState, "venus", "0x2170Ed0880ac9A755fd29B2688956BD959F933F8")
     // '0x831f42c8a0892c1a5b7fa3e972b3ce3aa40d676e',
     // '0x9e06035740ab5ed9f48d8ff8b588056693b83e3a',
     console.log(a)

@@ -16,7 +16,14 @@ export async function updateForkCompoundLPState(appState1: ApplicationState, ent
         let entity_ids: Array<string> = ["venus", "liqee", "cream-lending", "apeswap-lending", "wepiggy"];
         if (entity_ids.some(x => x === entity_id)){
             let data1 = await getDataLendingByAxios(entity_id, "0x" + appState.chainId);
-            let data: ForkedCompound = {...data1}
+            let data: ForkedCompound = {
+                id: data1["id"],
+                totalSupplyInUSD: data1["totalSupplyInUSD"],
+                numberOfLenders: data1["numberOfLenders"],
+                totalBorrowInUSD: data1["totalBorrowInUSD"],
+                markets: data1["markets"],
+                totalTVL: data1["totalTVL"],
+            }
             appState.forkCompoundLPState.forkCompoundLP.set(entity_id, data);
         }
         appState.forkCompoundLPState.isFetch = true;
@@ -34,7 +41,14 @@ export async function updateUserInForkCompoundLPState(appState1: ApplicationStat
         let entity_ids: Array<string> = ["venus", "liqee", "cream-lending", "apeswap-lending", "wepiggy"];
         if (entity_ids.some(x => x === entity_id)){
             let data1 = await getDataUserByAxios(_from, entity_id, "0x" + appState.chainId);
-            let data: WalletForkedCompoundLPState = {...data1}
+            let data: WalletForkedCompoundLPState = {
+                id: data1["id"],
+                address: data1["address"],
+                totalAssets: data1["totalAssets"],
+                totalClaimable: data1["totalClaimable"],
+                totalDebts: data1["totalDebts"],
+                dapps: data1["dapps"],
+            }
             appState[mode].forkedCompoundLPState.set(entity_id, data);
         }
     } catch (error) {

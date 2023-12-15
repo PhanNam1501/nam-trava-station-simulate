@@ -18,7 +18,7 @@ export async function SimulationSupplyForkAaveLP(
     try {
         let amount = BigNumber(_amount);
         const appState = { ...appState1 };
-        if (appState.NFTVeTravaMarketSellingState.isFetch == false ){
+        if (appState.forkAaveLPState.isFetch == false ){
             updateForkAaveLPState(appState, _idLP);
         }
         const tokenAddress = _tokenAddress.toLowerCase();
@@ -118,7 +118,7 @@ export async function SimulationSupplyForkAaveLP(
     try {
         let amount = BigNumber(_amount);
         const appState = { ...appState1 };
-        if (appState.NFTVeTravaMarketSellingState.isFetch == false ){
+        if (appState.forkAaveLPState.isFetch == false ){
             updateForkAaveLPState(appState, _idLP);
         }
         const tokenAddress = _tokenAddress.toLowerCase();
@@ -215,7 +215,7 @@ export async function SimulationSupplyForkAaveLP(
     try {
         let amount = BigNumber(_amount);
         const appState = { ...appState1 };
-        if (appState.NFTVeTravaMarketSellingState.isFetch == false ){
+        if (appState.forkAaveLPState.isFetch == false ){
             updateForkAaveLPState(appState, _idLP);
         }
         const tokenAddress = _tokenAddress.toLowerCase();
@@ -316,7 +316,7 @@ export async function SimulationSupplyForkAaveLP(
     try {
         let amount = BigNumber(_amount);
         const appState = { ...appState1 };
-        if (appState.NFTVeTravaMarketSellingState.isFetch == false ){
+        if (appState.forkAaveLPState.isFetch == false ){
             updateForkAaveLPState(appState, _idLP);
         }
         const tokenAddress = _tokenAddress.toLowerCase();

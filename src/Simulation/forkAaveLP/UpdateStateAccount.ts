@@ -17,7 +17,14 @@ export async function updateForkAaveLPState(appState1: ApplicationState, entity_
         let entity_ids: Array<string> = ["valas-finance", "radiant-v2", "granary-finance"];
         if (entity_ids.some(x => x === entity_id)){
             let dataLendingPool = await getDataLendingByAxios(entity_id, "0x" + appState.chainId);
-            let data: ForkedAave = {...dataLendingPool}
+            let data: ForkedAave = {
+                id: dataLendingPool["id"],
+                totalSupplyInUSD: dataLendingPool["totalSupplyInUSD"],
+                numberOfLenders: dataLendingPool["numberOfLenders"],
+                totalBorrowInUSD: dataLendingPool["totalBorrowInUSD"],
+                markets: dataLendingPool["markets"],
+                totalTVL: dataLendingPool["totalTVL"],
+            }
             appState.forkAaveLPState.forkAaveLP.set(entity_id, data);
         }
         appState.forkAaveLPState.isFetch = true;
@@ -55,8 +62,19 @@ export async function updateUserInForkAaveLPState(appState1: ApplicationState, _
         let entity_ids: Array<string> = ["valas-finance", "radiant-v2", "granary-finance"];
         if (entity_ids.some(x => x === entity_id)){
             let dataLendingPool = await getDataUserByAxios(_from, entity_id, "0x" + appState.chainId);
-            let data: WalletForkedAaveLPState = {...dataLendingPool}
+            let data: WalletForkedAaveLPState = {
+                id: dataLendingPool["id"],
+                address: dataLendingPool["address"],
+                totalAssets: dataLendingPool["totalAssets"],
+                totalClaimable: dataLendingPool["totalClaimable"],
+                totalDebts: dataLendingPool["totalDebts"],
+                dapps: dataLendingPool["dapps"]
+            }
             appState[mode].forkedAaveLPState.set(entity_id, data);
+            const dataDapps = dataLendingPool["dapps"]
+            const addressInAaveLP = dataDapps.map((item: any) => item["address"])
+            console.log(addressInAaveLP)
+
     }
     } catch (error) {
         console.error(error);
