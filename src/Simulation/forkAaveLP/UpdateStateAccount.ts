@@ -12,14 +12,14 @@ import { ForkedAave, WalletForkedAaveLPState } from "../../State";
 export async function updateForkAaveLPState(appState1: ApplicationState, entity_id: string, force?: boolean): Promise<ApplicationState> {
     let appState = { ...appState1 };
     try {
-        if (appState.NFTVeTravaMarketSellingState.isFetch == false || force == true) {
+        if (appState.forkAaveLPState.isFetch == false || force == true) {
         let entity_ids: Array<string> = ["valas-finance", "radiant-v2", "granary-finance"];
         if (entity_ids.some(x => x === entity_id)){
             let data1 = await getDataLendingByAxios(entity_id, "0x" + appState.chainId);
             let data: ForkedAave = {...data1}
             appState.forkAaveLPState.forkAaveLP.set(entity_id, data);
         }
-        appState.NFTVeTravaMarketSellingState.isFetch = true;
+        appState.forkAaveLPState.isFetch = true;
     }
     } catch (error) {
         console.error(error);

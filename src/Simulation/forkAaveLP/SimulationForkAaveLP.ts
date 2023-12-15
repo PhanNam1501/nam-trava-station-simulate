@@ -3,7 +3,7 @@ import { ApplicationState, ForkedAave, UserAsset } from "../../State";
 import { EthAddress } from "../../utils/types";
 import { updateSmartWalletTokenBalance, updateUserTokenBalance } from "../basic";
 import { MAX_UINT256 } from "../../utils";
-import { calculateMaxAmountSupply, updateLPtTokenInfo } from "../trava";
+import { calculateMaxAmountBorrow, calculateMaxAmountRepay, calculateMaxAmountSupply, calculateMaxAmountWithdraw, updateLPtTokenInfo } from "../trava";
 import _ from "lodash";
 import { getMode } from "../../utils/helper";
 import { updateForkAaveLPState } from "./UpdateStateAccount";
@@ -123,10 +123,9 @@ export async function SimulationSupplyForkAaveLP(
         }
         const tokenAddress = _tokenAddress.toLowerCase();
         let  modeFrom = getMode(appState, _from.toLowerCase());
-        // Comming Soon .......
-        // if (amount.toFixed(0) == MAX_UINT256 || amount.isEqualTo(MAX_UINT256)) {
-        //     amount = calculateMaxAmountWithdraw(appState, tokenAddress, modeFrom);
-        //   }
+        if (amount.toFixed(0) == MAX_UINT256 || amount.isEqualTo(MAX_UINT256)) {
+            amount = calculateMaxAmountWithdraw(appState, tokenAddress);
+          }
 
         if (!appState[modeFrom].tokenBalances.has(tokenAddress)) {
             await updateUserTokenBalance(appState, tokenAddress);
@@ -221,14 +220,12 @@ export async function SimulationSupplyForkAaveLP(
         }
         const tokenAddress = _tokenAddress.toLowerCase();
         let  modeFrom = getMode(appState, _from.toLowerCase());
-        // Comming Soon .......
-        // if (amount.toFixed(0) == MAX_UINT256 || amount.isEqualTo(MAX_UINT256)) {
-        //     amount = calculateMaxAmountBorrow(
-        //       appState,
-        //       tokenAddress
-        //      modeFrom
-        //     )
-        //   }
+        if (amount.toFixed(0) == MAX_UINT256 || amount.isEqualTo(MAX_UINT256)) {
+            amount = calculateMaxAmountBorrow(
+              appState,
+              tokenAddress
+            )
+          }
 
         if (!appState[modeFrom].tokenBalances.has(tokenAddress)) {
             await updateUserTokenBalance(appState, tokenAddress);
@@ -323,11 +320,10 @@ export async function SimulationSupplyForkAaveLP(
             updateForkAaveLPState(appState, _idLP);
         }
         const tokenAddress = _tokenAddress.toLowerCase();
-        // Comming Soon .......
-        // if (amount.toFixed(0) == MAX_UINT256 || amount.isEqualTo(MAX_UINT256)) {
-        //     amount = calculateMaxAmountRepay(appState, tokenAddress, modeFrom);
-        //   }
         let  modeFrom = getMode(appState, _from.toLowerCase());
+        if (amount.toFixed(0) == MAX_UINT256 || amount.isEqualTo(MAX_UINT256)) {
+            amount = calculateMaxAmountRepay(appState, tokenAddress, modeFrom);
+          }
 
         if (!appState[modeFrom].tokenBalances.has(tokenAddress)) {
             await updateUserTokenBalance(appState, tokenAddress);

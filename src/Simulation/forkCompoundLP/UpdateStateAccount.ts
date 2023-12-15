@@ -12,14 +12,14 @@ import { ForkedCompound, WalletForkedCompoundLPState } from "../../State";
 export async function updateForkCompoundLPState(appState1: ApplicationState, entity_id: string, force?: boolean): Promise<ApplicationState> {
     let appState = { ...appState1 };
     try {
-        if (appState.NFTVeTravaMarketSellingState.isFetch == false || force == true){
+        if (appState.forkCompoundLPState.isFetch == false || force == true){
         let entity_ids: Array<string> = ["venus", "liqee", "cream-lending", "apeswap-lending", "wepiggy"];
         if (entity_ids.some(x => x === entity_id)){
             let data1 = await getDataLendingByAxios(entity_id, "0x" + appState.chainId);
             let data: ForkedCompound = {...data1}
             appState.forkCompoundLPState.forkCompoundLP.set(entity_id, data);
         }
-        appState.NFTVeTravaMarketSellingState.isFetch = true;
+        appState.forkCompoundLPState.isFetch = true;
     }
     } catch (error) {
         console.error(error);

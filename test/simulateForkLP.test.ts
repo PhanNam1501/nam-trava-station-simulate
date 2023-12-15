@@ -6,14 +6,14 @@ import { getAddr } from "../src/utils/address";
 import BigNumber from "bignumber.js";
 import { MONTH_TO_SECONDS, WEEK_TO_SECONDS } from "../src/utils/config";
 import { updateForkCompoundLPState, updateUserInForkCompoundLPState } from "../src/Simulation/forkCompoundLP/UpdateStateAccount";
-import { SimulationBorrowForkCompoundLP, SimulationRepayForkCompoundLP, SimulationSupplyForkCompoundLP } from "../src/Simulation";
+import { SimulationBorrowForkCompoundLP, SimulationRepayForkCompoundLP, SimulationSupplyForkCompoundLP, updateLPtTokenInfo, updateSmartWalletTokenBalance, updateTravaLPInfo, updateUserTokenBalance } from "../src/Simulation";
 import { updateForkAaveLPState, updateUserInForkAaveLPState } from "../src/Simulation/forkAaveLP";
 
   // start 
   async function test(){
     console.log(BigNumber(0.1).toFixed())
     const provider = new JsonRpcProvider("https://bsc.publicnode.com");
-    const chainId = 38
+    const chainId = 56
     //main net
     //https://bsc.publicnode.com
     //0x871DBcE2b9923A35716e7E83ee402B535298538E
@@ -42,10 +42,22 @@ import { updateForkAaveLPState, updateUserInForkAaveLPState } from "../src/Simul
     // console.log(appState.walletState.forkedCompoundLPState.get("venus")?.dapps[0].reserves[0].borrow)
     
     console.log("_______________________TEST AAVE_______________________")
-
-    appState = await updateForkAaveLPState(appState, "valas-finance");
-    appState = await updateUserInForkAaveLPState(appState, userAddress, "valas-finance");
-    console.log(appState.forkAaveLPState)
+    appState = await updateUserTokenBalance(
+      appState,
+      "0x7130d2a12b9bcbfae4f2634d864a1ee1ce3ead9c"
+      );
+    appState = await updateSmartWalletTokenBalance(
+      appState,
+      "0x7130d2a12b9bcbfae4f2634d864a1ee1ce3ead9c"
+      );
+    appState = await updateTravaLPInfo(appState)
+    console.log(appState.smartWalletState.detailTokenInPool)
+      
+    // console.log(appState.smartWalletState.detailTokenInPool)
+    // appState = await updateForkAaveLPState(appState, "valas-finance");
+    // appState = await updateUserInForkAaveLPState(appState, userAddress, "valas-finance");
+    // console.log(appState.forkAaveLPState)
+    
 
   }
 test()
