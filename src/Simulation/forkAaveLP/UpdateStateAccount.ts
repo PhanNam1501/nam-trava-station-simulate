@@ -6,7 +6,7 @@ import _ from "lodash";
 import { convertHexStringToAddress } from "../../utils/address";
 import { getMode } from "../../utils/helper";
 import axios from "axios";
-import { ForkedAave, WalletForkedAaveLPState } from "../../State";
+import { ForkedAave, TokenInPoolData, WalletForkedAaveLPState } from "../../State";
 
 
 export async function updateForkAaveLPState(appState1: ApplicationState, entity_id: string, force?: boolean): Promise<ApplicationState> {
@@ -34,26 +34,59 @@ export async function updateForkAaveLPState(appState1: ApplicationState, entity_
     }
     return appState;
 }
+// export async function getListTokenAddress(appState1: ApplicationState, entity_id: string){
+//     let appState = { ...appState1 };
+//     let data = await getDataLendingByAxiosTramlineOverview(entity_id, "0x" + appState.chainId);
+//     let listToken = data["listToken"];
+//     let list: string[] = [];
+//     for (let i = 0; i < listToken.length; i++){
+//         if (listToken[i]["address"]){
+//             list.push(listToken[i]["address"] as string);
+//         }
+//     }
+//     return list;
+// }
 
-export async function getTTokenAddress(appState1: ApplicationState, entity_id: string, tokenAddress: EthAddress){
+export async function UpdateTokenDetail(appState1: ApplicationState, entity_id: string){
     let appState = { ...appState1 };
     let dataLendingByAxiosTramline = await getDataLendingByAxiosTramline(entity_id, "0x" + appState.chainId);
     let data = await getDataLendingByAxiosTramlineOverview(entity_id, "0x" + appState.chainId);
+    let listToken = data["listToken"];
+    let list: string[] = [];
+    for (let i = 0; i < listToken.length; i++){
+        if (listToken[i]["address"]){
+            list.push(listToken[i]["address"] as string);
+        }
+    }
     let token = dataLendingByAxiosTramline["poolDataSlice"]["pools"][data["address"]]["token"];
     let tTokenAddress: string;
-    tTokenAddress = token[tokenAddress]["tTokenAddress"].toString()
-    return tTokenAddress;
+    let dTokenAddress: string;
+    for (let i = 0; i < list.length; i++){
+        tTokenAddress = token[list[i]]["tTokenAddress"].toString()
+        dTokenAddress = token[list[i]]["debtTokenAddress"].toString()
+        let tTokenData: TokenInPoolData = {
+            address: "",
+            balances: "",
+            decimals: "",
+            totalSupply: "",
+            originToken: {
+                balances: "",
+            },
+        }
+        let dTokenData: TokenInPoolData = {
+            address: "",
+            balances: "",
+            decimals: "",
+            totalSupply: "",
+            originToken: {
+                balances: "",
+            },
+        }
+        appState.smartWalletState.detailTokenInPool.set(list[i], {tToken: tTokenData, dToken: dTokenData});
+    }
+    return appState;
 }
 
-export async function getDTokenAddress(appState1: ApplicationState, entity_id: string, tokenAddress: EthAddress){
-    let appState = { ...appState1 };
-    let dataLendingByAxiosTramline = await getDataLendingByAxiosTramline(entity_id, "0x" + appState.chainId);
-    let data = await getDataLendingByAxiosTramlineOverview(entity_id, "0x" + appState.chainId);
-    let token = dataLendingByAxiosTramline["poolDataSlice"]["pools"][data["address"]]["token"];
-    let tTokenAddress: string;
-    tTokenAddress = token[tokenAddress]["debtTokenAddress"].toString()
-    return tTokenAddress;
-}
 
 export async function updateUserInForkAaveLPState(appState1: ApplicationState, _from: EthAddress , entity_id: string, force?: boolean): Promise<ApplicationState> {
     let appState = { ...appState1 };

@@ -7,7 +7,7 @@ import BigNumber from "bignumber.js";
 import { MONTH_TO_SECONDS, WEEK_TO_SECONDS } from "../src/utils/config";
 import { updateForkCompoundLPState, updateUserInForkCompoundLPState } from "../src/Simulation/forkCompoundLP/UpdateStateAccount";
 import { SimulationBorrowForkCompoundLP, SimulationRepayForkCompoundLP, SimulationSupplyForkCompoundLP, updateLPtTokenInfo, updateSmartWalletTokenBalance, updateTravaLPInfo, updateUserTokenBalance } from "../src/Simulation";
-import { getTTokenAddress, updateForkAaveLPState, updateUserInForkAaveLPState } from "../src/Simulation/forkAaveLP";
+import { updateForkAaveLPState, updateUserInForkAaveLPState } from "../src/Simulation/forkAaveLP";
 
   // start 
   async function test(){
@@ -20,7 +20,7 @@ import { getTTokenAddress, updateForkAaveLPState, updateUserInForkAaveLPState } 
     //test net
     //https://bsc-testnet.publicnode.com
     //0x595622cBd0Fc4727DF476a1172AdA30A9dDf8F43
-    const userAddress = "0x871DBcE2b9923A35716e7E83ee402B535298538E";
+    const userAddress = "0x5BAF597914E62182e5CCafbcc69C966919d5cBa8";
     const proxyAddress = "0x826D824BE55A403859A6Db67D5EeC5aC386307fE";
 
     let appState = new ApplicationState( 
@@ -44,14 +44,11 @@ import { getTTokenAddress, updateForkAaveLPState, updateUserInForkAaveLPState } 
     console.log("_______________________TEST AAVE_______________________")
 
       
-    appState = await updateForkAaveLPState(appState, "venus");
-    appState = await updateUserInForkAaveLPState(appState, userAddress, "venus");
-    console.log(appState.walletState.forkedAaveLPState.get("venus"))
-    let a = await getTTokenAddress(appState, "venus", "0x2170Ed0880ac9A755fd29B2688956BD959F933F8")
-    // '0x831f42c8a0892c1a5b7fa3e972b3ce3aa40d676e',
-    // '0x9e06035740ab5ed9f48d8ff8b588056693b83e3a',
-    console.log(a)
-    
+    appState = await updateForkAaveLPState(appState, "valas-finance");
+    appState = await updateUserInForkAaveLPState(appState, userAddress, "valas-finance");
+    console.log(appState.walletState.forkedAaveLPState.get("valas-finance"))
+    // let a = await getListTokenAddress(appState, "valas-finance");
+    // console.log(a)
 
   }
 test()
