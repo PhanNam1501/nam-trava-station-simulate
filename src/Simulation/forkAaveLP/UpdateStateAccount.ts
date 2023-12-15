@@ -56,7 +56,7 @@ export async function updateUserInForkAaveLPState(appState1: ApplicationState, _
         if (entity_ids.some(x => x === entity_id)){
             let dataLendingPool = await getDataUserByAxios(_from, entity_id, "0x" + appState.chainId);
             let data: WalletForkedAaveLPState = {...dataLendingPool}
-            appState[mode].forkedCompoundLPState.set(entity_id, data);
+            appState[mode].forkedAaveLPState.set(entity_id, data);
     }
     } catch (error) {
         console.error(error);
