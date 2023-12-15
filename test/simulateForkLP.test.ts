@@ -7,7 +7,7 @@ import BigNumber from "bignumber.js";
 import { MONTH_TO_SECONDS, WEEK_TO_SECONDS } from "../src/utils/config";
 import { updateForkCompoundLPState, updateUserInForkCompoundLPState } from "../src/Simulation/forkCompoundLP/UpdateStateAccount";
 import { SimulationBorrowForkCompoundLP, SimulationRepayForkCompoundLP, SimulationSupplyForkCompoundLP, updateLPtTokenInfo, updateSmartWalletTokenBalance, updateTravaLPInfo, updateUserTokenBalance } from "../src/Simulation";
-import { updateForkAaveLPState, updateUserInForkAaveLPState } from "../src/Simulation/forkAaveLP";
+import { getTTokenAddress, updateForkAaveLPState, updateUserInForkAaveLPState } from "../src/Simulation/forkAaveLP";
 
   // start 
   async function test(){
@@ -45,7 +45,10 @@ import { updateForkAaveLPState, updateUserInForkAaveLPState } from "../src/Simul
 
       
     appState = await updateForkAaveLPState(appState, "valas-finance");
-    // appState = await updateUserInForkAaveLPState(appState, userAddress, "valas-finance");
+    let a = await getTTokenAddress(appState, "valas-finance", "0x2170ed0880ac9a755fd29b2688956bd959f933f8")
+    // '0x831f42c8a0892c1a5b7fa3e972b3ce3aa40d676e',
+    // '0x9e06035740ab5ed9f48d8ff8b588056693b83e3a',
+    console.log(a)
     
 
   }
