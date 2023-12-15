@@ -13,7 +13,7 @@ import { updateForkAaveLPState, updateUserInForkAaveLPState } from "../src/Simul
   async function test(){
     console.log(BigNumber(0.1).toFixed())
     const provider = new JsonRpcProvider("https://bsc.publicnode.com");
-    const chainId = 56
+    const chainId = 38
     //main net
     //https://bsc.publicnode.com
     //0x871DBcE2b9923A35716e7E83ee402B535298538E
@@ -42,21 +42,10 @@ import { updateForkAaveLPState, updateUserInForkAaveLPState } from "../src/Simul
     // console.log(appState.walletState.forkedCompoundLPState.get("venus")?.dapps[0].reserves[0].borrow)
     
     console.log("_______________________TEST AAVE_______________________")
-    appState = await updateUserTokenBalance(
-      appState,
-      "0x7130d2a12b9bcbfae4f2634d864a1ee1ce3ead9c"
-      );
-    appState = await updateSmartWalletTokenBalance(
-      appState,
-      "0x7130d2a12b9bcbfae4f2634d864a1ee1ce3ead9c"
-      );
-    appState = await updateTravaLPInfo(appState)
-    console.log(appState.smartWalletState.detailTokenInPool)
+
       
-    // console.log(appState.smartWalletState.detailTokenInPool)
-    // appState = await updateForkAaveLPState(appState, "valas-finance");
+    appState = await updateForkAaveLPState(appState, "valas-finance");
     // appState = await updateUserInForkAaveLPState(appState, userAddress, "valas-finance");
-    // console.log(appState.forkAaveLPState)
     
 
   }

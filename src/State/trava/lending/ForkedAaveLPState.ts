@@ -3,17 +3,13 @@ import { Dapp, Market } from "./ForkedLPState";
 
 export interface ForkedAave{ 
   id: string;
-  chain: string;
-  // numberOfUsers: number;
-  // realUsersRatio: number;
   totalSupplyInUSD: number;
   numberOfLenders: number;
   totalBorrowInUSD: number;
-  // numberOfBorrowers: number;
   markets: Array<Market>;
   totalTVL: number;
-  // tvlChangeRate: number;
-  // lastUpdatedAt: number;
+  tTokenAddress: EthAddress;
+  debtTokenAddress: EthAddress;
 }
 
 export class ForkedAaveLPState {
@@ -28,7 +24,7 @@ export class ForkedAaveLPState {
 export interface WalletForkedAaveLPState {
   id: string;
   address: EthAddress;
-  chain: string;
+  // chain: string;
   totalAssets: number;
   // totalAssets24hAgo: number;
   totalClaimable: number;

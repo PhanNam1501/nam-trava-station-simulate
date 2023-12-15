@@ -4,7 +4,7 @@ import { Dapp, Market } from "./ForkedLPState";
 
 export interface ForkedCompound{ 
   id: string;
-  chain: string;
+  // chain: string;
   // numberOfUsers: number;
   // realUsersRatio: number;
   totalSupplyInUSD: number;
@@ -29,7 +29,7 @@ export class ForkedCompoundLPState {
 export interface WalletForkedCompoundLPState {
   id: string;
   address: EthAddress;
-  chain: string;
+  // chain: string;
   totalAssets: number;
   // totalAssets24hAgo: number;
   totalClaimable: number;

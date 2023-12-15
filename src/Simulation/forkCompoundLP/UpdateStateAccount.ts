@@ -44,7 +44,7 @@ export async function updateUserInForkCompoundLPState(appState1: ApplicationStat
 }
 
 async function getDataLendingByAxios(entity_id: string, chain: string) {
-    let url = `https://api.centic.io/dev/v3/projects/lending/${entity_id}/overview?chain=${chain}`
+    let url = `https://develop.centic.io/dev/v3/projects/lending/${entity_id}/overview?chain=${chain}`
     try {
         const response = await axios.get(url)
         const data = response.data;
@@ -56,7 +56,7 @@ async function getDataLendingByAxios(entity_id: string, chain: string) {
 }
 
 async function getDataUserByAxios(address: EthAddress, entity_id: string, chain: string) {
-    let url = `https://api.centic.io/dev/v3/wallets/${address}/lendings/${entity_id}?chain=${chain}`
+    let url = `https://develop.centic.io/dev/v3/wallets/${address}/lendings/${entity_id}?chain=${chain}`
     try {
         const response = await axios.get(url)
         const data = response.data;
