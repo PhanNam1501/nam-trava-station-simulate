@@ -7,13 +7,13 @@ import BigNumber from "bignumber.js";
 import { MONTH_TO_SECONDS, WEEK_TO_SECONDS } from "../src/utils/config";
 import { updateForkCompoundLPState, updateUserInForkCompoundLPState } from "../src/Simulation/forkCompoundLP/UpdateStateAccount";
 import { SimulationBorrowForkCompoundLP, SimulationRepayForkCompoundLP, SimulationSupplyForkCompoundLP, updateLPtTokenInfo, updateSmartWalletTokenBalance, updateTravaLPInfo, updateUserTokenBalance } from "../src/Simulation";
-import { updateForkAaveLPState, updateUserInForkAaveLPState } from "../src/Simulation/forkAaveLP";
+import { updateTokenDetailInOthersPools, updateForkAaveLPState, updateUserInForkAaveLPState } from "../src/Simulation/forkAaveLP";
 
   // start 
   async function test(){
     console.log(BigNumber(0.1).toFixed())
     const provider = new JsonRpcProvider("https://bsc.publicnode.com");
-    const chainId = 38
+    const chainId = 56
     //main net
     //https://bsc.publicnode.com
     //0x871DBcE2b9923A35716e7E83ee402B535298538E
@@ -46,6 +46,7 @@ import { updateForkAaveLPState, updateUserInForkAaveLPState } from "../src/Simul
       
     appState = await updateForkAaveLPState(appState, "valas-finance");
     appState = await updateUserInForkAaveLPState(appState, userAddress, "valas-finance");
+    appState = await updateTokenDetailInOthersPools(appState, userAddress ,"valas-finance");
     console.log(appState.walletState.forkedAaveLPState.get("valas-finance"))
     // let a = await getListTokenAddress(appState, "valas-finance");
     // console.log(a)

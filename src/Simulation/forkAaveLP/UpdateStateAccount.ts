@@ -1,10 +1,10 @@
-
+import BEP20ABI from "../../abis/BEP20.json";
 import { ApplicationState } from "../../State/ApplicationState";
 import { EthAddress } from "../../utils/types";
 import { Contract } from "ethers";
 import _ from "lodash";
 import { convertHexStringToAddress } from "../../utils/address";
-import { getMode } from "../../utils/helper";
+import { getMode, multiCall } from "../../utils/helper";
 import axios from "axios";
 import { ForkedAave, TokenInPoolData, WalletForkedAaveLPState } from "../../State";
 
@@ -16,7 +16,7 @@ export async function updateForkAaveLPState(appState1: ApplicationState, entity_
         if (appState.forkAaveLPState.isFetch == false || force == true) {
         let entity_ids: Array<string> = ["valas-finance", "radiant-v2", "granary-finance"];
         if (entity_ids.some(x => x === entity_id)){
-            let dataLendingPool = await getDataLendingByAxios(entity_id, "0x" + appState.chainId);
+            let dataLendingPool = await getDataLendingByAxios(entity_id, "0x" + appState.chainId.toString(16));
             let data: ForkedAave = {
                 id: dataLendingPool["id"],
                 totalSupplyInUSD: dataLendingPool["totalSupplyInUSD"],
@@ -34,57 +34,153 @@ export async function updateForkAaveLPState(appState1: ApplicationState, entity_
     }
     return appState;
 }
-// export async function getListTokenAddress(appState1: ApplicationState, entity_id: string){
-//     let appState = { ...appState1 };
-//     let data = await getDataLendingByAxiosTramlineOverview(entity_id, "0x" + appState.chainId);
-//     let listToken = data["listToken"];
-//     let list: string[] = [];
-//     for (let i = 0; i < listToken.length; i++){
-//         if (listToken[i]["address"]){
-//             list.push(listToken[i]["address"] as string);
-//         }
-//     }
-//     return list;
-// }
 
-export async function UpdateTokenDetail(appState1: ApplicationState, entity_id: string){
+export async function updateTokenDetailInOthersPools(appState1: ApplicationState, _from: EthAddress ,entity_id: string): Promise<ApplicationState> {
     let appState = { ...appState1 };
-    let dataLendingByAxiosTramline = await getDataLendingByAxiosTramline(entity_id, "0x" + appState.chainId);
-    let data = await getDataLendingByAxiosTramlineOverview(entity_id, "0x" + appState.chainId);
-    let listToken = data["listToken"];
-    let list: string[] = [];
-    for (let i = 0; i < listToken.length; i++){
-        if (listToken[i]["address"]){
-            list.push(listToken[i]["address"] as string);
+    try{
+        let from = _from.toLowerCase();
+        let mode = getMode(appState, from);
+        let dataLendingByAxiosTramline = await getDataLendingByAxiosTramline(entity_id, "0x" + appState.chainId.toString(16));
+        let dataLendingByAxiosTramlineOverview = await getDataLendingByAxiosTramlineOverview(entity_id, "0x" + appState.chainId.toString(16));
+        let listToken = dataLendingByAxiosTramlineOverview["listToken"];
+        let listTokenAddress: string[] = [];
+        for (let i = 0; i < listToken.length; i++){
+            if (listToken[i]["address"]){
+                listTokenAddress.push(listToken[i]["address"] as string);
+            }
         }
-    }
-    let token = dataLendingByAxiosTramline["poolDataSlice"]["pools"][data["address"]]["token"];
-    let tTokenAddress: string;
-    let dTokenAddress: string;
-    for (let i = 0; i < list.length; i++){
-        tTokenAddress = token[list[i]]["tTokenAddress"].toString()
-        dTokenAddress = token[list[i]]["debtTokenAddress"].toString()
-        let tTokenData: TokenInPoolData = {
-            address: "",
-            balances: "",
-            decimals: "",
-            totalSupply: "",
-            originToken: {
-                balances: "",
-            },
+        let token = dataLendingByAxiosTramline["poolDataSlice"]["pools"][dataLendingByAxiosTramlineOverview["address"]]["token"];
+        let tTokenAddress: string;
+        let dTokenAddress: string;
+        let tTokenList = [] as Array<string>;
+        let dTokenList = [] as Array<string>;      
+        for (let i = 0; i < listTokenAddress.length; i++){
+            tTokenAddress = token[listTokenAddress[i]]["tTokenAddress"].toString()
+            dTokenAddress = token[listTokenAddress[i]]["debtTokenAddress"].toString()
+            console.log(tTokenAddress)
+            console.log(dTokenAddress)
+            tTokenList.push(tTokenAddress)
+            dTokenList.push(dTokenAddress)
         }
-        let dTokenData: TokenInPoolData = {
-            address: "",
-            balances: "",
-            decimals: "",
-            totalSupply: "",
-            originToken: {
-                balances: "",
-            },
+        let [tTokenBalance, tTokenDecimal, tTokenTotalSupply, originInTTokenBalance, dTokenBalance, dTokenDecimal, dTokenTotalSupply, originInDTokenBalance] = await Promise.all([
+            multiCall(
+              BEP20ABI,
+              tTokenList.map((address: string, _: number) => ({
+                address: address,
+                name: "balanceOf",
+                params: [from],
+              })),
+              appState.web3,
+              appState.chainId
+            ),
+            multiCall(
+              BEP20ABI,
+              tTokenList.map((address: string, _: number) => ({
+                address: address,
+                name: "decimals",
+                params: [],
+              })),
+              appState.web3,
+              appState.chainId
+            ),
+            multiCall(
+              BEP20ABI,
+              tTokenList.map((address: string, _: number) => ({
+                address: address,
+                name: "totalSupply",
+                params: [],
+              })),
+              appState.web3,
+              appState.chainId
+            ),
+            multiCall(
+              BEP20ABI,
+              listTokenAddress.map((address: string, index: number) => ({
+                address: address,
+                name: "balanceOf",
+                params: [tTokenList[index]],
+              })),
+              appState.web3,
+              appState.chainId
+            ),
+            multiCall(
+              BEP20ABI,
+              dTokenList.map((address: string, _: number) => ({
+                address: address,
+                name: "balanceOf",
+                params: [from],
+              })),
+              appState.web3,
+              appState.chainId
+            ),
+            multiCall(
+              BEP20ABI,
+              dTokenList.map((address: string, _: number) => ({
+                address: address,
+                name: "decimals",
+                params: [],
+              })),
+              appState.web3,
+              appState.chainId
+            ),
+            multiCall(
+              BEP20ABI,
+              dTokenList.map((address: string, _: number) => ({
+                address: address,
+                name: "totalSupply",
+                params: [],
+              })),
+              appState.web3,
+              appState.chainId
+            ),
+            multiCall(
+              BEP20ABI,
+              listTokenAddress.map((address: string, index: number) => ({
+                address: address,
+                name: "balanceOf",
+                params: [dTokenList[index]],
+              })),
+              appState.web3,
+              appState.chainId
+            ),
+          ]);
+
+
+        for (let i = 0; i < listTokenAddress.length; i++){
+            let tTokenData = {
+                address: tTokenList[i].toString().toLowerCase(),
+                balances: tTokenBalance[i].toString(),
+                decimals: tTokenDecimal[i].toString(),
+                totalSupply: tTokenTotalSupply[i].toString(),
+                originToken: {
+                  balances: originInTTokenBalance[i].toString(),
+                }
+              }
+        
+            let dTokenData = {
+                address: dTokenList[i].toString().toLowerCase(),
+                balances: dTokenBalance[i].toString(),
+                decimals: dTokenDecimal[i].toString(),
+                totalSupply: dTokenTotalSupply[i].toString(),
+                originToken: {
+                    balances: originInDTokenBalance[i].toString(),
+                }
+            }
+            appState[mode].detailTokenInPool.set(listTokenAddress[i], {
+                decimals: token[listTokenAddress[i]]["decimal"].toString(),
+                tToken: tTokenData, 
+                dToken: dTokenData,
+                maxLTV: token[listTokenAddress[i]]["risk"]["maxLTV"].toString(),
+                liqThres: token[listTokenAddress[i]]["risk"]["liqThres"].toString(),
+                price: token[listTokenAddress[i]]["price"].toString(),
+            });
+            console.log(appState[mode].detailTokenInPool.get(listTokenAddress[i]))
         }
-        appState.smartWalletState.detailTokenInPool.set(list[i], {tToken: tTokenData, dToken: dTokenData});
-    }
     return appState;
+    } catch (err) {
+        console.log(err);
+        throw err;
+    }
 }
 
 
@@ -94,7 +190,7 @@ export async function updateUserInForkAaveLPState(appState1: ApplicationState, _
         let mode = getMode(appState, _from);
         let entity_ids: Array<string> = ["valas-finance", "radiant-v2", "granary-finance"];
         if (entity_ids.some(x => x === entity_id)){
-            let dataLendingPool = await getDataUserByAxios(_from, entity_id, "0x" + appState.chainId);
+            let dataLendingPool = await getDataUserByAxios(_from, entity_id, "0x" + appState.chainId.toString(16));
             let data: WalletForkedAaveLPState = {
                 id: dataLendingPool["id"],
                 address: dataLendingPool["address"],
