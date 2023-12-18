@@ -7,7 +7,7 @@ import BigNumber from "bignumber.js";
 import { MONTH_TO_SECONDS, WEEK_TO_SECONDS } from "../src/utils/config";
 import { updateForkCompoundLPState, updateUserInForkCompoundLPState } from "../src/Simulation/forkCompoundLP/UpdateStateAccount";
 import { SimulationBorrowForkCompoundLP, SimulationRepayForkCompoundLP, SimulationSupplyForkCompoundLP, updateLPtTokenInfo, updateSmartWalletTokenBalance, updateTravaLPInfo, updateUserTokenBalance } from "../src/Simulation";
-import { updateTokenDetailInOthersPools, updateForkAaveLPState, updateUserInForkAaveLPState } from "../src/Simulation/forkAaveLP";
+import { updateForkAaveLPState, updateUserInForkAaveLPState } from "../src/Simulation/forkAaveLP";
 
   // start 
   async function test(){
@@ -46,7 +46,6 @@ import { updateTokenDetailInOthersPools, updateForkAaveLPState, updateUserInFork
       
     appState = await updateForkAaveLPState(appState, "valas-finance");
     appState = await updateUserInForkAaveLPState(appState, userAddress, "valas-finance");
-    appState = await updateTokenDetailInOthersPools(appState, userAddress ,"valas-finance");
     console.log(appState.walletState.forkedAaveLPState.get("valas-finance"))
     // let a = await getListTokenAddress(appState, "valas-finance");
     // console.log(a)

@@ -531,7 +531,6 @@ appState = await updateUserInForkCompoundLPState(appState, userAddress, entity_i
 Khi chọn bất cứ action nào của Others Lending pools fork Aave
 
 ```
-appState = await updateTokenDetailInOthersPools(appState, userAddress, entity_id);
 appState = await updateForkAaveLPState(appState, entity_id);
 appState = await updateUserInForkAaveLPState(appState, userAddress, entity_id);
 ```

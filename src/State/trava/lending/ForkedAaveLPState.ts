@@ -1,4 +1,5 @@
 import { EthAddress, uint256 } from "../../../utils/types";
+import { DetailTokenInPool } from "../../SmartWalletState";
 import { Dapp, Market } from "./ForkedLPState";
 
 export interface ForkedAave{ 
@@ -30,4 +31,5 @@ export interface WalletForkedAaveLPState {
   totalDebts: number;
   // totalDebts24hAgo: number;
   dapps: Array<Dapp>;
+  detailTokenInPool: Map<string, DetailTokenInPool>;
 }

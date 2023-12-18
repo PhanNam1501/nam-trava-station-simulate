@@ -23,11 +23,12 @@ export async function SimulationSupplyForkCompoundLP(
         }
         const tokenAddress = _tokenAddress.toLowerCase();
         let  modeFrom = getMode(appState, _from);
-        if (
-            amount.toFixed(0) == MAX_UINT256 || amount.isEqualTo(MAX_UINT256)
-            ) {
-            amount = calculateMaxAmountSupply(appState, tokenAddress, modeFrom)
-        }
+        // Comming Soon .......
+        // if (
+        //     amount.toFixed(0) == MAX_UINT256 || amount.isEqualTo(MAX_UINT256)
+        //     ) {
+        //     amount = calculateMaxAmountSupply(appState, tokenAddress, modeFrom)
+        // }
 
 
         if (!appState[modeFrom].tokenBalances.has(tokenAddress)) {

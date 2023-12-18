@@ -6,7 +6,7 @@ import _ from "lodash";
 import { convertHexStringToAddress } from "../../utils/address";
 import { getMode, multiCall } from "../../utils/helper";
 import axios from "axios";
-import { ForkedAave, TokenInPoolData, WalletForkedAaveLPState } from "../../State";
+import { DetailTokenInPool, ForkedAave, TokenInPoolData, WalletForkedAaveLPState } from "../../State";
 
 
 export async function updateForkAaveLPState(appState1: ApplicationState, entity_id: string, force?: boolean): Promise<ApplicationState> {
@@ -35,7 +35,7 @@ export async function updateForkAaveLPState(appState1: ApplicationState, entity_
     return appState;
 }
 
-export async function updateTokenDetailInOthersPools(appState1: ApplicationState, _from: EthAddress ,entity_id: string): Promise<ApplicationState> {
+async function updateTokenDetailInOthersPools(appState1: ApplicationState, _from: EthAddress, entity_id: string): Promise<ApplicationState> {
     let appState = { ...appState1 };
     try{
         let from = _from.toLowerCase();
@@ -57,8 +57,6 @@ export async function updateTokenDetailInOthersPools(appState1: ApplicationState
         for (let i = 0; i < listTokenAddress.length; i++){
             tTokenAddress = token[listTokenAddress[i]]["tTokenAddress"].toString()
             dTokenAddress = token[listTokenAddress[i]]["debtTokenAddress"].toString()
-            console.log(tTokenAddress)
-            console.log(dTokenAddress)
             tTokenList.push(tTokenAddress)
             dTokenList.push(dTokenAddress)
         }
@@ -145,6 +143,10 @@ export async function updateTokenDetailInOthersPools(appState1: ApplicationState
             ),
           ]);
 
+        let walletForkedAaveLPState = appState[mode].forkedAaveLPState.get(entity_id);
+        if (!walletForkedAaveLPState) {
+            throw new Error("WalletForkedAaveLPState is not initialized");
+        }
 
         for (let i = 0; i < listTokenAddress.length; i++){
             let tTokenData = {
@@ -166,7 +168,7 @@ export async function updateTokenDetailInOthersPools(appState1: ApplicationState
                     balances: originInDTokenBalance[i].toString(),
                 }
             }
-            appState[mode].detailTokenInPool.set(listTokenAddress[i], {
+            walletForkedAaveLPState.detailTokenInPool.set(listTokenAddress[i], {
                 decimals: token[listTokenAddress[i]]["decimal"].toString(),
                 tToken: tTokenData, 
                 dToken: dTokenData,
@@ -174,8 +176,8 @@ export async function updateTokenDetailInOthersPools(appState1: ApplicationState
                 liqThres: token[listTokenAddress[i]]["risk"]["liqThres"].toString(),
                 price: token[listTokenAddress[i]]["price"].toString(),
             });
-            console.log(appState[mode].detailTokenInPool.get(listTokenAddress[i]))
         }
+        appState[mode].forkedAaveLPState.set(entity_id, walletForkedAaveLPState);
     return appState;
     } catch (err) {
         console.log(err);
@@ -197,18 +199,17 @@ export async function updateUserInForkAaveLPState(appState1: ApplicationState, _
                 totalAssets: dataLendingPool["totalAssets"],
                 totalClaimable: dataLendingPool["totalClaimable"],
                 totalDebts: dataLendingPool["totalDebts"],
-                dapps: dataLendingPool["dapps"]
+                dapps: dataLendingPool["dapps"],
+                detailTokenInPool: new Map<string, DetailTokenInPool>(),
             }
             appState[mode].forkedAaveLPState.set(entity_id, data);
-            const dataDapps = dataLendingPool["dapps"]
-            const addressInAaveLP = dataDapps.map((item: any) => item["address"])
-            console.log(addressInAaveLP)
-
-    }
-    } catch (error) {
-        console.error(error);
-    }
+            appState = await updateTokenDetailInOthersPools(appState, _from, entity_id);
+        }
     return appState;
+    } catch (err) {
+        console.log(err);
+        throw err;
+    }
 }
 
 async function getDataLendingByAxios(entity_id: string, chain: string) {
