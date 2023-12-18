@@ -334,21 +334,21 @@ export async function SimulationSupplyForkAaveLP(
             appState[modeFrom].tokenBalances.get(tokenAddress)!
         );
 
-        let data: ForkedAave | undefined = appState.forkAaveLPState.forkAaveLP.get(_idLP);
+        let data = appState.forkAaveLPState.forkAaveLP.get(_idLP);
         if (!data) {
             throw new Error("data not found");
         }
-            let price = data.markets[0].assets.find((asset) => asset.address == tokenAddress)?.price;
-            if (!price) {
-                throw new Error("price not found");
-            }
-            const asset = data.markets[0].assets.find((asset) => asset.address == tokenAddress);
-            if (asset) {
-                asset.totalBorrowInUSD = Number(BigNumber(asset.totalBorrowInUSD || 0).minus(amount.multipliedBy(price)).toFixed(0));
-            }
-            data.totalBorrowInUSD = Number(BigNumber(data.totalBorrowInUSD || 0).minus(amount.multipliedBy(price)).toFixed(0));
-            
-            let dataWallet = appState[modeFrom].forkedAaveLPState.get(_idLP);
+        let price = data.markets[0].assets.find((asset) => asset.address == tokenAddress)?.price;
+        if (!price) {
+            throw new Error("price not found");
+        }
+        const asset = data.markets[0].assets.find((asset) => asset.address == tokenAddress);
+        if (asset) {
+            asset.totalBorrowInUSD = Number(BigNumber(asset.totalBorrowInUSD || 0).minus(amount.multipliedBy(price)).toFixed(0));
+        }
+        data.totalBorrowInUSD = Number(BigNumber(data.totalBorrowInUSD || 0).minus(amount.multipliedBy(price)).toFixed(0));
+        
+        let dataWallet = appState[modeFrom].forkedAaveLPState.get(_idLP);
         if (!dataWallet) {
             throw new Error("data not found");
         }
