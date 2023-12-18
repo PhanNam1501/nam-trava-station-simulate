@@ -59,7 +59,7 @@ export async function SimulationSupplyForkCompoundLP(
 
         let dataInWallet = dataWallet.dapps[0].reserves[0].deposit.find((reserve) => reserve.address == tokenAddress);
         if (!dataInWallet) {
-            data.numberOfLenders = Number(BigNumber(data.numberOfLenders || 0).plus(1).toFixed(0));
+            // data.numberOfLenders = Number(BigNumber(data.numberOfLenders || 0).plus(1).toFixed(0));
             // data.numberOfUsers = Number(BigNumber(data.numberOfUsers || 0).plus(1).toFixed(0));
             let newData: UserAsset = {
                 // key: data.markets[0].assets.find((asset) => asset.address == tokenAddress)?.key || "",
@@ -157,7 +157,7 @@ export async function SimulationSupplyForkCompoundLP(
 
         let dataInWallet = dataWallet.dapps[0].reserves[0].deposit.find((reserve) => reserve.address == tokenAddress);
         if (!dataInWallet) {
-            data.numberOfLenders = Number(BigNumber(data.numberOfLenders || 0).plus(1).toFixed(0));
+            // data.numberOfLenders = Number(BigNumber(data.numberOfLenders || 0).plus(1).toFixed(0));
             // data.numberOfUsers = Number(BigNumber(data.numberOfUsers || 0).plus(1).toFixed(0));
             let newData: UserAsset = {
                 // key: data.markets[0].assets.find((asset) => asset.address == tokenAddress)?.key || "",
@@ -259,7 +259,7 @@ export async function SimulationSupplyForkCompoundLP(
 
         let dataInWallet = dataWallet.dapps[0].reserves[0].borrow.find((reserve) => reserve.address == tokenAddress);
         if (!dataInWallet) {
-            data.numberOfLenders = Number(BigNumber(data.numberOfLenders || 0).plus(1).toFixed(0));
+            // data.numberOfLenders = Number(BigNumber(data.numberOfLenders || 0).plus(1).toFixed(0));
             // data.numberOfUsers = Number(BigNumber(data.numberOfUsers || 0).plus(1).toFixed(0));
             let newData: UserAsset = {
                 // key: data.markets[0].assets.find((asset) => asset.address == tokenAddress)?.key || "",
@@ -358,7 +358,7 @@ export async function SimulationSupplyForkCompoundLP(
 
         let dataInWallet = dataWallet.dapps[0].reserves[0].borrow.find((reserve) => reserve.address == tokenAddress);
         if (!dataInWallet) {
-            data.numberOfLenders = Number(BigNumber(data.numberOfLenders || 0).plus(1).toFixed(0));
+            // data.numberOfLenders = Number(BigNumber(data.numberOfLenders || 0).plus(1).toFixed(0));
             // data.numberOfUsers = Number(BigNumber(data.numberOfUsers || 0).plus(1).toFixed(0));
             let newData: UserAsset = {
                 // key: data.markets[0].assets.find((asset) => asset.address == tokenAddress)?.key || "",
