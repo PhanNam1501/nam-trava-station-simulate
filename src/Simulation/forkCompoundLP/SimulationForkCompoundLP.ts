@@ -49,9 +49,9 @@ export async function SimulationSupplyForkCompoundLP(
             }
             const asset = dataAssets;
             if (asset) {
-                asset.totalSupplyInUSD = Number(BigNumber(asset.totalSupplyInUSD || 0).plus(amount.multipliedBy(price)).toFixed(0));
+                asset.totalSupplyInUSD = BigNumber(asset.totalSupplyInUSD || 0).plus(amount.multipliedBy(price)).toNumber();
             }
-            data.totalSupplyInUSD = Number(BigNumber(data.totalSupplyInUSD || 0).plus(amount.multipliedBy(price)).toFixed(0));
+            data.totalSupplyInUSD = BigNumber(data.totalSupplyInUSD || 0).plus(amount.multipliedBy(price)).toNumber();
             
             let dataWallet = appState[modeFrom].forkedCompoundLPState.get(_idLP);
         if (!dataWallet) {
@@ -60,8 +60,8 @@ export async function SimulationSupplyForkCompoundLP(
 
         let dataInWallet = dataWallet.dapps[0].reserves[0].deposit.find((reserve) => reserve.address == tokenAddress);
         if (!dataInWallet) {
-            // data.numberOfLenders = Number(BigNumber(data.numberOfLenders || 0).plus(1).toFixed(0));
-            // data.numberOfUsers = Number(BigNumber(data.numberOfUsers || 0).plus(1).toFixed(0));
+            // data.numberOfLenders = BigNumber(data.numberOfLenders || 0).plus(1).toNumber();
+            // data.numberOfUsers = BigNumber(data.numberOfUsers || 0).plus(1).toNumber();
             let newData: UserAsset = {
                 // key: dataAssets?.key || "",
                 id: dataAssets?.id || "",
@@ -69,10 +69,10 @@ export async function SimulationSupplyForkCompoundLP(
                 type: "token",
                 address: tokenAddress,
                 symbol: dataAssets?.symbol || "",
-                amount: Number(amount.toFixed()),
-                valueInUSD: Number(amount.multipliedBy(price).toFixed(0)),
+                amount: amount.toNumber(),
+                valueInUSD: amount.multipliedBy(price).toNumber(),
                 // imgUrl: dataAssets?.imgUrl || "",
-                totalValue: Number(amount.multipliedBy(price).toFixed(0)),
+                totalValue: amount.multipliedBy(price).toNumber(),
             };
             dataWallet.dapps[0].reserves[0].deposit.push(newData);
         }
@@ -84,13 +84,13 @@ export async function SimulationSupplyForkCompoundLP(
                 type: "token",
                 address: tokenAddress,
                 symbol: dataAssets?.symbol || "",
-                amount: Number(amount.toFixed())+dataInWallet.amount,
-                valueInUSD: Number(amount.plus(dataInWallet.amount).multipliedBy(price).toFixed()),
+                amount: amount.toNumber()+dataInWallet.amount,
+                valueInUSD: amount.plus(dataInWallet.amount).multipliedBy(price).toNumber(),
                 // imgUrl: dataAssets?.imgUrl || "",
-                totalValue: Number(amount.plus(dataInWallet.amount).multipliedBy(price).toFixed()),
+                totalValue: amount.plus(dataInWallet.amount).multipliedBy(price).toNumber(),
             };
-            dataWallet.dapps[0].value = Number(BigNumber(dataWallet.dapps[0].value || 0).plus(amount).toFixed());
-            dataWallet.dapps[0].depositInUSD = Number(BigNumber(dataWallet.dapps[0].depositInUSD || 0).plus(amount.multipliedBy(price)).toFixed());
+            dataWallet.dapps[0].value = BigNumber(dataWallet.dapps[0].value || 0).plus(amount).toNumber();
+            dataWallet.dapps[0].depositInUSD = BigNumber(dataWallet.dapps[0].depositInUSD || 0).plus(amount.multipliedBy(price)).toNumber();
             dataWallet.dapps[0].reserves[0].deposit = dataWallet.dapps[0].reserves[0].deposit.map((reserve) => {
                 if (reserve.address == tokenAddress) {
                     return newData;
@@ -148,9 +148,9 @@ export async function SimulationSupplyForkCompoundLP(
             }
             const asset = dataAssets;
             if (asset) {
-                asset.totalSupplyInUSD = Number(BigNumber(asset.totalSupplyInUSD || 0).minus(amount.multipliedBy(price)).toFixed(0));
+                asset.totalSupplyInUSD = BigNumber(asset.totalSupplyInUSD || 0).minus(amount.multipliedBy(price)).toNumber();
             }
-            data.totalSupplyInUSD = Number(BigNumber(data.totalSupplyInUSD || 0).minus(amount.multipliedBy(price)).toFixed(0));
+            data.totalSupplyInUSD = BigNumber(data.totalSupplyInUSD || 0).minus(amount.multipliedBy(price)).toNumber();
             
             let dataWallet = appState[modeFrom].forkedCompoundLPState.get(_idLP);
         if (!dataWallet) {
@@ -159,8 +159,8 @@ export async function SimulationSupplyForkCompoundLP(
 
         let dataInWallet = dataWallet.dapps[0].reserves[0].deposit.find((reserve) => reserve.address == tokenAddress);
         if (!dataInWallet) {
-            // data.numberOfLenders = Number(BigNumber(data.numberOfLenders || 0).plus(1).toFixed(0));
-            // data.numberOfUsers = Number(BigNumber(data.numberOfUsers || 0).plus(1).toFixed(0));
+            // data.numberOfLenders = BigNumber(data.numberOfLenders || 0).plus(1).toNumber();
+            // data.numberOfUsers = BigNumber(data.numberOfUsers || 0).plus(1).toNumber();
             let newData: UserAsset = {
                 // key: dataAssets?.key || "",
                 id: dataAssets?.id || "",
@@ -168,10 +168,10 @@ export async function SimulationSupplyForkCompoundLP(
                 type: "token",
                 address: tokenAddress,
                 symbol: dataAssets?.symbol || "",
-                amount: -Number(amount.toFixed()),
-                valueInUSD: -Number(amount.multipliedBy(price).toFixed(0)),
+                amount: -amount.toNumber(),
+                valueInUSD: -amount.multipliedBy(price).toNumber(),
                 // imgUrl: dataAssets?.imgUrl || "",
-                totalValue: -Number(amount.multipliedBy(price).toFixed(0)),
+                totalValue: -amount.multipliedBy(price).toNumber(),
             };
             dataWallet.dapps[0].reserves[0].deposit.push(newData);
         }
@@ -183,13 +183,13 @@ export async function SimulationSupplyForkCompoundLP(
                 type: "token",
                 address: tokenAddress,
                 symbol: dataAssets?.symbol || "",
-                amount: -Number(amount.toFixed())+dataInWallet.amount,
-                valueInUSD: Number(amount.multipliedBy(-1).plus(dataInWallet.amount).multipliedBy(price).toFixed()),
+                amount: -amount.toNumber()+dataInWallet.amount,
+                valueInUSD: amount.multipliedBy(-1).plus(dataInWallet.amount).multipliedBy(price).toNumber(),
                 // imgUrl: dataAssets?.imgUrl || "",
-                totalValue: Number(amount.multipliedBy(-1).plus(dataInWallet.amount).multipliedBy(price).toFixed()),
+                totalValue: amount.multipliedBy(-1).plus(dataInWallet.amount).multipliedBy(price).toNumber(),
             };
-            dataWallet.dapps[0].value = Number(BigNumber(dataWallet.dapps[0].value || 0).minus(amount).toFixed());
-            dataWallet.dapps[0].depositInUSD = Number(BigNumber(dataWallet.dapps[0].depositInUSD || 0).minus(amount.multipliedBy(price)).toFixed());
+            dataWallet.dapps[0].value = BigNumber(dataWallet.dapps[0].value || 0).minus(amount).toNumber();
+            dataWallet.dapps[0].depositInUSD = BigNumber(dataWallet.dapps[0].depositInUSD || 0).minus(amount.multipliedBy(price)).toNumber();
             dataWallet.dapps[0].reserves[0].deposit = dataWallet.dapps[0].reserves[0].deposit.map((reserve) => {
                 if (reserve.address == tokenAddress) {
                     return newData;
@@ -251,9 +251,9 @@ export async function SimulationSupplyForkCompoundLP(
             }
             const asset = dataAssets;
             if (asset) {
-                asset.totalBorrowInUSD = Number(BigNumber(asset.totalBorrowInUSD || 0).plus(amount.multipliedBy(price)).toFixed(0));
+                asset.totalBorrowInUSD = BigNumber(asset.totalBorrowInUSD || 0).plus(amount.multipliedBy(price)).toNumber();
             }
-            data.totalBorrowInUSD = Number(BigNumber(data.totalBorrowInUSD || 0).plus(amount.multipliedBy(price)).toFixed(0));
+            data.totalBorrowInUSD = BigNumber(data.totalBorrowInUSD || 0).plus(amount.multipliedBy(price)).toNumber();
             
             let dataWallet = appState[modeFrom].forkedCompoundLPState.get(_idLP);
         if (!dataWallet) {
@@ -262,8 +262,8 @@ export async function SimulationSupplyForkCompoundLP(
 
         let dataInWallet = dataWallet.dapps[0].reserves[0].borrow.find((reserve) => reserve.address == tokenAddress);
         if (!dataInWallet) {
-            // data.numberOfLenders = Number(BigNumber(data.numberOfLenders || 0).plus(1).toFixed(0));
-            // data.numberOfUsers = Number(BigNumber(data.numberOfUsers || 0).plus(1).toFixed(0));
+            // data.numberOfLenders = BigNumber(data.numberOfLenders || 0).plus(1).toNumber();
+            // data.numberOfUsers = BigNumber(data.numberOfUsers || 0).plus(1).toNumber();
             let newData: UserAsset = {
                 // key: dataAssets?.key || "",
                 id: dataAssets?.id || "",
@@ -271,10 +271,10 @@ export async function SimulationSupplyForkCompoundLP(
                 type: "token",
                 address: tokenAddress,
                 symbol: dataAssets?.symbol || "",
-                amount: Number(amount.toFixed()),
-                valueInUSD: Number(amount.multipliedBy(price).toFixed(0)),
+                amount: amount.toNumber(),
+                valueInUSD: amount.multipliedBy(price).toNumber(),
                 // imgUrl: dataAssets?.imgUrl || "",
-                totalValue: Number(amount.multipliedBy(price).toFixed(0)),
+                totalValue: amount.multipliedBy(price).toNumber(),
             };
             dataWallet.dapps[0].reserves[0].borrow.push(newData);
         }
@@ -286,13 +286,13 @@ export async function SimulationSupplyForkCompoundLP(
                 type: "token",
                 address: tokenAddress,
                 symbol: dataAssets?.symbol || "",
-                amount: Number(amount.toFixed())+dataInWallet.amount,
-                valueInUSD: Number(amount.plus(dataInWallet.amount).multipliedBy(price).toFixed()),
+                amount: amount.toNumber()+dataInWallet.amount,
+                valueInUSD: amount.plus(dataInWallet.amount).multipliedBy(price).toNumber(),
                 // imgUrl: dataAssets?.imgUrl || "",
-                totalValue: Number(amount.plus(dataInWallet.amount).multipliedBy(price).toFixed()),
+                totalValue: amount.plus(dataInWallet.amount).multipliedBy(price).toNumber(),
             };
-            dataWallet.dapps[0].value = Number(BigNumber(dataWallet.dapps[0].value || 0).plus(amount).toFixed());
-            dataWallet.dapps[0].borrowInUSD = Number(BigNumber(dataWallet.dapps[0].borrowInUSD || 0).plus(amount.multipliedBy(price)).toFixed());
+            dataWallet.dapps[0].value = BigNumber(dataWallet.dapps[0].value || 0).plus(amount).toNumber();
+            dataWallet.dapps[0].borrowInUSD = BigNumber(dataWallet.dapps[0].borrowInUSD || 0).plus(amount.multipliedBy(price)).toNumber();
             dataWallet.dapps[0].reserves[0].borrow = dataWallet.dapps[0].reserves[0].borrow.map((reserve) => {
                 if (reserve.address == tokenAddress) {
                     return newData;
@@ -351,9 +351,9 @@ export async function SimulationSupplyForkCompoundLP(
             }
             const asset = dataAssets;
             if (asset) {
-                asset.totalBorrowInUSD = Number(BigNumber(asset.totalBorrowInUSD || 0).minus(amount.multipliedBy(price)).toFixed(0));
+                asset.totalBorrowInUSD = BigNumber(asset.totalBorrowInUSD || 0).minus(amount.multipliedBy(price)).toNumber();
             }
-            data.totalBorrowInUSD = Number(BigNumber(data.totalBorrowInUSD || 0).minus(amount.multipliedBy(price)).toFixed(0));
+            data.totalBorrowInUSD = BigNumber(data.totalBorrowInUSD || 0).minus(amount.multipliedBy(price)).toNumber();
             
             let dataWallet = appState[modeFrom].forkedCompoundLPState.get(_idLP);
         if (!dataWallet) {
@@ -362,8 +362,8 @@ export async function SimulationSupplyForkCompoundLP(
 
         let dataInWallet = dataWallet.dapps[0].reserves[0].borrow.find((reserve) => reserve.address == tokenAddress);
         if (!dataInWallet) {
-            // data.numberOfLenders = Number(BigNumber(data.numberOfLenders || 0).plus(1).toFixed(0));
-            // data.numberOfUsers = Number(BigNumber(data.numberOfUsers || 0).plus(1).toFixed(0));
+            // data.numberOfLenders = BigNumber(data.numberOfLenders || 0).plus(1).toNumber();
+            // data.numberOfUsers = BigNumber(data.numberOfUsers || 0).plus(1).toNumber();
             let newData: UserAsset = {
                 // key: dataAssets?.key || "",
                 id: dataAssets?.id || "",
@@ -371,10 +371,10 @@ export async function SimulationSupplyForkCompoundLP(
                 type: "token",
                 address: tokenAddress,
                 symbol: dataAssets?.symbol || "",
-                amount: -Number(amount.toFixed()),
-                valueInUSD: -Number(amount.multipliedBy(price).toFixed(0)),
+                amount: -amount.toNumber(),
+                valueInUSD: -amount.multipliedBy(price).toNumber(),
                 // imgUrl: dataAssets?.imgUrl || "",
-                totalValue: -Number(amount.multipliedBy(price).toFixed(0)),
+                totalValue: -amount.multipliedBy(price).toNumber(),
             };
             dataWallet.dapps[0].reserves[0].borrow.push(newData);
         }
@@ -386,13 +386,13 @@ export async function SimulationSupplyForkCompoundLP(
                 type: "token",
                 address: tokenAddress,
                 symbol: dataAssets?.symbol || "",
-                amount: -Number(amount.toFixed())+dataInWallet.amount,
-                valueInUSD: Number(amount.multipliedBy(-1).plus(dataInWallet.amount).multipliedBy(price).toFixed()),
+                amount: -amount.toNumber()+dataInWallet.amount,
+                valueInUSD: amount.multipliedBy(-1).plus(dataInWallet.amount).multipliedBy(price).toNumber(),
                 // imgUrl: dataAssets?.imgUrl || "",
-                totalValue: Number(amount.multipliedBy(-1).plus(dataInWallet.amount).multipliedBy(price).toFixed()),
+                totalValue: amount.multipliedBy(-1).plus(dataInWallet.amount).multipliedBy(price).toNumber(),
             };
-            dataWallet.dapps[0].value = Number(BigNumber(dataWallet.dapps[0].value || 0).minus(amount).toFixed());
-            dataWallet.dapps[0].borrowInUSD = Number(BigNumber(dataWallet.dapps[0].borrowInUSD || 0).minus(amount.multipliedBy(price)).toFixed());
+            dataWallet.dapps[0].value = BigNumber(dataWallet.dapps[0].value || 0).minus(amount).toNumber();
+            dataWallet.dapps[0].borrowInUSD = BigNumber(dataWallet.dapps[0].borrowInUSD || 0).minus(amount.multipliedBy(price)).toNumber();
             dataWallet.dapps[0].reserves[0].borrow = dataWallet.dapps[0].reserves[0].borrow.map((reserve) => {
                 if (reserve.address == tokenAddress) {
                     return newData;
