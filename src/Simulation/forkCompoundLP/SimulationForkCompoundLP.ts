@@ -48,13 +48,7 @@ export async function SimulationSupplyForkCompoundLP(
             if (!price) {
                 throw new Error("price not found");
             }
-            const asset = dataAssets;
-            if (asset) {
-                asset.totalSupplyInUSD = BigNumber(asset.totalSupplyInUSD || 0).plus(amount.multipliedBy(price)).toNumber();
-            }
-            else{
-                throw new Error("asset not found")
-            }
+
             data.totalSupplyInUSD = BigNumber(data.totalSupplyInUSD || 0).plus(amount.multipliedBy(price)).toNumber();
             
             let dataWallet = appState[modeFrom].forkedCompoundLPState.get(_idLP);
@@ -150,13 +144,7 @@ export async function SimulationSupplyForkCompoundLP(
             if (!price) {
                 throw new Error("price not found");
             }
-            const asset = dataAssets;
-            if (asset) {
-                asset.totalSupplyInUSD = BigNumber(asset.totalSupplyInUSD || 0).minus(amount.multipliedBy(price)).toNumber();
-            }
-            else{
-                throw new Error("asset not found")
-            }
+
             data.totalSupplyInUSD = BigNumber(data.totalSupplyInUSD || 0).minus(amount.multipliedBy(price)).toNumber();
             
             let dataWallet = appState[modeFrom].forkedCompoundLPState.get(_idLP);
@@ -256,13 +244,7 @@ export async function SimulationSupplyForkCompoundLP(
             if (!price) {
                 throw new Error("price not found");
             }
-            const asset = dataAssets;
-            if (asset) {
-                asset.totalBorrowInUSD = BigNumber(asset.totalBorrowInUSD || 0).plus(amount.multipliedBy(price)).toNumber();
-            }
-            else{
-                throw new Error("asset not found")
-            }
+
             data.totalBorrowInUSD = BigNumber(data.totalBorrowInUSD || 0).plus(amount.multipliedBy(price)).toNumber();
             
             let dataWallet = appState[modeFrom].forkedCompoundLPState.get(_idLP);
@@ -359,13 +341,7 @@ export async function SimulationSupplyForkCompoundLP(
             if (!price) {
                 throw new Error("price not found");
             }
-            const asset = dataAssets;
-            if (asset) {
-                asset.totalBorrowInUSD = BigNumber(asset.totalBorrowInUSD || 0).minus(amount.multipliedBy(price)).toNumber();
-            }
-            else{
-                throw new Error("asset not found")
-            }
+
             data.totalBorrowInUSD = BigNumber(data.totalBorrowInUSD || 0).minus(amount.multipliedBy(price)).toNumber();
             
             let dataWallet = appState[modeFrom].forkedCompoundLPState.get(_idLP);

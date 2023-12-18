@@ -15,7 +15,7 @@ export async function updateForkCompoundLPState(appState1: ApplicationState, ent
     try {
         if (appState.forkCompoundLPState.isFetch == false || force == true){
         if (entity_ids_compound.some(x => x === entity_id)){
-            let data1 = await getDataLendingByAxios(entity_id, "0x" + appState.chainId);
+            let data1 = await getDataLendingByAxios(entity_id, "0x" + appState.chainId.toString(16));
             let data: ForkedCompound = {
                 id: data1["id"],
                 totalSupplyInUSD: data1["totalSupplyInUSD"],
@@ -39,7 +39,7 @@ export async function updateUserInForkCompoundLPState(appState1: ApplicationStat
     try {
         let mode = getMode(appState, _from);
         if (entity_ids_compound.some(x => x === entity_id)){
-            let data1 = await getDataUserByAxios(_from, entity_id, "0x" + appState.chainId);
+            let data1 = await getDataUserByAxios(_from, entity_id, "0x" + appState.chainId.toString(16));
             let from = _from;
             let dataLendingByAxiosTramline = await getDataLendingByAxiosTramline(entity_id, "0x" + appState.chainId.toString(16), from);
             let data: WalletForkedCompoundLPState = {
