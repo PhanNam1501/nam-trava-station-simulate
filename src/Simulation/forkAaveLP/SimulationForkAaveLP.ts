@@ -51,6 +51,9 @@ export async function SimulationSupplyForkAaveLP(
             if (asset) {
                 asset.totalSupplyInUSD = BigNumber(asset.totalSupplyInUSD || 0).plus(amount.multipliedBy(price)).toNumber();
             }
+            else{
+                throw new Error("asset not found")
+            }
             data.totalSupplyInUSD = BigNumber(data.totalSupplyInUSD || 0).plus(amount.multipliedBy(price)).toNumber();
             
             let dataWallet = appState[modeFrom].forkedAaveLPState.get(_idLP);
@@ -147,6 +150,9 @@ export async function SimulationSupplyForkAaveLP(
             const asset = data.markets[0].assets.find((asset) => asset.address == tokenAddress);
             if (asset) {
                 asset.totalSupplyInUSD = BigNumber(asset.totalSupplyInUSD || 0).minus(amount.multipliedBy(price)).toNumber();
+            }
+            else{
+                throw new Error("asset not found")
             }
             data.totalSupplyInUSD = BigNumber(data.totalSupplyInUSD || 0).minus(amount.multipliedBy(price)).toNumber();
             
@@ -248,6 +254,9 @@ export async function SimulationSupplyForkAaveLP(
             if (asset) {
                 asset.totalBorrowInUSD = BigNumber(asset.totalBorrowInUSD || 0).plus(amount.multipliedBy(price)).toNumber();
             }
+            else{
+                throw new Error("asset not found")
+            }
             data.totalBorrowInUSD = BigNumber(data.totalBorrowInUSD || 0).plus(amount.multipliedBy(price)).toNumber();
             
             let dataWallet = appState[modeFrom].forkedAaveLPState.get(_idLP);
@@ -345,6 +354,9 @@ export async function SimulationSupplyForkAaveLP(
         const asset = data.markets[0].assets.find((asset) => asset.address == tokenAddress);
         if (asset) {
             asset.totalBorrowInUSD = BigNumber(asset.totalBorrowInUSD || 0).minus(amount.multipliedBy(price)).toNumber();
+        }
+        else{
+            throw new Error("asset not found")
         }
         data.totalBorrowInUSD = BigNumber(data.totalBorrowInUSD || 0).minus(amount.multipliedBy(price)).toNumber();
         
