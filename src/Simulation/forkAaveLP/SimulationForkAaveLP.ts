@@ -7,6 +7,7 @@ import { calculateMaxAmountBorrow, calculateMaxAmountRepay, calculateMaxAmountSu
 import _ from "lodash";
 import { getMode } from "../../utils/helper";
 import { updateForkAaveLPState } from "./UpdateStateAccount";
+import { LimitExceededError } from "web3";
 
 export async function SimulationSupplyForkAaveLP(
     appState1: ApplicationState,
@@ -17,7 +18,7 @@ export async function SimulationSupplyForkAaveLP(
   ): Promise<ApplicationState> {
     try {
         let amount = BigNumber(_amount);
-        const appState = { ...appState1 };
+        let appState = { ...appState1 };
         if (appState.forkAaveLPState.isFetch == false ){
             updateForkAaveLPState(appState, _idLP);
         }
@@ -31,7 +32,7 @@ export async function SimulationSupplyForkAaveLP(
 
 
         if (!appState[modeFrom].tokenBalances.has(tokenAddress)) {
-            await updateUserTokenBalance(appState, tokenAddress);
+            appState = await updateUserTokenBalance(appState, tokenAddress);
         }
 
         const tokenAmount = BigNumber(
@@ -117,7 +118,7 @@ export async function SimulationSupplyForkAaveLP(
   ): Promise<ApplicationState> {
     try {
         let amount = BigNumber(_amount);
-        const appState = { ...appState1 };
+        let appState = { ...appState1 };
         if (appState.forkAaveLPState.isFetch == false ){
             updateForkAaveLPState(appState, _idLP);
         }
@@ -128,7 +129,7 @@ export async function SimulationSupplyForkAaveLP(
           }
 
         if (!appState[modeFrom].tokenBalances.has(tokenAddress)) {
-            await updateUserTokenBalance(appState, tokenAddress);
+            appState = await updateUserTokenBalance(appState, tokenAddress);
         }
 
         const tokenAmount = BigNumber(
@@ -214,7 +215,7 @@ export async function SimulationSupplyForkAaveLP(
   ): Promise<ApplicationState> {
     try {
         let amount = BigNumber(_amount);
-        const appState = { ...appState1 };
+        let appState = { ...appState1 };
         if (appState.forkAaveLPState.isFetch == false ){
             updateForkAaveLPState(appState, _idLP);
         }
@@ -228,7 +229,7 @@ export async function SimulationSupplyForkAaveLP(
           }
 
         if (!appState[modeFrom].tokenBalances.has(tokenAddress)) {
-            await updateUserTokenBalance(appState, tokenAddress);
+            appState = await updateUserTokenBalance(appState, tokenAddress);
         }
 
         const tokenAmount = BigNumber(
@@ -315,7 +316,7 @@ export async function SimulationSupplyForkAaveLP(
   ): Promise<ApplicationState> {
     try {
         let amount = BigNumber(_amount);
-        const appState = { ...appState1 };
+        let appState = { ...appState1 };
         if (appState.forkAaveLPState.isFetch == false ){
             updateForkAaveLPState(appState, _idLP);
         }
@@ -326,7 +327,7 @@ export async function SimulationSupplyForkAaveLP(
           }
 
         if (!appState[modeFrom].tokenBalances.has(tokenAddress)) {
-            await updateUserTokenBalance(appState, tokenAddress);
+            appState = await updateUserTokenBalance(appState, tokenAddress);
         }
 
         const tokenAmount = BigNumber(

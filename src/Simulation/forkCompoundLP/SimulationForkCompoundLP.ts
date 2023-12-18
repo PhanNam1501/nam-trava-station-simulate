@@ -17,7 +17,7 @@ export async function SimulationSupplyForkCompoundLP(
   ): Promise<ApplicationState> {
     try {
         let amount = BigNumber(_amount);
-        const appState = { ...appState1 };
+        let appState = { ...appState1 };
         if (appState.forkCompoundLPState.isFetch == false ){
             updateForkCompoundLPState(appState, _idLP);
         }
@@ -31,7 +31,7 @@ export async function SimulationSupplyForkCompoundLP(
 
 
         if (!appState[modeFrom].tokenBalances.has(tokenAddress)) {
-            await updateUserTokenBalance(appState, tokenAddress);
+            appState = await updateUserTokenBalance(appState, tokenAddress);
         }
 
         const tokenAmount = BigNumber(
@@ -117,7 +117,7 @@ export async function SimulationSupplyForkCompoundLP(
   ): Promise<ApplicationState> {
     try {
         let amount = BigNumber(_amount);
-        const appState = { ...appState1 };
+        let appState = { ...appState1 };
         if (appState.forkCompoundLPState.isFetch == false ){
             updateForkCompoundLPState(appState, _idLP);
         }
@@ -129,7 +129,7 @@ export async function SimulationSupplyForkCompoundLP(
         //   }
 
         if (!appState[modeFrom].tokenBalances.has(tokenAddress)) {
-            await updateUserTokenBalance(appState, tokenAddress);
+            appState = await updateUserTokenBalance(appState, tokenAddress);
         }
 
         const tokenAmount = BigNumber(
@@ -215,7 +215,7 @@ export async function SimulationSupplyForkCompoundLP(
   ): Promise<ApplicationState> {
     try {
         let amount = BigNumber(_amount);
-        const appState = { ...appState1 };
+        let appState = { ...appState1 };
         if (appState.forkCompoundLPState.isFetch == false ){
             updateForkCompoundLPState(appState, _idLP);
         }
@@ -231,7 +231,7 @@ export async function SimulationSupplyForkCompoundLP(
         //   }
 
         if (!appState[modeFrom].tokenBalances.has(tokenAddress)) {
-            await updateUserTokenBalance(appState, tokenAddress);
+            appState = await updateUserTokenBalance(appState, tokenAddress);
         }
 
         const tokenAmount = BigNumber(
@@ -318,7 +318,7 @@ export async function SimulationSupplyForkCompoundLP(
   ): Promise<ApplicationState> {
     try {
         let amount = BigNumber(_amount);
-        const appState = { ...appState1 };
+        let appState = { ...appState1 };
         if (appState.forkCompoundLPState.isFetch == false ){
             updateForkCompoundLPState(appState, _idLP);
         }
@@ -330,7 +330,7 @@ export async function SimulationSupplyForkCompoundLP(
         let  modeFrom = getMode(appState, _from.toLowerCase());
 
         if (!appState[modeFrom].tokenBalances.has(tokenAddress)) {
-            await updateUserTokenBalance(appState, tokenAddress);
+            appState = await updateUserTokenBalance(appState, tokenAddress);
         }
 
         const tokenAmount = BigNumber(
