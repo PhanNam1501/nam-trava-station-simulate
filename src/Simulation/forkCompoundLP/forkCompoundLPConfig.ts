@@ -1,0 +1,1 @@
+export const entity_ids_compound: Array<string> = ["venus", "liqee", "cream-lending", "apeswap-lending", "wepiggy"];

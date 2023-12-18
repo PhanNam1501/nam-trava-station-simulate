@@ -7,14 +7,14 @@ import { convertHexStringToAddress } from "../../utils/address";
 import { getMode } from "../../utils/helper";
 import axios from "axios";
 import { ForkedCompound, WalletForkedCompoundLPState } from "../../State";
+import { entity_ids_compound } from "./forkCompoundLPConfig";
 
 
 export async function updateForkCompoundLPState(appState1: ApplicationState, entity_id: string, force?: boolean): Promise<ApplicationState> {
     let appState = { ...appState1 };
     try {
         if (appState.forkCompoundLPState.isFetch == false || force == true){
-        let entity_ids: Array<string> = ["venus", "liqee", "cream-lending", "apeswap-lending", "wepiggy"];
-        if (entity_ids.some(x => x === entity_id)){
+        if (entity_ids_compound.some(x => x === entity_id)){
             let data1 = await getDataLendingByAxios(entity_id, "0x" + appState.chainId);
             let data: ForkedCompound = {
                 id: data1["id"],
@@ -38,8 +38,7 @@ export async function updateUserInForkCompoundLPState(appState1: ApplicationStat
     let appState = { ...appState1 };
     try {
         let mode = getMode(appState, _from);
-        let entity_ids: Array<string> = ["venus", "liqee", "cream-lending", "apeswap-lending", "wepiggy"];
-        if (entity_ids.some(x => x === entity_id)){
+        if (entity_ids_compound.some(x => x === entity_id)){
             let data1 = await getDataUserByAxios(_from, entity_id, "0x" + appState.chainId);
             let data: WalletForkedCompoundLPState = {
                 id: data1["id"],

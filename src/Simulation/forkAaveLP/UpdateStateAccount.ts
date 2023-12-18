@@ -7,6 +7,7 @@ import { convertHexStringToAddress } from "../../utils/address";
 import { getMode, multiCall } from "../../utils/helper";
 import axios from "axios";
 import { DetailTokenInPool, ForkedAave, TokenInPoolData, WalletForkedAaveLPState } from "../../State";
+import { entity_ids_aave } from "./forkAaveLPConfig";
 
 
 export async function updateForkAaveLPState(appState1: ApplicationState, entity_id: string, force?: boolean): Promise<ApplicationState> {
@@ -14,8 +15,7 @@ export async function updateForkAaveLPState(appState1: ApplicationState, entity_
     try {
 
         if (appState.forkAaveLPState.isFetch == false || force == true) {
-        let entity_ids: Array<string> = ["valas-finance", "radiant-v2", "granary-finance"];
-        if (entity_ids.some(x => x === entity_id)){
+        if (entity_ids_aave.some(x => x === entity_id)){
             let dataLendingPool = await getDataLendingByAxios(entity_id, "0x" + appState.chainId.toString(16));
             let data: ForkedAave = {
                 id: dataLendingPool["id"],
@@ -190,8 +190,7 @@ export async function updateUserInForkAaveLPState(appState1: ApplicationState, _
     let appState = { ...appState1 };
     try {
         let mode = getMode(appState, _from);
-        let entity_ids: Array<string> = ["valas-finance", "radiant-v2", "granary-finance"];
-        if (entity_ids.some(x => x === entity_id)){
+        if (entity_ids_aave.some(x => x === entity_id)){
             let dataLendingPool = await getDataUserByAxios(_from, entity_id, "0x" + appState.chainId.toString(16));
             let data: WalletForkedAaveLPState = {
                 id: dataLendingPool["id"],
