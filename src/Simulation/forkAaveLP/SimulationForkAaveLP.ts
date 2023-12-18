@@ -182,9 +182,9 @@ export async function SimulationSupplyForkAaveLP(
                 address: tokenAddress,
                 symbol: data.markets[0].assets.find((asset) => asset.address == tokenAddress)?.symbol || "",
                 amount: -amount.toNumber()+dataInWallet.amount,
-                valueInUSD: amount.multipliedBy(-1).plus(dataInWallet.amount).multipliedBy(price).toNumber(),
+                valueInUSD: BigNumber(dataInWallet.amount).minus(amount).multipliedBy(price).toNumber(),
                 // imgUrl: data.markets[0].assets.find((asset) => asset.address == tokenAddress)?.imgUrl || "",
-                totalValue: amount.multipliedBy(-1).plus(dataInWallet.amount).multipliedBy(price).toNumber(),
+                totalValue: BigNumber(dataInWallet.amount).minus(amount).multipliedBy(price).toNumber(),
             };
             dataWallet.dapps[0].value = BigNumber(dataWallet.dapps[0].value || 0).minus(amount).toNumber();
             dataWallet.dapps[0].depositInUSD = BigNumber(dataWallet.dapps[0].depositInUSD || 0).minus(amount.multipliedBy(price)).toNumber();
@@ -380,9 +380,9 @@ export async function SimulationSupplyForkAaveLP(
                 address: tokenAddress,
                 symbol: data.markets[0].assets.find((asset) => asset.address == tokenAddress)?.symbol || "",
                 amount: -amount.toNumber()+dataInWallet.amount,
-                valueInUSD: amount.multipliedBy(-1).plus(dataInWallet.amount).multipliedBy(price).toNumber(),
+                valueInUSD: BigNumber(dataInWallet.amount).minus(amount).multipliedBy(price).toNumber(),
                 // imgUrl: data.markets[0].assets.find((asset) => asset.address == tokenAddress)?.imgUrl || "",
-                totalValue: amount.multipliedBy(-1).plus(dataInWallet.amount).multipliedBy(price).toNumber(),
+                totalValue: BigNumber(dataInWallet.amount).minus(amount).multipliedBy(price).toNumber(),
             };
             dataWallet.dapps[0].value = BigNumber(dataWallet.dapps[0].value || 0).minus(amount).toNumber();
             dataWallet.dapps[0].borrowInUSD = BigNumber(dataWallet.dapps[0].borrowInUSD || 0).minus(amount.multipliedBy(price)).toNumber();
