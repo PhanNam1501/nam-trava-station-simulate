@@ -23,7 +23,7 @@ export async function SimulationSupplyForkAaveLP(
             updateForkAaveLPState(appState, _idLP);
         }
         const tokenAddress = _tokenAddress.toLowerCase();
-        let  modeFrom = getMode(appState, _from.toLowerCase());
+        let  modeFrom = getMode(appState, _from);
         if (
             amount.toFixed(0) == MAX_UINT256 || amount.isEqualTo(MAX_UINT256)
             ) {
@@ -123,7 +123,7 @@ export async function SimulationSupplyForkAaveLP(
             updateForkAaveLPState(appState, _idLP);
         }
         const tokenAddress = _tokenAddress.toLowerCase();
-        let  modeFrom = getMode(appState, _from.toLowerCase());
+        let  modeFrom = getMode(appState, _from);
         if (amount.toFixed(0) == MAX_UINT256 || amount.isEqualTo(MAX_UINT256)) {
             amount = calculateMaxAmountWithdraw(appState, tokenAddress);
           }
@@ -220,7 +220,7 @@ export async function SimulationSupplyForkAaveLP(
             updateForkAaveLPState(appState, _idLP);
         }
         const tokenAddress = _tokenAddress.toLowerCase();
-        let  modeFrom = getMode(appState, _from.toLowerCase());
+        let  modeFrom = getMode(appState, _from);
         if (amount.toFixed(0) == MAX_UINT256 || amount.isEqualTo(MAX_UINT256)) {
             amount = calculateMaxAmountBorrow(
               appState,
@@ -321,7 +321,7 @@ export async function SimulationSupplyForkAaveLP(
             updateForkAaveLPState(appState, _idLP);
         }
         const tokenAddress = _tokenAddress.toLowerCase();
-        let  modeFrom = getMode(appState, _from.toLowerCase());
+        let  modeFrom = getMode(appState, _from);
         if (amount.toFixed(0) == MAX_UINT256 || amount.isEqualTo(MAX_UINT256)) {
             amount = calculateMaxAmountRepay(appState, tokenAddress, modeFrom);
           }
