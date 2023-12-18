@@ -39,7 +39,7 @@ export async function SimulationSupplyForkAaveLP(
             appState[modeFrom].tokenBalances.get(tokenAddress)!
         );
 
-        let data: ForkedAave | undefined = appState.forkAaveLPState.forkAaveLP.get(_idLP);
+        let data = appState.forkAaveLPState.forkAaveLP.get(_idLP);
         if (!data) {
             throw new Error("data not found");
         }
@@ -136,7 +136,7 @@ export async function SimulationSupplyForkAaveLP(
             appState[modeFrom].tokenBalances.get(tokenAddress)!
         );
 
-        let data: ForkedAave | undefined = appState.forkAaveLPState.forkAaveLP.get(_idLP);
+        let data = appState.forkAaveLPState.forkAaveLP.get(_idLP);
         if (!data) {
             throw new Error("data not found");
         }
@@ -236,7 +236,7 @@ export async function SimulationSupplyForkAaveLP(
             appState[modeFrom].tokenBalances.get(tokenAddress)!
         );
 
-        let data: ForkedAave | undefined = appState.forkAaveLPState.forkAaveLP.get(_idLP);
+        let data = appState.forkAaveLPState.forkAaveLP.get(_idLP);
         if (!data) {
             throw new Error("data not found");
         }

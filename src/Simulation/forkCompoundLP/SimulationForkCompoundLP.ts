@@ -38,15 +38,16 @@ export async function SimulationSupplyForkCompoundLP(
             appState[modeFrom].tokenBalances.get(tokenAddress)!
         );
 
-        let data: ForkedCompound | undefined = appState.forkCompoundLPState.forkCompoundLP.get(_idLP);
+        let data = appState.forkCompoundLPState.forkCompoundLP.get(_idLP);
         if (!data) {
             throw new Error("data not found");
         }
-            let price = data.markets[0].assets.find((asset) => asset.address == tokenAddress)?.price;
+        let dataAssets = data.markets[0].assets.find((asset) => asset.address == tokenAddress);   
+        let price = dataAssets?.price;
             if (!price) {
                 throw new Error("price not found");
             }
-            const asset = data.markets[0].assets.find((asset) => asset.address == tokenAddress);
+            const asset = dataAssets;
             if (asset) {
                 asset.totalSupplyInUSD = Number(BigNumber(asset.totalSupplyInUSD || 0).plus(amount.multipliedBy(price)).toFixed(0));
             }
@@ -62,30 +63,30 @@ export async function SimulationSupplyForkCompoundLP(
             // data.numberOfLenders = Number(BigNumber(data.numberOfLenders || 0).plus(1).toFixed(0));
             // data.numberOfUsers = Number(BigNumber(data.numberOfUsers || 0).plus(1).toFixed(0));
             let newData: UserAsset = {
-                // key: data.markets[0].assets.find((asset) => asset.address == tokenAddress)?.key || "",
-                id: data.markets[0].assets.find((asset) => asset.address == tokenAddress)?.id || "",
-                // name: data.markets[0].assets.find((asset) => asset.address == tokenAddress)?.name || "",
+                // key: dataAssets?.key || "",
+                id: dataAssets?.id || "",
+                // name: dataAssets?.name || "",
                 type: "token",
                 address: tokenAddress,
-                symbol: data.markets[0].assets.find((asset) => asset.address == tokenAddress)?.symbol || "",
+                symbol: dataAssets?.symbol || "",
                 amount: Number(amount.toFixed()),
                 valueInUSD: Number(amount.multipliedBy(price).toFixed(0)),
-                // imgUrl: data.markets[0].assets.find((asset) => asset.address == tokenAddress)?.imgUrl || "",
+                // imgUrl: dataAssets?.imgUrl || "",
                 totalValue: Number(amount.multipliedBy(price).toFixed(0)),
             };
             dataWallet.dapps[0].reserves[0].deposit.push(newData);
         }
         else{
             let newData: UserAsset = {
-                // key: data.markets[0].assets.find((asset) => asset.address == tokenAddress)?.key || "",
-                id: data.markets[0].assets.find((asset) => asset.address == tokenAddress)?.id || "",
-                // name: data.markets[0].assets.find((asset) => asset.address == tokenAddress)?.name || "",
+                // key: dataAssets?.key || "",
+                id: dataAssets?.id || "",
+                // name: dataAssets?.name || "",
                 type: "token",
                 address: tokenAddress,
-                symbol: data.markets[0].assets.find((asset) => asset.address == tokenAddress)?.symbol || "",
+                symbol: dataAssets?.symbol || "",
                 amount: Number(amount.toFixed())+dataInWallet.amount,
                 valueInUSD: Number(amount.plus(dataInWallet.amount).multipliedBy(price).toFixed()),
-                // imgUrl: data.markets[0].assets.find((asset) => asset.address == tokenAddress)?.imgUrl || "",
+                // imgUrl: dataAssets?.imgUrl || "",
                 totalValue: Number(amount.plus(dataInWallet.amount).multipliedBy(price).toFixed()),
             };
             dataWallet.dapps[0].value = Number(BigNumber(dataWallet.dapps[0].value || 0).plus(amount).toFixed());
@@ -136,15 +137,16 @@ export async function SimulationSupplyForkCompoundLP(
             appState[modeFrom].tokenBalances.get(tokenAddress)!
         );
 
-        let data: ForkedCompound | undefined = appState.forkCompoundLPState.forkCompoundLP.get(_idLP);
+        let data = appState.forkCompoundLPState.forkCompoundLP.get(_idLP);
         if (!data) {
             throw new Error("data not found");
         }
-            let price = data.markets[0].assets.find((asset) => asset.address == tokenAddress)?.price;
+        let dataAssets = data.markets[0].assets.find((asset) => asset.address == tokenAddress);   
+        let price = dataAssets?.price;
             if (!price) {
                 throw new Error("price not found");
             }
-            const asset = data.markets[0].assets.find((asset) => asset.address == tokenAddress);
+            const asset = dataAssets;
             if (asset) {
                 asset.totalSupplyInUSD = Number(BigNumber(asset.totalSupplyInUSD || 0).minus(amount.multipliedBy(price)).toFixed(0));
             }
@@ -160,30 +162,30 @@ export async function SimulationSupplyForkCompoundLP(
             // data.numberOfLenders = Number(BigNumber(data.numberOfLenders || 0).plus(1).toFixed(0));
             // data.numberOfUsers = Number(BigNumber(data.numberOfUsers || 0).plus(1).toFixed(0));
             let newData: UserAsset = {
-                // key: data.markets[0].assets.find((asset) => asset.address == tokenAddress)?.key || "",
-                id: data.markets[0].assets.find((asset) => asset.address == tokenAddress)?.id || "",
-                // name: data.markets[0].assets.find((asset) => asset.address == tokenAddress)?.name || "",
+                // key: dataAssets?.key || "",
+                id: dataAssets?.id || "",
+                // name: dataAssets?.name || "",
                 type: "token",
                 address: tokenAddress,
-                symbol: data.markets[0].assets.find((asset) => asset.address == tokenAddress)?.symbol || "",
+                symbol: dataAssets?.symbol || "",
                 amount: -Number(amount.toFixed()),
                 valueInUSD: -Number(amount.multipliedBy(price).toFixed(0)),
-                // imgUrl: data.markets[0].assets.find((asset) => asset.address == tokenAddress)?.imgUrl || "",
+                // imgUrl: dataAssets?.imgUrl || "",
                 totalValue: -Number(amount.multipliedBy(price).toFixed(0)),
             };
             dataWallet.dapps[0].reserves[0].deposit.push(newData);
         }
         else{
             let newData: UserAsset = {
-                // key: data.markets[0].assets.find((asset) => asset.address == tokenAddress)?.key || "",
-                id: data.markets[0].assets.find((asset) => asset.address == tokenAddress)?.id || "",
-                // name: data.markets[0].assets.find((asset) => asset.address == tokenAddress)?.name || "",
+                // key: dataAssets?.key || "",
+                id: dataAssets?.id || "",
+                // name: dataAssets?.name || "",
                 type: "token",
                 address: tokenAddress,
-                symbol: data.markets[0].assets.find((asset) => asset.address == tokenAddress)?.symbol || "",
+                symbol: dataAssets?.symbol || "",
                 amount: -Number(amount.toFixed())+dataInWallet.amount,
                 valueInUSD: Number(amount.multipliedBy(-1).plus(dataInWallet.amount).multipliedBy(price).toFixed()),
-                // imgUrl: data.markets[0].assets.find((asset) => asset.address == tokenAddress)?.imgUrl || "",
+                // imgUrl: dataAssets?.imgUrl || "",
                 totalValue: Number(amount.multipliedBy(-1).plus(dataInWallet.amount).multipliedBy(price).toFixed()),
             };
             dataWallet.dapps[0].value = Number(BigNumber(dataWallet.dapps[0].value || 0).minus(amount).toFixed());
@@ -238,15 +240,16 @@ export async function SimulationSupplyForkCompoundLP(
             appState[modeFrom].tokenBalances.get(tokenAddress)!
         );
 
-        let data: ForkedCompound | undefined = appState.forkCompoundLPState.forkCompoundLP.get(_idLP);
+        let data = appState.forkCompoundLPState.forkCompoundLP.get(_idLP);
         if (!data) {
             throw new Error("data not found");
         }
-            let price = data.markets[0].assets.find((asset) => asset.address == tokenAddress)?.price;
+        let dataAssets = data.markets[0].assets.find((asset) => asset.address == tokenAddress);   
+        let price = dataAssets?.price;
             if (!price) {
                 throw new Error("price not found");
             }
-            const asset = data.markets[0].assets.find((asset) => asset.address == tokenAddress);
+            const asset = dataAssets;
             if (asset) {
                 asset.totalBorrowInUSD = Number(BigNumber(asset.totalBorrowInUSD || 0).plus(amount.multipliedBy(price)).toFixed(0));
             }
@@ -262,30 +265,30 @@ export async function SimulationSupplyForkCompoundLP(
             // data.numberOfLenders = Number(BigNumber(data.numberOfLenders || 0).plus(1).toFixed(0));
             // data.numberOfUsers = Number(BigNumber(data.numberOfUsers || 0).plus(1).toFixed(0));
             let newData: UserAsset = {
-                // key: data.markets[0].assets.find((asset) => asset.address == tokenAddress)?.key || "",
-                id: data.markets[0].assets.find((asset) => asset.address == tokenAddress)?.id || "",
-                // name: data.markets[0].assets.find((asset) => asset.address == tokenAddress)?.name || "",
+                // key: dataAssets?.key || "",
+                id: dataAssets?.id || "",
+                // name: dataAssets?.name || "",
                 type: "token",
                 address: tokenAddress,
-                symbol: data.markets[0].assets.find((asset) => asset.address == tokenAddress)?.symbol || "",
+                symbol: dataAssets?.symbol || "",
                 amount: Number(amount.toFixed()),
                 valueInUSD: Number(amount.multipliedBy(price).toFixed(0)),
-                // imgUrl: data.markets[0].assets.find((asset) => asset.address == tokenAddress)?.imgUrl || "",
+                // imgUrl: dataAssets?.imgUrl || "",
                 totalValue: Number(amount.multipliedBy(price).toFixed(0)),
             };
             dataWallet.dapps[0].reserves[0].borrow.push(newData);
         }
         else{
             let newData: UserAsset = {
-                // key: data.markets[0].assets.find((asset) => asset.address == tokenAddress)?.key || "",
-                id: data.markets[0].assets.find((asset) => asset.address == tokenAddress)?.id || "",
-                // name: data.markets[0].assets.find((asset) => asset.address == tokenAddress)?.name || "",
+                // key: dataAssets?.key || "",
+                id: dataAssets?.id || "",
+                // name: dataAssets?.name || "",
                 type: "token",
                 address: tokenAddress,
-                symbol: data.markets[0].assets.find((asset) => asset.address == tokenAddress)?.symbol || "",
+                symbol: dataAssets?.symbol || "",
                 amount: Number(amount.toFixed())+dataInWallet.amount,
                 valueInUSD: Number(amount.plus(dataInWallet.amount).multipliedBy(price).toFixed()),
-                // imgUrl: data.markets[0].assets.find((asset) => asset.address == tokenAddress)?.imgUrl || "",
+                // imgUrl: dataAssets?.imgUrl || "",
                 totalValue: Number(amount.plus(dataInWallet.amount).multipliedBy(price).toFixed()),
             };
             dataWallet.dapps[0].value = Number(BigNumber(dataWallet.dapps[0].value || 0).plus(amount).toFixed());
@@ -337,15 +340,16 @@ export async function SimulationSupplyForkCompoundLP(
             appState[modeFrom].tokenBalances.get(tokenAddress)!
         );
 
-        let data: ForkedCompound | undefined = appState.forkCompoundLPState.forkCompoundLP.get(_idLP);
+        let data = appState.forkCompoundLPState.forkCompoundLP.get(_idLP);
         if (!data) {
             throw new Error("data not found");
         }
-            let price = data.markets[0].assets.find((asset) => asset.address == tokenAddress)?.price;
+        let dataAssets = data.markets[0].assets.find((asset) => asset.address == tokenAddress);   
+        let price = dataAssets?.price;
             if (!price) {
                 throw new Error("price not found");
             }
-            const asset = data.markets[0].assets.find((asset) => asset.address == tokenAddress);
+            const asset = dataAssets;
             if (asset) {
                 asset.totalBorrowInUSD = Number(BigNumber(asset.totalBorrowInUSD || 0).minus(amount.multipliedBy(price)).toFixed(0));
             }
@@ -361,30 +365,30 @@ export async function SimulationSupplyForkCompoundLP(
             // data.numberOfLenders = Number(BigNumber(data.numberOfLenders || 0).plus(1).toFixed(0));
             // data.numberOfUsers = Number(BigNumber(data.numberOfUsers || 0).plus(1).toFixed(0));
             let newData: UserAsset = {
-                // key: data.markets[0].assets.find((asset) => asset.address == tokenAddress)?.key || "",
-                id: data.markets[0].assets.find((asset) => asset.address == tokenAddress)?.id || "",
-                // name: data.markets[0].assets.find((asset) => asset.address == tokenAddress)?.name || "",
+                // key: dataAssets?.key || "",
+                id: dataAssets?.id || "",
+                // name: dataAssets?.name || "",
                 type: "token",
                 address: tokenAddress,
-                symbol: data.markets[0].assets.find((asset) => asset.address == tokenAddress)?.symbol || "",
+                symbol: dataAssets?.symbol || "",
                 amount: -Number(amount.toFixed()),
                 valueInUSD: -Number(amount.multipliedBy(price).toFixed(0)),
-                // imgUrl: data.markets[0].assets.find((asset) => asset.address == tokenAddress)?.imgUrl || "",
+                // imgUrl: dataAssets?.imgUrl || "",
                 totalValue: -Number(amount.multipliedBy(price).toFixed(0)),
             };
             dataWallet.dapps[0].reserves[0].borrow.push(newData);
         }
         else{
             let newData: UserAsset = {
-                // key: data.markets[0].assets.find((asset) => asset.address == tokenAddress)?.key || "",
-                id: data.markets[0].assets.find((asset) => asset.address == tokenAddress)?.id || "",
-                // name: data.markets[0].assets.find((asset) => asset.address == tokenAddress)?.name || "",
+                // key: dataAssets?.key || "",
+                id: dataAssets?.id || "",
+                // name: dataAssets?.name || "",
                 type: "token",
                 address: tokenAddress,
-                symbol: data.markets[0].assets.find((asset) => asset.address == tokenAddress)?.symbol || "",
+                symbol: dataAssets?.symbol || "",
                 amount: -Number(amount.toFixed())+dataInWallet.amount,
                 valueInUSD: Number(amount.multipliedBy(-1).plus(dataInWallet.amount).multipliedBy(price).toFixed()),
-                // imgUrl: data.markets[0].assets.find((asset) => asset.address == tokenAddress)?.imgUrl || "",
+                // imgUrl: dataAssets?.imgUrl || "",
                 totalValue: Number(amount.multipliedBy(-1).plus(dataInWallet.amount).multipliedBy(price).toFixed()),
             };
             dataWallet.dapps[0].value = Number(BigNumber(dataWallet.dapps[0].value || 0).minus(amount).toFixed());
