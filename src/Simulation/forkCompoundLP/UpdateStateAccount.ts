@@ -40,6 +40,8 @@ export async function updateUserInForkCompoundLPState(appState1: ApplicationStat
         let mode = getMode(appState, _from);
         if (entity_ids_compound.some(x => x === entity_id)){
             let data1 = await getDataUserByAxios(_from, entity_id, "0x" + appState.chainId);
+            let from = _from;
+            let dataLendingByAxiosTramline = await getDataLendingByAxiosTramline(entity_id, "0x" + appState.chainId.toString(16), from);
             let data: WalletForkedCompoundLPState = {
                 id: data1["id"],
                 address: data1["address"],
@@ -47,6 +49,9 @@ export async function updateUserInForkCompoundLPState(appState1: ApplicationStat
                 totalClaimable: data1["totalClaimable"],
                 totalDebts: data1["totalDebts"],
                 dapps: data1["dapps"],
+                healthFactor: dataLendingByAxiosTramline["accountPoolDataSlice"]["params"]["healthFactor"],
+                ltv: dataLendingByAxiosTramline["accountPoolDataSlice"]["params"]["ltv"],
+                currentLiquidationThreshold: dataLendingByAxiosTramline["accountPoolDataSlice"]["params"]["currentLiquidationThreshold"],
             }
             appState[mode].forkedCompoundLPState.set(entity_id, data);
         }
@@ -70,6 +75,18 @@ async function getDataLendingByAxios(entity_id: string, chain: string) {
 
 async function getDataUserByAxios(address: EthAddress, entity_id: string, chain: string) {
     let url = `https://develop.centic.io/dev/v3/wallets/${address}/lendings/${entity_id}?chain=${chain}`
+    try {
+        const response = await axios.get(url)
+        const data = response.data;
+        return data;
+    } catch (err) {
+        console.log(err);
+        throw err;
+    }
+}
+
+async function getDataLendingByAxiosTramline(entity_id: string, chain: string, userAddress: EthAddress) {
+    let url = `https://tramlines-backend.trava.finance/api/trava-station/lending-pool/detail?entity=${entity_id}&chainId=${chain}&userAddress=${userAddress}`
     try {
         const response = await axios.get(url)
         const data = response.data;

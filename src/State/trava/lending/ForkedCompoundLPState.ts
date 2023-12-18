@@ -37,4 +37,7 @@ export interface WalletForkedCompoundLPState {
   totalDebts: number;
   // totalDebts24hAgo: number;
   dapps: Array<Dapp>;
+  healthFactor: string;
+  ltv: number;
+  currentLiquidationThreshold: number;
 }

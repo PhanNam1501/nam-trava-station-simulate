@@ -32,4 +32,7 @@ export interface WalletForkedAaveLPState {
   // totalDebts24hAgo: number;
   dapps: Array<Dapp>;
   detailTokenInPool: Map<string, DetailTokenInPool>;
+  healthFactor: string;
+  ltv: number;
+  currentLiquidationThreshold: number;
 }
