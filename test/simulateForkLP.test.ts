@@ -1,4 +1,4 @@
-import { JsonRpcProvider, ethers } from "ethers";
+import { Contract, JsonRpcProvider, ethers } from "ethers";
 import { updateTravaGovernanceState, updateUserLockBalance } from "../src/Simulation/trava/governance/UpdateStateAccount";
 import { simulateTravaGovernanceCreateLock } from "../src/Simulation/trava/governance/SimulationGovernance";
 import { ApplicationState } from "../src/State/ApplicationState";
@@ -8,11 +8,12 @@ import { MONTH_TO_SECONDS, WEEK_TO_SECONDS } from "../src/utils/config";
 import { updateForkCompoundLPState, updateUserInForkCompoundLPState } from "../src/Simulation/forkCompoundLP/UpdateStateAccount";
 import { SimulationBorrowForkCompoundLP, SimulationRepayForkCompoundLP, SimulationSupplyForkCompoundLP, updateLPtTokenInfo, updateSmartWalletTokenBalance, updateTravaLPInfo, updateUserTokenBalance } from "../src/Simulation";
 import { updateForkAaveLPState, updateUserInForkAaveLPState } from "../src/Simulation/forkAaveLP";
-
+import IVaultTrava from "../src/abis/IVaultTrava.json";
   // start 
   async function test(){
     console.log(BigNumber(0.1).toFixed())
-    const provider = new JsonRpcProvider("https://bsc.publicnode.com");
+    const provider = new JsonRpcProvider("https://bsc-testnet.publicnode.com");
+    // const chainId = 56
     const chainId = 56
     //main net
     //https://bsc.publicnode.com
@@ -20,7 +21,7 @@ import { updateForkAaveLPState, updateUserInForkAaveLPState } from "../src/Simul
     //test net
     //https://bsc-testnet.publicnode.com
     //0x595622cBd0Fc4727DF476a1172AdA30A9dDf8F43
-    const userAddress = "0x871DBcE2b9923A35716e7E83ee402B535298538E";
+    const userAddress = "0x595622cBd0Fc4727DF476a1172AdA30A9dDf8F43";
     const proxyAddress = "0x826D824BE55A403859A6Db67D5EeC5aC386307fE";
 
     //test AAVE
