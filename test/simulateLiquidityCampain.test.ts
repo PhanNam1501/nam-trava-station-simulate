@@ -35,6 +35,6 @@ import { SimulationJoinLiquidity, updateLiquidityCampainState } from "../src/Sim
     console.log(appState.smartWalletState.liquidityCampainState)
     console.log(appState.smartWalletState.address)
     appState = await SimulationJoinLiquidity(appState, "0x1537263E42f81424A5099f992c1111D9d8c012B3", "0x595622cBd0Fc4727DF476a1172AdA30A9dDf8F43", "0.1")
-
+    console.log(appState.smartWalletState.liquidityCampainState)
   }
 test()
