@@ -4,7 +4,7 @@ import { SmartWalletState } from "./SmartWalletState";
 import { NFTAuctioningState, NFTFarmingsState, NFTSellingState, NFTVeTravaSellingState } from "./trava/nft/TravaNFTState";
 import { JsonRpcProvider } from "ethers";
 import { TravaGovernanceState } from "./trava/lending/TravaGovenanceState";
-import { DilutionState, ExpeditionState, ForkedAaveLPState, ForkedCompoundLPState } from "./trava";
+import { DilutionState, ExpeditionState, ForkedAaveLPState, ForkedCompoundLPState, LiquidityCampainState } from "./trava";
 
 export class ApplicationState {
   createdTime: number;
