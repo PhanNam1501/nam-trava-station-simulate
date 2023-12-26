@@ -1,6 +1,6 @@
 {
   "name": "trava-simulation-route",
-  "version": "2.0.29",
+  "version": "2.0.30",
   "description": "",
   "main": "./umd/index.js",
   "module": "./esm/index.js",
@@ -16,6 +16,7 @@
   "license": "ISC",
   "dependencies": {
     "@zennomi/tokens": "^1.0.1",
+    "axios": "^1.6.2",
     "bignumber.js": "^9.1.1",
     "decimal.js": "^10.4.3",
     "eth-graph-query": "^2.0.0",

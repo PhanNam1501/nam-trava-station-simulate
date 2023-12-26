@@ -17,6 +17,7 @@
     - [Tương tác với Trava NFT Mission / Expedition](#tương-tác-với-trava-nft-mission--expedition)
     - [Tương tác với Trava Governance](#tương-tác-với-trava-governance)
     - [Tương tác với veTrava NFT Marketplace](#tương-tác-với-vetrava-nft-marketplace)
+    - [Tương tác với Others Lending pools](#tương-tác-với-others-lending-pools)
 - [Simulate state](#simulate-state)
   - [Simulate Utilities actions](#simulate-utilities-actions)
   - [Pull token](#pull-token)
@@ -71,6 +72,11 @@
   - [Sendtoken](#sendtoken-1)
   - [Wrap](#wrap-1)
   - [Unwrap](#unwrap-1)
+- [Simulate Others Lending Pool](#simulate-others-lending-pool)
+  - [Simulate Supply](#simulate-deposit)
+  - [Simulate Borrow](#simulate-borrow)
+  - [Simulate Repay](#simulate-repay)
+  - [Simulate Withdraw](#simulate-withdraw)
 
 ```
 import { ApplicationState } from "../State/ApplicationState";
@@ -377,6 +383,18 @@ appState = await updateTokenBalance(appState, from address, busd token address)
 appState = await updateTokenBalance(appState, from address, trava token address)
 ```
 
+### Tuong tac voi liquidity Campain
+Update state cua smart wallet
+```
+newAppState = await updateLiquidityCampainState(
+    appState
+)
+
+Khi stake: update stakedToken balance for smart wallet, update underlyingToken balance for from address
+Khi withdraw: update underlyingToken balance for "to" Address and Smart Wallet Address
+Khi claimReward: update Trava balance for "to" address
+```
+
 ### Tuong tac voi Trava Staking
 
 Update state cua Smart Wallet trong cac vault
@@ -512,6 +530,23 @@ Khi chọn action Tranfer veTrava NFT
 appState = await updateUserLockBalance(appState, walletAddress);
 appState = await updateUserLockBalance(appState, smartWalletAddress);
 ```
+
+### Tương tác với Others Lending pools
+
+Khi chọn bất cứ action nào của Others Lending pools fork Compound
+
+```
+appState = await updateForkCompoundLPState(appState, entity_id);
+appState = await updateUserInForkCompoundLPState(appState, userAddress, entity_id);
+```
+
+Khi chọn bất cứ action nào của Others Lending pools fork Aave
+
+```
+appState = await updateForkAaveLPState(appState, entity_id);
+appState = await updateUserInForkAaveLPState(appState, userAddress, entity_id);
+```
+
 
 # Simulate state
 
@@ -870,6 +905,47 @@ appState = await simulateExpeditionWithdraw(
 )
 ```
 
+# Simulate Trava Liquidity Campain
+
+## Simulate Trava Liquidity Campain Stake
+
+```
+maxAmount = fromState.getTokenBalanceOf(underlyingTokenAddress)
+
+newAppState = await SimulationJoinLiquidity(
+    oldAppState,
+    stakedTokenAddress,
+    from,
+    amount
+)
+```
+
+## Simulate Trava Liquidity Campain Redeem (Withdraw)
+
+```
+maxAmount = oldAppState.smartWalletState.liquidityCampainState.get(stakedTokenAddress.toLowerCase())!.deposited;
+newAppState = await SimulationWithdrawLiquidity(
+    oldAppState,
+    stakedTokenAddress,
+    to,
+    amount
+)
+```
+
+## Simulate Trava Liquidity Campain Claim (Withdraw)
+
+```
+maxAmount = oldAppState.smartWalletState.liquidityCampainState.get(stakedTokenAddress.toLowerCase())!.claimableReward;
+
+newAppState = await SimulationClaimRewardLiquidity(
+    oldAppState,
+    stakedTokenAddress,
+    to,
+    maxAmount
+)
+```
+
+
 # Simulate Trava Staking
 
 ## Simulate Trava Staking Stake
@@ -1036,5 +1112,111 @@ appState1 = await simulateNFTVeTravaTranfer(
     idVeTrava,
     fromAddress,
     toAddress
+);
+```
+
+# Simulate Others Lending Pool
+
+## Simulate Supply
+
+- Compound
+
+```
+appState1 = await SimulationSupplyForkCompoundLP(
+    appState,
+    userAddress,
+    entity_id,
+    tokenAddress,
+    amount
+);
+```
+
+- Aave
+
+```
+appState1 = await SimulationSupplyForkAaveLP(
+    appState,
+    userAddress,
+    entity_id,
+    tokenAddress,
+    amount
+);
+```
+
+## Simulate Borrow
+
+- Compound
+
+```
+appState1 = await SimulationBorrowForkCompoundLP(
+    appState,
+    userAddress,
+    entity_id,
+    tokenAddress,
+    amount
+);
+```
+
+- Aave
+
+```
+appState1 = await SimulationBorrowForkAaveLP(
+    appState,
+    userAddress,
+    entity_id,
+    tokenAddress,
+    amount
+);
+```
+
+### Simulate Repay
+
+- Compound
+
+```
+appState1 = await SimulationRepayForkCompoundLP(
+    appState,
+    userAddress,
+    entity_id,
+    tokenAddress,
+    amount
+);
+```
+
+- Aave
+
+```
+appState1 = await SimulationRepayForkAaveLP(
+    appState,
+    userAddress,
+    entity_id,
+    tokenAddress,
+    amount
+);
+```
+
+### Simulate Withdraw
+
+- Compound
+
+```
+appState1 = await SimulationWithdrawForkCompoundLP(
+    appState,
+    userAddress,
+    entity_id,
+    tokenAddress,
+    amount
+);
+```
+
+- Aave
+
+```
+appState1 = await SimulationWithdrawForkAaveLP(
+    appState,
+    userAddress,
+    entity_id,
+    tokenAddress,
+    amount
 );
 ```

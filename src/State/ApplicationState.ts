@@ -4,7 +4,7 @@ import { SmartWalletState } from "./SmartWalletState";
 import { NFTAuctioningState, NFTFarmingsState, NFTSellingState, NFTVeTravaSellingState } from "./trava/nft/TravaNFTState";
 import { JsonRpcProvider } from "ethers";
 import { TravaGovernanceState } from "./trava/lending/TravaGovenanceState";
-import { DilutionState, ExpeditionState } from "./trava";
+import { DilutionState, ExpeditionState, ForkedAaveLPState, ForkedCompoundLPState, LiquidityCampainState } from "./trava";
 
 export class ApplicationState {
   createdTime: number;
@@ -16,6 +16,8 @@ export class ApplicationState {
   TravaGovernanceState: TravaGovernanceState;
   ExpeditionState: ExpeditionState;
   DilutionState: DilutionState;
+  forkCompoundLPState: ForkedCompoundLPState;
+  forkAaveLPState: ForkedAaveLPState;
   web3: JsonRpcProvider;
   chainId: number;
   simulatorUrl: string;
@@ -38,6 +40,8 @@ export class ApplicationState {
     this.web3 = web3;
     this.chainId = chainId;
     this.simulatorUrl = simulatorUrl || ""
+    this.forkCompoundLPState = new ForkedCompoundLPState();
+    this.forkAaveLPState = new ForkedAaveLPState();
   }
 }
 
