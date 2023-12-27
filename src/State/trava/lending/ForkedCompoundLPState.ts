@@ -21,11 +21,7 @@ export class ForkedCompoundLPState {
     forkCompoundLP: Map<string, ForkedCompound>;
     isFetch: boolean;
     constructor() {
-<<<<<<< HEAD
       this.forkCompoundLP = new Map();
-=======
-      this.forkCompoundLP = new Map<string,ForkedCompound>();
->>>>>>> refs/remotes/origin/main
       this.isFetch = false;
     }
 }
