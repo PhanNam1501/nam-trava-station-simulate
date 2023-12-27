@@ -3,6 +3,7 @@ import { EthAddress } from "../utils/types";
 import { NFTAuctioningState, NFTSellingState, NFTTicketState } from "./trava/nft/TravaNFTState";
 import { WalletTravaLPState } from "./trava/lending/TravaDeFiState";
 import { VeTravaListState } from "./trava/lending/TravaGovenanceState";
+import { WalletForkedAaveLPState, WalletForkedCompoundLPState } from "./trava";
 export declare class NFTOwned {
     v1: ArmouryObject;
     v2: ArmouryObject;
@@ -32,6 +33,8 @@ export declare class WalletState {
     nfts: NFTOwned;
     collection: CollectionOwned;
     travaLPState: WalletTravaLPState;
+    forkedCompoundLPState: Map<string, WalletForkedCompoundLPState>;
+    forkedAaveLPState: Map<string, WalletForkedAaveLPState>;
     ethBalances: string;
     sellingNFT: NFTSellingState;
     auctioningState: NFTAuctioningState;

@@ -15,6 +15,8 @@ export declare function updateLPtTokenInfo(appState1: ApplicationState, _tokenAd
     TravaGovernanceState: import("../../..").TravaGovernanceState;
     ExpeditionState: import("../../..").ExpeditionState;
     DilutionState: import("../../..").DilutionState;
+    forkCompoundLPState: import("../../..").ForkedCompoundLPState;
+    forkAaveLPState: import("../../..").ForkedAaveLPState;
     web3: import("ethers").JsonRpcProvider;
     chainId: number;
     simulatorUrl: string;
@@ -29,6 +31,8 @@ export declare function updateLPDebtTokenInfo(appState1: ApplicationState, _toke
     TravaGovernanceState: import("../../..").TravaGovernanceState;
     ExpeditionState: import("../../..").ExpeditionState;
     DilutionState: import("../../..").DilutionState;
+    forkCompoundLPState: import("../../..").ForkedCompoundLPState;
+    forkAaveLPState: import("../../..").ForkedAaveLPState;
     web3: import("ethers").JsonRpcProvider;
     chainId: number;
     simulatorUrl: string;
@@ -44,6 +48,8 @@ export declare function updateMaxRewardCanClaims(appState1: ApplicationState): P
     TravaGovernanceState: import("../../..").TravaGovernanceState;
     ExpeditionState: import("../../..").ExpeditionState;
     DilutionState: import("../../..").DilutionState;
+    forkCompoundLPState: import("../../..").ForkedCompoundLPState;
+    forkAaveLPState: import("../../..").ForkedAaveLPState;
     web3: import("ethers").JsonRpcProvider;
     chainId: number;
     simulatorUrl: string;
@@ -58,6 +64,8 @@ export declare function updateRTravaAndTravaForReward(appState1: ApplicationStat
     TravaGovernanceState: import("../../..").TravaGovernanceState;
     ExpeditionState: import("../../..").ExpeditionState;
     DilutionState: import("../../..").DilutionState;
+    forkCompoundLPState: import("../../..").ForkedCompoundLPState;
+    forkAaveLPState: import("../../..").ForkedAaveLPState;
     web3: import("ethers").JsonRpcProvider;
     chainId: number;
     simulatorUrl: string;

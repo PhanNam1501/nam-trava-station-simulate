@@ -12,6 +12,8 @@ export declare function simulateExpeditionAbandon(appState1: ApplicationState, _
     TravaGovernanceState: import("../../../../../State").TravaGovernanceState;
     ExpeditionState: import("../../../../../State").ExpeditionState;
     DilutionState: import("../../../../../State").DilutionState;
+    forkCompoundLPState: import("../../../../../State").ForkedCompoundLPState;
+    forkAaveLPState: import("../../../../../State").ForkedAaveLPState;
     web3: import("ethers").JsonRpcProvider;
     chainId: number;
     simulatorUrl: string;

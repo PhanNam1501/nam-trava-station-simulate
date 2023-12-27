@@ -2,7 +2,7 @@ import { WalletState } from "./WalletState";
 import { SmartWalletState } from "./SmartWalletState";
 import { NFTAuctioningState, NFTSellingState, NFTVeTravaSellingState } from "./trava/nft/TravaNFTState";
 import { TravaGovernanceState } from "./trava/lending/TravaGovenanceState";
-import { DilutionState, ExpeditionState } from "./trava";
+import { DilutionState, ExpeditionState, ForkedAaveLPState, ForkedCompoundLPState } from "./trava";
 export class ApplicationState {
     constructor(userAddress, smartWalletAddress, web3, chainId, simulatorUrl) {
         this.createdTime = Math.floor(new Date().getTime() / 1000);
@@ -17,6 +17,8 @@ export class ApplicationState {
         this.web3 = web3;
         this.chainId = chainId;
         this.simulatorUrl = simulatorUrl || "";
+        this.forkCompoundLPState = new ForkedCompoundLPState();
+        this.forkAaveLPState = new ForkedAaveLPState();
     }
 }
 // export async function initializeState(userAddress: EthAddress, smartWalletAddress: EthAddress, web3: JsonRpcProvider | null): Promise<ApplicationState> {

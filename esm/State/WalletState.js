@@ -51,6 +51,8 @@ export class WalletState {
         this.nfts = new NFTOwned();
         this.collection = new CollectionOwned();
         this.travaLPState = new WalletTravaLPState();
+        this.forkedCompoundLPState = new Map();
+        this.forkedAaveLPState = new Map();
         this.ethBalances = "";
         this.sellingNFT = new NFTSellingState();
         this.auctioningState = new NFTAuctioningState();

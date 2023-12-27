@@ -1,0 +1,1 @@
+export const entity_ids_aave: Array<string> = ["valas-finance", "radiant-v2", "granary-finance"];

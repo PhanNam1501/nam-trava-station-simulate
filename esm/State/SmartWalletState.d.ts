@@ -3,6 +3,7 @@ import { NFTAuctioningState, NFTFarmingsState, NFTSellingState, NFTTicketState }
 import { BaseAccountVault, WalletTravaLPState } from "./trava/lending/TravaDeFiState";
 import { CollectionOwned, KnightInExpeditionState, NFTOwned } from "./WalletState";
 import { VeTravaListState } from "./trava/lending/TravaGovenanceState";
+import { LiquidityCampainState, WalletForkedAaveLPState, WalletForkedCompoundLPState } from "./trava";
 export interface OriginTokenData {
     balances: string;
 }
@@ -27,6 +28,8 @@ export declare class SmartWalletState {
     nfts: NFTOwned;
     collection: CollectionOwned;
     travaLPState: WalletTravaLPState;
+    forkedCompoundLPState: Map<string, WalletForkedCompoundLPState>;
+    forkedAaveLPState: Map<string, WalletForkedAaveLPState>;
     ethBalances: string;
     sellingNFT: NFTSellingState;
     auctioningState: NFTAuctioningState;
@@ -36,5 +39,6 @@ export declare class SmartWalletState {
     veTravaListState: VeTravaListState;
     knightInExpeditionState: KnightInExpeditionState;
     ticket: NFTTicketState;
+    liquidityCampainState: LiquidityCampainState;
     constructor(address: EthAddress);
 }

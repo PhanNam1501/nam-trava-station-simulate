@@ -35,6 +35,8 @@ export declare function updateOwnedAuctioningNFT(appState1: ApplicationState): P
     TravaGovernanceState: import("../../../../..").TravaGovernanceState;
     ExpeditionState: import("../../../../..").ExpeditionState;
     DilutionState: import("../../../../..").DilutionState;
+    forkCompoundLPState: import("../../../../..").ForkedCompoundLPState;
+    forkAaveLPState: import("../../../../..").ForkedAaveLPState;
     web3: import("ethers").JsonRpcProvider;
     chainId: number;
     simulatorUrl: string;

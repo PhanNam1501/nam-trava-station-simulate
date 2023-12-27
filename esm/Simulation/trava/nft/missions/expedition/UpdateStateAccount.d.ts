@@ -10,6 +10,8 @@ export declare function updateOwnerKnightInExpeditionState(appState1: Applicatio
     TravaGovernanceState: import("../../../../../State").TravaGovernanceState;
     ExpeditionState: import("../../../../../State").ExpeditionState;
     DilutionState: import("../../../../../State").DilutionState;
+    forkCompoundLPState: import("../../../../../State").ForkedCompoundLPState;
+    forkAaveLPState: import("../../../../../State").ForkedAaveLPState;
     web3: import("ethers").JsonRpcProvider;
     chainId: number;
     simulatorUrl: string;
@@ -24,6 +26,8 @@ export declare function updateExpeditionState(appState1: ApplicationState, force
     TravaGovernanceState: import("../../../../../State").TravaGovernanceState;
     ExpeditionState: import("../../../../../State").ExpeditionState;
     DilutionState: import("../../../../../State").DilutionState;
+    forkCompoundLPState: import("../../../../../State").ForkedCompoundLPState;
+    forkAaveLPState: import("../../../../../State").ForkedAaveLPState;
     web3: import("ethers").JsonRpcProvider;
     chainId: number;
     simulatorUrl: string;

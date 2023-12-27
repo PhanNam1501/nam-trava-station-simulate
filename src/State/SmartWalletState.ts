@@ -4,9 +4,9 @@ import {
   BaseAccountVault,
   WalletTravaLPState,
 } from "./trava/lending/TravaDeFiState";
-import { CollectionOwned, KnightInExpeditionState, NFTOwned, Ticket } from "./WalletState";
-import { VeTravaListState, VeTravaState } from "./trava/lending/TravaGovenanceState"
-import { FarmingKnightDetailInfo } from "../Simulation";
+import { CollectionOwned, KnightInExpeditionState, NFTOwned } from "./WalletState";
+import { VeTravaListState } from "./trava/lending/TravaGovenanceState"
+import { LiquidityCampainState, WalletForkedAaveLPState, WalletForkedCompoundLPState } from "./trava";
 export interface OriginTokenData {
   balances: string;
 }
@@ -34,6 +34,8 @@ export class SmartWalletState {
   nfts: NFTOwned;
   collection: CollectionOwned;
   travaLPState: WalletTravaLPState;
+  forkedCompoundLPState: Map<string, WalletForkedCompoundLPState>;
+  forkedAaveLPState: Map<string, WalletForkedAaveLPState>;
   ethBalances: string;
   sellingNFT: NFTSellingState;
   auctioningState: NFTAuctioningState;
@@ -43,11 +45,14 @@ export class SmartWalletState {
   veTravaListState: VeTravaListState;
   knightInExpeditionState: KnightInExpeditionState;
   ticket: NFTTicketState;
+  liquidityCampainState: LiquidityCampainState;
   constructor(address: EthAddress) {
     this.address = address;
     this.tokenBalances = new Map<string, string>();
     this.nfts = new NFTOwned();
     this.travaLPState = new WalletTravaLPState();
+    this.forkedCompoundLPState = new Map<string, WalletForkedCompoundLPState>();
+    this.forkedAaveLPState = new Map<string, WalletForkedAaveLPState>();
     this.collection = new CollectionOwned();
     this.ethBalances = "";
     this.sellingNFT = new NFTSellingState();
@@ -58,6 +63,7 @@ export class SmartWalletState {
     this.veTravaListState = new VeTravaListState();
     this.knightInExpeditionState = new KnightInExpeditionState();
     this.ticket = new NFTTicketState();
+    this.liquidityCampainState = new LiquidityCampainState();
   }
 
   // async getTokenAmount(tokenAddress: string): Promise<string> {

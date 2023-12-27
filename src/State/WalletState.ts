@@ -3,6 +3,8 @@ import { EthAddress } from "../utils/types";
 import { NFTAuctioningState, NFTSellingState, NFTTicketState } from "./trava/nft/TravaNFTState";
 import { WalletTravaLPState } from "./trava/lending/TravaDeFiState";
 import { VeTravaListState, VeTravaState } from "./trava/lending/TravaGovenanceState";
+import { WalletForkedAaveLPState, WalletForkedCompoundLPState } from "./trava";
+import { DetailTokenInPool } from "./SmartWalletState";
 
 // export class NFTData {
 //   id: string | number;
@@ -71,6 +73,8 @@ export class WalletState {
   nfts: NFTOwned;
   collection: CollectionOwned;
   travaLPState: WalletTravaLPState;
+  forkedCompoundLPState: Map<string, WalletForkedCompoundLPState>;
+  forkedAaveLPState: Map<string, WalletForkedAaveLPState>;
   ethBalances: string;
   sellingNFT: NFTSellingState;
   auctioningState: NFTAuctioningState;
@@ -83,6 +87,8 @@ export class WalletState {
     this.nfts = new NFTOwned();
     this.collection = new CollectionOwned();
     this.travaLPState = new WalletTravaLPState();
+    this.forkedCompoundLPState = new Map<string, WalletForkedCompoundLPState>();
+    this.forkedAaveLPState = new Map<string, WalletForkedAaveLPState>();
     this.ethBalances = "";
     this.sellingNFT = new NFTSellingState();
     this.auctioningState = new NFTAuctioningState();

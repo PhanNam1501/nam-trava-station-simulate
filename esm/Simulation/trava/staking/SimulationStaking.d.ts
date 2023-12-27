@@ -11,6 +11,8 @@ export declare function simulateStakeStaking(appState1: ApplicationState, _staki
     TravaGovernanceState: import("../../..").TravaGovernanceState;
     ExpeditionState: import("../../..").ExpeditionState;
     DilutionState: import("../../..").DilutionState;
+    forkCompoundLPState: import("../../..").ForkedCompoundLPState;
+    forkAaveLPState: import("../../..").ForkedAaveLPState;
     web3: import("ethers").JsonRpcProvider;
     chainId: number;
     simulatorUrl: string;
@@ -25,6 +27,8 @@ export declare function simulateStakingRedeem(appState1: ApplicationState, _stak
     TravaGovernanceState: import("../../..").TravaGovernanceState;
     ExpeditionState: import("../../..").ExpeditionState;
     DilutionState: import("../../..").DilutionState;
+    forkCompoundLPState: import("../../..").ForkedCompoundLPState;
+    forkAaveLPState: import("../../..").ForkedAaveLPState;
     web3: import("ethers").JsonRpcProvider;
     chainId: number;
     simulatorUrl: string;
@@ -39,6 +43,8 @@ export declare function simulateStakingClaimRewards(appState1: ApplicationState,
     TravaGovernanceState: import("../../..").TravaGovernanceState;
     ExpeditionState: import("../../..").ExpeditionState;
     DilutionState: import("../../..").DilutionState;
+    forkCompoundLPState: import("../../..").ForkedCompoundLPState;
+    forkAaveLPState: import("../../..").ForkedAaveLPState;
     web3: import("ethers").JsonRpcProvider;
     chainId: number;
     simulatorUrl: string;

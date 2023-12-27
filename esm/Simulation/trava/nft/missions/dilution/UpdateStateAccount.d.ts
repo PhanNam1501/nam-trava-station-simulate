@@ -9,6 +9,8 @@ export declare function updateDilutionState(appState1: ApplicationState, force?:
     TravaGovernanceState: import("../../../../../State").TravaGovernanceState;
     ExpeditionState: import("../../../../../State").ExpeditionState;
     DilutionState: import("../../../../../State").DilutionState;
+    forkCompoundLPState: import("../../../../../State").ForkedCompoundLPState;
+    forkAaveLPState: import("../../../../../State").ForkedAaveLPState;
     web3: import("ethers").JsonRpcProvider;
     chainId: number;
     simulatorUrl: string;

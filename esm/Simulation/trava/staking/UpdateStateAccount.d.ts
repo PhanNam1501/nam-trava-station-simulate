@@ -9,6 +9,8 @@ export declare function updateAllAccountVault(appState1: ApplicationState, force
     TravaGovernanceState: import("../../..").TravaGovernanceState;
     ExpeditionState: import("../../..").ExpeditionState;
     DilutionState: import("../../..").DilutionState;
+    forkCompoundLPState: import("../../..").ForkedCompoundLPState;
+    forkAaveLPState: import("../../..").ForkedAaveLPState;
     web3: import("ethers").JsonRpcProvider;
     chainId: number;
     simulatorUrl: string;
