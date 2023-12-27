@@ -4,8 +4,14 @@ import {
   BaseAccountVault,
   WalletTravaLPState,
 } from "./trava/lending/TravaDeFiState";
+<<<<<<< HEAD
 import { CollectionOwned, KnightInExpeditionState, NFTOwned } from "./WalletState";
 import { VeTravaListState } from "./trava/lending/TravaGovenanceState"
+=======
+import { CollectionOwned, KnightInExpeditionState, NFTOwned, Ticket } from "./WalletState";
+import { VeTravaListState, VeTravaState } from "./trava/lending/TravaGovenanceState"
+import { FarmingKnightDetailInfo } from "../Simulation";
+>>>>>>> refs/remotes/origin/main
 import { LiquidityCampainState, WalletForkedAaveLPState, WalletForkedCompoundLPState } from "./trava";
 export interface OriginTokenData {
   balances: string;

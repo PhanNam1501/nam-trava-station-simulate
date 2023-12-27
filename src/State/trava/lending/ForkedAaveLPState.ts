@@ -15,7 +15,11 @@ export class ForkedAaveLPState {
     forkAaveLP: Map<string, ForkedAave>;
     isFetch: boolean;
     constructor() {
+<<<<<<< HEAD
       this.forkAaveLP = new Map();
+=======
+      this.forkAaveLP = new Map<string,ForkedAave>();
+>>>>>>> refs/remotes/origin/main
       this.isFetch = false;
     }
 }
