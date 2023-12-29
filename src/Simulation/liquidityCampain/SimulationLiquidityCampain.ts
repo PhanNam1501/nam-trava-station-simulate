@@ -4,6 +4,7 @@ import { EthAddress, wallet_mode } from "../../utils/types";
 import { updateLiquidityCampainState } from "./UpdateStateAccount";
 import { updateTokenBalance } from "../basic";
 import { getMode } from "../../utils/helper";
+import { MAX_UINT256 } from "../../utils";
 
 export async function SimulationJoinLiquidity(
     _appState: ApplicationState,
@@ -15,7 +16,7 @@ export async function SimulationJoinLiquidity(
     try {
       let liquidity = _liquidity.toLowerCase();
       let from = _from.toLowerCase();
-      let amount = _amount;
+      let amount = BigNumber(_amount);
       if (appState.smartWalletState.liquidityCampainState.isFetch == false) {
         appState = await updateLiquidityCampainState(appState);
       } 
@@ -41,6 +42,11 @@ export async function SimulationJoinLiquidity(
       if (appState[modeFrom].tokenBalances.get(liquidityCampain.underlyingToken.underlyingAddress.toLowerCase())){
         oldBalance = BigNumber(appState[modeFrom].tokenBalances.get(liquidityCampain.underlyingToken.underlyingAddress.toLowerCase())!);
       }
+
+      if (amount.toFixed(0) == MAX_UINT256 || amount.isEqualTo(MAX_UINT256) ) {
+        amount = BigNumber(oldBalance);
+      }
+
       let newTotalSupply = BigNumber(liquidityCampain.deposited).plus(amount);
       let newLiquidityCampain = liquidityCampain;
       newLiquidityCampain.deposited = newTotalSupply.toFixed();
@@ -66,7 +72,7 @@ export async function SimulationWithdrawLiquidity(
   try {
     let liquidity = _liquidity.toLowerCase();
     let to = _to.toLowerCase();
-    let amount = _amount;
+    let amount = BigNumber(_amount);
     if (appState.smartWalletState.liquidityCampainState.isFetch == false) {
       appState = await updateLiquidityCampainState(appState);
     } 
@@ -91,6 +97,11 @@ export async function SimulationWithdrawLiquidity(
     if (appState[modeTo].tokenBalances.get(liquidityCampain.underlyingToken.underlyingAddress.toLowerCase())){
       oldBalance = BigNumber(appState[modeTo].tokenBalances.get(liquidityCampain.underlyingToken.underlyingAddress.toLowerCase())!);
     }
+
+    if (amount.toFixed(0) == MAX_UINT256 || amount.isEqualTo(MAX_UINT256) ) {
+      amount = BigNumber(liquidityCampain.deposited);
+    }
+
     let newTotalSupply = BigNumber(liquidityCampain.deposited).minus(amount);
     let newLiquidityCampain = liquidityCampain;
     newLiquidityCampain.deposited = newTotalSupply.toFixed();
@@ -116,7 +127,7 @@ export async function SimulationClaimRewardLiquidity(
   try {
     let liquidity = _liquidity.toLowerCase();
     let to = _to.toLowerCase();
-    let amount = _amount;
+    let amount = BigNumber(_amount);
     if (appState.smartWalletState.liquidityCampainState.isFetch == false) {
       appState = await updateLiquidityCampainState(appState);
     } 

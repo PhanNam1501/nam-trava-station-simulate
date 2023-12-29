@@ -13,7 +13,7 @@ import BigNumber from "bignumber.js";
 import { BaseAccountVault, LiquidityCampain, LiquidityCampainState, RewardTokenData, StakedTokenData, UnderlyingTokenData } from "../../State";
 import { YEAR_TO_SECONDS, getAddr } from "../../utils";
 import OracleABI from "../../abis/AaveOracle.json";
-import { error } from "console";
+
 export async function updateLiquidityCampainState(
     appState1: ApplicationState, 
     force?: boolean
@@ -76,26 +76,24 @@ export async function updateLiquidityCampainState(
         
             let busdContract = new Contract(getAddr("BUSD_TOKEN", appState.chainId), BEP20ABI, appState.web3);
             let busdBalanceTravalc = await busdContract.balanceOf(getAddr("BUSD_TRAVA_LC_ADDRESS", appState.chainId));
-        
+            console.log("busdBalanceTravalc", busdBalanceTravalc.toString())
             let travaContract = new Contract(getAddr("TRAVA_TOKEN", appState.chainId), BEP20ABI, appState.web3);
             let travaBalanceTravalc = await travaContract.balanceOf(getAddr("BUSD_TRAVA_LC_ADDRESS", appState.chainId));
-        
+            console.log("travaBalanceTravalc", travaBalanceTravalc.toString())
             let travaPrice = BigNumber(busdPrice).multipliedBy(busdBalanceTravalc).div(travaBalanceTravalc)
             if (travaPrice.isNaN()) {
               travaPrice = BigNumber(0);
             }
         
             let busdBalanceTODlc = await busdContract.balanceOf(getAddr("BUSD_TOD_LC_ADDRESS", appState.chainId));
-        
+            console.log("busdBalanceTODlc", busdBalanceTODlc.toString())
             let todContract = new Contract(getAddr("TOD_TOKEN", appState.chainId), BEP20ABI, appState.web3);
             let todBalanceTODlc = await todContract.balanceOf(getAddr("BUSD_TOD_LC_ADDRESS", appState.chainId));
-        
+            console.log("todBalanceTODlc", todBalanceTODlc.toString())
             let todPrice = BigNumber(busdPrice).multipliedBy(busdBalanceTODlc).div(todBalanceTODlc)
             if (todPrice.isNaN()) {
               todPrice = BigNumber(0);
             }
-            console.log("travaPrice", travaPrice.toFixed())
-            console.log("todPrice", todPrice.toFixed())
             for (let i = 0; i < vaultConfigList.length; i++) {
                 let vaultContract = new Contract(vaultConfigList[i].stakedTokenAddress, IVaultABI, appState.web3);
                 let stakerRewardsToClaim = await vaultContract.stakerRewardsToClaim(appState.smartWalletState.address);
@@ -122,7 +120,7 @@ export async function updateLiquidityCampainState(
                 } else if (vaultConfigList[i].id == "TOD") {
                     underlyingToken.price = todPrice.toFixed();
                 } else {
-                    error("Not support underlying token");
+                    throw new Error("Not support underlying token");
                 }
 
 
