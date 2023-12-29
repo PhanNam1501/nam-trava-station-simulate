@@ -56,7 +56,7 @@ export async function SimulationJoinLiquidity(
       let newTVL = (BigNumber(liquidityCampain.TVL).div(liquidityCampain.underlyingToken.price).multipliedBy(liquidityCampain.underlyingToken.reserveDecimals).plus(amount)).multipliedBy(liquidityCampain.underlyingToken.price).div(liquidityCampain.underlyingToken.reserveDecimals);
       newLiquidityCampain.TVL = newTVL.toFixed();
       newLiquidityCampain.maxTotalDeposit = BigNumber(liquidityCampain.maxTotalDeposit).minus(amount).toFixed();
-      
+
       appState.smartWalletState.liquidityCampainState.liquidityCampainList.set(liquidity, newLiquidityCampain);
       appState[modeFrom].tokenBalances.set(liquidityCampain.underlyingToken.underlyingAddress.toLowerCase(), oldBalance.minus(amount).toFixed());
       return appState;
