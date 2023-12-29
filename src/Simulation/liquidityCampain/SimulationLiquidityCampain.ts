@@ -26,9 +26,9 @@ export async function SimulationJoinLiquidity(
       }
       let joinTime = Number(liquidityCampain.joinTime);
       let now = new Date().getTime();
-      // if (now > joinTime) {
-      //   throw new Error("Liquidity Campain can not join now");
-      // }
+      if (now > joinTime) {
+        throw new Error("Liquidity Campain can not join now");
+      }
 
       const modeFrom = getMode(appState, from);
       if (modeFrom != "walletState" && modeFrom != "smartWalletState") {
