@@ -33,10 +33,10 @@ export async function updateLiquidityCampainState(
                 rewardTokenAddress.push(vaultConfigList[i].rewardToken.address)
             }
 
-            // get join time and lock time
             let [
                 lockTime,
                 joinTime,
+                epsData,
                 maxTotalDeposit,
                 TVLDatas,
                 priceDataBUSDTRAVA,
@@ -58,6 +58,16 @@ export async function updateLiquidityCampainState(
                     address: address,
                     name: "JOIN_TIME",
                     params: [],
+                    })),
+                    appState.web3,
+                    appState.chainId
+                ),
+                multiCall(
+                    IVaultABI,
+                    stakedTokenAddress.map((address: string, _: number) => ({
+                    address: address,
+                    name: "getAssetData",
+                    params: [address],
                     })),
                     appState.web3,
                     appState.chainId
@@ -103,6 +113,7 @@ export async function updateLiquidityCampainState(
                     appState.chainId
                 ),
             ]);
+            
             let oracleContract = new Contract(getAddr("ORACLE_ADDRESS", appState.chainId), OracleABI, appState.web3)
             let busdPrice = await oracleContract.getAssetPrice(getAddr("BUSD_TOKEN", appState.chainId));
         
@@ -124,14 +135,14 @@ export async function updateLiquidityCampainState(
                 let vaultContract = new Contract(vaultConfigList[i].stakedTokenAddress, IVaultABI, appState.web3);
                 let stakerRewardsToClaim = await vaultContract.stakerRewardsToClaim(appState.smartWalletState.address);
                 let amountsUserReferred = await vaultContract.amountsUserReferred(appState.smartWalletState.address);
-                let eps = 0; // TODO
+                let eps = BigNumber(epsData[i][1]).toFixed();
                 // init state stakeToken
                 let stakedToken: StakedTokenData = {
                     id: vaultConfigList[i].id,
                     name: vaultConfigList[i].name,
                     code: vaultConfigList[i].code,
                     stakedTokenAddress: vaultConfigList[i].stakedTokenAddress.toLowerCase(),
-                    eps: "", // TODO
+                    eps: eps,
                     reserveDecimals: vaultConfigList[i].reserveDecimals
                 }
 
