@@ -34,14 +34,11 @@ export async function SimulationJoinLiquidity(
       if (modeFrom != "walletState" && modeFrom != "smartWalletState") {
         throw new Error("Address not found");
       }
-      if (appState[modeFrom].tokenBalances.has(liquidityCampain.stakedToken.stakedTokenAddress) == false) {
+      if (appState[modeFrom].tokenBalances.has(liquidityCampain.underlyingToken.underlyingAddress) == false) {
         appState = await updateTokenBalance(appState, from, liquidityCampain.underlyingToken.underlyingAddress);
       }
       
-      let oldBalance = BigNumber(0);
-      if (appState[modeFrom].tokenBalances.get(liquidityCampain.underlyingToken.underlyingAddress.toLowerCase())){
-        oldBalance = BigNumber(appState[modeFrom].tokenBalances.get(liquidityCampain.underlyingToken.underlyingAddress.toLowerCase())!);
-      }
+      let oldBalance = BigNumber(appState[modeFrom].tokenBalances.get(liquidityCampain.underlyingToken.underlyingAddress.toLowerCase())!);
 
       if (amount.toFixed(0) == MAX_UINT256 || amount.isEqualTo(MAX_UINT256) ) {
         amount = BigNumber(oldBalance);
@@ -89,15 +86,12 @@ export async function SimulationWithdrawLiquidity(
     if (modeTo != "walletState" && modeTo != "smartWalletState") {
       throw new Error("Address not found");
     }
-    if (appState[modeTo].tokenBalances.has(liquidityCampain.stakedToken.stakedTokenAddress) == false) {
+    if (appState[modeTo].tokenBalances.has(liquidityCampain.underlyingToken.underlyingAddress) == false) {
       appState = await updateTokenBalance(appState, to, liquidityCampain.underlyingToken.underlyingAddress);
     }
     
-    let oldBalance = BigNumber(0);
-    if (appState[modeTo].tokenBalances.get(liquidityCampain.underlyingToken.underlyingAddress.toLowerCase())){
-      oldBalance = BigNumber(appState[modeTo].tokenBalances.get(liquidityCampain.underlyingToken.underlyingAddress.toLowerCase())!);
-    }
-
+    let oldBalance = BigNumber(appState[modeTo].tokenBalances.get(liquidityCampain.underlyingToken.underlyingAddress.toLowerCase())!);
+    console.log(oldBalance.toFixed());
     if (amount.toFixed(0) == MAX_UINT256 || amount.isEqualTo(MAX_UINT256) ) {
       amount = BigNumber(liquidityCampain.deposited);
     }
@@ -139,11 +133,22 @@ export async function SimulationClaimRewardLiquidity(
     if (modeTo != "walletState" && modeTo != "smartWalletState") {
       throw new Error("Address not found");
     }
-    if (appState[modeTo].tokenBalances.has(liquidityCampain.stakedToken.stakedTokenAddress) == false) {
-      appState = await updateTokenBalance(appState, to, liquidityCampain.underlyingToken.underlyingAddress);
+    if (appState[modeTo].tokenBalances.has(liquidityCampain.rewardToken.address) == false) {
+      appState = await updateTokenBalance(appState, to, liquidityCampain.rewardToken.address);
     }
 
-    /////
+    let oldBalance = BigNumber(appState[modeTo].tokenBalances.get(liquidityCampain.rewardToken.address.toLowerCase())!);
+    
+    if (amount.toFixed(0) == MAX_UINT256 || amount.isEqualTo(MAX_UINT256) ) {
+      amount = BigNumber(liquidityCampain.claimableReward);
+    }
+
+    let newClaimableReward = BigNumber(liquidityCampain.claimableReward).minus(amount);
+    let newLiquidityCampain = liquidityCampain;
+    newLiquidityCampain.claimableReward = newClaimableReward.toFixed();
+
+    appState.smartWalletState.liquidityCampainState.liquidityCampainList.set(liquidity, newLiquidityCampain);
+    appState[modeTo].tokenBalances.set(liquidityCampain.rewardToken.address.toLowerCase(), oldBalance.plus(amount).toFixed());
     return appState;
   } catch (err) {
     throw err;
