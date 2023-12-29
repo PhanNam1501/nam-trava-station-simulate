@@ -23,6 +23,12 @@ export async function SimulationJoinLiquidity(
       if (liquidityCampain == undefined) {
         throw new Error("Liquidity not found");
       }
+      let joinTime = Number(liquidityCampain.joinTime);
+      let now = new Date().getTime();
+      if (now > joinTime) {
+        throw new Error("Liquidity Campain can not join now");
+      }
+
       const modeFrom = getMode(appState, from);
       if (modeFrom != "walletState" && modeFrom != "smartWalletState") {
         throw new Error("Address not found");
@@ -44,7 +50,6 @@ export async function SimulationJoinLiquidity(
 
       appState.smartWalletState.liquidityCampainState.liquidityCampainList.set(liquidity, newLiquidityCampain);
       appState[modeFrom].tokenBalances.set(liquidityCampain.underlyingToken.underlyingAddress.toLowerCase(), oldBalance.minus(amount).toFixed());
-      console.log(appState[modeFrom].tokenBalances.get(liquidityCampain.underlyingToken.underlyingAddress.toLowerCase()))
       return appState;
     } catch (err) {
       throw err;
@@ -65,11 +70,36 @@ export async function SimulationWithdrawLiquidity(
     if (appState.smartWalletState.liquidityCampainState.isFetch == false) {
       appState = await updateLiquidityCampainState(appState);
     } 
-    if (!appState.smartWalletState.liquidityCampainState.liquidityCampainList.has(liquidity)) {
+    let liquidityCampain = appState.smartWalletState.liquidityCampainState.liquidityCampainList.get(liquidity);
+    if (liquidityCampain == undefined) {
       throw new Error("Liquidity not found");
     }
+    let lockTime = Number(liquidityCampain.lockTime);
+    let now = new Date().getTime();
+    if (now < lockTime) {
+      throw new Error("Liquidity Campain can not withdraw now");
+    }
+    const modeTo = getMode(appState, to);
+    if (modeTo != "walletState" && modeTo != "smartWalletState") {
+      throw new Error("Address not found");
+    }
+    if (appState[modeTo].tokenBalances.has(liquidityCampain.stakedToken.stakedTokenAddress) == false) {
+      appState = await updateTokenBalance(appState, to, liquidityCampain.underlyingToken.underlyingAddress);
+    }
     
-    /////
+    let oldBalance = BigNumber(0);
+    if (appState[modeTo].tokenBalances.get(liquidityCampain.underlyingToken.underlyingAddress.toLowerCase())){
+      oldBalance = BigNumber(appState[modeTo].tokenBalances.get(liquidityCampain.underlyingToken.underlyingAddress.toLowerCase())!);
+    }
+    let newTotalSupply = BigNumber(liquidityCampain.deposited).minus(amount);
+    let newLiquidityCampain = liquidityCampain;
+    newLiquidityCampain.deposited = newTotalSupply.toFixed();
+
+    let newTVL = (BigNumber(liquidityCampain.TVL).div(liquidityCampain.underlyingToken.price).multipliedBy(liquidityCampain.underlyingToken.reserveDecimals).minus(amount)).multipliedBy(liquidityCampain.underlyingToken.price).div(liquidityCampain.underlyingToken.reserveDecimals);
+    newLiquidityCampain.TVL = newTVL.toFixed();
+
+    appState.smartWalletState.liquidityCampainState.liquidityCampainList.set(liquidity, newLiquidityCampain);
+    appState[modeTo].tokenBalances.set(liquidityCampain.underlyingToken.underlyingAddress.toLowerCase(), oldBalance.plus(amount).toFixed());
     return appState;
   } catch (err) {
     throw err;
@@ -89,11 +119,20 @@ export async function SimulationClaimRewardLiquidity(
     let amount = _amount;
     if (appState.smartWalletState.liquidityCampainState.isFetch == false) {
       appState = await updateLiquidityCampainState(appState);
-    }  
-    if (!appState.smartWalletState.liquidityCampainState.liquidityCampainList.has(liquidity)) {
+    } 
+    let liquidityCampain = appState.smartWalletState.liquidityCampainState.liquidityCampainList.get(liquidity);
+    if (liquidityCampain == undefined) {
       throw new Error("Liquidity not found");
     }
+    const modeTo = getMode(appState, to);
+    if (modeTo != "walletState" && modeTo != "smartWalletState") {
+      throw new Error("Address not found");
+    }
+    if (appState[modeTo].tokenBalances.has(liquidityCampain.stakedToken.stakedTokenAddress) == false) {
+      appState = await updateTokenBalance(appState, to, liquidityCampain.underlyingToken.underlyingAddress);
+    }
 
+    /////
     return appState;
   } catch (err) {
     throw err;

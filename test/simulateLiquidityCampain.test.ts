@@ -5,7 +5,7 @@ import { ApplicationState } from "../src/State/ApplicationState";
 import { getAddr } from "../src/utils/address";
 import BigNumber from "bignumber.js";
 import { MONTH_TO_SECONDS, WEEK_TO_SECONDS } from "../src/utils/config";
-import { SimulationJoinLiquidity, updateLiquidityCampainState } from "../src/Simulation";
+import { SimulationJoinLiquidity, SimulationWithdrawLiquidity, updateLiquidityCampainState } from "../src/Simulation";
   // start 
   async function test(){
     console.log(BigNumber(0.1).toFixed())
@@ -35,6 +35,8 @@ import { SimulationJoinLiquidity, updateLiquidityCampainState } from "../src/Sim
     console.log(appState.smartWalletState.liquidityCampainState)
     console.log(appState.smartWalletState.address)
     appState = await SimulationJoinLiquidity(appState, "0x1537263E42f81424A5099f992c1111D9d8c012B3", "0x595622cBd0Fc4727DF476a1172AdA30A9dDf8F43", "0.1")
+    appState = await SimulationJoinLiquidity(appState, "0x1537263E42f81424A5099f992c1111D9d8c012B3", "0x595622cBd0Fc4727DF476a1172AdA30A9dDf8F43", "10000")
+    appState = await SimulationWithdrawLiquidity(appState, "0x1537263E42f81424A5099f992c1111D9d8c012B3", "0x595622cBd0Fc4727DF476a1172AdA30A9dDf8F43", "5000")
     console.log(appState.smartWalletState.liquidityCampainState)
   }
 test()
