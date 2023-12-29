@@ -114,14 +114,12 @@ export async function SimulationWithdrawLiquidity(
 export async function SimulationClaimRewardLiquidity(
   _appState: ApplicationState,
   _liquidity: EthAddress,
-  _to: EthAddress,
-  _amount: EthAddress,
+  _to: EthAddress
 ): Promise<ApplicationState> {
   let appState = { ..._appState };
   try {
     let liquidity = _liquidity.toLowerCase();
     let to = _to.toLowerCase();
-    let amount = BigNumber(_amount);
     if (appState.smartWalletState.liquidityCampainState.isFetch == false) {
       appState = await updateLiquidityCampainState(appState);
     } 
@@ -138,11 +136,7 @@ export async function SimulationClaimRewardLiquidity(
     }
 
     let oldBalance = BigNumber(appState[modeTo].tokenBalances.get(liquidityCampain.rewardToken.address.toLowerCase())!);
-    
-    if (amount.toFixed(0) == MAX_UINT256 || amount.isEqualTo(MAX_UINT256) ) {
-      amount = BigNumber(liquidityCampain.claimableReward);
-    }
-
+    let amount = BigNumber(liquidityCampain.claimableReward);
     let newClaimableReward = BigNumber(liquidityCampain.claimableReward).minus(amount);
     let newLiquidityCampain = liquidityCampain;
     newLiquidityCampain.claimableReward = newClaimableReward.toFixed();
