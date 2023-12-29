@@ -38,6 +38,8 @@ export async function updateLiquidityCampainState(
                 lockTime,
                 joinTime,
                 TVLDatas,
+                priceDataBUSDTRAVA,
+                priceDataBUSDTOD,
               ] = await Promise.all([
                 multiCall(
                     IVaultABI,
@@ -69,31 +71,44 @@ export async function updateLiquidityCampainState(
                     appState.web3,
                     appState.chainId
                 ),
+                multiCall(
+                    BEP20ABI,
+                    [getAddr("BUSD_TOKEN", appState.chainId), getAddr("TRAVA_TOKEN", appState.chainId)].map((address: string, _: number) => ({
+                    address: address,
+                    name: "balanceOf",
+                    params: [getAddr("BUSD_TRAVA_LC_ADDRESS", appState.chainId)],
+                    })),
+                    appState.web3,
+                    appState.chainId
+                ),
+                multiCall(
+                    BEP20ABI,
+                    [getAddr("BUSD_TOKEN", appState.chainId), getAddr("TOD_TOKEN", appState.chainId)].map((address: string, _: number) => ({
+                    address: address,
+                    name: "balanceOf",
+                    params: [getAddr("BUSD_TOD_LC_ADDRESS", appState.chainId)],
+                    })),
+                    appState.web3,
+                    appState.chainId
+                ),
             ]);
-
             let oracleContract = new Contract(getAddr("ORACLE_ADDRESS", appState.chainId), OracleABI, appState.web3)
             let busdPrice = await oracleContract.getAssetPrice(getAddr("BUSD_TOKEN", appState.chainId));
         
-            let busdContract = new Contract(getAddr("BUSD_TOKEN", appState.chainId), BEP20ABI, appState.web3);
-            let busdBalanceTravalc = await busdContract.balanceOf(getAddr("BUSD_TRAVA_LC_ADDRESS", appState.chainId));
-            console.log("busdBalanceTravalc", busdBalanceTravalc.toString())
-            let travaContract = new Contract(getAddr("TRAVA_TOKEN", appState.chainId), BEP20ABI, appState.web3);
-            let travaBalanceTravalc = await travaContract.balanceOf(getAddr("BUSD_TRAVA_LC_ADDRESS", appState.chainId));
-            console.log("travaBalanceTravalc", travaBalanceTravalc.toString())
+            let busdBalanceTravalc = priceDataBUSDTRAVA[0];
+            let travaBalanceTravalc =   priceDataBUSDTRAVA[1];
             let travaPrice = BigNumber(busdPrice).multipliedBy(busdBalanceTravalc).div(travaBalanceTravalc)
             if (travaPrice.isNaN()) {
               travaPrice = BigNumber(0);
             }
         
-            let busdBalanceTODlc = await busdContract.balanceOf(getAddr("BUSD_TOD_LC_ADDRESS", appState.chainId));
-            console.log("busdBalanceTODlc", busdBalanceTODlc.toString())
-            let todContract = new Contract(getAddr("TOD_TOKEN", appState.chainId), BEP20ABI, appState.web3);
-            let todBalanceTODlc = await todContract.balanceOf(getAddr("BUSD_TOD_LC_ADDRESS", appState.chainId));
-            console.log("todBalanceTODlc", todBalanceTODlc.toString())
+            let busdBalanceTODlc = priceDataBUSDTOD[0];
+            let todBalanceTODlc =  priceDataBUSDTOD[1];
             let todPrice = BigNumber(busdPrice).multipliedBy(busdBalanceTODlc).div(todBalanceTODlc)
             if (todPrice.isNaN()) {
               todPrice = BigNumber(0);
             }
+
             for (let i = 0; i < vaultConfigList.length; i++) {
                 let vaultContract = new Contract(vaultConfigList[i].stakedTokenAddress, IVaultABI, appState.web3);
                 let stakerRewardsToClaim = await vaultContract.stakerRewardsToClaim(appState.smartWalletState.address);
