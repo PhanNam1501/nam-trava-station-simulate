@@ -13,4 +13,5 @@ export class LiquidityCampainState {
 export interface LiquidityCampain extends BaseAccountVault{
     lockTime: uint256;
     joinTime: uint256;
+    maxTotalDeposit: uint256;
 }

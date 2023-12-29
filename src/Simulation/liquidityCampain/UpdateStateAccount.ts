@@ -37,6 +37,7 @@ export async function updateLiquidityCampainState(
             let [
                 lockTime,
                 joinTime,
+                maxTotalDeposit,
                 TVLDatas,
                 priceDataBUSDTRAVA,
                 priceDataBUSDTOD,
@@ -56,6 +57,16 @@ export async function updateLiquidityCampainState(
                     stakedTokenAddress.map((address: string, _: number) => ({
                     address: address,
                     name: "JOIN_TIME",
+                    params: [],
+                    })),
+                    appState.web3,
+                    appState.chainId
+                ),
+                multiCall(
+                    IVaultABI,
+                    stakedTokenAddress.map((address: string, _: number) => ({
+                    address: address,
+                    name: "MAX_TOTAL_DEPOSIT",
                     params: [],
                     })),
                     appState.web3,
@@ -172,6 +183,7 @@ export async function updateLiquidityCampainState(
                     ...accountVaults,
                     lockTime: BigNumber(lockTime[i]).toFixed(),
                     joinTime: BigNumber(joinTime[i]).toFixed(),
+                    maxTotalDeposit: BigNumber(maxTotalDeposit[i]).toFixed(),
                 }
                 appState.smartWalletState.liquidityCampainState.liquidityCampainList.set(vaultConfigList[i].stakedTokenAddress.toLowerCase(), liquidityCampain);
             }
