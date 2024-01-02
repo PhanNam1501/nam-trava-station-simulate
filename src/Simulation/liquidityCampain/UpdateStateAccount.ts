@@ -24,11 +24,15 @@ export async function updateLiquidityCampainState(
         if (appState.smartWalletState.liquidityCampainState.isFetch == false || force == true){
             let underlyingAddress = new Array<EthAddress>;
             let priceUnderlyingAddress = new Array<EthAddress>
+            let otherTokenInLpAddress = new Array<EthAddress>;
+            let lpAddress = new Array<EthAddress>;
             let stakedTokenAddress = new Array<EthAddress>;
             let rewardTokenAddress = new Array<EthAddress>;
             for (let i = 0; i < vaultConfigList.length; i++) {
                 underlyingAddress.push(vaultConfigList[i].underlyingAddress.toLowerCase());
                 priceUnderlyingAddress.push(vaultConfigList[i].priceUnderlyingAddress.toLowerCase());
+                otherTokenInLpAddress.push(vaultConfigList[i].otherTokenInLpAddress.toLowerCase());
+                lpAddress.push(vaultConfigList[i].lpAddress.toLowerCase());
                 stakedTokenAddress.push(vaultConfigList[i].stakedTokenAddress.toLowerCase());
                 rewardTokenAddress.push(vaultConfigList[i].rewardToken.address.toLowerCase());
             }
@@ -40,7 +44,6 @@ export async function updateLiquidityCampainState(
                 maxTotalDeposit,
                 TVLDatas,
                 priceDataBUSDTRAVA,
-                priceDataBUSDTOD,
                 stakerRewardsToClaims,
                 amountsUserReferreds,
               ] = await Promise.all([
@@ -105,16 +108,6 @@ export async function updateLiquidityCampainState(
                     appState.chainId
                 ),
                 multiCall(
-                    BEP20ABI,
-                    [getAddr("BUSD_TOKEN", appState.chainId), getAddr("TOD_TOKEN", appState.chainId)].map((address: string, _: number) => ({
-                    address: address,
-                    name: "balanceOf",
-                    params: [getAddr("BUSD_TOD_LC_ADDRESS", appState.chainId)],
-                    })),
-                    appState.web3,
-                    appState.chainId
-                ),
-                multiCall(
                     IVaultABI,
                     stakedTokenAddress.map((address: string, _: number) => ({
                     address: address,
@@ -135,25 +128,40 @@ export async function updateLiquidityCampainState(
                     appState.chainId
                 ),
             ]);
+
             
             let oracleContract = new Contract(getAddr("ORACLE_ADDRESS", appState.chainId), OracleABI, appState.web3)
             let busdPrice = await oracleContract.getAssetPrice(getAddr("BUSD_TOKEN", appState.chainId));
-        
+            
             let busdBalanceTravalc = priceDataBUSDTRAVA[0];
             let travaBalanceTravalc =   priceDataBUSDTRAVA[1];
             let travaPrice = BigNumber(busdPrice).multipliedBy(busdBalanceTravalc).div(travaBalanceTravalc)
             if (travaPrice.isNaN()) {
-              travaPrice = BigNumber(0);
+                travaPrice = BigNumber(0);
             }
-        
-            let busdBalanceTODlc = priceDataBUSDTOD[0];
-            let todBalanceTODlc =  priceDataBUSDTOD[1];
-            let todPrice = BigNumber(busdPrice).multipliedBy(busdBalanceTODlc).div(todBalanceTODlc)
-            if (todPrice.isNaN()) {
-              todPrice = BigNumber(0);
-            }
-
+            
+            
             for (let i = 0; i < vaultConfigList.length; i++) {
+                let [priceData] = await Promise.all([
+                    multiCall(
+                        BEP20ABI,
+                        [otherTokenInLpAddress[i], underlyingAddress[i]].map((address: string, _: number) => ({
+                        address: address,
+                        name: "balanceOf",
+                        params: [lpAddress[i]],
+                        })),
+                        appState.web3,
+                        appState.chainId
+                    ),
+                ]);
+                let otherTokenInLCPrice = await oracleContract.getAssetPrice(otherTokenInLpAddress[i]);
+                let otherTokenInLCBalance = priceData[0];
+                let underlyingTokenBalance =  priceData[1];
+                let underlyingTokenPrice = BigNumber(otherTokenInLCPrice).multipliedBy(otherTokenInLCBalance).div(underlyingTokenBalance)
+                if (underlyingTokenPrice.isNaN() || BigNumber(underlyingTokenBalance).isEqualTo(0)) {
+                  underlyingTokenPrice = BigNumber(0);
+                }
+
                 let stakerRewardsToClaim = stakerRewardsToClaims[i];
                 let amountsUserReferred = amountsUserReferreds[i];
                 let eps = BigNumber(epsData[i][1]).toFixed();
@@ -171,16 +179,8 @@ export async function updateLiquidityCampainState(
                 let underlyingToken: UnderlyingTokenData = {
                     underlyingAddress: vaultConfigList[i].underlyingAddress.toLowerCase(),
                     reserveDecimals: vaultConfigList[i].reserveDecimals,
-                    price: "",
+                    price: underlyingTokenPrice.toFixed(),
                 }
-                if (vaultConfigList[i].id == "TRAVA") {
-                    underlyingToken.price = travaPrice.toFixed();
-                } else if (vaultConfigList[i].id == "TOD") {
-                    underlyingToken.price = todPrice.toFixed();
-                } else {
-                    throw new Error("Not support underlying token");
-                }
-
 
                 // init state rewardToken
                 let rewardToken: RewardTokenData = {
