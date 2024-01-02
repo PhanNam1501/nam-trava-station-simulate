@@ -15,7 +15,7 @@ export async function SimulationJoinLiquidity(
     let appState = { ..._appState };
     try {
       let liquidity = _liquidity.toLowerCase();
-      let from = _from.toLowerCase();
+      let from = _from;
       let amount = BigNumber(_amount);
       if (appState.smartWalletState.liquidityCampainState.isFetch == false) {
         appState = await updateLiquidityCampainState(appState);
@@ -66,7 +66,7 @@ export async function SimulationWithdrawLiquidity(
   let appState = { ..._appState };
   try {
     let liquidity = _liquidity.toLowerCase();
-    let to = _to.toLowerCase();
+    let to = _to;
     let amount = BigNumber(_amount);
     if (appState.smartWalletState.liquidityCampainState.isFetch == false) {
       appState = await updateLiquidityCampainState(appState);
@@ -114,7 +114,7 @@ export async function SimulationClaimRewardLiquidity(
   let appState = { ..._appState };
   try {
     let liquidity = _liquidity.toLowerCase();
-    let to = _to.toLowerCase();
+    let to = _to;
     if (appState.smartWalletState.liquidityCampainState.isFetch == false) {
       appState = await updateLiquidityCampainState(appState);
     } 
