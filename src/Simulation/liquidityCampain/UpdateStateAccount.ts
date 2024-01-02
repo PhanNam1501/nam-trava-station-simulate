@@ -41,6 +41,8 @@ export async function updateLiquidityCampainState(
                 TVLDatas,
                 priceDataBUSDTRAVA,
                 priceDataBUSDTOD,
+                stakerRewardsToClaims,
+                amountsUserReferreds,
               ] = await Promise.all([
                 multiCall(
                     IVaultABI,
@@ -112,6 +114,26 @@ export async function updateLiquidityCampainState(
                     appState.web3,
                     appState.chainId
                 ),
+                multiCall(
+                    IVaultABI,
+                    stakedTokenAddress.map((address: string, _: number) => ({
+                    address: address,
+                    name: "stakerRewardsToClaim",
+                    params: [appState.smartWalletState.address],
+                    })),
+                    appState.web3,
+                    appState.chainId
+                ),
+                multiCall(
+                    IVaultABI,
+                    stakedTokenAddress.map((address: string, _: number) => ({
+                    address: address,
+                    name: "amountsUserReferred",
+                    params: [appState.smartWalletState.address],
+                    })),
+                    appState.web3,
+                    appState.chainId
+                ),
             ]);
             
             let oracleContract = new Contract(getAddr("ORACLE_ADDRESS", appState.chainId), OracleABI, appState.web3)
@@ -132,9 +154,8 @@ export async function updateLiquidityCampainState(
             }
 
             for (let i = 0; i < vaultConfigList.length; i++) {
-                let vaultContract = new Contract(vaultConfigList[i].stakedTokenAddress, IVaultABI, appState.web3);
-                let stakerRewardsToClaim = await vaultContract.stakerRewardsToClaim(appState.smartWalletState.address);
-                let amountsUserReferred = await vaultContract.amountsUserReferred(appState.smartWalletState.address);
+                let stakerRewardsToClaim = stakerRewardsToClaims[i];
+                let amountsUserReferred = amountsUserReferreds[i];
                 let eps = BigNumber(epsData[i][1]).toFixed();
                 // init state stakeToken
                 let stakedToken: StakedTokenData = {
