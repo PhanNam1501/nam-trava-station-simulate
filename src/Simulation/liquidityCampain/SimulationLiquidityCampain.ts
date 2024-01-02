@@ -24,16 +24,8 @@ export async function SimulationJoinLiquidity(
       if (liquidityCampain == undefined) {
         throw new Error("Liquidity not found");
       }
-      let joinTime = Number(liquidityCampain.joinTime);
-      let now = new Date().getTime();
-      if (now > joinTime) {
-        throw new Error("Liquidity Campain can not join now");
-      }
 
       const modeFrom = getMode(appState, from);
-      if (modeFrom != "walletState" && modeFrom != "smartWalletState") {
-        throw new Error("Address not found");
-      }
       if (appState[modeFrom].tokenBalances.has(liquidityCampain.underlyingToken.underlyingAddress) == false) {
         appState = await updateTokenBalance(appState, from, liquidityCampain.underlyingToken.underlyingAddress);
       }
@@ -89,9 +81,6 @@ export async function SimulationWithdrawLiquidity(
       throw new Error("Liquidity Campain can not withdraw now");
     }
     const modeTo = getMode(appState, to);
-    if (modeTo != "walletState" && modeTo != "smartWalletState") {
-      throw new Error("Address not found");
-    }
     if (appState[modeTo].tokenBalances.has(liquidityCampain.underlyingToken.underlyingAddress) == false) {
       appState = await updateTokenBalance(appState, to, liquidityCampain.underlyingToken.underlyingAddress);
     }
@@ -134,9 +123,6 @@ export async function SimulationClaimRewardLiquidity(
       throw new Error("Liquidity not found");
     }
     const modeTo = getMode(appState, to);
-    if (modeTo != "walletState" && modeTo != "smartWalletState") {
-      throw new Error("Address not found");
-    }
     if (appState[modeTo].tokenBalances.has(liquidityCampain.rewardToken.address) == false) {
       appState = await updateTokenBalance(appState, to, liquidityCampain.rewardToken.address);
     }
