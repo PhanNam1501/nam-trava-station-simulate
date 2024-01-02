@@ -3,14 +3,13 @@ import { ApplicationState } from "../../State/ApplicationState";
 import { EthAddress } from "../../utils/types";
 import { Contract } from "ethers";
 import _ from "lodash";
-import { getMode } from "../../utils/helper";
 import { listLiquidityVault } from "./LiquidityCampainConfig";
 import { multiCall } from "orchai-combinator-bsc-simulation";
 import BEP20ABI from "../../abis/BEP20.json";
 import IVaultABI from "../../abis/IVault.json";
 import StakedTokenAbi from "../../abis/StakedToken.json";
 import BigNumber from "bignumber.js";
-import { BaseAccountVault, LiquidityCampain, LiquidityCampainState, RewardTokenData, StakedTokenData, UnderlyingTokenData } from "../../State";
+import { BaseAccountVault, LiquidityCampain, RewardTokenData, StakedTokenData, UnderlyingTokenData } from "../../State";
 import { YEAR_TO_SECONDS, getAddr } from "../../utils";
 import OracleABI from "../../abis/AaveOracle.json";
 
@@ -165,7 +164,7 @@ export async function updateLiquidityCampainState(
                 let stakerRewardsToClaim = stakerRewardsToClaims[i];
                 let amountsUserReferred = amountsUserReferreds[i];
                 let eps = BigNumber(epsData[i][1]).toFixed();
-                // init state stakeToken
+
                 let stakedToken: StakedTokenData = {
                     id: vaultConfigList[i].id,
                     name: vaultConfigList[i].name,
@@ -175,30 +174,25 @@ export async function updateLiquidityCampainState(
                     reserveDecimals: vaultConfigList[i].reserveDecimals
                 }
 
-                // init state underlyingToken
                 let underlyingToken: UnderlyingTokenData = {
                     underlyingAddress: vaultConfigList[i].underlyingAddress.toLowerCase(),
                     reserveDecimals: vaultConfigList[i].reserveDecimals,
                     price: underlyingTokenPrice.toFixed(),
                 }
 
-                // init state rewardToken
                 let rewardToken: RewardTokenData = {
                     address: vaultConfigList[i].rewardToken.address.toLowerCase(),
                     decimals: vaultConfigList[i].rewardToken.decimals,
                     price: travaPrice.toFixed(),
                 }
 
-                // Calculate TVL = TVL amount * price
                 let TVL = BigNumber(TVLDatas[i]).div(underlyingToken.reserveDecimals).multipliedBy(underlyingToken.price)
 
-                // Calculate APR = eps * Reward token price * 1 year to seconds / TVL / 100 
                 let APR = BigNumber(eps).multipliedBy(rewardToken.price).multipliedBy(YEAR_TO_SECONDS).div(TVL);
                 if (APR.isNaN()) {
                     APR = BigNumber(0);
                 }
 
-                // Init state smart wallet in vault[i]
                 let accountVaults: BaseAccountVault = {
                     claimable: vaultConfigList[i].claimable,
                     claimableReward: BigNumber(stakerRewardsToClaim).toFixed(),
@@ -210,7 +204,6 @@ export async function updateLiquidityCampainState(
                     rewardToken: rewardToken
                 }
 
-                // Init Liquidity Campain State
                 let liquidityCampain: LiquidityCampain = {
                     ...accountVaults,
                     lockTime: BigNumber(lockTime[i]).toFixed(),

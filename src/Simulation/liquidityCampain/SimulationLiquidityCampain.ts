@@ -1,6 +1,6 @@
 import BigNumber from "bignumber.js";
-import { ApplicationState, LiquidityCampain, UserAsset } from "../../State";
-import { EthAddress, wallet_mode } from "../../utils/types";
+import { ApplicationState} from "../../State";
+import { EthAddress } from "../../utils/types";
 import { updateLiquidityCampainState } from "./UpdateStateAccount";
 import { updateTokenBalance } from "../basic";
 import { getMode } from "../../utils/helper";
