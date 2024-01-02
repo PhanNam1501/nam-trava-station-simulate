@@ -22,15 +22,15 @@ export async function updateLiquidityCampainState(
     let appState = { ...appState1 };
     try {
         if (appState.smartWalletState.liquidityCampainState.isFetch == false || force == true){
-            let underlyingAddress = new Array<string>;
-            let priceUnderlyingAddress = new Array<string>
-            let stakedTokenAddress = new Array<string>;
-            let rewardTokenAddress = new Array<string>;
+            let underlyingAddress = new Array<EthAddress>;
+            let priceUnderlyingAddress = new Array<EthAddress>
+            let stakedTokenAddress = new Array<EthAddress>;
+            let rewardTokenAddress = new Array<EthAddress>;
             for (let i = 0; i < vaultConfigList.length; i++) {
-                underlyingAddress.push(vaultConfigList[i].underlyingAddress);
-                priceUnderlyingAddress.push(vaultConfigList[i].priceUnderlyingAddress);
-                stakedTokenAddress.push(vaultConfigList[i].stakedTokenAddress);
-                rewardTokenAddress.push(vaultConfigList[i].rewardToken.address)
+                underlyingAddress.push(vaultConfigList[i].underlyingAddress.toLowerCase());
+                priceUnderlyingAddress.push(vaultConfigList[i].priceUnderlyingAddress.toLowerCase());
+                stakedTokenAddress.push(vaultConfigList[i].stakedTokenAddress.toLowerCase());
+                rewardTokenAddress.push(vaultConfigList[i].rewardToken.address.toLowerCase());
             }
 
             let [
