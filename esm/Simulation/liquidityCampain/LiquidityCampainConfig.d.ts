@@ -10,6 +10,8 @@ export declare const listLiquidityVault: {
         reserveDecimals: string;
         underlyingAddress: string;
         priceUnderlyingAddress: string;
+        otherTokenInLpAddress: string;
+        lpAddress: string;
         stakedTokenAddress: string;
         claimable: boolean;
         tokenName: string;

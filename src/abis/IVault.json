@@ -13,11 +13,6 @@
       },
       {
         "internalType": "uint256",
-        "name": "cooldownSeconds",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
         "name": "unstakeWindow",
         "type": "uint256"
       },
@@ -33,12 +28,12 @@
       },
       {
         "internalType": "address",
-        "name": "emissionManager",
+        "name": "_admin",
         "type": "address"
       },
       {
         "internalType": "address",
-        "name": "admin",
+        "name": "_emissionManager",
         "type": "address"
       },
       {
@@ -129,6 +124,19 @@
       {
         "indexed": true,
         "internalType": "address",
+        "name": "newAddress",
+        "type": "address"
+      }
+    ],
+    "name": "ControllerAdminChanged",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
         "name": "user",
         "type": "address"
       }
@@ -147,6 +155,32 @@
       }
     ],
     "name": "DistributionEndUpdated",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "newAddress",
+        "type": "address"
+      }
+    ],
+    "name": "EmissionMangerChanged",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "newAddress",
+        "type": "address"
+      }
+    ],
+    "name": "ManagerReputationChanged",
     "type": "event"
   },
   {
@@ -253,12 +287,6 @@
         "type": "address"
       },
       {
-        "indexed": true,
-        "internalType": "address",
-        "name": "referred",
-        "type": "address"
-      },
-      {
         "indexed": false,
         "internalType": "uint256",
         "name": "amount",
@@ -320,7 +348,7 @@
   },
   {
     "inputs": [],
-    "name": "ADMIN",
+    "name": "CONTROLLER_ADMIN",
     "outputs": [
       {
         "internalType": "address",
@@ -398,7 +426,7 @@
   },
   {
     "inputs": [],
-    "name": "JOIN_TIME",
+    "name": "LOCK_TIME",
     "outputs": [
       {
         "internalType": "uint256",
@@ -411,12 +439,12 @@
   },
   {
     "inputs": [],
-    "name": "LOCK_TIME",
+    "name": "MANAGER_REPUTATION",
     "outputs": [
       {
-        "internalType": "uint256",
+        "internalType": "address",
         "name": "",
-        "type": "uint256"
+        "type": "address"
       }
     ],
     "stateMutability": "view",
@@ -527,25 +555,6 @@
       }
     ],
     "name": "allowance",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "name": "amountsUserReferred",
     "outputs": [
       {
         "internalType": "uint256",
@@ -733,25 +742,6 @@
     "type": "function"
   },
   {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "tokenAddr",
-        "type": "address"
-      }
-    ],
-    "name": "getBalanceOf",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
     "inputs": [],
     "name": "getDistributionEnd",
     "outputs": [
@@ -819,7 +809,45 @@
         "type": "address"
       }
     ],
+    "name": "getTotalReputationRewards",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "staker",
+        "type": "address"
+      }
+    ],
     "name": "getTotalRewardsBalance",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "staker",
+        "type": "address"
+      }
+    ],
+    "name": "getTotalVaultRewards",
     "outputs": [
       {
         "internalType": "uint256",
@@ -924,19 +952,6 @@
     "type": "function"
   },
   {
-    "inputs": [],
-    "name": "pancakeRouter",
-    "outputs": [
-      {
-        "internalType": "contract IPancakeRouter02",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
     "inputs": [
       {
         "internalType": "address",
@@ -957,6 +972,37 @@
   {
     "inputs": [],
     "name": "renounceOwnership",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_admin",
+        "type": "address"
+      },
+      {
+        "internalType": "bool",
+        "name": "_status",
+        "type": "bool"
+      }
+    ],
+    "name": "setAdmin",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_controllerAdmin",
+        "type": "address"
+      }
+    ],
+    "name": "setControllerAdmin",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -1004,11 +1050,24 @@
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "_joinTime",
+        "name": "_lockTime",
         "type": "uint256"
       }
     ],
-    "name": "setJoinTime",
+    "name": "setLockTime",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_managerReputation",
+        "type": "address"
+      }
+    ],
+    "name": "setManagerReputation",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -1017,11 +1076,24 @@
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "_lockTime",
+        "name": "_maxTotalDeposit",
         "type": "uint256"
       }
     ],
-    "name": "setLockTime",
+    "name": "setMaxTotalDeposit",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "contract IBEP20",
+        "name": "_trava",
+        "type": "address"
+      }
+    ],
+    "name": "setRewardToken",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -1056,30 +1128,7 @@
     "inputs": [
       {
         "internalType": "address",
-        "name": "_vaultTrava",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "_vaultTod",
-        "type": "address"
-      }
-    ],
-    "name": "setVault",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
         "name": "onBehalfOf",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "referred",
         "type": "address"
       },
       {
@@ -1139,25 +1188,6 @@
         "internalType": "string",
         "name": "",
         "type": "string"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "name": "timesUserReferred",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
       }
     ],
     "stateMutability": "view",
@@ -1240,32 +1270,6 @@
     "name": "transferOwnership",
     "outputs": [],
     "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "vaultTod",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "vaultTrava",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
     "type": "function"
   },
   {

@@ -27,7 +27,6 @@ export declare const listAddr: {
         NFT_TICKET: string;
         DILUTION_STAKING: string;
         BUSD_TOKEN: string;
-        BUSD_TRAVA_LC_ADDRESS: string;
         TOD_TOKEN: string;
         BUSD_TOD_LC_ADDRESS: string;
         VE_TRAVA_MARKETPLACE_ADDRESS?: undefined;
@@ -61,7 +60,6 @@ export declare const listAddr: {
         NFT_TICKET: string;
         DILUTION_STAKING: string;
         BUSD_TOKEN: string;
-        BUSD_TRAVA_LC_ADDRESS: string;
         TOD_TOKEN: string;
         BUSD_TOD_LC_ADDRESS: string;
     };

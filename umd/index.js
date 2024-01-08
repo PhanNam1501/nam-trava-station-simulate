@@ -1115,7 +1115,6 @@ var listAddr = {
     NFT_TICKET: "0x858D0cfa0743Ff1Ccc4970A432D661887AA7892f",
     DILUTION_STAKING: "0xC51cfa3D6F03B0dd91BE1650C769443c2c3875f2",
     BUSD_TOKEN: "0x2CEC38C779d6b962bc877777b6f70937d21c9c38",
-    BUSD_TRAVA_LC_ADDRESS: "0x85Ddc89670e6dF515B00A69e86916e3208feb8e3",
     TOD_TOKEN: "0xfca3cf5e82f595d4f20c24d007ae5e2e94fab2f0",
     BUSD_TOD_LC_ADDRESS: "0x8E402D21cb184B84A55d7331f2C700d459ABADaa"
   },
@@ -1166,10 +1165,9 @@ var listAddr = {
     NFT_FARMING_BASE_EXP: "0xc7a3a214206d6677b3321865AfbD84a417414Db3",
     NFT_TICKET: "0xaDD13E50CbFaf76435EeD7b3b7624a7bE6Ba65da",
     DILUTION_STAKING: "0x9E7e2fF72f1e3C031c14A53673036a922d349f9E",
-    BUSD_TOKEN: "",
-    BUSD_TRAVA_LC_ADDRESS: "",
-    TOD_TOKEN: "",
-    BUSD_TOD_LC_ADDRESS: ""
+    BUSD_TOKEN: "0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56",
+    TOD_TOKEN: "0x21d5Fa5ECf2605c0E835Ae054AF9bbA0468e5951",
+    BUSD_TOD_LC_ADDRESS: "0x62848473Ccb5a10d1Aa19B7a31BCEF9385E8165B"
   }
 };
 var getAddr = (name, chainId) => {
@@ -56912,112 +56910,112 @@ function _updateLiquidityCampainState() {
       if (appState.smartWalletState.liquidityCampainState.isFetch == false || force == true) {
         var underlyingAddress = new Array();
         var priceUnderlyingAddress = new Array();
+        var otherTokenInLpAddress = new Array();
+        var lpAddress = new Array();
         var stakedTokenAddress = new Array();
         var rewardTokenAddress = new Array();
         for (var i = 0; i < vaultConfigList.length; i++) {
-          underlyingAddress.push(vaultConfigList[i].underlyingAddress);
-          priceUnderlyingAddress.push(vaultConfigList[i].priceUnderlyingAddress);
-          stakedTokenAddress.push(vaultConfigList[i].stakedTokenAddress);
-          rewardTokenAddress.push(vaultConfigList[i].rewardToken.address);
+          underlyingAddress.push(vaultConfigList[i].underlyingAddress.toLowerCase());
+          priceUnderlyingAddress.push(vaultConfigList[i].priceUnderlyingAddress.toLowerCase());
+          otherTokenInLpAddress.push(vaultConfigList[i].otherTokenInLpAddress.toLowerCase());
+          lpAddress.push(vaultConfigList[i].lpAddress.toLowerCase());
+          stakedTokenAddress.push(vaultConfigList[i].stakedTokenAddress.toLowerCase());
+          rewardTokenAddress.push(vaultConfigList[i].rewardToken.address.toLowerCase());
         }
-
-        // get join time and lock time
-        var [lockTime, joinTime, TVLDatas] = yield Promise.all([(0,orchai_combinator_bsc_simulation__WEBPACK_IMPORTED_MODULE_2__.multiCall)(_abis_IVault_json__WEBPACK_IMPORTED_MODULE_4__, stakedTokenAddress.map((address, _) => ({
+        var [lockTime, epsData, maxTotalDeposit, TVLDatas, stakerRewardsToClaims, depositedDatas, decimalsOtherLpToken] = yield Promise.all([(0,orchai_combinator_bsc_simulation__WEBPACK_IMPORTED_MODULE_2__.multiCall)(_abis_IVault_json__WEBPACK_IMPORTED_MODULE_4__, stakedTokenAddress.map((address, _) => ({
           address: address,
           name: "LOCK_TIME",
           params: []
         })), appState.web3, appState.chainId), (0,orchai_combinator_bsc_simulation__WEBPACK_IMPORTED_MODULE_2__.multiCall)(_abis_IVault_json__WEBPACK_IMPORTED_MODULE_4__, stakedTokenAddress.map((address, _) => ({
           address: address,
-          name: "JOIN_TIME",
+          name: "getAssetData",
+          params: [address]
+        })), appState.web3, appState.chainId), (0,orchai_combinator_bsc_simulation__WEBPACK_IMPORTED_MODULE_2__.multiCall)(_abis_IVault_json__WEBPACK_IMPORTED_MODULE_4__, stakedTokenAddress.map((address, _) => ({
+          address: address,
+          name: "MAX_TOTAL_DEPOSIT",
           params: []
         })), appState.web3, appState.chainId), (0,orchai_combinator_bsc_simulation__WEBPACK_IMPORTED_MODULE_2__.multiCall)(_abis_StakedToken_json__WEBPACK_IMPORTED_MODULE_5__, stakedTokenAddress.map((address, _) => ({
           address: address,
           name: "totalSupply",
           params: []
+        })), appState.web3, appState.chainId), (0,orchai_combinator_bsc_simulation__WEBPACK_IMPORTED_MODULE_2__.multiCall)(_abis_IVault_json__WEBPACK_IMPORTED_MODULE_4__, stakedTokenAddress.map((address, _) => ({
+          address: address,
+          name: "stakerRewardsToClaim",
+          params: [appState.smartWalletState.address]
+        })), appState.web3, appState.chainId), (0,orchai_combinator_bsc_simulation__WEBPACK_IMPORTED_MODULE_2__.multiCall)(_abis_IVault_json__WEBPACK_IMPORTED_MODULE_4__, stakedTokenAddress.map((address, _) => ({
+          address: address,
+          name: "balanceOf",
+          params: [appState.smartWalletState.address]
+        })), appState.web3, appState.chainId), (0,orchai_combinator_bsc_simulation__WEBPACK_IMPORTED_MODULE_2__.multiCall)(_abis_BEP20_json__WEBPACK_IMPORTED_MODULE_3__, otherTokenInLpAddress.map((address, _) => ({
+          address: address,
+          name: "decimals",
+          params: []
         })), appState.web3, appState.chainId)]);
         var oracleContract = new ethers__WEBPACK_IMPORTED_MODULE_0__.Contract((0,_utils__WEBPACK_IMPORTED_MODULE_7__.getAddr)("ORACLE_ADDRESS", appState.chainId), _abis_AaveOracle_json__WEBPACK_IMPORTED_MODULE_8__, appState.web3);
-        var busdPrice = yield oracleContract.getAssetPrice((0,_utils__WEBPACK_IMPORTED_MODULE_7__.getAddr)("BUSD_TOKEN", appState.chainId));
-        var busdContract = new ethers__WEBPACK_IMPORTED_MODULE_0__.Contract((0,_utils__WEBPACK_IMPORTED_MODULE_7__.getAddr)("BUSD_TOKEN", appState.chainId), _abis_BEP20_json__WEBPACK_IMPORTED_MODULE_3__, appState.web3);
-        var busdBalanceTravalc = yield busdContract.balanceOf((0,_utils__WEBPACK_IMPORTED_MODULE_7__.getAddr)("BUSD_TRAVA_LC_ADDRESS", appState.chainId));
-        var travaContract = new ethers__WEBPACK_IMPORTED_MODULE_0__.Contract((0,_utils__WEBPACK_IMPORTED_MODULE_7__.getAddr)("TRAVA_TOKEN", appState.chainId), _abis_BEP20_json__WEBPACK_IMPORTED_MODULE_3__, appState.web3);
-        var travaBalanceTravalc = yield travaContract.balanceOf((0,_utils__WEBPACK_IMPORTED_MODULE_7__.getAddr)("BUSD_TRAVA_LC_ADDRESS", appState.chainId));
-        var travaPrice = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_6__["default"])(busdPrice).multipliedBy(busdBalanceTravalc).div(travaBalanceTravalc);
-        if (travaPrice.isNaN()) {
-          travaPrice = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_6__["default"])(0);
-        }
-        var busdBalanceTODlc = yield busdContract.balanceOf((0,_utils__WEBPACK_IMPORTED_MODULE_7__.getAddr)("BUSD_TOD_LC_ADDRESS", appState.chainId));
-        var todContract = new ethers__WEBPACK_IMPORTED_MODULE_0__.Contract((0,_utils__WEBPACK_IMPORTED_MODULE_7__.getAddr)("TOD_TOKEN", appState.chainId), _abis_BEP20_json__WEBPACK_IMPORTED_MODULE_3__, appState.web3);
-        var todBalanceTODlc = yield todContract.balanceOf((0,_utils__WEBPACK_IMPORTED_MODULE_7__.getAddr)("BUSD_TOD_LC_ADDRESS", appState.chainId));
-        var todPrice = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_6__["default"])(busdPrice).multipliedBy(busdBalanceTODlc).div(todBalanceTODlc);
-        if (todPrice.isNaN()) {
-          todPrice = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_6__["default"])(0);
-        }
-        console.log("travaPrice", travaPrice.toFixed());
-        console.log("todPrice", todPrice.toFixed());
-        for (var _i = 0; _i < vaultConfigList.length; _i++) {
-          var vaultContract = new ethers__WEBPACK_IMPORTED_MODULE_0__.Contract(vaultConfigList[_i].stakedTokenAddress, _abis_IVault_json__WEBPACK_IMPORTED_MODULE_4__, appState.web3);
-          var stakerRewardsToClaim = yield vaultContract.stakerRewardsToClaim(appState.smartWalletState.address);
-          var amountsUserReferred = yield vaultContract.amountsUserReferred(appState.smartWalletState.address);
-          var eps = 0; // TODO
-          // init state stakeToken
+        var bnbPrice = yield oracleContract.getAssetPrice((0,_utils__WEBPACK_IMPORTED_MODULE_7__.getAddr)("WBNB_ADDRESS", appState.chainId));
+        var wbnbContract = new ethers__WEBPACK_IMPORTED_MODULE_0__.Contract((0,_utils__WEBPACK_IMPORTED_MODULE_7__.getAddr)("WBNB_ADDRESS", appState.chainId), _abis_BEP20_json__WEBPACK_IMPORTED_MODULE_3__, appState.web3);
+        var wbnbBalanceTravalp = yield wbnbContract.balanceOf((0,_utils__WEBPACK_IMPORTED_MODULE_7__.getAddr)("WBNB_TRAVA_LP_ADDRESS", appState.chainId));
+        var travaContract = new ethers__WEBPACK_IMPORTED_MODULE_0__.Contract((0,_utils__WEBPACK_IMPORTED_MODULE_7__.getAddr)("TRAVA_TOKEN_IN_STAKING", appState.chainId), _abis_BEP20_json__WEBPACK_IMPORTED_MODULE_3__, appState.web3);
+        var travaBalanceTravalp = yield travaContract.balanceOf((0,_utils__WEBPACK_IMPORTED_MODULE_7__.getAddr)("WBNB_TRAVA_LP_ADDRESS", appState.chainId));
+        var travaPrice = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_6__["default"])(bnbPrice).multipliedBy(wbnbBalanceTravalp).div(travaBalanceTravalp);
+        var _loop = function* _loop(_i) {
+          var [priceData] = yield Promise.all([(0,orchai_combinator_bsc_simulation__WEBPACK_IMPORTED_MODULE_2__.multiCall)(_abis_BEP20_json__WEBPACK_IMPORTED_MODULE_3__, [otherTokenInLpAddress[_i], underlyingAddress[_i]].map((address, _) => ({
+            address: address,
+            name: "balanceOf",
+            params: [lpAddress[_i]]
+          })), appState.web3, appState.chainId)]);
+          var otherTokenInLCPrice = yield oracleContract.getAssetPrice(otherTokenInLpAddress[_i]);
+          var otherTokenInLCBalance = priceData[0];
+          var underlyingTokenBalance = priceData[1];
+          var underlyingTokenPrice = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_6__["default"])(otherTokenInLCPrice).multipliedBy(otherTokenInLCBalance).div((0,bignumber_js__WEBPACK_IMPORTED_MODULE_6__["default"])(10).pow(decimalsOtherLpToken[_i])).div((0,bignumber_js__WEBPACK_IMPORTED_MODULE_6__["default"])(underlyingTokenBalance).div((0,bignumber_js__WEBPACK_IMPORTED_MODULE_6__["default"])(10).pow(vaultConfigList[_i].reserveDecimals)));
+          if (underlyingTokenPrice.isNaN() || (0,bignumber_js__WEBPACK_IMPORTED_MODULE_6__["default"])(underlyingTokenBalance).isEqualTo(0)) {
+            underlyingTokenPrice = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_6__["default"])(0);
+          }
+          var stakerRewardsToClaim = stakerRewardsToClaims[_i];
+          var depositedData = depositedDatas[_i];
+          var eps = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_6__["default"])(epsData[_i][1]).toFixed();
           var stakedToken = {
             id: vaultConfigList[_i].id,
             name: vaultConfigList[_i].name,
             code: vaultConfigList[_i].code,
             stakedTokenAddress: vaultConfigList[_i].stakedTokenAddress.toLowerCase(),
-            eps: "",
-            // TODO
+            eps: eps,
             reserveDecimals: vaultConfigList[_i].reserveDecimals
           };
-
-          // init state underlyingToken
           var underlyingToken = {
             underlyingAddress: vaultConfigList[_i].underlyingAddress.toLowerCase(),
             reserveDecimals: vaultConfigList[_i].reserveDecimals,
-            price: ""
+            price: underlyingTokenPrice.toFixed(0)
           };
-          if (vaultConfigList[_i].id == "TRAVA") {
-            underlyingToken.price = travaPrice.toFixed();
-          } else if (vaultConfigList[_i].id == "TOD") {
-            underlyingToken.price = todPrice.toFixed();
-          } else {
-            new Error("Not support underlying token");
-          }
-
-          // init state rewardToken
           var rewardToken = {
             address: vaultConfigList[_i].rewardToken.address.toLowerCase(),
             decimals: vaultConfigList[_i].rewardToken.decimals,
-            price: travaPrice.toFixed()
+            price: travaPrice.toFixed(0)
           };
-
-          // Calculate TVL = TVL amount * price
-          var TVL = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_6__["default"])(TVLDatas[_i]).div(underlyingToken.reserveDecimals).multipliedBy(underlyingToken.price);
-
-          // Calculate APR = eps * Reward token price * 1 year to seconds / TVL / 100 
-          var APR = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_6__["default"])(eps).multipliedBy(rewardToken.price).multipliedBy(_utils__WEBPACK_IMPORTED_MODULE_7__.YEAR_TO_SECONDS).div(TVL);
+          console.log("tvlData", TVLDatas[_i], underlyingToken.reserveDecimals, underlyingToken.price);
+          var TVL = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_6__["default"])(TVLDatas[_i]).div((0,bignumber_js__WEBPACK_IMPORTED_MODULE_6__["default"])(10).pow(underlyingToken.reserveDecimals)).multipliedBy(underlyingToken.price);
+          var APR = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_6__["default"])(eps).multipliedBy(rewardToken.price).div((0,bignumber_js__WEBPACK_IMPORTED_MODULE_6__["default"])(10).pow(rewardToken.decimals)).multipliedBy(_utils__WEBPACK_IMPORTED_MODULE_7__.YEAR_TO_SECONDS).div(TVL);
           if (APR.isNaN()) {
             APR = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_6__["default"])(0);
           }
-
-          // Init state smart wallet in vault[i]
           var accountVaults = {
             claimable: vaultConfigList[_i].claimable,
             claimableReward: (0,bignumber_js__WEBPACK_IMPORTED_MODULE_6__["default"])(stakerRewardsToClaim).toFixed(),
-            deposited: (0,bignumber_js__WEBPACK_IMPORTED_MODULE_6__["default"])(amountsUserReferred).toFixed(),
-            TVL: TVL.toFixed(),
-            APR: APR.toFixed(),
+            deposited: (0,bignumber_js__WEBPACK_IMPORTED_MODULE_6__["default"])(depositedData).toFixed(),
+            TVL: TVL.toFixed(0),
+            APR: APR.toFixed(2),
             underlyingToken: underlyingToken,
             stakedToken: stakedToken,
             rewardToken: rewardToken
           };
-
-          // Init Liquidity Campain State
           var liquidityCampain = _objectSpread(_objectSpread({}, accountVaults), {}, {
             lockTime: (0,bignumber_js__WEBPACK_IMPORTED_MODULE_6__["default"])(lockTime[_i]).toFixed(),
-            joinTime: (0,bignumber_js__WEBPACK_IMPORTED_MODULE_6__["default"])(joinTime[_i]).toFixed()
+            maxTotalDeposit: (0,bignumber_js__WEBPACK_IMPORTED_MODULE_6__["default"])(maxTotalDeposit[_i]).toFixed()
           });
           appState.smartWalletState.liquidityCampainState.liquidityCampainList.set(vaultConfigList[_i].stakedTokenAddress.toLowerCase(), liquidityCampain);
+        };
+        for (var _i = 0; _i < vaultConfigList.length; _i++) {
+          yield* _loop(_i);
         }
         appState.smartWalletState.liquidityCampainState.isFetch = true;
         return appState;
@@ -57051,62 +57049,70 @@ var listLiquidityVault = {
     id: "TRAVA",
     name: "Trava",
     code: "TRAVA",
-    reserveDecimals: _utils__WEBPACK_IMPORTED_MODULE_0__.BASE18.toFixed(),
+    reserveDecimals: "18",
     underlyingAddress: "0xE1F005623934D3D8C724EC68Cc9bFD95498D4435",
     priceUnderlyingAddress: "0xE1F005623934D3D8C724EC68Cc9bFD95498D4435",
+    otherTokenInLpAddress: "0x2CEC38C779d6b962bc877777b6f70937d21c9c38",
+    lpAddress: "0x85Ddc89670e6dF515B00A69e86916e3208feb8e3",
     stakedTokenAddress: "0x1537263E42f81424A5099f992c1111D9d8c012B3",
     claimable: true,
     tokenName: LIQUIDITY_TOKENS_NAME.TRAVA,
     rewardToken: {
       symbol: "TRAVA",
       address: "0xE1F005623934D3D8C724EC68Cc9bFD95498D4435",
-      decimals: _utils__WEBPACK_IMPORTED_MODULE_0__.BASE18.toFixed()
+      decimals: "18"
     }
   }, {
     id: "TOD",
     name: "TOD",
     code: "TOD",
-    reserveDecimals: _utils__WEBPACK_IMPORTED_MODULE_0__.BASE18.toFixed(),
-    underlyingAddress: "0x8ADE9A293528EB21f2fD9d7fF6eD919Adf1AdEC7",
-    priceUnderlyingAddress: "0x8ADE9A293528EB21f2fD9d7fF6eD919Adf1AdEC7",
+    reserveDecimals: "9",
+    underlyingAddress: "0xfca3cf5e82f595d4f20c24d007ae5e2e94fab2f0",
+    priceUnderlyingAddress: "0xfca3cf5e82f595d4f20c24d007ae5e2e94fab2f0",
+    otherTokenInLpAddress: "0x2CEC38C779d6b962bc877777b6f70937d21c9c38",
+    lpAddress: "0x8E402D21cb184B84A55d7331f2C700d459ABADaa",
     stakedTokenAddress: "0x58FDCe55D226491B03A440192C85Cb6CDfB05a42",
     claimable: true,
     tokenName: LIQUIDITY_TOKENS_NAME.TOD,
     rewardToken: {
       symbol: "TRAVA",
       address: "0xE1F005623934D3D8C724EC68Cc9bFD95498D4435",
-      decimals: _utils__WEBPACK_IMPORTED_MODULE_0__.BASE18.toFixed()
+      decimals: "18"
     }
   }],
   [_utils__WEBPACK_IMPORTED_MODULE_0__.NETWORKS.bscMainnet.chainId]: [{
     id: "TRAVA",
     name: "Trava",
     code: "TRAVA",
-    reserveDecimals: _utils__WEBPACK_IMPORTED_MODULE_0__.BASE18.toFixed(),
-    underlyingAddress: "",
-    priceUnderlyingAddress: "",
-    stakedTokenAddress: "",
+    reserveDecimals: "18",
+    underlyingAddress: "0x0391bE54E72F7e001f6BBc331777710b4f2999Ef",
+    priceUnderlyingAddress: "0x0391bE54E72F7e001f6BBc331777710b4f2999Ef",
+    stakedTokenAddress: "0x8E8Fa20eF2e6Cb3b0555D90CeBd7e49a80Fec8BA",
+    otherTokenInLpAddress: "0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c",
+    lpAddress: "0x865c77d4ff6383e06c58350a2cfb95cca2c0f056",
     claimable: true,
     tokenName: LIQUIDITY_TOKENS_NAME.TRAVA,
     rewardToken: {
       symbol: "TRAVA",
-      address: "",
-      decimals: _utils__WEBPACK_IMPORTED_MODULE_0__.BASE18.toFixed()
+      address: "0x0391bE54E72F7e001f6BBc331777710b4f2999Ef",
+      decimals: "18"
     }
   }, {
     id: "TOD",
     name: "TOD",
     code: "TOD",
-    reserveDecimals: _utils__WEBPACK_IMPORTED_MODULE_0__.BASE18.toFixed(),
-    underlyingAddress: "",
-    priceUnderlyingAddress: "",
-    stakedTokenAddress: "",
+    reserveDecimals: "9",
+    underlyingAddress: "0x21d5Fa5ECf2605c0E835Ae054AF9bbA0468e5951",
+    priceUnderlyingAddress: "0x21d5Fa5ECf2605c0E835Ae054AF9bbA0468e5951",
+    stakedTokenAddress: "0xB46EdC35704862638473e3f4f4D8fA7DA552912F",
+    otherTokenInLpAddress: "0xe9e7cea3dedca5984780bafc599bd69add087d56",
+    lpAddress: "0x62848473Ccb5a10d1Aa19B7a31BCEF9385E8165B",
     claimable: true,
     tokenName: LIQUIDITY_TOKENS_NAME.TOD,
     rewardToken: {
       symbol: "TRAVA",
-      address: "",
-      decimals: _utils__WEBPACK_IMPORTED_MODULE_0__.BASE18.toFixed()
+      address: "0x0391bE54E72F7e001f6BBc331777710b4f2999Ef",
+      decimals: "18"
     }
   }]
 };
@@ -59401,7 +59407,7 @@ function convert(fromDecimals, toDecimals, amount, exchangeRate) {
 /***/ ((module) => {
 
 "use strict";
-module.exports = JSON.parse('[{"inputs":[{"internalType":"contract IBEP20","name":"stakedToken","type":"address"},{"internalType":"contract IBEP20","name":"rewardToken","type":"address"},{"internalType":"uint256","name":"cooldownSeconds","type":"uint256"},{"internalType":"uint256","name":"unstakeWindow","type":"uint256"},{"internalType":"uint256","name":"maxTotalDeposit","type":"uint256"},{"internalType":"address","name":"rewardsVault","type":"address"},{"internalType":"address","name":"emissionManager","type":"address"},{"internalType":"address","name":"admin","type":"address"},{"internalType":"string","name":"name","type":"string"},{"internalType":"string","name":"symbol","type":"string"},{"internalType":"uint8","name":"decimals","type":"uint8"}],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":true,"internalType":"address","name":"spender","type":"address"},{"indexed":false,"internalType":"uint256","name":"value","type":"uint256"}],"name":"Approval","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"asset","type":"address"},{"indexed":false,"internalType":"uint256","name":"emission","type":"uint256"}],"name":"AssetConfigUpdated","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"asset","type":"address"},{"indexed":false,"internalType":"uint256","name":"index","type":"uint256"}],"name":"AssetIndexUpdated","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"user","type":"address"}],"name":"Cooldown","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"uint256","name":"newDistributionEnd","type":"uint256"}],"name":"DistributionEndUpdated","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"previousOwner","type":"address"},{"indexed":true,"internalType":"address","name":"newOwner","type":"address"}],"name":"OwnershipTransferred","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"from","type":"address"},{"indexed":true,"internalType":"address","name":"to","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"}],"name":"Redeem","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"user","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"}],"name":"RewardsAccrued","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"from","type":"address"},{"indexed":true,"internalType":"address","name":"to","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"}],"name":"RewardsClaimed","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"from","type":"address"},{"indexed":true,"internalType":"address","name":"onBehalfOf","type":"address"},{"indexed":true,"internalType":"address","name":"referred","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"}],"name":"Staked","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"from","type":"address"},{"indexed":true,"internalType":"address","name":"to","type":"address"},{"indexed":false,"internalType":"uint256","name":"value","type":"uint256"}],"name":"Transfer","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"user","type":"address"},{"indexed":true,"internalType":"address","name":"asset","type":"address"},{"indexed":false,"internalType":"uint256","name":"index","type":"uint256"}],"name":"UserIndexUpdated","type":"event"},{"inputs":[],"name":"ADMIN","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"COOLDOWN_SECONDS","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"DISTRIBUTION_END","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"DOMAIN_SEPARATOR","outputs":[{"internalType":"bytes32","name":"","type":"bytes32"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"EIP712_REVISION","outputs":[{"internalType":"bytes","name":"","type":"bytes"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"EMISSION_MANAGER","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"JOIN_TIME","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"LOCK_TIME","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"MAX_TOTAL_DEPOSIT","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"PERMIT_TYPEHASH","outputs":[{"internalType":"bytes32","name":"","type":"bytes32"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"PRECISION","outputs":[{"internalType":"uint8","name":"","type":"uint8"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"REWARDS_VAULT","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"REWARD_TOKEN","outputs":[{"internalType":"contract IBEP20","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"STAKED_TOKEN","outputs":[{"internalType":"contract IBEP20","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"UNSTAKE_WINDOW","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"owner","type":"address"},{"internalType":"address","name":"spender","type":"address"}],"name":"allowance","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"amountsUserReferred","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"spender","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"approve","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"assets","outputs":[{"internalType":"uint256","name":"emissionPerSecond","type":"uint256"},{"internalType":"uint256","name":"index","type":"uint256"},{"internalType":"uint40","name":"lastUpdateTimestamp","type":"uint40"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"account","type":"address"}],"name":"balanceOf","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"claimRewards","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"emissionsPerSecond","type":"uint256"}],"name":"configureAssets","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"cooldown","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"decimals","outputs":[{"internalType":"uint8","name":"","type":"uint8"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"spender","type":"address"},{"internalType":"uint256","name":"subtractedValue","type":"uint256"}],"name":"decreaseAllowance","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"asset","type":"address"}],"name":"getAssetData","outputs":[{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"tokenAddr","type":"address"}],"name":"getBalanceOf","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"getDistributionEnd","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"fromCooldownTimestamp","type":"uint256"},{"internalType":"uint256","name":"amountToReceive","type":"uint256"},{"internalType":"address","name":"toAddress","type":"address"},{"internalType":"uint256","name":"toBalance","type":"uint256"}],"name":"getNextCooldownTimestamp","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"getOwner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"staker","type":"address"}],"name":"getTotalRewardsBalance","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"user","type":"address"},{"internalType":"address","name":"asset","type":"address"}],"name":"getUserAssetData","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"spender","type":"address"},{"internalType":"uint256","name":"addedValue","type":"uint256"}],"name":"increaseAllowance","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"mint","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"name","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"owner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"pancakeRouter","outputs":[{"internalType":"contract IPancakeRouter02","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"redeem","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"renounceOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_coolDownSeconds","type":"uint256"}],"name":"setCoolDownSeconds","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"distributionEnd","type":"uint256"}],"name":"setDistributionEnd","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"_emissionManager","type":"address"}],"name":"setEmissionManager","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_joinTime","type":"uint256"}],"name":"setJoinTime","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_lockTime","type":"uint256"}],"name":"setLockTime","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"_rewardVault","type":"address"}],"name":"setRewardVault","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_unstakeWindow","type":"uint256"}],"name":"setUnstakeWindow","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"_vaultTrava","type":"address"},{"internalType":"address","name":"_vaultTod","type":"address"}],"name":"setVault","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"onBehalfOf","type":"address"},{"internalType":"address","name":"referred","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"stake","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"stakerRewardsToClaim","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"stakersCooldowns","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"symbol","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"timesUserReferred","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"totalSupply","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"recipient","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"transfer","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"sender","type":"address"},{"internalType":"address","name":"recipient","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"transferFrom","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"vaultTod","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"vaultTrava","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"withdrawAssets","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"nonpayable","type":"function"}]');
+module.exports = JSON.parse('[{"inputs":[{"internalType":"contract IBEP20","name":"stakedToken","type":"address"},{"internalType":"contract IBEP20","name":"rewardToken","type":"address"},{"internalType":"uint256","name":"unstakeWindow","type":"uint256"},{"internalType":"uint256","name":"maxTotalDeposit","type":"uint256"},{"internalType":"address","name":"rewardsVault","type":"address"},{"internalType":"address","name":"_admin","type":"address"},{"internalType":"address","name":"_emissionManager","type":"address"},{"internalType":"string","name":"name","type":"string"},{"internalType":"string","name":"symbol","type":"string"},{"internalType":"uint8","name":"decimals","type":"uint8"}],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":true,"internalType":"address","name":"spender","type":"address"},{"indexed":false,"internalType":"uint256","name":"value","type":"uint256"}],"name":"Approval","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"asset","type":"address"},{"indexed":false,"internalType":"uint256","name":"emission","type":"uint256"}],"name":"AssetConfigUpdated","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"asset","type":"address"},{"indexed":false,"internalType":"uint256","name":"index","type":"uint256"}],"name":"AssetIndexUpdated","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"newAddress","type":"address"}],"name":"ControllerAdminChanged","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"user","type":"address"}],"name":"Cooldown","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"uint256","name":"newDistributionEnd","type":"uint256"}],"name":"DistributionEndUpdated","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"newAddress","type":"address"}],"name":"EmissionMangerChanged","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"newAddress","type":"address"}],"name":"ManagerReputationChanged","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"previousOwner","type":"address"},{"indexed":true,"internalType":"address","name":"newOwner","type":"address"}],"name":"OwnershipTransferred","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"from","type":"address"},{"indexed":true,"internalType":"address","name":"to","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"}],"name":"Redeem","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"user","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"}],"name":"RewardsAccrued","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"from","type":"address"},{"indexed":true,"internalType":"address","name":"to","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"}],"name":"RewardsClaimed","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"from","type":"address"},{"indexed":true,"internalType":"address","name":"onBehalfOf","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"}],"name":"Staked","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"from","type":"address"},{"indexed":true,"internalType":"address","name":"to","type":"address"},{"indexed":false,"internalType":"uint256","name":"value","type":"uint256"}],"name":"Transfer","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"user","type":"address"},{"indexed":true,"internalType":"address","name":"asset","type":"address"},{"indexed":false,"internalType":"uint256","name":"index","type":"uint256"}],"name":"UserIndexUpdated","type":"event"},{"inputs":[],"name":"CONTROLLER_ADMIN","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"COOLDOWN_SECONDS","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"DISTRIBUTION_END","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"DOMAIN_SEPARATOR","outputs":[{"internalType":"bytes32","name":"","type":"bytes32"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"EIP712_REVISION","outputs":[{"internalType":"bytes","name":"","type":"bytes"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"EMISSION_MANAGER","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"LOCK_TIME","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"MANAGER_REPUTATION","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"MAX_TOTAL_DEPOSIT","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"PERMIT_TYPEHASH","outputs":[{"internalType":"bytes32","name":"","type":"bytes32"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"PRECISION","outputs":[{"internalType":"uint8","name":"","type":"uint8"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"REWARDS_VAULT","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"REWARD_TOKEN","outputs":[{"internalType":"contract IBEP20","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"STAKED_TOKEN","outputs":[{"internalType":"contract IBEP20","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"UNSTAKE_WINDOW","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"owner","type":"address"},{"internalType":"address","name":"spender","type":"address"}],"name":"allowance","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"spender","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"approve","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"assets","outputs":[{"internalType":"uint256","name":"emissionPerSecond","type":"uint256"},{"internalType":"uint256","name":"index","type":"uint256"},{"internalType":"uint40","name":"lastUpdateTimestamp","type":"uint40"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"account","type":"address"}],"name":"balanceOf","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"claimRewards","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"emissionsPerSecond","type":"uint256"}],"name":"configureAssets","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"cooldown","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"decimals","outputs":[{"internalType":"uint8","name":"","type":"uint8"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"spender","type":"address"},{"internalType":"uint256","name":"subtractedValue","type":"uint256"}],"name":"decreaseAllowance","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"asset","type":"address"}],"name":"getAssetData","outputs":[{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"getDistributionEnd","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"fromCooldownTimestamp","type":"uint256"},{"internalType":"uint256","name":"amountToReceive","type":"uint256"},{"internalType":"address","name":"toAddress","type":"address"},{"internalType":"uint256","name":"toBalance","type":"uint256"}],"name":"getNextCooldownTimestamp","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"getOwner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"staker","type":"address"}],"name":"getTotalReputationRewards","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"staker","type":"address"}],"name":"getTotalRewardsBalance","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"staker","type":"address"}],"name":"getTotalVaultRewards","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"user","type":"address"},{"internalType":"address","name":"asset","type":"address"}],"name":"getUserAssetData","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"spender","type":"address"},{"internalType":"uint256","name":"addedValue","type":"uint256"}],"name":"increaseAllowance","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"mint","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"name","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"owner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"redeem","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"renounceOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"_admin","type":"address"},{"internalType":"bool","name":"_status","type":"bool"}],"name":"setAdmin","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"_controllerAdmin","type":"address"}],"name":"setControllerAdmin","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_coolDownSeconds","type":"uint256"}],"name":"setCoolDownSeconds","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"distributionEnd","type":"uint256"}],"name":"setDistributionEnd","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"_emissionManager","type":"address"}],"name":"setEmissionManager","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_lockTime","type":"uint256"}],"name":"setLockTime","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"_managerReputation","type":"address"}],"name":"setManagerReputation","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_maxTotalDeposit","type":"uint256"}],"name":"setMaxTotalDeposit","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"contract IBEP20","name":"_trava","type":"address"}],"name":"setRewardToken","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"_rewardVault","type":"address"}],"name":"setRewardVault","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_unstakeWindow","type":"uint256"}],"name":"setUnstakeWindow","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"onBehalfOf","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"stake","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"stakerRewardsToClaim","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"stakersCooldowns","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"symbol","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"totalSupply","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"recipient","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"transfer","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"sender","type":"address"},{"internalType":"address","name":"recipient","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"transferFrom","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"withdrawAssets","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"nonpayable","type":"function"}]');
 
 /***/ }),
 /* 400 */
@@ -59425,6 +59431,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _UpdateStateAccount__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(354);
 /* harmony import */ var _basic__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(19);
 /* harmony import */ var _utils_helper__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(125);
+/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(356);
 function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
 function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
 function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
@@ -59432,6 +59439,7 @@ function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return typ
 function _toPrimitive(input, hint) { if (typeof input !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (typeof res !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
+
 
 
 
@@ -59444,8 +59452,8 @@ function _SimulationJoinLiquidity() {
     var appState = _objectSpread({}, _appState);
     try {
       var liquidity = _liquidity.toLowerCase();
-      var from = _from.toLowerCase();
-      var amount = _amount;
+      var from = _from;
+      var amount = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_0__["default"])(_amount);
       if (appState.smartWalletState.liquidityCampainState.isFetch == false) {
         appState = yield (0,_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_1__.updateLiquidityCampainState)(appState);
       }
@@ -59454,20 +59462,22 @@ function _SimulationJoinLiquidity() {
         throw new Error("Liquidity not found");
       }
       var modeFrom = (0,_utils_helper__WEBPACK_IMPORTED_MODULE_3__.getMode)(appState, from);
-      if (modeFrom != "walletState" && modeFrom != "smartWalletState") {
-        throw new Error("Address not found");
-      }
-      if (appState[modeFrom].tokenBalances.has(liquidityCampain.stakedToken.stakedTokenAddress) == false) {
+      if (appState[modeFrom].tokenBalances.has(liquidityCampain.underlyingToken.underlyingAddress) == false) {
         appState = yield (0,_basic__WEBPACK_IMPORTED_MODULE_2__.updateTokenBalance)(appState, from, liquidityCampain.underlyingToken.underlyingAddress);
       }
-      var oldBalance = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_0__["default"])(0);
-      if (appState[modeFrom].tokenBalances.get(liquidityCampain.underlyingToken.underlyingAddress.toLowerCase())) {
-        oldBalance = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_0__["default"])(appState[modeFrom].tokenBalances.get(liquidityCampain.underlyingToken.underlyingAddress.toLowerCase()));
+      var oldBalance = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_0__["default"])(appState[modeFrom].tokenBalances.get(liquidityCampain.underlyingToken.underlyingAddress.toLowerCase()));
+      var maxAmountDeposit = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_0__["default"])(liquidityCampain.maxTotalDeposit).minus(liquidityCampain.deposited);
+      if (amount.toFixed(0) == _utils__WEBPACK_IMPORTED_MODULE_4__.MAX_UINT256 || amount.isEqualTo(_utils__WEBPACK_IMPORTED_MODULE_4__.MAX_UINT256)) {
+        if (oldBalance.isGreaterThan(maxAmountDeposit)) {
+          amount = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_0__["default"])(maxAmountDeposit);
+        } else {
+          amount = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_0__["default"])(oldBalance);
+        }
       }
       var newTotalSupply = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_0__["default"])(liquidityCampain.deposited).plus(amount);
       var newLiquidityCampain = liquidityCampain;
       newLiquidityCampain.deposited = newTotalSupply.toFixed();
-      var newTVL = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_0__["default"])(liquidityCampain.TVL).div(liquidityCampain.underlyingToken.price).multipliedBy(liquidityCampain.underlyingToken.reserveDecimals).plus(amount).multipliedBy(liquidityCampain.underlyingToken.price).div(liquidityCampain.underlyingToken.reserveDecimals);
+      var newTVL = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_0__["default"])(liquidityCampain.TVL).div(liquidityCampain.underlyingToken.price).multipliedBy((0,bignumber_js__WEBPACK_IMPORTED_MODULE_0__["default"])(10).pow(liquidityCampain.underlyingToken.reserveDecimals).plus(amount)).multipliedBy(liquidityCampain.underlyingToken.price).div((0,bignumber_js__WEBPACK_IMPORTED_MODULE_0__["default"])(10).pow(liquidityCampain.underlyingToken.reserveDecimals));
       newLiquidityCampain.TVL = newTVL.toFixed();
       appState.smartWalletState.liquidityCampainState.liquidityCampainList.set(liquidity, newLiquidityCampain);
       appState[modeFrom].tokenBalances.set(liquidityCampain.underlyingToken.underlyingAddress.toLowerCase(), oldBalance.minus(amount).toFixed());
@@ -59486,16 +59496,36 @@ function _SimulationWithdrawLiquidity() {
     var appState = _objectSpread({}, _appState);
     try {
       var liquidity = _liquidity.toLowerCase();
-      var to = _to.toLowerCase();
-      var amount = _amount;
+      var to = _to;
+      var amount = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_0__["default"])(_amount);
       if (appState.smartWalletState.liquidityCampainState.isFetch == false) {
         appState = yield (0,_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_1__.updateLiquidityCampainState)(appState);
       }
-      if (!appState.smartWalletState.liquidityCampainState.liquidityCampainList.has(liquidity)) {
+      var liquidityCampain = appState.smartWalletState.liquidityCampainState.liquidityCampainList.get(liquidity);
+      if (liquidityCampain == undefined) {
         throw new Error("Liquidity not found");
       }
-
-      /////
+      var lockTime = Number(liquidityCampain.lockTime);
+      var now = new Date().getTime();
+      if (now < lockTime) {
+        throw new Error("Liquidity Campain can not withdraw now");
+      }
+      var modeTo = (0,_utils_helper__WEBPACK_IMPORTED_MODULE_3__.getMode)(appState, to);
+      if (appState[modeTo].tokenBalances.has(liquidityCampain.underlyingToken.underlyingAddress) == false) {
+        appState = yield (0,_basic__WEBPACK_IMPORTED_MODULE_2__.updateTokenBalance)(appState, to, liquidityCampain.underlyingToken.underlyingAddress);
+      }
+      var oldBalance = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_0__["default"])(appState[modeTo].tokenBalances.get(liquidityCampain.underlyingToken.underlyingAddress.toLowerCase()));
+      console.log(oldBalance.toFixed());
+      if (amount.toFixed(0) == _utils__WEBPACK_IMPORTED_MODULE_4__.MAX_UINT256 || amount.isEqualTo(_utils__WEBPACK_IMPORTED_MODULE_4__.MAX_UINT256)) {
+        amount = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_0__["default"])(liquidityCampain.deposited);
+      }
+      var newTotalSupply = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_0__["default"])(liquidityCampain.deposited).minus(amount);
+      var newLiquidityCampain = liquidityCampain;
+      newLiquidityCampain.deposited = newTotalSupply.toFixed();
+      var newTVL = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_0__["default"])(liquidityCampain.TVL).div(liquidityCampain.underlyingToken.price).multipliedBy((0,bignumber_js__WEBPACK_IMPORTED_MODULE_0__["default"])(10).pow(liquidityCampain.underlyingToken.reserveDecimals)).minus(amount).multipliedBy(liquidityCampain.underlyingToken.price).div((0,bignumber_js__WEBPACK_IMPORTED_MODULE_0__["default"])(10).pow(liquidityCampain.underlyingToken.reserveDecimals));
+      newLiquidityCampain.TVL = newTVL.toFixed();
+      appState.smartWalletState.liquidityCampainState.liquidityCampainList.set(liquidity, newLiquidityCampain);
+      appState[modeTo].tokenBalances.set(liquidityCampain.underlyingToken.underlyingAddress.toLowerCase(), oldBalance.plus(amount).toFixed());
       return appState;
     } catch (err) {
       throw err;
@@ -59503,22 +59533,33 @@ function _SimulationWithdrawLiquidity() {
   });
   return _SimulationWithdrawLiquidity.apply(this, arguments);
 }
-function SimulationClaimRewardLiquidity(_x9, _x10, _x11, _x12) {
+function SimulationClaimRewardLiquidity(_x9, _x10, _x11) {
   return _SimulationClaimRewardLiquidity.apply(this, arguments);
 }
 function _SimulationClaimRewardLiquidity() {
-  _SimulationClaimRewardLiquidity = _asyncToGenerator(function* (_appState, _liquidity, _to, _amount) {
+  _SimulationClaimRewardLiquidity = _asyncToGenerator(function* (_appState, _liquidity, _to) {
     var appState = _objectSpread({}, _appState);
     try {
       var liquidity = _liquidity.toLowerCase();
-      var to = _to.toLowerCase();
-      var amount = _amount;
+      var to = _to;
       if (appState.smartWalletState.liquidityCampainState.isFetch == false) {
         appState = yield (0,_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_1__.updateLiquidityCampainState)(appState);
       }
-      if (!appState.smartWalletState.liquidityCampainState.liquidityCampainList.has(liquidity)) {
+      var liquidityCampain = appState.smartWalletState.liquidityCampainState.liquidityCampainList.get(liquidity);
+      if (liquidityCampain == undefined) {
         throw new Error("Liquidity not found");
       }
+      var modeTo = (0,_utils_helper__WEBPACK_IMPORTED_MODULE_3__.getMode)(appState, to);
+      if (appState[modeTo].tokenBalances.has(liquidityCampain.rewardToken.address) == false) {
+        appState = yield (0,_basic__WEBPACK_IMPORTED_MODULE_2__.updateTokenBalance)(appState, to, liquidityCampain.rewardToken.address);
+      }
+      var oldBalance = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_0__["default"])(appState[modeTo].tokenBalances.get(liquidityCampain.rewardToken.address.toLowerCase()));
+      var amount = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_0__["default"])(liquidityCampain.claimableReward);
+      var newClaimableReward = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_0__["default"])(liquidityCampain.claimableReward).minus(amount);
+      var newLiquidityCampain = liquidityCampain;
+      newLiquidityCampain.claimableReward = newClaimableReward.toFixed();
+      appState.smartWalletState.liquidityCampainState.liquidityCampainList.set(liquidity, newLiquidityCampain);
+      appState[modeTo].tokenBalances.set(liquidityCampain.rewardToken.address.toLowerCase(), oldBalance.plus(amount).toFixed());
       return appState;
     } catch (err) {
       throw err;
