@@ -11,6 +11,7 @@ export declare const listAddr: {
         NFT_AUCTION_ADDRESS: string;
         NFT_MANAGER_ADDRESS: string;
         NFT_COLLECTION_ADDRESS: string;
+        BNB_ADDRESS: string;
         WBNB_ADDRESS: string;
         TRAVA_TOKEN: string;
         INCENTIVE_CONTRACT: string;
@@ -42,6 +43,7 @@ export declare const listAddr: {
         NFT_AUCTION_ADDRESS: string;
         NFT_MANAGER_ADDRESS: string;
         NFT_COLLECTION_ADDRESS: string;
+        BNB_ADDRESS: string;
         WBNB_ADDRESS: string;
         TRAVA_TOKEN: string;
         INCENTIVE_CONTRACT: string;

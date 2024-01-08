@@ -46,14 +46,14 @@ export const listLiquidityVault = {
             name: "Trava",
             code: "TRAVA",
             reserveDecimals: BASE18.toFixed(),
-            underlyingAddress: "",
-            priceUnderlyingAddress: "",
-            stakedTokenAddress: "",
+            underlyingAddress: "0x0391bE54E72F7e001f6BBc331777710b4f2999Ef",
+            priceUnderlyingAddress: "0x0391bE54E72F7e001f6BBc331777710b4f2999Ef",
+            stakedTokenAddress: "0x8E8Fa20eF2e6Cb3b0555D90CeBd7e49a80Fec8BA",
             claimable: true,
             tokenName: LIQUIDITY_TOKENS_NAME.TRAVA,
             rewardToken: {
               symbol: "TRAVA",
-              address: "",
+              address: "0x0391bE54E72F7e001f6BBc331777710b4f2999Ef",
               decimals: BASE18.toFixed()
             }
           },
@@ -62,14 +62,14 @@ export const listLiquidityVault = {
             name: "TOD",
             code: "TOD",
             reserveDecimals: BASE18.toFixed(),
-            underlyingAddress: "",
-            priceUnderlyingAddress: "",
-            stakedTokenAddress: "",
+            underlyingAddress: "0x21d5Fa5ECf2605c0E835Ae054AF9bbA0468e5951",
+            priceUnderlyingAddress: "0x21d5Fa5ECf2605c0E835Ae054AF9bbA0468e5951",
+            stakedTokenAddress: "0xB46EdC35704862638473e3f4f4D8fA7DA552912F",
             claimable: true,
             tokenName: LIQUIDITY_TOKENS_NAME.TOD,
             rewardToken: {
               symbol: "TRAVA",
-              address: "",
+              address: "0x0391bE54E72F7e001f6BBc331777710b4f2999Ef",
               decimals: BASE18.toFixed()
             }
           },

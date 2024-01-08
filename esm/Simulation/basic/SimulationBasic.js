@@ -14,9 +14,9 @@ export function simulateWrap(appState1, _amount) {
     return __awaiter(this, void 0, void 0, function* () {
         let amount = _amount;
         const appState = Object.assign({}, appState1);
-        const bnb_address = getAddr("WBNB_ADDRESS", appState.chainId).toLowerCase();
-        if (!appState.smartWalletState.tokenBalances.has(bnb_address)) {
-            yield updateSmartWalletTokenBalance(appState, bnb_address);
+        const wbnb_address = getAddr("WBNB_ADDRESS", appState.chainId).toLowerCase();
+        if (!appState.smartWalletState.tokenBalances.has(wbnb_address)) {
+            yield updateSmartWalletTokenBalance(appState, wbnb_address);
         }
         console.log("amount.toString() == MAX_UINT256", amount.toString(), MAX_UINT256);
         if (amount.toString() == MAX_UINT256 || BigInt(amount) == BigInt(MAX_UINT256)) {
@@ -25,9 +25,10 @@ export function simulateWrap(appState1, _amount) {
         }
         console.log("amount", amount);
         let newEthBalance = BigInt(appState.walletState.ethBalances) - BigInt(amount);
-        let newWBNBBalance = BigInt(appState.smartWalletState.tokenBalances.get(bnb_address)) + BigInt(amount);
+        let newWBNBBalance = BigInt(appState.smartWalletState.tokenBalances.get(wbnb_address)) + BigInt(amount);
         appState.walletState.ethBalances = String(newEthBalance);
-        appState.smartWalletState.tokenBalances.set(bnb_address, String(BigInt(newWBNBBalance)));
+        appState.smartWalletState.tokenBalances.set(wbnb_address, String(BigInt(newWBNBBalance)));
+        appState.smartWalletState.tokenBalances.set(getAddr("BNB_ADDRESS").toLowerCase(), String(BigInt(newWBNBBalance)));
         return appState;
     });
 }
@@ -35,16 +36,17 @@ export function simulateUnwrap(appState1, _amount) {
     return __awaiter(this, void 0, void 0, function* () {
         let amount = _amount;
         const appState = Object.assign({}, appState1);
-        const bnb_address = getAddr("WBNB_ADDRESS", appState.chainId).toLowerCase();
-        if (!appState.walletState.tokenBalances.has(bnb_address)) {
-            yield updateUserTokenBalance(appState, bnb_address);
+        const wbnb_address = getAddr("WBNB_ADDRESS", appState.chainId).toLowerCase();
+        if (!appState.walletState.tokenBalances.has(wbnb_address)) {
+            yield updateUserTokenBalance(appState, wbnb_address);
         }
         if (amount.toString() == MAX_UINT256 || BigInt(amount) == BigInt(MAX_UINT256)) {
-            amount = appState.smartWalletState.tokenBalances.get(bnb_address);
+            amount = appState.smartWalletState.tokenBalances.get(wbnb_address);
         }
-        let newWBNBBalance = BigInt(appState.smartWalletState.tokenBalances.get(bnb_address)) - BigInt(amount);
+        let newWBNBBalance = BigInt(appState.smartWalletState.tokenBalances.get(wbnb_address)) - BigInt(amount);
         let newBNBBalance = BigInt(appState.walletState.ethBalances) + BigInt(amount);
-        appState.smartWalletState.tokenBalances.set(bnb_address, String(newWBNBBalance));
+        appState.smartWalletState.tokenBalances.set(wbnb_address, String(newWBNBBalance));
+        appState.smartWalletState.tokenBalances.set(getAddr("BNB_ADDRESS").toLowerCase(), String(newWBNBBalance));
         appState.walletState.ethBalances = String(newBNBBalance);
         return appState;
     });

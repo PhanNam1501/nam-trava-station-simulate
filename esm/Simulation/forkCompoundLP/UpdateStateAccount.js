@@ -28,6 +28,7 @@ export function updateForkCompoundLPState(appState1, entity_id, force) {
                     appState.forkCompoundLPState.forkCompoundLP.set(entity_id, data);
                 }
                 appState.forkCompoundLPState.isFetch = true;
+                appState = yield updateUserInForkCompoundLPState(appState, appState.smartWalletState.address, entity_id);
             }
         }
         catch (error) {

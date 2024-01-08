@@ -23,13 +23,9 @@ export class ForkedAaveLPState {
 export interface WalletForkedAaveLPState {
   id: string;
   address: EthAddress;
-  // chain: string;
   totalAssets: number;
-  // totalAssets24hAgo: number;
   totalClaimable: number;
-  // totalClaimable24hAgo: number;
   totalDebts: number;
-  // totalDebts24hAgo: number;
   dapps: Array<Dapp>;
   detailTokenInPool: Map<string, DetailTokenInPool>;
   healthFactor: string;

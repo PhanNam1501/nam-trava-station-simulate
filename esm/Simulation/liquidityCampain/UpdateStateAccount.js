@@ -16,7 +16,6 @@ import StakedTokenAbi from "../../abis/StakedToken.json";
 import BigNumber from "bignumber.js";
 import { YEAR_TO_SECONDS, getAddr } from "../../utils";
 import OracleABI from "../../abis/AaveOracle.json";
-import { error } from "console";
 export function updateLiquidityCampainState(appState1, force) {
     return __awaiter(this, void 0, void 0, function* () {
         const vaultConfigList = listLiquidityVault[appState1.chainId];
@@ -97,7 +96,7 @@ export function updateLiquidityCampainState(appState1, force) {
                         underlyingToken.price = todPrice.toFixed();
                     }
                     else {
-                        error("Not support underlying token");
+                        new Error("Not support underlying token");
                     }
                     // init state rewardToken
                     let rewardToken = {

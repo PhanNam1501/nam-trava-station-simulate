@@ -10,7 +10,6 @@ import BigNumber from "bignumber.js";
 import { BaseAccountVault, LiquidityCampain, RewardTokenData, StakedTokenData, UnderlyingTokenData } from "../../State";
 import { YEAR_TO_SECONDS, getAddr } from "../../utils";
 import OracleABI from "../../abis/AaveOracle.json";
-import { error } from "console";
 export async function updateLiquidityCampainState(
     appState1: ApplicationState, 
     force?: boolean
@@ -33,7 +32,6 @@ export async function updateLiquidityCampainState(
             // get join time and lock time
             let [
                 lockTime,
-                joinTime,
                 TVLDatas,
               ] = await Promise.all([
                 multiCall(
@@ -41,16 +39,6 @@ export async function updateLiquidityCampainState(
                     stakedTokenAddress.map((address: string, _: number) => ({
                     address: address,
                     name: "LOCK_TIME",
-                    params: [],
-                    })),
-                    appState.web3,
-                    appState.chainId
-                ),
-                multiCall(
-                    IVaultABI,
-                    stakedTokenAddress.map((address: string, _: number) => ({
-                    address: address,
-                    name: "JOIN_TIME",
                     params: [],
                     })),
                     appState.web3,
@@ -69,19 +57,21 @@ export async function updateLiquidityCampainState(
             ]);
 
             let oracleContract = new Contract(getAddr("ORACLE_ADDRESS", appState.chainId), OracleABI, appState.web3)
+            let bnbPrice = await oracleContract.getAssetPrice(getAddr("WBNB_ADDRESS", appState.chainId));
             let busdPrice = await oracleContract.getAssetPrice(getAddr("BUSD_TOKEN", appState.chainId));
+
+            let wbnbContract = new Contract(getAddr("WBNB_ADDRESS", appState.chainId), BEP20ABI, appState.web3);
+            let wbnbBalanceTravalp = await wbnbContract.balanceOf(getAddr("WBNB_TRAVA_LP_ADDRESS", appState.chainId));
         
-            let busdContract = new Contract(getAddr("BUSD_TOKEN", appState.chainId), BEP20ABI, appState.web3);
-            let busdBalanceTravalc = await busdContract.balanceOf(getAddr("BUSD_TRAVA_LC_ADDRESS", appState.chainId));
+            let travaContract = new Contract(getAddr("TRAVA_TOKEN_IN_STAKING", appState.chainId), BEP20ABI, appState.web3);
+            let travaBalanceTravalp = await travaContract.balanceOf(getAddr("WBNB_TRAVA_LP_ADDRESS", appState.chainId));
         
-            let travaContract = new Contract(getAddr("TRAVA_TOKEN", appState.chainId), BEP20ABI, appState.web3);
-            let travaBalanceTravalc = await travaContract.balanceOf(getAddr("BUSD_TRAVA_LC_ADDRESS", appState.chainId));
-        
-            let travaPrice = BigNumber(busdPrice).multipliedBy(busdBalanceTravalc).div(travaBalanceTravalc)
+            let travaPrice = BigNumber(bnbPrice).multipliedBy(wbnbBalanceTravalp).div(travaBalanceTravalp)
             if (travaPrice.isNaN()) {
               travaPrice = BigNumber(0);
             }
-        
+            
+            let busdContract = new Contract(getAddr("BUSD_TOKEN", appState.chainId), BEP20ABI, appState.web3);
             let busdBalanceTODlc = await busdContract.balanceOf(getAddr("BUSD_TOD_LC_ADDRESS", appState.chainId));
         
             let todContract = new Contract(getAddr("TOD_TOKEN", appState.chainId), BEP20ABI, appState.web3);
@@ -119,7 +109,7 @@ export async function updateLiquidityCampainState(
                 } else if (vaultConfigList[i].id == "TOD") {
                     underlyingToken.price = todPrice.toFixed();
                 } else {
-                    error("Not support underlying token");
+                    new Error("Not support underlying token");
                 }
 
 
@@ -155,7 +145,6 @@ export async function updateLiquidityCampainState(
                 let liquidityCampain: LiquidityCampain = {
                     ...accountVaults,
                     lockTime: BigNumber(lockTime[i]).toFixed(),
-                    joinTime: BigNumber(joinTime[i]).toFixed(),
                 }
                 appState.smartWalletState.liquidityCampainState.liquidityCampainList.set(vaultConfigList[i].stakedTokenAddress.toLowerCase(), liquidityCampain);
             }

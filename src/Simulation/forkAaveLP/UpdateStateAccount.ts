@@ -25,6 +25,7 @@ export async function updateForkAaveLPState(appState1: ApplicationState, entity_
             appState.forkAaveLPState.forkAaveLP.set(entity_id, data);
         }
         appState.forkAaveLPState.isFetch = true;
+        appState = await updateUserInForkAaveLPState(appState, appState.smartWalletState.address, entity_id);
     }
     } catch (error) {
         console.error(error);

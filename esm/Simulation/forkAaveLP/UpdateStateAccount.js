@@ -29,6 +29,7 @@ export function updateForkAaveLPState(appState1, entity_id, force) {
                     appState.forkAaveLPState.forkAaveLP.set(entity_id, data);
                 }
                 appState.forkAaveLPState.isFetch = true;
+                appState = yield updateUserInForkAaveLPState(appState, appState.smartWalletState.address, entity_id);
             }
         }
         catch (error) {

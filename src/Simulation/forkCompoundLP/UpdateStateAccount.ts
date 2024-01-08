@@ -24,6 +24,7 @@ export async function updateForkCompoundLPState(appState1: ApplicationState, ent
             appState.forkCompoundLPState.forkCompoundLP.set(entity_id, data);
         }
         appState.forkCompoundLPState.isFetch = true;
+        appState = await updateUserInForkCompoundLPState(appState, appState.smartWalletState.address, entity_id);
     }
     } catch (error) {
         console.error(error);

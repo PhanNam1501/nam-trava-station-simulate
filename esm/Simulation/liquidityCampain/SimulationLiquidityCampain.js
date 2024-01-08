@@ -43,7 +43,6 @@ export function SimulationJoinLiquidity(_appState, _liquidity, _from, _amount) {
             newLiquidityCampain.TVL = newTVL.toFixed();
             appState.smartWalletState.liquidityCampainState.liquidityCampainList.set(liquidity, newLiquidityCampain);
             appState[modeFrom].tokenBalances.set(liquidityCampain.underlyingToken.underlyingAddress.toLowerCase(), oldBalance.minus(amount).toFixed());
-            console.log(appState[modeFrom].tokenBalances.get(liquidityCampain.underlyingToken.underlyingAddress.toLowerCase()));
             return appState;
         }
         catch (err) {
