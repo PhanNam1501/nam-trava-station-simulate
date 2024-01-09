@@ -11,7 +11,6 @@ export interface ForkedAave {
 }
 export declare class ForkedAaveLPState {
     forkAaveLP: Map<string, ForkedAave>;
-    isFetch: boolean;
     constructor();
 }
 export interface WalletForkedAaveLPState {

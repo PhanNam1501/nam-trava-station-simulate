@@ -13,10 +13,8 @@ export interface ForkedAave{
 
 export class ForkedAaveLPState {
     forkAaveLP: Map<string, ForkedAave>;
-    isFetch: boolean;
     constructor() {
       this.forkAaveLP = new Map();
-      this.isFetch = false;
     }
 }
 

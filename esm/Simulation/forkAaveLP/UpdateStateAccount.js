@@ -11,11 +11,12 @@ import BEP20ABI from "../../abis/BEP20.json";
 import { getMode, multiCall } from "../../utils/helper";
 import axios from "axios";
 import { entity_ids_aave } from "./forkAaveLPConfig";
+import { centic_api, centic_api_key, tramline_api } from "../../utils";
 export function updateForkAaveLPState(appState1, entity_id, force) {
     return __awaiter(this, void 0, void 0, function* () {
         let appState = Object.assign({}, appState1);
         try {
-            if (appState.forkAaveLPState.isFetch == false || force == true) {
+            if (appState.forkAaveLPState.forkAaveLP.get(entity_id) == undefined || force == true) {
                 if (entity_ids_aave.some(x => x === entity_id)) {
                     let dataLendingPool = yield getDataLendingByAxios(entity_id, "0x" + appState.chainId.toString(16));
                     let data = {
@@ -28,7 +29,6 @@ export function updateForkAaveLPState(appState1, entity_id, force) {
                     };
                     appState.forkAaveLPState.forkAaveLP.set(entity_id, data);
                 }
-                appState.forkAaveLPState.isFetch = true;
                 appState = yield updateUserInForkAaveLPState(appState, appState.smartWalletState.address, entity_id);
             }
         }
@@ -181,9 +181,15 @@ export function updateUserInForkAaveLPState(appState1, _from, entity_id, force) 
 }
 function getDataLendingByAxios(entity_id, chain) {
     return __awaiter(this, void 0, void 0, function* () {
-        let url = `https://develop.centic.io/dev/v3/projects/lending/${entity_id}/overview?chain=${chain}`;
+        let url = `${centic_api}/v3/projects/lending/${entity_id}/overview?chain=${chain}`;
         try {
-            const response = yield axios.get(url);
+            const response = yield axios.request({
+                method: "get",
+                url: url,
+                headers: {
+                    "x-apikey": centic_api_key
+                }
+            });
             const data = response.data;
             return data;
         }
@@ -195,9 +201,15 @@ function getDataLendingByAxios(entity_id, chain) {
 }
 function getDataUserByAxios(address, entity_id, chain) {
     return __awaiter(this, void 0, void 0, function* () {
-        let url = `https://develop.centic.io/dev/v3/wallets/${address}/lendings/${entity_id}?chain=${chain}`;
+        let url = `${centic_api}/v3/wallets/${address}/lendings/${entity_id}?chain=${chain}`;
         try {
-            const response = yield axios.get(url);
+            const response = yield axios.request({
+                method: "get",
+                url: url,
+                headers: {
+                    "x-apikey": centic_api_key
+                }
+            });
             const data = response.data;
             return data;
         }
@@ -209,9 +221,12 @@ function getDataUserByAxios(address, entity_id, chain) {
 }
 function getDataLendingByAxiosTramline(entity_id, chain, userAddress) {
     return __awaiter(this, void 0, void 0, function* () {
-        let url = `https://tramlines-backend.trava.finance/api/trava-station/lending-pool/detail?entity=${entity_id}&chainId=${chain}&userAddress=${userAddress}`;
+        let url = `${tramline_api}/trava-station/lending-pool/detail?entity=${entity_id}&chainId=${chain}&userAddress=${userAddress}`;
         try {
-            const response = yield axios.get(url);
+            const response = yield axios.request({
+                method: "get",
+                url: url
+            });
             const data = response.data;
             return data;
         }
@@ -223,9 +238,12 @@ function getDataLendingByAxiosTramline(entity_id, chain, userAddress) {
 }
 function getDataLendingByAxiosTramlineOverview(entity_id, chain) {
     return __awaiter(this, void 0, void 0, function* () {
-        let url = `https://tramlines-backend.trava.finance/api/trava-station/lending-pool/overview?entity=${entity_id}&chainId=${chain}`;
+        let url = `${tramline_api}/trava-station/lending-pool/overview?entity=${entity_id}&chainId=${chain}`;
         try {
-            const response = yield axios.get(url);
+            const response = yield axios.request({
+                method: "get",
+                url: url,
+            });
             const data = response.data;
             return data;
         }

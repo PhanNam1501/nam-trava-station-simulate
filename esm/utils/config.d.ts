@@ -30,3 +30,6 @@ export declare const HALF_PERCENT: BigNumber;
 export declare const WAD: BigNumber;
 export declare const FEE_AUCTION_PERCENTAGE: number;
 export declare const MINIMUM_BID_STEP_PERCENT: number;
+export declare const tramline_api = "https://tramlines-backend.trava.finance/api";
+export declare const centic_api = "https://develop.centic.io/dev";
+export declare const centic_api_key = "3ATJtOInT7QfaV2pvAdhlRVMHbztLjyyAL16UrKe5Q6vMtlR";

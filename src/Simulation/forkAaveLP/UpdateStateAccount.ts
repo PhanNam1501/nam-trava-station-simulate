@@ -5,13 +5,14 @@ import { getMode, multiCall } from "../../utils/helper";
 import axios from "axios";
 import { DetailTokenInPool, ForkedAave, WalletForkedAaveLPState } from "../../State";
 import { entity_ids_aave } from "./forkAaveLPConfig";
+import { centic_api, centic_api_key, tramline_api } from "../../utils";
 
 
 export async function updateForkAaveLPState(appState1: ApplicationState, entity_id: string, force?: boolean): Promise<ApplicationState> {
     let appState = { ...appState1 };
     try {
 
-        if (appState.forkAaveLPState.isFetch == false || force == true) {
+        if (appState.forkAaveLPState.forkAaveLP.get(entity_id) == undefined || force == true) {
         if (entity_ids_aave.some(x => x === entity_id)){
             let dataLendingPool = await getDataLendingByAxios(entity_id, "0x" + appState.chainId.toString(16));
             let data: ForkedAave = {
@@ -24,7 +25,6 @@ export async function updateForkAaveLPState(appState1: ApplicationState, entity_
             }
             appState.forkAaveLPState.forkAaveLP.set(entity_id, data);
         }
-        appState.forkAaveLPState.isFetch = true;
         appState = await updateUserInForkAaveLPState(appState, appState.smartWalletState.address, entity_id);
     }
     } catch (error) {
@@ -215,9 +215,15 @@ export async function updateUserInForkAaveLPState(appState1: ApplicationState, _
 }
 
 async function getDataLendingByAxios(entity_id: string, chain: string) {
-    let url = `https://develop.centic.io/dev/v3/projects/lending/${entity_id}/overview?chain=${chain}`
+    let url = `${centic_api}/v3/projects/lending/${entity_id}/overview?chain=${chain}`
     try {
-        const response = await axios.get(url)
+        const response = await axios.request({
+          method: "get",
+          url: url,
+          headers: {
+            "x-apikey": centic_api_key
+          }
+        })
         const data = response.data;
         return data;
     } catch (err) {
@@ -227,9 +233,15 @@ async function getDataLendingByAxios(entity_id: string, chain: string) {
 }
 
 async function getDataUserByAxios(address: EthAddress, entity_id: string, chain: string) {
-    let url = `https://develop.centic.io/dev/v3/wallets/${address}/lendings/${entity_id}?chain=${chain}`
+    let url = `${centic_api}/v3/wallets/${address}/lendings/${entity_id}?chain=${chain}`
     try {
-        const response = await axios.get(url)
+        const response = await axios.request({
+          method: "get",
+          url: url,
+          headers: {
+            "x-apikey": centic_api_key
+          }
+        })
         const data = response.data;
         return data;
     } catch (err) {
@@ -239,9 +251,12 @@ async function getDataUserByAxios(address: EthAddress, entity_id: string, chain:
 }
 
 async function getDataLendingByAxiosTramline(entity_id: string, chain: string, userAddress: EthAddress) {
-    let url = `https://tramlines-backend.trava.finance/api/trava-station/lending-pool/detail?entity=${entity_id}&chainId=${chain}&userAddress=${userAddress}`
+    let url = `${tramline_api}/trava-station/lending-pool/detail?entity=${entity_id}&chainId=${chain}&userAddress=${userAddress}`
     try {
-        const response = await axios.get(url)
+        const response = await axios.request({
+          method: "get",
+          url: url
+        })
         const data = response.data;
         return data;
     } catch (err) {
@@ -251,9 +266,13 @@ async function getDataLendingByAxiosTramline(entity_id: string, chain: string, u
 }
 
 async function getDataLendingByAxiosTramlineOverview(entity_id: string, chain: string) {
-    let url = `https://tramlines-backend.trava.finance/api/trava-station/lending-pool/overview?entity=${entity_id}&chainId=${chain}`
+    let url = `${tramline_api}/trava-station/lending-pool/overview?entity=${entity_id}&chainId=${chain}`
     try {
-        const response = await axios.get(url)
+        const response = await axios.request({
+          method: "get",
+          url: url,
+
+        })
         const data = response.data;
         return data;
     } catch (err) {

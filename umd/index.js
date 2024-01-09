@@ -617,9 +617,7 @@ function _toPrimitive(input, hint) { if (typeof input !== "object" || input === 
 class ForkedAaveLPState {
   constructor() {
     _defineProperty(this, "forkAaveLP", void 0);
-    _defineProperty(this, "isFetch", void 0);
     this.forkAaveLP = new Map();
-    this.isFetch = false;
   }
 }
 
@@ -770,6 +768,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   calcVotingPower: () => (/* reexport safe */ _trava__WEBPACK_IMPORTED_MODULE_5__.calcVotingPower),
 /* harmony export */   calculateKnightApr: () => (/* reexport safe */ _trava__WEBPACK_IMPORTED_MODULE_5__.calculateKnightApr),
 /* harmony export */   calculateMaxAmountBorrow: () => (/* reexport safe */ _trava__WEBPACK_IMPORTED_MODULE_5__.calculateMaxAmountBorrow),
+/* harmony export */   calculateMaxAmountForkAaveBorrow: () => (/* reexport safe */ _forkAaveLP__WEBPACK_IMPORTED_MODULE_1__.calculateMaxAmountForkAaveBorrow),
+/* harmony export */   calculateMaxAmountForkAaveRepay: () => (/* reexport safe */ _forkAaveLP__WEBPACK_IMPORTED_MODULE_1__.calculateMaxAmountForkAaveRepay),
+/* harmony export */   calculateMaxAmountForkAaveSupply: () => (/* reexport safe */ _forkAaveLP__WEBPACK_IMPORTED_MODULE_1__.calculateMaxAmountForkAaveSupply),
+/* harmony export */   calculateMaxAmountForkAaveWithdraw: () => (/* reexport safe */ _forkAaveLP__WEBPACK_IMPORTED_MODULE_1__.calculateMaxAmountForkAaveWithdraw),
 /* harmony export */   calculateMaxAmountRepay: () => (/* reexport safe */ _trava__WEBPACK_IMPORTED_MODULE_5__.calculateMaxAmountRepay),
 /* harmony export */   calculateMaxAmountSupply: () => (/* reexport safe */ _trava__WEBPACK_IMPORTED_MODULE_5__.calculateMaxAmountSupply),
 /* harmony export */   calculateMaxAmountWithdraw: () => (/* reexport safe */ _trava__WEBPACK_IMPORTED_MODULE_5__.calculateMaxAmountWithdraw),
@@ -880,8 +882,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _basic__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(19);
 /* harmony import */ var _forkAaveLP__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(344);
-/* harmony import */ var _forkCompoundLP__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(349);
-/* harmony import */ var _liquidityCampain__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(353);
+/* harmony import */ var _forkCompoundLP__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(356);
+/* harmony import */ var _liquidityCampain__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(360);
 /* harmony import */ var _swap__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(402);
 /* harmony import */ var _trava__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(404);
 
@@ -1210,8 +1212,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   WEEK_TO_SECONDS: () => (/* binding */ WEEK_TO_SECONDS),
 /* harmony export */   YEAR_TO_SECONDS: () => (/* binding */ YEAR_TO_SECONDS),
 /* harmony export */   ZERO_ADDRESS: () => (/* binding */ ZERO_ADDRESS),
+/* harmony export */   centic_api: () => (/* binding */ centic_api),
+/* harmony export */   centic_api_key: () => (/* binding */ centic_api_key),
 /* harmony export */   configure: () => (/* binding */ configure),
 /* harmony export */   percentMul: () => (/* binding */ percentMul),
+/* harmony export */   tramline_api: () => (/* binding */ tramline_api),
 /* harmony export */   wadDiv: () => (/* binding */ wadDiv)
 /* harmony export */ });
 /* harmony import */ var _zennomi_tokens__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(25);
@@ -1309,6 +1314,9 @@ var HALF_PERCENT = PERCENTAGE_FACTOR.div(2);
 var WAD = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_2__["default"])(1e18);
 var FEE_AUCTION_PERCENTAGE = 5 / 100;
 var MINIMUM_BID_STEP_PERCENT = 5 / 100;
+var tramline_api = "https://tramlines-backend.trava.finance/api";
+var centic_api = "https://develop.centic.io/dev";
+var centic_api_key = "3ATJtOInT7QfaV2pvAdhlRVMHbztLjyyAL16UrKe5Q6vMtlR";
 
 /***/ }),
 /* 25 */
@@ -55626,12 +55634,16 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   SimulationRepayForkAaveLP: () => (/* reexport safe */ _SimulationForkAaveLP__WEBPACK_IMPORTED_MODULE_1__.SimulationRepayForkAaveLP),
 /* harmony export */   SimulationSupplyForkAaveLP: () => (/* reexport safe */ _SimulationForkAaveLP__WEBPACK_IMPORTED_MODULE_1__.SimulationSupplyForkAaveLP),
 /* harmony export */   SimulationWithdrawForkAaveLP: () => (/* reexport safe */ _SimulationForkAaveLP__WEBPACK_IMPORTED_MODULE_1__.SimulationWithdrawForkAaveLP),
+/* harmony export */   calculateMaxAmountForkAaveBorrow: () => (/* reexport safe */ _SimulationForkAaveLP__WEBPACK_IMPORTED_MODULE_1__.calculateMaxAmountForkAaveBorrow),
+/* harmony export */   calculateMaxAmountForkAaveRepay: () => (/* reexport safe */ _SimulationForkAaveLP__WEBPACK_IMPORTED_MODULE_1__.calculateMaxAmountForkAaveRepay),
+/* harmony export */   calculateMaxAmountForkAaveSupply: () => (/* reexport safe */ _SimulationForkAaveLP__WEBPACK_IMPORTED_MODULE_1__.calculateMaxAmountForkAaveSupply),
+/* harmony export */   calculateMaxAmountForkAaveWithdraw: () => (/* reexport safe */ _SimulationForkAaveLP__WEBPACK_IMPORTED_MODULE_1__.calculateMaxAmountForkAaveWithdraw),
 /* harmony export */   entity_ids_aave: () => (/* reexport safe */ _forkAaveLPConfig__WEBPACK_IMPORTED_MODULE_2__.entity_ids_aave),
 /* harmony export */   updateForkAaveLPState: () => (/* reexport safe */ _UpdateStateAccount__WEBPACK_IMPORTED_MODULE_0__.updateForkAaveLPState),
 /* harmony export */   updateUserInForkAaveLPState: () => (/* reexport safe */ _UpdateStateAccount__WEBPACK_IMPORTED_MODULE_0__.updateUserInForkAaveLPState)
 /* harmony export */ });
 /* harmony import */ var _UpdateStateAccount__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(345);
-/* harmony import */ var _SimulationForkAaveLP__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(348);
+/* harmony import */ var _SimulationForkAaveLP__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(355);
 /* harmony import */ var _forkAaveLPConfig__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(347);
 
 
@@ -55649,8 +55661,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _abis_BEP20_json__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(346);
 /* harmony import */ var _utils_helper__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(125);
-/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(269);
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(269);
 /* harmony import */ var _forkAaveLPConfig__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(347);
+/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(348);
 function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
 function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
 function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
@@ -55662,6 +55675,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
 
 
+
 function updateForkAaveLPState(_x, _x2, _x3) {
   return _updateForkAaveLPState.apply(this, arguments);
 }
@@ -55669,7 +55683,7 @@ function _updateForkAaveLPState() {
   _updateForkAaveLPState = _asyncToGenerator(function* (appState1, entity_id, force) {
     var appState = _objectSpread({}, appState1);
     try {
-      if (appState.forkAaveLPState.isFetch == false || force == true) {
+      if (appState.forkAaveLPState.forkAaveLP.get(entity_id) == undefined || force == true) {
         if (_forkAaveLPConfig__WEBPACK_IMPORTED_MODULE_2__.entity_ids_aave.some(x => x === entity_id)) {
           var dataLendingPool = yield getDataLendingByAxios(entity_id, "0x" + appState.chainId.toString(16));
           var data = {
@@ -55682,7 +55696,6 @@ function _updateForkAaveLPState() {
           };
           appState.forkAaveLPState.forkAaveLP.set(entity_id, data);
         }
-        appState.forkAaveLPState.isFetch = true;
         appState = yield updateUserInForkAaveLPState(appState, appState.smartWalletState.address, entity_id);
       }
     } catch (error) {
@@ -55835,9 +55848,15 @@ function getDataLendingByAxios(_x11, _x12) {
 }
 function _getDataLendingByAxios() {
   _getDataLendingByAxios = _asyncToGenerator(function* (entity_id, chain) {
-    var url = "https://develop.centic.io/dev/v3/projects/lending/".concat(entity_id, "/overview?chain=").concat(chain);
+    var url = "".concat(_utils__WEBPACK_IMPORTED_MODULE_3__.centic_api, "/v3/projects/lending/").concat(entity_id, "/overview?chain=").concat(chain);
     try {
-      var response = yield axios__WEBPACK_IMPORTED_MODULE_3__["default"].get(url);
+      var response = yield axios__WEBPACK_IMPORTED_MODULE_4__["default"].request({
+        method: "get",
+        url: url,
+        headers: {
+          "x-apikey": _utils__WEBPACK_IMPORTED_MODULE_3__.centic_api_key
+        }
+      });
       var data = response.data;
       return data;
     } catch (err) {
@@ -55852,9 +55871,15 @@ function getDataUserByAxios(_x13, _x14, _x15) {
 }
 function _getDataUserByAxios() {
   _getDataUserByAxios = _asyncToGenerator(function* (address, entity_id, chain) {
-    var url = "https://develop.centic.io/dev/v3/wallets/".concat(address, "/lendings/").concat(entity_id, "?chain=").concat(chain);
+    var url = "".concat(_utils__WEBPACK_IMPORTED_MODULE_3__.centic_api, "/v3/wallets/").concat(address, "/lendings/").concat(entity_id, "?chain=").concat(chain);
     try {
-      var response = yield axios__WEBPACK_IMPORTED_MODULE_3__["default"].get(url);
+      var response = yield axios__WEBPACK_IMPORTED_MODULE_4__["default"].request({
+        method: "get",
+        url: url,
+        headers: {
+          "x-apikey": _utils__WEBPACK_IMPORTED_MODULE_3__.centic_api_key
+        }
+      });
       var data = response.data;
       return data;
     } catch (err) {
@@ -55869,9 +55894,12 @@ function getDataLendingByAxiosTramline(_x16, _x17, _x18) {
 }
 function _getDataLendingByAxiosTramline() {
   _getDataLendingByAxiosTramline = _asyncToGenerator(function* (entity_id, chain, userAddress) {
-    var url = "https://tramlines-backend.trava.finance/api/trava-station/lending-pool/detail?entity=".concat(entity_id, "&chainId=").concat(chain, "&userAddress=").concat(userAddress);
+    var url = "".concat(_utils__WEBPACK_IMPORTED_MODULE_3__.tramline_api, "/trava-station/lending-pool/detail?entity=").concat(entity_id, "&chainId=").concat(chain, "&userAddress=").concat(userAddress);
     try {
-      var response = yield axios__WEBPACK_IMPORTED_MODULE_3__["default"].get(url);
+      var response = yield axios__WEBPACK_IMPORTED_MODULE_4__["default"].request({
+        method: "get",
+        url: url
+      });
       var data = response.data;
       return data;
     } catch (err) {
@@ -55886,9 +55914,12 @@ function getDataLendingByAxiosTramlineOverview(_x19, _x20) {
 }
 function _getDataLendingByAxiosTramlineOverview() {
   _getDataLendingByAxiosTramlineOverview = _asyncToGenerator(function* (entity_id, chain) {
-    var url = "https://tramlines-backend.trava.finance/api/trava-station/lending-pool/overview?entity=".concat(entity_id, "&chainId=").concat(chain);
+    var url = "".concat(_utils__WEBPACK_IMPORTED_MODULE_3__.tramline_api, "/trava-station/lending-pool/overview?entity=").concat(entity_id, "&chainId=").concat(chain);
     try {
-      var response = yield axios__WEBPACK_IMPORTED_MODULE_3__["default"].get(url);
+      var response = yield axios__WEBPACK_IMPORTED_MODULE_4__["default"].request({
+        method: "get",
+        url: url
+      });
       var data = response.data;
       return data;
     } catch (err) {
@@ -55924,15 +55955,432 @@ var entity_ids_aave = ["valas-finance", "radiant-v2", "granary-finance"];
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   ApiQuery: () => (/* reexport safe */ _api__WEBPACK_IMPORTED_MODULE_6__.ApiQuery),
+/* harmony export */   AuthorizeError: () => (/* reexport safe */ _error__WEBPACK_IMPORTED_MODULE_3__.AuthorizeError),
+/* harmony export */   BASE18: () => (/* reexport safe */ _config__WEBPACK_IMPORTED_MODULE_1__.BASE18),
+/* harmony export */   BidPriceError: () => (/* reexport safe */ _error__WEBPACK_IMPORTED_MODULE_3__.BidPriceError),
+/* harmony export */   BidStepsError: () => (/* reexport safe */ _error__WEBPACK_IMPORTED_MODULE_3__.BidStepsError),
+/* harmony export */   BidderError: () => (/* reexport safe */ _error__WEBPACK_IMPORTED_MODULE_3__.BidderError),
+/* harmony export */   CONFIG: () => (/* reexport safe */ _config__WEBPACK_IMPORTED_MODULE_1__.CONFIG),
+/* harmony export */   DAY_TO_SECONDS: () => (/* reexport safe */ _config__WEBPACK_IMPORTED_MODULE_1__.DAY_TO_SECONDS),
+/* harmony export */   DivisionByZeroError: () => (/* reexport safe */ _error__WEBPACK_IMPORTED_MODULE_3__.DivisionByZeroError),
+/* harmony export */   ExpeditionNotFoundError: () => (/* reexport safe */ _error__WEBPACK_IMPORTED_MODULE_3__.ExpeditionNotFoundError),
+/* harmony export */   ExpireAuctionError: () => (/* reexport safe */ _error__WEBPACK_IMPORTED_MODULE_3__.ExpireAuctionError),
+/* harmony export */   FEE_AUCTION_PERCENTAGE: () => (/* reexport safe */ _config__WEBPACK_IMPORTED_MODULE_1__.FEE_AUCTION_PERCENTAGE),
+/* harmony export */   FILTER_MODE: () => (/* reexport safe */ _stakingVaultConfig__WEBPACK_IMPORTED_MODULE_2__.FILTER_MODE),
+/* harmony export */   FromAddressError: () => (/* reexport safe */ _error__WEBPACK_IMPORTED_MODULE_3__.FromAddressError),
+/* harmony export */   HALF_PERCENT: () => (/* reexport safe */ _config__WEBPACK_IMPORTED_MODULE_1__.HALF_PERCENT),
+/* harmony export */   HOUR_TO_SECONDS: () => (/* reexport safe */ _config__WEBPACK_IMPORTED_MODULE_1__.HOUR_TO_SECONDS),
+/* harmony export */   HighestBidderError: () => (/* reexport safe */ _error__WEBPACK_IMPORTED_MODULE_3__.HighestBidderError),
+/* harmony export */   InexpireAuctionError: () => (/* reexport safe */ _error__WEBPACK_IMPORTED_MODULE_3__.InexpireAuctionError),
+/* harmony export */   MAX_LOCK_TIMES: () => (/* reexport safe */ _config__WEBPACK_IMPORTED_MODULE_1__.MAX_LOCK_TIMES),
+/* harmony export */   MAX_UINT256: () => (/* reexport safe */ _config__WEBPACK_IMPORTED_MODULE_1__.MAX_UINT256),
+/* harmony export */   MINIMUM_BID_STEP_PERCENT: () => (/* reexport safe */ _config__WEBPACK_IMPORTED_MODULE_1__.MINIMUM_BID_STEP_PERCENT),
+/* harmony export */   MONTH_TO_SECONDS: () => (/* reexport safe */ _config__WEBPACK_IMPORTED_MODULE_1__.MONTH_TO_SECONDS),
+/* harmony export */   MultiplicationOverflowError: () => (/* reexport safe */ _error__WEBPACK_IMPORTED_MODULE_3__.MultiplicationOverflowError),
+/* harmony export */   NETWORKS: () => (/* reexport safe */ _config__WEBPACK_IMPORTED_MODULE_1__.NETWORKS),
+/* harmony export */   NFTIsNotOnGoingError: () => (/* reexport safe */ _error__WEBPACK_IMPORTED_MODULE_3__.NFTIsNotOnGoingError),
+/* harmony export */   NFTNotFoundError: () => (/* reexport safe */ _error__WEBPACK_IMPORTED_MODULE_3__.NFTNotFoundError),
+/* harmony export */   NotEnoughBalanceError: () => (/* reexport safe */ _error__WEBPACK_IMPORTED_MODULE_3__.NotEnoughBalanceError),
+/* harmony export */   OngoingAuctionError: () => (/* reexport safe */ _error__WEBPACK_IMPORTED_MODULE_3__.OngoingAuctionError),
+/* harmony export */   OwnerAuctionError: () => (/* reexport safe */ _error__WEBPACK_IMPORTED_MODULE_3__.OwnerAuctionError),
+/* harmony export */   PERCENTAGE_FACTOR: () => (/* reexport safe */ _config__WEBPACK_IMPORTED_MODULE_1__.PERCENTAGE_FACTOR),
+/* harmony export */   TOKENS_NAME: () => (/* reexport safe */ _stakingVaultConfig__WEBPACK_IMPORTED_MODULE_2__.TOKENS_NAME),
+/* harmony export */   TRAVA_NFT_BACKEND_ROOT: () => (/* reexport safe */ _constance__WEBPACK_IMPORTED_MODULE_7__.TRAVA_NFT_BACKEND_ROOT),
+/* harmony export */   TravaNFTApiQuery: () => (/* reexport safe */ _api__WEBPACK_IMPORTED_MODULE_6__.TravaNFTApiQuery),
+/* harmony export */   VAULT_TYPES: () => (/* reexport safe */ _stakingVaultConfig__WEBPACK_IMPORTED_MODULE_2__.VAULT_TYPES),
+/* harmony export */   WAD: () => (/* reexport safe */ _config__WEBPACK_IMPORTED_MODULE_1__.WAD),
+/* harmony export */   WEEK_TO_SECONDS: () => (/* reexport safe */ _config__WEBPACK_IMPORTED_MODULE_1__.WEEK_TO_SECONDS),
+/* harmony export */   YEAR_TO_SECONDS: () => (/* reexport safe */ _config__WEBPACK_IMPORTED_MODULE_1__.YEAR_TO_SECONDS),
+/* harmony export */   ZERO_ADDRESS: () => (/* reexport safe */ _config__WEBPACK_IMPORTED_MODULE_1__.ZERO_ADDRESS),
+/* harmony export */   centic_api: () => (/* reexport safe */ _config__WEBPACK_IMPORTED_MODULE_1__.centic_api),
+/* harmony export */   centic_api_key: () => (/* reexport safe */ _config__WEBPACK_IMPORTED_MODULE_1__.centic_api_key),
+/* harmony export */   configure: () => (/* reexport safe */ _config__WEBPACK_IMPORTED_MODULE_1__.configure),
+/* harmony export */   convertHexStringToAddress: () => (/* reexport safe */ _address__WEBPACK_IMPORTED_MODULE_5__.convertHexStringToAddress),
+/* harmony export */   getAddr: () => (/* reexport safe */ _address__WEBPACK_IMPORTED_MODULE_5__.getAddr),
+/* harmony export */   listAddr: () => (/* reexport safe */ _address__WEBPACK_IMPORTED_MODULE_5__.listAddr),
+/* harmony export */   listStakingVault: () => (/* reexport safe */ _stakingVaultConfig__WEBPACK_IMPORTED_MODULE_2__.listStakingVault),
+/* harmony export */   percentMul: () => (/* reexport safe */ _config__WEBPACK_IMPORTED_MODULE_1__.percentMul),
+/* harmony export */   simulateExecute: () => (/* reexport safe */ _simulateExecute__WEBPACK_IMPORTED_MODULE_4__.simulateExecute),
+/* harmony export */   tramline_api: () => (/* reexport safe */ _config__WEBPACK_IMPORTED_MODULE_1__.tramline_api),
+/* harmony export */   wadDiv: () => (/* reexport safe */ _config__WEBPACK_IMPORTED_MODULE_1__.wadDiv)
+/* harmony export */ });
+/* harmony import */ var _oraclePrice__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(349);
+/* harmony import */ var _config__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(24);
+/* harmony import */ var _stakingVaultConfig__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(352);
+/* harmony import */ var _error__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(27);
+/* harmony import */ var _simulateExecute__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(268);
+/* harmony import */ var _address__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(23);
+/* harmony import */ var _api__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(353);
+/* harmony import */ var _constance__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(354);
+
+
+
+
+
+
+
+
+
+/***/ }),
+/* 349 */
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ OraclePrice)
+/* harmony export */ });
+/* harmony import */ var _abis_AaveOracle_json__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(350);
+/* harmony import */ var _contract__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(351);
+/* harmony import */ var _address__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(23);
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
+function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
+
+
+
+class OraclePrice extends _contract__WEBPACK_IMPORTED_MODULE_1__["default"] {
+  constructor(address, web3Reader) {
+    super(address, _abis_AaveOracle_json__WEBPACK_IMPORTED_MODULE_0__, web3Reader);
+  }
+  getAssetPrice(_assetAddress) {
+    var _this = this;
+    return _asyncToGenerator(function* () {
+      var assetAddress = (0,_address__WEBPACK_IMPORTED_MODULE_2__.convertHexStringToAddress)(_assetAddress);
+      return yield _this.contractUtil.getAssetPrice(assetAddress);
+    })();
+  }
+}
+
+// const oracleContract = new OracleContract(process.env.ORACLE_ADDRESS!);
+// oracleContract.getAssetPrice(process.env.TRAVA_TOKEN_IN_MARKET!).then((res) => {
+//   console.log(res.toString());
+// });
+
+/***/ }),
+/* 350 */
+/***/ ((module) => {
+
+"use strict";
+module.exports = JSON.parse('[{"inputs":[{"internalType":"address[]","name":"assets","type":"address[]"},{"internalType":"address[]","name":"sources","type":"address[]"},{"internalType":"address","name":"fallbackOracle","type":"address"},{"internalType":"address","name":"weth","type":"address"}],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"asset","type":"address"},{"indexed":true,"internalType":"address","name":"source","type":"address"}],"name":"AssetSourceUpdated","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"fallbackOracle","type":"address"}],"name":"FallbackOracleUpdated","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"previousOwner","type":"address"},{"indexed":true,"internalType":"address","name":"newOwner","type":"address"}],"name":"OwnershipTransferred","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"weth","type":"address"}],"name":"WethSet","type":"event"},{"inputs":[],"name":"WETH","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"asset","type":"address"}],"name":"getAssetPrice","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address[]","name":"assets","type":"address[]"}],"name":"getAssetsPrices","outputs":[{"internalType":"uint256[]","name":"","type":"uint256[]"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"getFallbackOracle","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"asset","type":"address"}],"name":"getSourceOfAsset","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"owner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"renounceOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address[]","name":"assets","type":"address[]"},{"internalType":"address[]","name":"sources","type":"address[]"}],"name":"setAssetSources","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"fallbackOracle","type":"address"}],"name":"setFallbackOracle","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"}]');
+
+/***/ }),
+/* 351 */
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ BaseReadContract)
+/* harmony export */ });
+/* harmony import */ var ethers__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(22);
+/* harmony import */ var ethers__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(ethers__WEBPACK_IMPORTED_MODULE_0__);
+function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return typeof key === "symbol" ? key : String(key); }
+function _toPrimitive(input, hint) { if (typeof input !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (typeof res !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
+
+class BaseReadContract {
+  constructor(contractAddress, abi, web3Reader) {
+    _defineProperty(this, "contractAddress", void 0);
+    _defineProperty(this, "web3Reader", void 0);
+    _defineProperty(this, "abi", void 0);
+    _defineProperty(this, "contractUtil", void 0);
+    this.contractAddress = contractAddress;
+    this.web3Reader = web3Reader;
+    this.abi = abi;
+    this.contractUtil = new ethers__WEBPACK_IMPORTED_MODULE_0__.Contract(contractAddress, abi, web3Reader);
+  }
+}
+
+/***/ }),
+/* 352 */
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   FILTER_MODE: () => (/* binding */ FILTER_MODE),
+/* harmony export */   TOKENS_NAME: () => (/* binding */ TOKENS_NAME),
+/* harmony export */   VAULT_TYPES: () => (/* binding */ VAULT_TYPES),
+/* harmony export */   listStakingVault: () => (/* binding */ listStakingVault)
+/* harmony export */ });
+/* harmony import */ var _config__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(24);
+
+var VAULT_TYPES = {
+  FARMING: "FARMING",
+  FARMING_BURN: "FARMING_BURN",
+  BASE: "BASE",
+  REWARD_ON_FTM: "REWARD_ON_FTM"
+};
+var FILTER_MODE = {
+  LIVE: "LIVE",
+  ENDED: "ENDED",
+  CLOSED: "CLOSED"
+};
+var TOKENS_NAME = {
+  BNB: "BNB",
+  BUSD: "BUSD",
+  ORAI: "ORAI",
+  TRAVA_ON_BSC: "TRAVA_ON_BSC",
+  TRAVA_ON_FTM: "TRAVA_ON_FTM",
+  TRAVA_ON_ETH: "TRAVA_ON_ETH",
+  TRAVA_ON_CURRENT_NETWORK: "TRAVA_ON_CURRENT_NETWORK",
+  TRAVA_BNB_LP: "TRAVA_BNB_LP",
+  TRAVA_ETH_LP: "TRAVA_ETH_LP",
+  TRAVA_FTM_LP: "TRAVA_FTM_LP"
+};
+var listStakingVault = {
+  [_config__WEBPACK_IMPORTED_MODULE_0__.NETWORKS.bscTestnet.chainId]: [{
+    id: "bsc-mainnet-travabnb",
+    name: "Trava BNB",
+    code: "BNB/TRAVA",
+    reserveDecimals: _config__WEBPACK_IMPORTED_MODULE_0__.BASE18.toFixed(),
+    underlyingAddress: "0xdCbf1fe4642d3c593f665D04Cc66E1E8923DAB5e",
+    priceUnderlyingAddress: "0xdCbf1fe4642d3c593f665D04Cc66E1E8923DAB5e",
+    lpAddress: "0xdCbf1fe4642d3c593f665D04Cc66E1E8923DAB5e",
+    stakedTokenAddress: "0xA36991E7FA207815f37e01E72DBC3b5b874D7F6C",
+    claimable: true,
+    tokenName: TOKENS_NAME.TRAVA_BNB_LP,
+    filterMode: FILTER_MODE.LIVE,
+    rewardToken: {
+      symbol: "TRAVA",
+      address: "0x41Ad43Ae987F7bE3B5024E7B167f81772f097D5b",
+      decimals: _config__WEBPACK_IMPORTED_MODULE_0__.BASE18.toFixed()
+    }
+  }, {
+    id: "trava",
+    name: "Trava Token",
+    code: "TRAVA",
+    reserveDecimals: _config__WEBPACK_IMPORTED_MODULE_0__.BASE18.toFixed(),
+    underlyingAddress: "0x41Ad43Ae987F7bE3B5024E7B167f81772f097D5b",
+    priceUnderlyingAddress: "0x41Ad43Ae987F7bE3B5024E7B167f81772f097D5b",
+    lpAddress: "0xdCbf1fe4642d3c593f665D04Cc66E1E8923DAB5e",
+    stakedTokenAddress: "0x1120E28F5D9eeABfC18afE9600315c6c184b9fcF",
+    claimable: true,
+    tokenName: TOKENS_NAME.TRAVA_ON_BSC,
+    filterMode: FILTER_MODE.LIVE,
+    rewardToken: {
+      symbol: "TRAVA",
+      address: "0x41Ad43Ae987F7bE3B5024E7B167f81772f097D5b",
+      decimals: _config__WEBPACK_IMPORTED_MODULE_0__.BASE18.toFixed()
+    }
+  }, {
+    id: "bsc-mainnet-bnbtrava2",
+    name: "Trava BNB",
+    code: "BNB/TRAVA",
+    reserveDecimals: _config__WEBPACK_IMPORTED_MODULE_0__.BASE18.toFixed(),
+    underlyingAddress: "0xdCbf1fe4642d3c593f665D04Cc66E1E8923DAB5e",
+    priceUnderlyingAddress: "0xdCbf1fe4642d3c593f665D04Cc66E1E8923DAB5e",
+    lpAddress: "0xdCbf1fe4642d3c593f665D04Cc66E1E8923DAB5e",
+    stakedTokenAddress: "0xA36991E7FA207815f37e01E72DBC3b5b874D7F6C",
+    claimable: true,
+    lockedUntil: 1628624800000,
+    badge: "3 months",
+    lpLink: "https://pancakeswap.finance/add/BNB/0x0391bE54E72F7e001f6BBc331777710b4f2999Ef",
+    tokenName: TOKENS_NAME.TRAVA_BNB_LP,
+    filterMode: FILTER_MODE.LIVE,
+    rewardToken: {
+      symbol: "TRAVA",
+      address: "0x41Ad43Ae987F7bE3B5024E7B167f81772f097D5b",
+      decimals: _config__WEBPACK_IMPORTED_MODULE_0__.BASE18.toFixed()
+    }
+  }, {
+    id: "bsc-mainnet-bnbtrava3",
+    name: "Trava BNB",
+    code: "BNB/TRAVA",
+    reserveDecimals: _config__WEBPACK_IMPORTED_MODULE_0__.BASE18.toFixed(),
+    underlyingAddress: "0xdCbf1fe4642d3c593f665D04Cc66E1E8923DAB5e",
+    priceUnderlyingAddress: "0xdCbf1fe4642d3c593f665D04Cc66E1E8923DAB5e",
+    lpAddress: "0xdCbf1fe4642d3c593f665D04Cc66E1E8923DAB5e",
+    stakedTokenAddress: "0xA36991E7FA207815f37e01E72DBC3b5b874D7F6C",
+    claimable: true,
+    lockedUntil: 1628624800000,
+    badge: "9 months",
+    lpLink: "https://pancakeswap.finance/add/BNB/0x0391bE54E72F7e001f6BBc331777710b4f2999Ef",
+    tokenName: TOKENS_NAME.TRAVA_BNB_LP,
+    filterMode: FILTER_MODE.LIVE,
+    rewardToken: {
+      symbol: "TRAVA",
+      address: "0x41Ad43Ae987F7bE3B5024E7B167f81772f097D5b",
+      decimals: _config__WEBPACK_IMPORTED_MODULE_0__.BASE18.toFixed()
+    }
+  }],
+  [_config__WEBPACK_IMPORTED_MODULE_0__.NETWORKS.bscMainnet.chainId]: [{
+    id: "bsc-mainnet-rtrava-farming",
+    code: "rTRAVA",
+    name: "rTRAVA",
+    reserveDecimals: _config__WEBPACK_IMPORTED_MODULE_0__.BASE18.toFixed(),
+    underlyingAddress: "0x170772A06aFfC0d375cE90Ef59C8eC04c7ebF5D2",
+    priceUnderlyingAddress: "0x0391bE54E72F7e001f6BBc331777710b4f2999Ef",
+    lpAddress: "0x865c77d4ff6383e06c58350a2cfb95cca2c0f056",
+    stakedTokenAddress: "0x17b173D4B80B0B5BB7E0f1E99F5962f2D51799Eb",
+    claimable: true,
+    startTimeClaimAll: 1634576400000,
+    badge: "No Lock",
+    vaultType: VAULT_TYPES.FARMING,
+    tokenName: TOKENS_NAME.TRAVA_ON_BSC,
+    filterMode: FILTER_MODE.LIVE,
+    rewardToken: {
+      symbol: "TRAVA",
+      address: "0x0391bE54E72F7e001f6BBc331777710b4f2999Ef",
+      decimals: _config__WEBPACK_IMPORTED_MODULE_0__.BASE18.toFixed()
+    }
+  }, {
+    id: "bsc-mainnet-travabnb",
+    code: "BNB/TRAVA",
+    name: "BNB/TRAVA",
+    reserveDecimals: _config__WEBPACK_IMPORTED_MODULE_0__.BASE18.toFixed(),
+    underlyingAddress: "0x865c77d4ff6383e06c58350a2cfb95cca2c0f056",
+    priceUnderlyingAddress: "0x865c77d4ff6383e06c58350a2cfb95cca2c0f056",
+    lpAddress: "0x865c77d4ff6383e06c58350a2cfb95cca2c0f056",
+    stakedTokenAddress: "0xF04feE30118fdb83c0957C4f6AbdfDde977b9Aeb",
+    claimable: true,
+    badge: "No Lock",
+    lpLink: "https://pancakeswap.finance/add/BNB/0x0391bE54E72F7e001f6BBc331777710b4f2999Ef",
+    vaultType: VAULT_TYPES.FARMING,
+    tokenName: TOKENS_NAME.TRAVA_BNB_LP,
+    filterMode: FILTER_MODE.LIVE,
+    rewardToken: {
+      symbol: "TRAVA",
+      address: "0x0391bE54E72F7e001f6BBc331777710b4f2999Ef",
+      decimals: _config__WEBPACK_IMPORTED_MODULE_0__.BASE18.toFixed()
+    }
+  }, {
+    id: "trava",
+    code: "TRAVA",
+    name: "TRAVA",
+    reserveDecimals: _config__WEBPACK_IMPORTED_MODULE_0__.BASE18.toFixed(),
+    underlyingAddress: "0x0391bE54E72F7e001f6BBc331777710b4f2999Ef",
+    priceUnderlyingAddress: "0x0391bE54E72F7e001f6BBc331777710b4f2999Ef",
+    lpAddress: "0x865c77d4ff6383e06c58350a2cfb95cca2c0f056",
+    stakedTokenAddress: "0xC5f0137ce42437d8f5eF25DA110F7FD7386178ec",
+    claimable: true,
+    badge: "No Lock",
+    vaultType: VAULT_TYPES.FARMING,
+    tokenName: TOKENS_NAME.TRAVA_ON_BSC,
+    filterMode: FILTER_MODE.LIVE,
+    rewardToken: {
+      symbol: "TRAVA",
+      address: "0x0391bE54E72F7e001f6BBc331777710b4f2999Ef",
+      decimals: _config__WEBPACK_IMPORTED_MODULE_0__.BASE18.toFixed()
+    }
+  }, {
+    id: "orai",
+    code: "ORAI",
+    name: "ORAI",
+    reserveDecimals: _config__WEBPACK_IMPORTED_MODULE_0__.BASE18.toFixed(),
+    underlyingAddress: "0xA325Ad6D9c92B55A3Fc5aD7e412B1518F96441C0",
+    priceUnderlyingAddress: "0xA325Ad6D9c92B55A3Fc5aD7e412B1518F96441C0",
+    lpAddress: "0x756E415E458ac05c1a69e834092034017f74Da93",
+    stakedTokenAddress: "0xd5Cc214621395686B972DDE8481a7463A0DaB962",
+    claimable: true,
+    vaultType: VAULT_TYPES.BASE,
+    tokenName: TOKENS_NAME.ORAI,
+    filterMode: FILTER_MODE.LIVE,
+    rewardToken: {
+      symbol: "TRAVA",
+      address: "0x0391bE54E72F7e001f6BBc331777710b4f2999Ef",
+      decimals: _config__WEBPACK_IMPORTED_MODULE_0__.BASE18.toFixed()
+    }
+  }]
+};
+
+/***/ }),
+/* 353 */
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   ApiQuery: () => (/* binding */ ApiQuery),
+/* harmony export */   TravaNFTApiQuery: () => (/* binding */ TravaNFTApiQuery)
+/* harmony export */ });
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(269);
+/* harmony import */ var _constance__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(354);
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
+function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
+function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
+function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
+function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return typeof key === "symbol" ? key : String(key); }
+function _toPrimitive(input, hint) { if (typeof input !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (typeof res !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
+
+
+var defaultHeaders = {
+  Accept: "application/json",
+  "Content-Type": "application/json"
+};
+class ApiQuery {
+  constructor(rootUrl, config) {
+    _defineProperty(this, "rootUrl", void 0);
+    _defineProperty(this, "config", void 0);
+    this.rootUrl = rootUrl;
+    this.config = config ? _objectSpread(_objectSpread({}, config), {}, {
+      headers: _objectSpread(_objectSpread({}, defaultHeaders), config.headers || {})
+    }) : {
+      headers: defaultHeaders
+    };
+  }
+  get(url, config) {
+    var _this = this;
+    return _asyncToGenerator(function* () {
+      return yield axios__WEBPACK_IMPORTED_MODULE_1__["default"].get("".concat(_this.rootUrl).concat(url), _objectSpread(_objectSpread({}, config), _this.config));
+    })();
+  }
+  post(url, data, config) {
+    var _this2 = this;
+    return _asyncToGenerator(function* () {
+      return yield axios__WEBPACK_IMPORTED_MODULE_1__["default"].post("".concat(_this2.rootUrl).concat(url), data, _objectSpread(_objectSpread({}, config), _this2.config));
+    })();
+  }
+  put(url, data, config) {
+    var _this3 = this;
+    return _asyncToGenerator(function* () {
+      return yield axios__WEBPACK_IMPORTED_MODULE_1__["default"].put("".concat(_this3.rootUrl).concat(url), data, _objectSpread(_objectSpread({}, config), _this3.config));
+    })();
+  }
+  del(url, config) {
+    var _this4 = this;
+    return _asyncToGenerator(function* () {
+      return yield axios__WEBPACK_IMPORTED_MODULE_1__["default"].delete("".concat(_this4.rootUrl).concat(url), _objectSpread(_objectSpread({}, config), _this4.config));
+    })();
+  }
+}
+var TravaNFTApiQuery = new ApiQuery(_constance__WEBPACK_IMPORTED_MODULE_0__.TRAVA_NFT_BACKEND_ROOT);
+
+
+/***/ }),
+/* 354 */
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   TRAVA_NFT_BACKEND_ROOT: () => (/* binding */ TRAVA_NFT_BACKEND_ROOT)
+/* harmony export */ });
+var TRAVA_NFT_BACKEND_ROOT = "https://backend-nft-app.trava.finance";
+
+/***/ }),
+/* 355 */
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   SimulationBorrowForkAaveLP: () => (/* binding */ SimulationBorrowForkAaveLP),
 /* harmony export */   SimulationRepayForkAaveLP: () => (/* binding */ SimulationRepayForkAaveLP),
 /* harmony export */   SimulationSupplyForkAaveLP: () => (/* binding */ SimulationSupplyForkAaveLP),
-/* harmony export */   SimulationWithdrawForkAaveLP: () => (/* binding */ SimulationWithdrawForkAaveLP)
+/* harmony export */   SimulationWithdrawForkAaveLP: () => (/* binding */ SimulationWithdrawForkAaveLP),
+/* harmony export */   calculateMaxAmountForkAaveBorrow: () => (/* binding */ calculateMaxAmountForkAaveBorrow),
+/* harmony export */   calculateMaxAmountForkAaveRepay: () => (/* binding */ calculateMaxAmountForkAaveRepay),
+/* harmony export */   calculateMaxAmountForkAaveSupply: () => (/* binding */ calculateMaxAmountForkAaveSupply),
+/* harmony export */   calculateMaxAmountForkAaveWithdraw: () => (/* binding */ calculateMaxAmountForkAaveWithdraw)
 /* harmony export */ });
 /* harmony import */ var bignumber_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(26);
 /* harmony import */ var _basic__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(19);
 /* harmony import */ var _utils_helper__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(125);
 /* harmony import */ var _UpdateStateAccount__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(345);
+/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(348);
 function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
 function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
 function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
@@ -55946,31 +56394,92 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 // import { calculateMaxAmountBorrow, calculateMaxAmountRepay, calculateMaxAmountSupply, calculateMaxAmountWithdraw, updateLPtTokenInfo } from "../trava";
 
 
+
+function calculateMaxAmountForkAaveSupply(appState, _entity_id, _tokenAddress, _from) {
+  var tokenAddress = _tokenAddress.toLowerCase();
+  var mode = (0,_utils_helper__WEBPACK_IMPORTED_MODULE_2__.getMode)(appState, _from);
+  if (appState.forkAaveLPState.forkAaveLP.get(_entity_id) == undefined) {
+    (0,_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_3__.updateForkAaveLPState)(appState, _entity_id);
+  }
+  var walletBalance = appState[mode].tokenBalances.get(tokenAddress);
+  if (typeof walletBalance == undefined) {
+    throw new Error("Token is not init in " + mode + " state!");
+  }
+  var lpState = appState.smartWalletState.forkedAaveLPState.get(_entity_id);
+  var tokenInfo = lpState.detailTokenInPool.get(tokenAddress);
+  if (typeof tokenInfo == undefined) {
+    throw new Error("Token is not init in smart wallet lending pool state!");
+  }
+  return (0,bignumber_js__WEBPACK_IMPORTED_MODULE_0__["default"])(appState[mode].tokenBalances.get(tokenAddress));
+}
+function calculateMaxAmountForkAaveBorrow(appState, _entity_id, _tokenAddress) {
+  var tokenAddress = _tokenAddress.toLowerCase();
+  if (appState.forkAaveLPState.forkAaveLP.get(_entity_id) == undefined) {
+    (0,_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_3__.updateForkAaveLPState)(appState, _entity_id);
+  }
+  var lpState = appState.smartWalletState.forkedAaveLPState.get(_entity_id);
+  var tokenInfo = lpState.detailTokenInPool.get(tokenAddress);
+  var tTokenReserveBalanceRaw = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_0__["default"])(tokenInfo.tToken.originToken.balances);
+  var tTokenReserveBalance = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_0__["default"])(tTokenReserveBalanceRaw).div((0,bignumber_js__WEBPACK_IMPORTED_MODULE_0__["default"])("10").pow(tokenInfo.tToken.decimals));
+  var availableBorrowsUSD = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_0__["default"])(appState.smartWalletState.travaLPState.availableBorrowsUSD);
+  var nativeAvailableBorrow = availableBorrowsUSD.div(tokenInfo.price);
+  return bignumber_js__WEBPACK_IMPORTED_MODULE_0__["default"].max(bignumber_js__WEBPACK_IMPORTED_MODULE_0__["default"].min(nativeAvailableBorrow, tTokenReserveBalance), 0).multipliedBy((0,bignumber_js__WEBPACK_IMPORTED_MODULE_0__["default"])("10").pow(tokenInfo.tToken.decimals));
+}
+function calculateMaxAmountForkAaveRepay(appState, _entity_id, _tokenAddress, _from) {
+  var tokenAddress = _tokenAddress.toLowerCase();
+  var mode = (0,_utils_helper__WEBPACK_IMPORTED_MODULE_2__.getMode)(appState, _from);
+  if (appState.forkAaveLPState.forkAaveLP.get(_entity_id) == undefined) {
+    (0,_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_3__.updateForkAaveLPState)(appState, _entity_id);
+  }
+  var walletBalance = appState[mode].tokenBalances.get(tokenAddress);
+  if (typeof walletBalance == undefined) {
+    throw new Error("Token is not init in " + mode + " state!");
+  }
+  var lpState = appState.smartWalletState.forkedAaveLPState.get(_entity_id);
+  var tokenInfo = lpState.detailTokenInPool.get(tokenAddress);
+  var dTokenBalance = tokenInfo.dToken.balances;
+  var borrowed = new bignumber_js__WEBPACK_IMPORTED_MODULE_0__["default"](dTokenBalance);
+  return bignumber_js__WEBPACK_IMPORTED_MODULE_0__["default"].max(bignumber_js__WEBPACK_IMPORTED_MODULE_0__["default"].min(walletBalance, borrowed), 0);
+}
+function calculateMaxAmountForkAaveWithdraw(appState, _entity_id, _tokenAddress) {
+  var tokenAddress = _tokenAddress.toLowerCase();
+  if (appState.forkAaveLPState.forkAaveLP.get(_entity_id) == undefined) {
+    (0,_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_3__.updateForkAaveLPState)(appState, _entity_id);
+  }
+  var lpState = appState.smartWalletState.forkedAaveLPState.get(_entity_id);
+  var tokenInfo = lpState.detailTokenInPool.get(tokenAddress);
+  var depositedRaw = tokenInfo.tToken.balances;
+  var deposited = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_0__["default"])(depositedRaw).dividedBy((0,bignumber_js__WEBPACK_IMPORTED_MODULE_0__["default"])("10").pow(tokenInfo.tToken.decimals));
+  var tTokenReserveBalanceRaw = tokenInfo.tToken.originToken.balances;
+  var tTokenReserveBalance = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_0__["default"])(tTokenReserveBalanceRaw).dividedBy((0,bignumber_js__WEBPACK_IMPORTED_MODULE_0__["default"])("10").pow(tokenInfo.tToken.decimals));
+  var nativeAvailableWithdraw = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_0__["default"])(appState.smartWalletState.travaLPState.totalCollateralUSD).minus((0,bignumber_js__WEBPACK_IMPORTED_MODULE_0__["default"])(appState.smartWalletState.travaLPState.totalDebtUSD).div((0,bignumber_js__WEBPACK_IMPORTED_MODULE_0__["default"])(appState.smartWalletState.travaLPState.ltv))).div(tokenInfo.price);
+  var available = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_0__["default"])(tokenInfo.tToken.totalSupply).minus(tokenInfo.dToken.totalSupply).div(tokenInfo.price);
+  if (nativeAvailableWithdraw.isNaN()) {
+    nativeAvailableWithdraw = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_0__["default"])(0);
+  }
+  return bignumber_js__WEBPACK_IMPORTED_MODULE_0__["default"].max(bignumber_js__WEBPACK_IMPORTED_MODULE_0__["default"].min(deposited, nativeAvailableWithdraw, tTokenReserveBalance, available), 0).multipliedBy((0,bignumber_js__WEBPACK_IMPORTED_MODULE_0__["default"])("10").pow(tokenInfo.tToken.decimals));
+}
 function SimulationSupplyForkAaveLP(_x, _x2, _x3, _x4, _x5) {
   return _SimulationSupplyForkAaveLP.apply(this, arguments);
 }
 function _SimulationSupplyForkAaveLP() {
-  _SimulationSupplyForkAaveLP = _asyncToGenerator(function* (appState1, _from, _idLP, _tokenAddress, _amount) {
+  _SimulationSupplyForkAaveLP = _asyncToGenerator(function* (appState1, _from, _entity_id, _tokenAddress, _amount) {
     try {
       var amount = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_0__["default"])(_amount);
       var appState = _objectSpread({}, appState1);
-      if (appState.forkAaveLPState.isFetch == false) {
-        (0,_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_3__.updateForkAaveLPState)(appState, _idLP);
+      if (appState.forkAaveLPState.forkAaveLP.get(_entity_id) == undefined) {
+        (0,_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_3__.updateForkAaveLPState)(appState, _entity_id);
       }
       var tokenAddress = _tokenAddress.toLowerCase();
       var modeFrom = (0,_utils_helper__WEBPACK_IMPORTED_MODULE_2__.getMode)(appState, _from);
-      // Comming Soon .......
-      // if (
-      //     amount.toFixed(0) == MAX_UINT256 || amount.isEqualTo(MAX_UINT256)
-      //     ) {
-      //     amount = calculateMaxAmountSupply(appState, tokenAddress, modeFrom)
-      // }
-
+      if (amount.isEqualTo(_utils__WEBPACK_IMPORTED_MODULE_4__.MAX_UINT256)) {
+        amount = calculateMaxAmountForkAaveSupply(appState, _entity_id, tokenAddress, _from);
+      }
       if (!appState[modeFrom].tokenBalances.has(tokenAddress)) {
         appState = yield (0,_basic__WEBPACK_IMPORTED_MODULE_1__.updateUserTokenBalance)(appState, tokenAddress);
       }
       var tokenAmount = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_0__["default"])(appState[modeFrom].tokenBalances.get(tokenAddress));
-      var data = appState.forkAaveLPState.forkAaveLP.get(_idLP);
+      var data = appState.forkAaveLPState.forkAaveLP.get(_entity_id);
       if (!data) {
         throw new Error("data not found");
       }
@@ -55980,7 +56489,7 @@ function _SimulationSupplyForkAaveLP() {
         throw new Error("price not found");
       }
       data.totalSupplyInUSD = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_0__["default"])(data.totalSupplyInUSD || 0).plus(amount.multipliedBy(price)).toNumber();
-      var dataWallet = appState[modeFrom].forkedAaveLPState.get(_idLP);
+      var dataWallet = appState[modeFrom].forkedAaveLPState.get(_entity_id);
       if (!dataWallet) {
         throw new Error("data not found");
       }
@@ -56025,8 +56534,8 @@ function _SimulationSupplyForkAaveLP() {
       }
       var newAmount = tokenAmount.minus(amount).toFixed(0);
       appState[modeFrom].tokenBalances.set(tokenAddress, newAmount);
-      appState[modeFrom].forkedAaveLPState.set(_idLP, dataWallet);
-      appState.forkAaveLPState.forkAaveLP.set(_idLP, data);
+      appState[modeFrom].forkedAaveLPState.set(_entity_id, dataWallet);
+      appState.forkAaveLPState.forkAaveLP.set(_entity_id, data);
       return appState;
     } catch (err) {
       throw err;
@@ -56038,25 +56547,23 @@ function SimulationWithdrawForkAaveLP(_x6, _x7, _x8, _x9, _x10) {
   return _SimulationWithdrawForkAaveLP.apply(this, arguments);
 }
 function _SimulationWithdrawForkAaveLP() {
-  _SimulationWithdrawForkAaveLP = _asyncToGenerator(function* (appState1, _from, _idLP, _tokenAddress, _amount) {
+  _SimulationWithdrawForkAaveLP = _asyncToGenerator(function* (appState1, _from, _entity_id, _tokenAddress, _amount) {
     try {
       var amount = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_0__["default"])(_amount);
       var appState = _objectSpread({}, appState1);
-      if (appState.forkAaveLPState.isFetch == false) {
-        (0,_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_3__.updateForkAaveLPState)(appState, _idLP);
+      if (appState.forkAaveLPState.forkAaveLP.get(_entity_id) == undefined) {
+        (0,_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_3__.updateForkAaveLPState)(appState, _entity_id);
       }
       var tokenAddress = _tokenAddress.toLowerCase();
       var modeFrom = (0,_utils_helper__WEBPACK_IMPORTED_MODULE_2__.getMode)(appState, _from);
-      // Comming Soon .......
-      // if (amount.toFixed(0) == MAX_UINT256 || amount.isEqualTo(MAX_UINT256)) {
-      //     amount = calculateMaxAmountWithdraw(appState, tokenAddress);
-      //   }
-
+      if (amount.isEqualTo(_utils__WEBPACK_IMPORTED_MODULE_4__.MAX_UINT256)) {
+        amount = calculateMaxAmountForkAaveWithdraw(appState, _entity_id, tokenAddress);
+      }
       if (!appState[modeFrom].tokenBalances.has(tokenAddress)) {
         appState = yield (0,_basic__WEBPACK_IMPORTED_MODULE_1__.updateUserTokenBalance)(appState, tokenAddress);
       }
       var tokenAmount = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_0__["default"])(appState[modeFrom].tokenBalances.get(tokenAddress));
-      var data = appState.forkAaveLPState.forkAaveLP.get(_idLP);
+      var data = appState.forkAaveLPState.forkAaveLP.get(_entity_id);
       if (!data) {
         throw new Error("data not found");
       }
@@ -56066,38 +56573,30 @@ function _SimulationWithdrawForkAaveLP() {
         throw new Error("price not found");
       }
       data.totalSupplyInUSD = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_0__["default"])(data.totalSupplyInUSD || 0).minus(amount.multipliedBy(price)).toNumber();
-      var dataWallet = appState[modeFrom].forkedAaveLPState.get(_idLP);
+      var dataWallet = appState[modeFrom].forkedAaveLPState.get(_entity_id);
       if (!dataWallet) {
         throw new Error("data not found");
       }
       var dataInWallet = dataWallet.dapps[0].reserves[0].deposit.find(reserve => reserve.address == tokenAddress);
       if (!dataInWallet) {
-        // data.numberOfLenders = BigNumber(data.numberOfLenders || 0).plus(1).toNumber();
-        // data.numberOfUsers = BigNumber(data.numberOfUsers || 0).plus(1).toNumber();
         var newData = {
-          // key: dataAssets?.key || "",
           id: (dataAssets === null || dataAssets === void 0 ? void 0 : dataAssets.id) || "",
-          // name: dataAssets?.name || "",
           type: "token",
           address: tokenAddress,
           symbol: (dataAssets === null || dataAssets === void 0 ? void 0 : dataAssets.symbol) || "",
           amount: -amount.toNumber(),
           valueInUSD: -amount.multipliedBy(price).toNumber(),
-          // imgUrl: dataAssets?.imgUrl || "",
           totalValue: -amount.multipliedBy(price).toNumber()
         };
         dataWallet.dapps[0].reserves[0].deposit.push(newData);
       } else {
         var _newData2 = {
-          // key: dataAssets?.key || "",
           id: (dataAssets === null || dataAssets === void 0 ? void 0 : dataAssets.id) || "",
-          // name: dataAssets?.name || "",
           type: "token",
           address: tokenAddress,
           symbol: (dataAssets === null || dataAssets === void 0 ? void 0 : dataAssets.symbol) || "",
           amount: -amount.toNumber() + dataInWallet.amount,
           valueInUSD: (0,bignumber_js__WEBPACK_IMPORTED_MODULE_0__["default"])(dataInWallet.amount).minus(amount).multipliedBy(price).toNumber(),
-          // imgUrl: dataAssets?.imgUrl || "",
           totalValue: (0,bignumber_js__WEBPACK_IMPORTED_MODULE_0__["default"])(dataInWallet.amount).minus(amount).multipliedBy(price).toNumber()
         };
         dataWallet.dapps[0].value = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_0__["default"])(dataWallet.dapps[0].value || 0).minus(amount).toNumber();
@@ -56111,8 +56610,8 @@ function _SimulationWithdrawForkAaveLP() {
       }
       var newAmount = tokenAmount.plus(amount).toFixed(0);
       appState[modeFrom].tokenBalances.set(tokenAddress, newAmount);
-      appState[modeFrom].forkedAaveLPState.set(_idLP, dataWallet);
-      appState.forkAaveLPState.forkAaveLP.set(_idLP, data);
+      appState[modeFrom].forkedAaveLPState.set(_entity_id, dataWallet);
+      appState.forkAaveLPState.forkAaveLP.set(_entity_id, data);
       return appState;
     } catch (err) {
       throw err;
@@ -56124,28 +56623,24 @@ function SimulationBorrowForkAaveLP(_x11, _x12, _x13, _x14, _x15) {
   return _SimulationBorrowForkAaveLP.apply(this, arguments);
 }
 function _SimulationBorrowForkAaveLP() {
-  _SimulationBorrowForkAaveLP = _asyncToGenerator(function* (appState1, _from, _idLP, _tokenAddress, _amount) {
+  _SimulationBorrowForkAaveLP = _asyncToGenerator(function* (appState1, _from, _entity_id, _tokenAddress, _amount) {
     try {
       var amount = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_0__["default"])(_amount);
       var appState = _objectSpread({}, appState1);
-      if (appState.forkAaveLPState.isFetch == false) {
-        (0,_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_3__.updateForkAaveLPState)(appState, _idLP);
+      if (appState.forkAaveLPState.forkAaveLP.get(_entity_id) == undefined) {
+        (0,_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_3__.updateForkAaveLPState)(appState, _entity_id);
       }
       var tokenAddress = _tokenAddress.toLowerCase();
       var modeFrom = (0,_utils_helper__WEBPACK_IMPORTED_MODULE_2__.getMode)(appState, _from);
       // Comming Soon .......
-      // if (amount.toFixed(0) == MAX_UINT256 || amount.isEqualTo(MAX_UINT256)) {
-      //     amount = calculateMaxAmountBorrow(
-      //       appState,
-      //       tokenAddress
-      //     )
-      //   }
-
+      if (amount.isEqualTo(_utils__WEBPACK_IMPORTED_MODULE_4__.MAX_UINT256)) {
+        amount = calculateMaxAmountForkAaveBorrow(appState, _entity_id, tokenAddress);
+      }
       if (!appState[modeFrom].tokenBalances.has(tokenAddress)) {
         appState = yield (0,_basic__WEBPACK_IMPORTED_MODULE_1__.updateUserTokenBalance)(appState, tokenAddress);
       }
       var tokenAmount = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_0__["default"])(appState[modeFrom].tokenBalances.get(tokenAddress));
-      var data = appState.forkAaveLPState.forkAaveLP.get(_idLP);
+      var data = appState.forkAaveLPState.forkAaveLP.get(_entity_id);
       if (!data) {
         throw new Error("data not found");
       }
@@ -56155,38 +56650,30 @@ function _SimulationBorrowForkAaveLP() {
         throw new Error("price not found");
       }
       data.totalBorrowInUSD = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_0__["default"])(data.totalBorrowInUSD || 0).plus(amount.multipliedBy(price)).toNumber();
-      var dataWallet = appState[modeFrom].forkedAaveLPState.get(_idLP);
+      var dataWallet = appState[modeFrom].forkedAaveLPState.get(_entity_id);
       if (!dataWallet) {
         throw new Error("data not found");
       }
       var dataInWallet = dataWallet.dapps[0].reserves[0].borrow.find(reserve => reserve.address == tokenAddress);
       if (!dataInWallet) {
-        // data.numberOfLenders = BigNumber(data.numberOfLenders || 0).plus(1).toNumber();
-        // data.numberOfUsers = BigNumber(data.numberOfUsers || 0).plus(1).toNumber();
         var newData = {
-          // key: dataAssets?.key || "",
           id: (dataAssets === null || dataAssets === void 0 ? void 0 : dataAssets.id) || "",
-          // name: dataAssets?.name || "",
           type: "token",
           address: tokenAddress,
           symbol: (dataAssets === null || dataAssets === void 0 ? void 0 : dataAssets.symbol) || "",
           amount: amount.toNumber(),
           valueInUSD: amount.multipliedBy(price).toNumber(),
-          // imgUrl: dataAssets?.imgUrl || "",
           totalValue: amount.multipliedBy(price).toNumber()
         };
         dataWallet.dapps[0].reserves[0].borrow.push(newData);
       } else {
         var _newData3 = {
-          // key: dataAssets?.key || "",
           id: (dataAssets === null || dataAssets === void 0 ? void 0 : dataAssets.id) || "",
-          // name: dataAssets?.name || "",
           type: "token",
           address: tokenAddress,
           symbol: (dataAssets === null || dataAssets === void 0 ? void 0 : dataAssets.symbol) || "",
           amount: amount.toNumber() + dataInWallet.amount,
           valueInUSD: amount.plus(dataInWallet.amount).multipliedBy(price).toNumber(),
-          // imgUrl: dataAssets?.imgUrl || "",
           totalValue: amount.plus(dataInWallet.amount).multipliedBy(price).toNumber()
         };
         dataWallet.dapps[0].value = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_0__["default"])(dataWallet.dapps[0].value || 0).plus(amount).toNumber();
@@ -56200,8 +56687,8 @@ function _SimulationBorrowForkAaveLP() {
       }
       var newAmount = tokenAmount.plus(amount).toFixed(0);
       appState[modeFrom].tokenBalances.set(tokenAddress, newAmount);
-      appState[modeFrom].forkedAaveLPState.set(_idLP, dataWallet);
-      appState.forkAaveLPState.forkAaveLP.set(_idLP, data);
+      appState[modeFrom].forkedAaveLPState.set(_entity_id, dataWallet);
+      appState.forkAaveLPState.forkAaveLP.set(_entity_id, data);
       return appState;
     } catch (err) {
       throw err;
@@ -56213,25 +56700,24 @@ function SimulationRepayForkAaveLP(_x16, _x17, _x18, _x19, _x20) {
   return _SimulationRepayForkAaveLP.apply(this, arguments);
 }
 function _SimulationRepayForkAaveLP() {
-  _SimulationRepayForkAaveLP = _asyncToGenerator(function* (appState1, _from, _idLP, _tokenAddress, _amount) {
+  _SimulationRepayForkAaveLP = _asyncToGenerator(function* (appState1, _from, _entity_id, _tokenAddress, _amount) {
     try {
       var amount = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_0__["default"])(_amount);
       var appState = _objectSpread({}, appState1);
-      if (appState.forkAaveLPState.isFetch == false) {
-        (0,_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_3__.updateForkAaveLPState)(appState, _idLP);
+      if (appState.forkAaveLPState.forkAaveLP.get(_entity_id) == undefined) {
+        (0,_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_3__.updateForkAaveLPState)(appState, _entity_id);
       }
       var tokenAddress = _tokenAddress.toLowerCase();
       var modeFrom = (0,_utils_helper__WEBPACK_IMPORTED_MODULE_2__.getMode)(appState, _from);
       // Comming Soon .......
-      // if (amount.toFixed(0) == MAX_UINT256 || amount.isEqualTo(MAX_UINT256)) {
-      //     amount = calculateMaxAmountRepay(appState, tokenAddress, modeFrom);
-      //   }
-
+      if (amount.isEqualTo(_utils__WEBPACK_IMPORTED_MODULE_4__.MAX_UINT256)) {
+        amount = calculateMaxAmountForkAaveRepay(appState, _entity_id, tokenAddress, _from);
+      }
       if (!appState[modeFrom].tokenBalances.has(tokenAddress)) {
         appState = yield (0,_basic__WEBPACK_IMPORTED_MODULE_1__.updateUserTokenBalance)(appState, tokenAddress);
       }
       var tokenAmount = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_0__["default"])(appState[modeFrom].tokenBalances.get(tokenAddress));
-      var data = appState.forkAaveLPState.forkAaveLP.get(_idLP);
+      var data = appState.forkAaveLPState.forkAaveLP.get(_entity_id);
       if (!data) {
         throw new Error("data not found");
       }
@@ -56241,38 +56727,30 @@ function _SimulationRepayForkAaveLP() {
         throw new Error("price not found");
       }
       data.totalBorrowInUSD = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_0__["default"])(data.totalBorrowInUSD || 0).minus(amount.multipliedBy(price)).toNumber();
-      var dataWallet = appState[modeFrom].forkedAaveLPState.get(_idLP);
+      var dataWallet = appState[modeFrom].forkedAaveLPState.get(_entity_id);
       if (!dataWallet) {
         throw new Error("data not found");
       }
       var dataInWallet = dataWallet.dapps[0].reserves[0].borrow.find(reserve => reserve.address == tokenAddress);
       if (!dataInWallet) {
-        // data.numberOfLenders = BigNumber(data.numberOfLenders || 0).plus(1).toNumber();
-        // data.numberOfUsers = BigNumber(data.numberOfUsers || 0).plus(1).toNumber();
         var newData = {
-          // key: dataAssets?.key || "",
           id: (dataAssets === null || dataAssets === void 0 ? void 0 : dataAssets.id) || "",
-          // name: dataAssets?.name || "",
           type: "token",
           address: tokenAddress,
           symbol: (dataAssets === null || dataAssets === void 0 ? void 0 : dataAssets.symbol) || "",
           amount: -amount.toNumber(),
           valueInUSD: -amount.multipliedBy(price).toNumber(),
-          // imgUrl: dataAssets?.imgUrl || "",
           totalValue: -amount.multipliedBy(price).toNumber()
         };
         dataWallet.dapps[0].reserves[0].borrow.push(newData);
       } else {
         var _newData4 = {
-          // key: dataAssets?.key || "",
           id: (dataAssets === null || dataAssets === void 0 ? void 0 : dataAssets.id) || "",
-          // name: dataAssets?.name || "",
           type: "token",
           address: tokenAddress,
           symbol: (dataAssets === null || dataAssets === void 0 ? void 0 : dataAssets.symbol) || "",
           amount: -amount.toNumber() + dataInWallet.amount,
           valueInUSD: (0,bignumber_js__WEBPACK_IMPORTED_MODULE_0__["default"])(dataInWallet.amount).minus(amount).multipliedBy(price).toNumber(),
-          // imgUrl: dataAssets?.imgUrl || "",
           totalValue: (0,bignumber_js__WEBPACK_IMPORTED_MODULE_0__["default"])(dataInWallet.amount).minus(amount).multipliedBy(price).toNumber()
         };
         dataWallet.dapps[0].value = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_0__["default"])(dataWallet.dapps[0].value || 0).minus(amount).toNumber();
@@ -56286,8 +56764,8 @@ function _SimulationRepayForkAaveLP() {
       }
       var newAmount = tokenAmount.minus(amount).toFixed(0);
       appState[modeFrom].tokenBalances.set(tokenAddress, newAmount);
-      appState[modeFrom].forkedAaveLPState.set(_idLP, dataWallet);
-      appState.forkAaveLPState.forkAaveLP.set(_idLP, data);
+      appState[modeFrom].forkedAaveLPState.set(_entity_id, dataWallet);
+      appState.forkAaveLPState.forkAaveLP.set(_entity_id, data);
       return appState;
     } catch (err) {
       throw err;
@@ -56297,7 +56775,7 @@ function _SimulationRepayForkAaveLP() {
 }
 
 /***/ }),
-/* 349 */
+/* 356 */
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -56311,15 +56789,15 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   updateForkCompoundLPState: () => (/* reexport safe */ _UpdateStateAccount__WEBPACK_IMPORTED_MODULE_0__.updateForkCompoundLPState),
 /* harmony export */   updateUserInForkCompoundLPState: () => (/* reexport safe */ _UpdateStateAccount__WEBPACK_IMPORTED_MODULE_0__.updateUserInForkCompoundLPState)
 /* harmony export */ });
-/* harmony import */ var _UpdateStateAccount__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(350);
-/* harmony import */ var _SimulationForkCompoundLP__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(352);
-/* harmony import */ var _forkCompoundLPConfig__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(351);
+/* harmony import */ var _UpdateStateAccount__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(357);
+/* harmony import */ var _SimulationForkCompoundLP__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(359);
+/* harmony import */ var _forkCompoundLPConfig__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(358);
 
 
 
 
 /***/ }),
-/* 350 */
+/* 357 */
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -56329,8 +56807,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   updateUserInForkCompoundLPState: () => (/* binding */ updateUserInForkCompoundLPState)
 /* harmony export */ });
 /* harmony import */ var _utils_helper__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(125);
-/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(269);
-/* harmony import */ var _forkCompoundLPConfig__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(351);
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(269);
+/* harmony import */ var _forkCompoundLPConfig__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(358);
+/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(348);
 function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
 function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
 function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
@@ -56338,6 +56817,7 @@ function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return typ
 function _toPrimitive(input, hint) { if (typeof input !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (typeof res !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
+
 
 
 
@@ -56408,9 +56888,12 @@ function getDataLendingByAxios(_x8, _x9) {
 }
 function _getDataLendingByAxios() {
   _getDataLendingByAxios = _asyncToGenerator(function* (entity_id, chain) {
-    var url = "https://develop.centic.io/dev/v3/projects/lending/".concat(entity_id, "/overview?chain=").concat(chain);
+    var url = "".concat(_utils__WEBPACK_IMPORTED_MODULE_2__.centic_api, "/v3/projects/lending/").concat(entity_id, "/overview?chain=").concat(chain);
     try {
-      var response = yield axios__WEBPACK_IMPORTED_MODULE_2__["default"].get(url);
+      var response = yield axios__WEBPACK_IMPORTED_MODULE_3__["default"].request({
+        method: "get",
+        url: url
+      });
       var data = response.data;
       return data;
     } catch (err) {
@@ -56425,9 +56908,15 @@ function getDataUserByAxios(_x10, _x11, _x12) {
 }
 function _getDataUserByAxios() {
   _getDataUserByAxios = _asyncToGenerator(function* (address, entity_id, chain) {
-    var url = "https://develop.centic.io/dev/v3/wallets/".concat(address, "/lendings/").concat(entity_id, "?chain=").concat(chain);
+    var url = "".concat(_utils__WEBPACK_IMPORTED_MODULE_2__.centic_api, "/v3/wallets/").concat(address, "/lendings/").concat(entity_id, "?chain=").concat(chain);
     try {
-      var response = yield axios__WEBPACK_IMPORTED_MODULE_2__["default"].get(url);
+      var response = yield axios__WEBPACK_IMPORTED_MODULE_3__["default"].request({
+        method: "get",
+        url: url,
+        headers: {
+          "x-apikey": _utils__WEBPACK_IMPORTED_MODULE_2__.centic_api_key
+        }
+      });
       var data = response.data;
       return data;
     } catch (err) {
@@ -56442,9 +56931,12 @@ function getDataLendingByAxiosTramline(_x13, _x14, _x15) {
 }
 function _getDataLendingByAxiosTramline() {
   _getDataLendingByAxiosTramline = _asyncToGenerator(function* (entity_id, chain, userAddress) {
-    var url = "https://tramlines-backend.trava.finance/api/trava-station/lending-pool/detail?entity=".concat(entity_id, "&chainId=").concat(chain, "&userAddress=").concat(userAddress);
+    var url = "".concat(_utils__WEBPACK_IMPORTED_MODULE_2__.tramline_api, "/trava-station/lending-pool/detail?entity=").concat(entity_id, "&chainId=").concat(chain, "&userAddress=").concat(userAddress);
     try {
-      var response = yield axios__WEBPACK_IMPORTED_MODULE_2__["default"].get(url);
+      var response = yield axios__WEBPACK_IMPORTED_MODULE_3__["default"].request({
+        method: "get",
+        url: url
+      });
       var data = response.data;
       return data;
     } catch (err) {
@@ -56456,7 +56948,7 @@ function _getDataLendingByAxiosTramline() {
 }
 
 /***/ }),
-/* 351 */
+/* 358 */
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -56467,7 +56959,7 @@ __webpack_require__.r(__webpack_exports__);
 var entity_ids_compound = ["venus", "liqee", "cream-lending", "apeswap-lending", "wepiggy"];
 
 /***/ }),
-/* 352 */
+/* 359 */
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -56481,7 +56973,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var bignumber_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(26);
 /* harmony import */ var _basic__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(19);
 /* harmony import */ var _utils_helper__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(125);
-/* harmony import */ var _UpdateStateAccount__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(350);
+/* harmony import */ var _UpdateStateAccount__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(357);
 function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
 function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
 function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
@@ -56844,7 +57336,7 @@ function _SimulationRepayForkCompoundLP() {
 }
 
 /***/ }),
-/* 353 */
+/* 360 */
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -56857,15 +57349,15 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   listLiquidityVault: () => (/* reexport safe */ _LiquidityCampainConfig__WEBPACK_IMPORTED_MODULE_1__.listLiquidityVault),
 /* harmony export */   updateLiquidityCampainState: () => (/* reexport safe */ _UpdateStateAccount__WEBPACK_IMPORTED_MODULE_0__.updateLiquidityCampainState)
 /* harmony export */ });
-/* harmony import */ var _UpdateStateAccount__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(354);
-/* harmony import */ var _LiquidityCampainConfig__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(355);
+/* harmony import */ var _UpdateStateAccount__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(361);
+/* harmony import */ var _LiquidityCampainConfig__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(362);
 /* harmony import */ var _SimulationLiquidityCampain__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(401);
 
 
 
 
 /***/ }),
-/* 354 */
+/* 361 */
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -56875,14 +57367,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var ethers__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(22);
 /* harmony import */ var ethers__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(ethers__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _LiquidityCampainConfig__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(355);
+/* harmony import */ var _LiquidityCampainConfig__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(362);
 /* harmony import */ var orchai_combinator_bsc_simulation__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(363);
 /* harmony import */ var _abis_BEP20_json__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(346);
 /* harmony import */ var _abis_IVault_json__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(399);
 /* harmony import */ var _abis_StakedToken_json__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(400);
 /* harmony import */ var bignumber_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(26);
-/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(356);
-/* harmony import */ var _abis_AaveOracle_json__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(358);
+/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(348);
+/* harmony import */ var _abis_AaveOracle_json__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(350);
 function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
 function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
 function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
@@ -57029,7 +57521,7 @@ function _updateLiquidityCampainState() {
 }
 
 /***/ }),
-/* 355 */
+/* 362 */
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -57038,7 +57530,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   LIQUIDITY_TOKENS_NAME: () => (/* binding */ LIQUIDITY_TOKENS_NAME),
 /* harmony export */   listLiquidityVault: () => (/* binding */ listLiquidityVault)
 /* harmony export */ });
-/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(356);
+/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(348);
 
 var LIQUIDITY_TOKENS_NAME = {
   TOD: "TOD Vault",
@@ -57116,415 +57608,6 @@ var listLiquidityVault = {
     }
   }]
 };
-
-/***/ }),
-/* 356 */
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   ApiQuery: () => (/* reexport safe */ _api__WEBPACK_IMPORTED_MODULE_6__.ApiQuery),
-/* harmony export */   AuthorizeError: () => (/* reexport safe */ _error__WEBPACK_IMPORTED_MODULE_3__.AuthorizeError),
-/* harmony export */   BASE18: () => (/* reexport safe */ _config__WEBPACK_IMPORTED_MODULE_1__.BASE18),
-/* harmony export */   BidPriceError: () => (/* reexport safe */ _error__WEBPACK_IMPORTED_MODULE_3__.BidPriceError),
-/* harmony export */   BidStepsError: () => (/* reexport safe */ _error__WEBPACK_IMPORTED_MODULE_3__.BidStepsError),
-/* harmony export */   BidderError: () => (/* reexport safe */ _error__WEBPACK_IMPORTED_MODULE_3__.BidderError),
-/* harmony export */   CONFIG: () => (/* reexport safe */ _config__WEBPACK_IMPORTED_MODULE_1__.CONFIG),
-/* harmony export */   DAY_TO_SECONDS: () => (/* reexport safe */ _config__WEBPACK_IMPORTED_MODULE_1__.DAY_TO_SECONDS),
-/* harmony export */   DivisionByZeroError: () => (/* reexport safe */ _error__WEBPACK_IMPORTED_MODULE_3__.DivisionByZeroError),
-/* harmony export */   ExpeditionNotFoundError: () => (/* reexport safe */ _error__WEBPACK_IMPORTED_MODULE_3__.ExpeditionNotFoundError),
-/* harmony export */   ExpireAuctionError: () => (/* reexport safe */ _error__WEBPACK_IMPORTED_MODULE_3__.ExpireAuctionError),
-/* harmony export */   FEE_AUCTION_PERCENTAGE: () => (/* reexport safe */ _config__WEBPACK_IMPORTED_MODULE_1__.FEE_AUCTION_PERCENTAGE),
-/* harmony export */   FILTER_MODE: () => (/* reexport safe */ _stakingVaultConfig__WEBPACK_IMPORTED_MODULE_2__.FILTER_MODE),
-/* harmony export */   FromAddressError: () => (/* reexport safe */ _error__WEBPACK_IMPORTED_MODULE_3__.FromAddressError),
-/* harmony export */   HALF_PERCENT: () => (/* reexport safe */ _config__WEBPACK_IMPORTED_MODULE_1__.HALF_PERCENT),
-/* harmony export */   HOUR_TO_SECONDS: () => (/* reexport safe */ _config__WEBPACK_IMPORTED_MODULE_1__.HOUR_TO_SECONDS),
-/* harmony export */   HighestBidderError: () => (/* reexport safe */ _error__WEBPACK_IMPORTED_MODULE_3__.HighestBidderError),
-/* harmony export */   InexpireAuctionError: () => (/* reexport safe */ _error__WEBPACK_IMPORTED_MODULE_3__.InexpireAuctionError),
-/* harmony export */   MAX_LOCK_TIMES: () => (/* reexport safe */ _config__WEBPACK_IMPORTED_MODULE_1__.MAX_LOCK_TIMES),
-/* harmony export */   MAX_UINT256: () => (/* reexport safe */ _config__WEBPACK_IMPORTED_MODULE_1__.MAX_UINT256),
-/* harmony export */   MINIMUM_BID_STEP_PERCENT: () => (/* reexport safe */ _config__WEBPACK_IMPORTED_MODULE_1__.MINIMUM_BID_STEP_PERCENT),
-/* harmony export */   MONTH_TO_SECONDS: () => (/* reexport safe */ _config__WEBPACK_IMPORTED_MODULE_1__.MONTH_TO_SECONDS),
-/* harmony export */   MultiplicationOverflowError: () => (/* reexport safe */ _error__WEBPACK_IMPORTED_MODULE_3__.MultiplicationOverflowError),
-/* harmony export */   NETWORKS: () => (/* reexport safe */ _config__WEBPACK_IMPORTED_MODULE_1__.NETWORKS),
-/* harmony export */   NFTIsNotOnGoingError: () => (/* reexport safe */ _error__WEBPACK_IMPORTED_MODULE_3__.NFTIsNotOnGoingError),
-/* harmony export */   NFTNotFoundError: () => (/* reexport safe */ _error__WEBPACK_IMPORTED_MODULE_3__.NFTNotFoundError),
-/* harmony export */   NotEnoughBalanceError: () => (/* reexport safe */ _error__WEBPACK_IMPORTED_MODULE_3__.NotEnoughBalanceError),
-/* harmony export */   OngoingAuctionError: () => (/* reexport safe */ _error__WEBPACK_IMPORTED_MODULE_3__.OngoingAuctionError),
-/* harmony export */   OwnerAuctionError: () => (/* reexport safe */ _error__WEBPACK_IMPORTED_MODULE_3__.OwnerAuctionError),
-/* harmony export */   PERCENTAGE_FACTOR: () => (/* reexport safe */ _config__WEBPACK_IMPORTED_MODULE_1__.PERCENTAGE_FACTOR),
-/* harmony export */   TOKENS_NAME: () => (/* reexport safe */ _stakingVaultConfig__WEBPACK_IMPORTED_MODULE_2__.TOKENS_NAME),
-/* harmony export */   TRAVA_NFT_BACKEND_ROOT: () => (/* reexport safe */ _constance__WEBPACK_IMPORTED_MODULE_7__.TRAVA_NFT_BACKEND_ROOT),
-/* harmony export */   TravaNFTApiQuery: () => (/* reexport safe */ _api__WEBPACK_IMPORTED_MODULE_6__.TravaNFTApiQuery),
-/* harmony export */   VAULT_TYPES: () => (/* reexport safe */ _stakingVaultConfig__WEBPACK_IMPORTED_MODULE_2__.VAULT_TYPES),
-/* harmony export */   WAD: () => (/* reexport safe */ _config__WEBPACK_IMPORTED_MODULE_1__.WAD),
-/* harmony export */   WEEK_TO_SECONDS: () => (/* reexport safe */ _config__WEBPACK_IMPORTED_MODULE_1__.WEEK_TO_SECONDS),
-/* harmony export */   YEAR_TO_SECONDS: () => (/* reexport safe */ _config__WEBPACK_IMPORTED_MODULE_1__.YEAR_TO_SECONDS),
-/* harmony export */   ZERO_ADDRESS: () => (/* reexport safe */ _config__WEBPACK_IMPORTED_MODULE_1__.ZERO_ADDRESS),
-/* harmony export */   configure: () => (/* reexport safe */ _config__WEBPACK_IMPORTED_MODULE_1__.configure),
-/* harmony export */   convertHexStringToAddress: () => (/* reexport safe */ _address__WEBPACK_IMPORTED_MODULE_5__.convertHexStringToAddress),
-/* harmony export */   getAddr: () => (/* reexport safe */ _address__WEBPACK_IMPORTED_MODULE_5__.getAddr),
-/* harmony export */   listAddr: () => (/* reexport safe */ _address__WEBPACK_IMPORTED_MODULE_5__.listAddr),
-/* harmony export */   listStakingVault: () => (/* reexport safe */ _stakingVaultConfig__WEBPACK_IMPORTED_MODULE_2__.listStakingVault),
-/* harmony export */   percentMul: () => (/* reexport safe */ _config__WEBPACK_IMPORTED_MODULE_1__.percentMul),
-/* harmony export */   simulateExecute: () => (/* reexport safe */ _simulateExecute__WEBPACK_IMPORTED_MODULE_4__.simulateExecute),
-/* harmony export */   wadDiv: () => (/* reexport safe */ _config__WEBPACK_IMPORTED_MODULE_1__.wadDiv)
-/* harmony export */ });
-/* harmony import */ var _oraclePrice__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(357);
-/* harmony import */ var _config__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(24);
-/* harmony import */ var _stakingVaultConfig__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(360);
-/* harmony import */ var _error__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(27);
-/* harmony import */ var _simulateExecute__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(268);
-/* harmony import */ var _address__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(23);
-/* harmony import */ var _api__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(361);
-/* harmony import */ var _constance__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(362);
-
-
-
-
-
-
-
-
-
-/***/ }),
-/* 357 */
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (/* binding */ OraclePrice)
-/* harmony export */ });
-/* harmony import */ var _abis_AaveOracle_json__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(358);
-/* harmony import */ var _contract__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(359);
-/* harmony import */ var _address__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(23);
-function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
-function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
-
-
-
-class OraclePrice extends _contract__WEBPACK_IMPORTED_MODULE_1__["default"] {
-  constructor(address, web3Reader) {
-    super(address, _abis_AaveOracle_json__WEBPACK_IMPORTED_MODULE_0__, web3Reader);
-  }
-  getAssetPrice(_assetAddress) {
-    var _this = this;
-    return _asyncToGenerator(function* () {
-      var assetAddress = (0,_address__WEBPACK_IMPORTED_MODULE_2__.convertHexStringToAddress)(_assetAddress);
-      return yield _this.contractUtil.getAssetPrice(assetAddress);
-    })();
-  }
-}
-
-// const oracleContract = new OracleContract(process.env.ORACLE_ADDRESS!);
-// oracleContract.getAssetPrice(process.env.TRAVA_TOKEN_IN_MARKET!).then((res) => {
-//   console.log(res.toString());
-// });
-
-/***/ }),
-/* 358 */
-/***/ ((module) => {
-
-"use strict";
-module.exports = JSON.parse('[{"inputs":[{"internalType":"address[]","name":"assets","type":"address[]"},{"internalType":"address[]","name":"sources","type":"address[]"},{"internalType":"address","name":"fallbackOracle","type":"address"},{"internalType":"address","name":"weth","type":"address"}],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"asset","type":"address"},{"indexed":true,"internalType":"address","name":"source","type":"address"}],"name":"AssetSourceUpdated","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"fallbackOracle","type":"address"}],"name":"FallbackOracleUpdated","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"previousOwner","type":"address"},{"indexed":true,"internalType":"address","name":"newOwner","type":"address"}],"name":"OwnershipTransferred","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"weth","type":"address"}],"name":"WethSet","type":"event"},{"inputs":[],"name":"WETH","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"asset","type":"address"}],"name":"getAssetPrice","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address[]","name":"assets","type":"address[]"}],"name":"getAssetsPrices","outputs":[{"internalType":"uint256[]","name":"","type":"uint256[]"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"getFallbackOracle","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"asset","type":"address"}],"name":"getSourceOfAsset","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"owner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"renounceOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address[]","name":"assets","type":"address[]"},{"internalType":"address[]","name":"sources","type":"address[]"}],"name":"setAssetSources","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"fallbackOracle","type":"address"}],"name":"setFallbackOracle","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"}]');
-
-/***/ }),
-/* 359 */
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (/* binding */ BaseReadContract)
-/* harmony export */ });
-/* harmony import */ var ethers__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(22);
-/* harmony import */ var ethers__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(ethers__WEBPACK_IMPORTED_MODULE_0__);
-function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return typeof key === "symbol" ? key : String(key); }
-function _toPrimitive(input, hint) { if (typeof input !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (typeof res !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
-
-class BaseReadContract {
-  constructor(contractAddress, abi, web3Reader) {
-    _defineProperty(this, "contractAddress", void 0);
-    _defineProperty(this, "web3Reader", void 0);
-    _defineProperty(this, "abi", void 0);
-    _defineProperty(this, "contractUtil", void 0);
-    this.contractAddress = contractAddress;
-    this.web3Reader = web3Reader;
-    this.abi = abi;
-    this.contractUtil = new ethers__WEBPACK_IMPORTED_MODULE_0__.Contract(contractAddress, abi, web3Reader);
-  }
-}
-
-/***/ }),
-/* 360 */
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   FILTER_MODE: () => (/* binding */ FILTER_MODE),
-/* harmony export */   TOKENS_NAME: () => (/* binding */ TOKENS_NAME),
-/* harmony export */   VAULT_TYPES: () => (/* binding */ VAULT_TYPES),
-/* harmony export */   listStakingVault: () => (/* binding */ listStakingVault)
-/* harmony export */ });
-/* harmony import */ var _config__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(24);
-
-var VAULT_TYPES = {
-  FARMING: "FARMING",
-  FARMING_BURN: "FARMING_BURN",
-  BASE: "BASE",
-  REWARD_ON_FTM: "REWARD_ON_FTM"
-};
-var FILTER_MODE = {
-  LIVE: "LIVE",
-  ENDED: "ENDED",
-  CLOSED: "CLOSED"
-};
-var TOKENS_NAME = {
-  BNB: "BNB",
-  BUSD: "BUSD",
-  ORAI: "ORAI",
-  TRAVA_ON_BSC: "TRAVA_ON_BSC",
-  TRAVA_ON_FTM: "TRAVA_ON_FTM",
-  TRAVA_ON_ETH: "TRAVA_ON_ETH",
-  TRAVA_ON_CURRENT_NETWORK: "TRAVA_ON_CURRENT_NETWORK",
-  TRAVA_BNB_LP: "TRAVA_BNB_LP",
-  TRAVA_ETH_LP: "TRAVA_ETH_LP",
-  TRAVA_FTM_LP: "TRAVA_FTM_LP"
-};
-var listStakingVault = {
-  [_config__WEBPACK_IMPORTED_MODULE_0__.NETWORKS.bscTestnet.chainId]: [{
-    id: "bsc-mainnet-travabnb",
-    name: "Trava BNB",
-    code: "BNB/TRAVA",
-    reserveDecimals: _config__WEBPACK_IMPORTED_MODULE_0__.BASE18.toFixed(),
-    underlyingAddress: "0xdCbf1fe4642d3c593f665D04Cc66E1E8923DAB5e",
-    priceUnderlyingAddress: "0xdCbf1fe4642d3c593f665D04Cc66E1E8923DAB5e",
-    lpAddress: "0xdCbf1fe4642d3c593f665D04Cc66E1E8923DAB5e",
-    stakedTokenAddress: "0xA36991E7FA207815f37e01E72DBC3b5b874D7F6C",
-    claimable: true,
-    tokenName: TOKENS_NAME.TRAVA_BNB_LP,
-    filterMode: FILTER_MODE.LIVE,
-    rewardToken: {
-      symbol: "TRAVA",
-      address: "0x41Ad43Ae987F7bE3B5024E7B167f81772f097D5b",
-      decimals: _config__WEBPACK_IMPORTED_MODULE_0__.BASE18.toFixed()
-    }
-  }, {
-    id: "trava",
-    name: "Trava Token",
-    code: "TRAVA",
-    reserveDecimals: _config__WEBPACK_IMPORTED_MODULE_0__.BASE18.toFixed(),
-    underlyingAddress: "0x41Ad43Ae987F7bE3B5024E7B167f81772f097D5b",
-    priceUnderlyingAddress: "0x41Ad43Ae987F7bE3B5024E7B167f81772f097D5b",
-    lpAddress: "0xdCbf1fe4642d3c593f665D04Cc66E1E8923DAB5e",
-    stakedTokenAddress: "0x1120E28F5D9eeABfC18afE9600315c6c184b9fcF",
-    claimable: true,
-    tokenName: TOKENS_NAME.TRAVA_ON_BSC,
-    filterMode: FILTER_MODE.LIVE,
-    rewardToken: {
-      symbol: "TRAVA",
-      address: "0x41Ad43Ae987F7bE3B5024E7B167f81772f097D5b",
-      decimals: _config__WEBPACK_IMPORTED_MODULE_0__.BASE18.toFixed()
-    }
-  }, {
-    id: "bsc-mainnet-bnbtrava2",
-    name: "Trava BNB",
-    code: "BNB/TRAVA",
-    reserveDecimals: _config__WEBPACK_IMPORTED_MODULE_0__.BASE18.toFixed(),
-    underlyingAddress: "0xdCbf1fe4642d3c593f665D04Cc66E1E8923DAB5e",
-    priceUnderlyingAddress: "0xdCbf1fe4642d3c593f665D04Cc66E1E8923DAB5e",
-    lpAddress: "0xdCbf1fe4642d3c593f665D04Cc66E1E8923DAB5e",
-    stakedTokenAddress: "0xA36991E7FA207815f37e01E72DBC3b5b874D7F6C",
-    claimable: true,
-    lockedUntil: 1628624800000,
-    badge: "3 months",
-    lpLink: "https://pancakeswap.finance/add/BNB/0x0391bE54E72F7e001f6BBc331777710b4f2999Ef",
-    tokenName: TOKENS_NAME.TRAVA_BNB_LP,
-    filterMode: FILTER_MODE.LIVE,
-    rewardToken: {
-      symbol: "TRAVA",
-      address: "0x41Ad43Ae987F7bE3B5024E7B167f81772f097D5b",
-      decimals: _config__WEBPACK_IMPORTED_MODULE_0__.BASE18.toFixed()
-    }
-  }, {
-    id: "bsc-mainnet-bnbtrava3",
-    name: "Trava BNB",
-    code: "BNB/TRAVA",
-    reserveDecimals: _config__WEBPACK_IMPORTED_MODULE_0__.BASE18.toFixed(),
-    underlyingAddress: "0xdCbf1fe4642d3c593f665D04Cc66E1E8923DAB5e",
-    priceUnderlyingAddress: "0xdCbf1fe4642d3c593f665D04Cc66E1E8923DAB5e",
-    lpAddress: "0xdCbf1fe4642d3c593f665D04Cc66E1E8923DAB5e",
-    stakedTokenAddress: "0xA36991E7FA207815f37e01E72DBC3b5b874D7F6C",
-    claimable: true,
-    lockedUntil: 1628624800000,
-    badge: "9 months",
-    lpLink: "https://pancakeswap.finance/add/BNB/0x0391bE54E72F7e001f6BBc331777710b4f2999Ef",
-    tokenName: TOKENS_NAME.TRAVA_BNB_LP,
-    filterMode: FILTER_MODE.LIVE,
-    rewardToken: {
-      symbol: "TRAVA",
-      address: "0x41Ad43Ae987F7bE3B5024E7B167f81772f097D5b",
-      decimals: _config__WEBPACK_IMPORTED_MODULE_0__.BASE18.toFixed()
-    }
-  }],
-  [_config__WEBPACK_IMPORTED_MODULE_0__.NETWORKS.bscMainnet.chainId]: [{
-    id: "bsc-mainnet-rtrava-farming",
-    code: "rTRAVA",
-    name: "rTRAVA",
-    reserveDecimals: _config__WEBPACK_IMPORTED_MODULE_0__.BASE18.toFixed(),
-    underlyingAddress: "0x170772A06aFfC0d375cE90Ef59C8eC04c7ebF5D2",
-    priceUnderlyingAddress: "0x0391bE54E72F7e001f6BBc331777710b4f2999Ef",
-    lpAddress: "0x865c77d4ff6383e06c58350a2cfb95cca2c0f056",
-    stakedTokenAddress: "0x17b173D4B80B0B5BB7E0f1E99F5962f2D51799Eb",
-    claimable: true,
-    startTimeClaimAll: 1634576400000,
-    badge: "No Lock",
-    vaultType: VAULT_TYPES.FARMING,
-    tokenName: TOKENS_NAME.TRAVA_ON_BSC,
-    filterMode: FILTER_MODE.LIVE,
-    rewardToken: {
-      symbol: "TRAVA",
-      address: "0x0391bE54E72F7e001f6BBc331777710b4f2999Ef",
-      decimals: _config__WEBPACK_IMPORTED_MODULE_0__.BASE18.toFixed()
-    }
-  }, {
-    id: "bsc-mainnet-travabnb",
-    code: "BNB/TRAVA",
-    name: "BNB/TRAVA",
-    reserveDecimals: _config__WEBPACK_IMPORTED_MODULE_0__.BASE18.toFixed(),
-    underlyingAddress: "0x865c77d4ff6383e06c58350a2cfb95cca2c0f056",
-    priceUnderlyingAddress: "0x865c77d4ff6383e06c58350a2cfb95cca2c0f056",
-    lpAddress: "0x865c77d4ff6383e06c58350a2cfb95cca2c0f056",
-    stakedTokenAddress: "0xF04feE30118fdb83c0957C4f6AbdfDde977b9Aeb",
-    claimable: true,
-    badge: "No Lock",
-    lpLink: "https://pancakeswap.finance/add/BNB/0x0391bE54E72F7e001f6BBc331777710b4f2999Ef",
-    vaultType: VAULT_TYPES.FARMING,
-    tokenName: TOKENS_NAME.TRAVA_BNB_LP,
-    filterMode: FILTER_MODE.LIVE,
-    rewardToken: {
-      symbol: "TRAVA",
-      address: "0x0391bE54E72F7e001f6BBc331777710b4f2999Ef",
-      decimals: _config__WEBPACK_IMPORTED_MODULE_0__.BASE18.toFixed()
-    }
-  }, {
-    id: "trava",
-    code: "TRAVA",
-    name: "TRAVA",
-    reserveDecimals: _config__WEBPACK_IMPORTED_MODULE_0__.BASE18.toFixed(),
-    underlyingAddress: "0x0391bE54E72F7e001f6BBc331777710b4f2999Ef",
-    priceUnderlyingAddress: "0x0391bE54E72F7e001f6BBc331777710b4f2999Ef",
-    lpAddress: "0x865c77d4ff6383e06c58350a2cfb95cca2c0f056",
-    stakedTokenAddress: "0xC5f0137ce42437d8f5eF25DA110F7FD7386178ec",
-    claimable: true,
-    badge: "No Lock",
-    vaultType: VAULT_TYPES.FARMING,
-    tokenName: TOKENS_NAME.TRAVA_ON_BSC,
-    filterMode: FILTER_MODE.LIVE,
-    rewardToken: {
-      symbol: "TRAVA",
-      address: "0x0391bE54E72F7e001f6BBc331777710b4f2999Ef",
-      decimals: _config__WEBPACK_IMPORTED_MODULE_0__.BASE18.toFixed()
-    }
-  }, {
-    id: "orai",
-    code: "ORAI",
-    name: "ORAI",
-    reserveDecimals: _config__WEBPACK_IMPORTED_MODULE_0__.BASE18.toFixed(),
-    underlyingAddress: "0xA325Ad6D9c92B55A3Fc5aD7e412B1518F96441C0",
-    priceUnderlyingAddress: "0xA325Ad6D9c92B55A3Fc5aD7e412B1518F96441C0",
-    lpAddress: "0x756E415E458ac05c1a69e834092034017f74Da93",
-    stakedTokenAddress: "0xd5Cc214621395686B972DDE8481a7463A0DaB962",
-    claimable: true,
-    vaultType: VAULT_TYPES.BASE,
-    tokenName: TOKENS_NAME.ORAI,
-    filterMode: FILTER_MODE.LIVE,
-    rewardToken: {
-      symbol: "TRAVA",
-      address: "0x0391bE54E72F7e001f6BBc331777710b4f2999Ef",
-      decimals: _config__WEBPACK_IMPORTED_MODULE_0__.BASE18.toFixed()
-    }
-  }]
-};
-
-/***/ }),
-/* 361 */
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   ApiQuery: () => (/* binding */ ApiQuery),
-/* harmony export */   TravaNFTApiQuery: () => (/* binding */ TravaNFTApiQuery)
-/* harmony export */ });
-/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(269);
-/* harmony import */ var _constance__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(362);
-function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
-function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
-function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
-function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
-function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return typeof key === "symbol" ? key : String(key); }
-function _toPrimitive(input, hint) { if (typeof input !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (typeof res !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
-
-
-var defaultHeaders = {
-  Accept: "application/json",
-  "Content-Type": "application/json"
-};
-class ApiQuery {
-  constructor(rootUrl, config) {
-    _defineProperty(this, "rootUrl", void 0);
-    _defineProperty(this, "config", void 0);
-    this.rootUrl = rootUrl;
-    this.config = config ? _objectSpread(_objectSpread({}, config), {}, {
-      headers: _objectSpread(_objectSpread({}, defaultHeaders), config.headers || {})
-    }) : {
-      headers: defaultHeaders
-    };
-  }
-  get(url, config) {
-    var _this = this;
-    return _asyncToGenerator(function* () {
-      return yield axios__WEBPACK_IMPORTED_MODULE_1__["default"].get("".concat(_this.rootUrl).concat(url), _objectSpread(_objectSpread({}, config), _this.config));
-    })();
-  }
-  post(url, data, config) {
-    var _this2 = this;
-    return _asyncToGenerator(function* () {
-      return yield axios__WEBPACK_IMPORTED_MODULE_1__["default"].post("".concat(_this2.rootUrl).concat(url), data, _objectSpread(_objectSpread({}, config), _this2.config));
-    })();
-  }
-  put(url, data, config) {
-    var _this3 = this;
-    return _asyncToGenerator(function* () {
-      return yield axios__WEBPACK_IMPORTED_MODULE_1__["default"].put("".concat(_this3.rootUrl).concat(url), data, _objectSpread(_objectSpread({}, config), _this3.config));
-    })();
-  }
-  del(url, config) {
-    var _this4 = this;
-    return _asyncToGenerator(function* () {
-      return yield axios__WEBPACK_IMPORTED_MODULE_1__["default"].delete("".concat(_this4.rootUrl).concat(url), _objectSpread(_objectSpread({}, config), _this4.config));
-    })();
-  }
-}
-var TravaNFTApiQuery = new ApiQuery(_constance__WEBPACK_IMPORTED_MODULE_0__.TRAVA_NFT_BACKEND_ROOT);
-
-
-/***/ }),
-/* 362 */
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   TRAVA_NFT_BACKEND_ROOT: () => (/* binding */ TRAVA_NFT_BACKEND_ROOT)
-/* harmony export */ });
-var TRAVA_NFT_BACKEND_ROOT = "https://backend-nft-app.trava.finance";
 
 /***/ }),
 /* 363 */
@@ -59428,10 +59511,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   SimulationWithdrawLiquidity: () => (/* binding */ SimulationWithdrawLiquidity)
 /* harmony export */ });
 /* harmony import */ var bignumber_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(26);
-/* harmony import */ var _UpdateStateAccount__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(354);
+/* harmony import */ var _UpdateStateAccount__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(361);
 /* harmony import */ var _basic__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(19);
 /* harmony import */ var _utils_helper__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(125);
-/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(356);
+/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(348);
 function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
 function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
 function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
@@ -59593,7 +59676,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _utils_config__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(24);
 /* harmony import */ var _utils_helper__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(125);
 /* harmony import */ var bignumber_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(26);
-/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(356);
+/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(348);
 function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
 function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
 function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
@@ -59851,10 +59934,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _abis_TravaLendingPool_json__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(407);
 /* harmony import */ var _abis_IncentiveContract_json__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(408);
 /* harmony import */ var _abis_BEP20_json__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(346);
-/* harmony import */ var _abis_AaveOracle_json__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(358);
+/* harmony import */ var _abis_AaveOracle_json__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(350);
 /* harmony import */ var _utils_address__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(23);
 /* harmony import */ var bignumber_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(26);
-/* harmony import */ var _utils_oraclePrice__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(357);
+/* harmony import */ var _utils_oraclePrice__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(349);
 /* harmony import */ var _basic_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(20);
 /* harmony import */ var _SimulationWalletTravaLP__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(409);
 /* harmony import */ var _utils_helper__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(125);
@@ -61981,7 +62064,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _utils_address__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(23);
 /* harmony import */ var _helpers_KnightConfig__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(413);
 /* harmony import */ var bignumber_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(26);
-/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(356);
+/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(348);
 function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
 function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
 function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
@@ -62365,7 +62448,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _abis_TravaNFTAuction_json__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(432);
 /* harmony import */ var _helpers_utils__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(421);
 /* harmony import */ var bignumber_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(26);
-/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(356);
+/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(348);
 /* harmony import */ var _utils_helper__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(125);
 function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
 function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
@@ -64281,7 +64364,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   tokenSellOptions: () => (/* binding */ tokenSellOptions)
 /* harmony export */ });
-/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(356);
+/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(348);
 
 var tokenSellOptions = {
   [_utils__WEBPACK_IMPORTED_MODULE_0__.NETWORKS.bscMainnet.chainId]: [{
@@ -64439,7 +64522,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   calculateVaultApr: () => (/* binding */ calculateVaultApr),
 /* harmony export */   updateFarmingState: () => (/* binding */ updateFarmingState)
 /* harmony export */ });
-/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(356);
+/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(348);
 /* harmony import */ var _heuristicFarmingConfig__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(455);
 /* harmony import */ var _abis_NFTFarmingBaseExp_json__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(456);
 /* harmony import */ var _abis_NFTCollection_json__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(423);
@@ -64725,7 +64808,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   simulateTravaNFTHeuristicFarmingWithdraw: () => (/* binding */ simulateTravaNFTHeuristicFarmingWithdraw)
 /* harmony export */ });
 /* harmony import */ var bignumber_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(26);
-/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(356);
+/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(348);
 /* harmony import */ var _utils_helper__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(125);
 /* harmony import */ var _helpers__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(411);
 /* harmony import */ var _utilities__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(434);
@@ -65001,10 +65084,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _abis_StakedToken_json__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(400);
 /* harmony import */ var _abis_VestingTrava_json__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(460);
 /* harmony import */ var _utils_address__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(23);
-/* harmony import */ var _utils_stakingVaultConfig__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(360);
+/* harmony import */ var _utils_stakingVaultConfig__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(352);
 /* harmony import */ var _utils_config__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(24);
 /* harmony import */ var bignumber_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(26);
-/* harmony import */ var _abis_AaveOracle_json__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(358);
+/* harmony import */ var _abis_AaveOracle_json__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(350);
 /* harmony import */ var _basic_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(20);
 /* harmony import */ var _abis_BEP20_json__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(346);
 /* harmony import */ var _utils_helper__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(125);
@@ -65395,7 +65478,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var bignumber_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(26);
 /* harmony import */ var _utils_helper__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(125);
 /* harmony import */ var _abis_NFTExpeditionABI_json__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(464);
-/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(356);
+/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(348);
 /* harmony import */ var _basic__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(19);
 function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
 function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
@@ -65705,7 +65788,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   updateExpeditionState: () => (/* binding */ updateExpeditionState),
 /* harmony export */   updateOwnerKnightInExpeditionState: () => (/* binding */ updateOwnerKnightInExpeditionState)
 /* harmony export */ });
-/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(356);
+/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(348);
 /* harmony import */ var _utils_helper__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(125);
 /* harmony import */ var _expeditionConfig__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(466);
 /* harmony import */ var _abis_NFTExpeditionABI_json__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(464);
@@ -65959,7 +66042,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   expeditionOptions: () => (/* binding */ expeditionOptions)
 /* harmony export */ });
-/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(356);
+/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(348);
 
 var expeditionOptions = {
   [_utils__WEBPACK_IMPORTED_MODULE_0__.NETWORKS.bscTestnet.chainId]: [{
@@ -66076,7 +66159,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   updateDilutionState: () => (/* binding */ updateDilutionState)
 /* harmony export */ });
-/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(356);
+/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(348);
 /* harmony import */ var _utils_helper__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(125);
 /* harmony import */ var _abis_dilution_staking_json__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(470);
 /* harmony import */ var _dilutionConfig__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(471);
@@ -66392,6 +66475,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   calcVotingPower: () => (/* reexport safe */ _Simulation__WEBPACK_IMPORTED_MODULE_1__.calcVotingPower),
 /* harmony export */   calculateKnightApr: () => (/* reexport safe */ _Simulation__WEBPACK_IMPORTED_MODULE_1__.calculateKnightApr),
 /* harmony export */   calculateMaxAmountBorrow: () => (/* reexport safe */ _Simulation__WEBPACK_IMPORTED_MODULE_1__.calculateMaxAmountBorrow),
+/* harmony export */   calculateMaxAmountForkAaveBorrow: () => (/* reexport safe */ _Simulation__WEBPACK_IMPORTED_MODULE_1__.calculateMaxAmountForkAaveBorrow),
+/* harmony export */   calculateMaxAmountForkAaveRepay: () => (/* reexport safe */ _Simulation__WEBPACK_IMPORTED_MODULE_1__.calculateMaxAmountForkAaveRepay),
+/* harmony export */   calculateMaxAmountForkAaveSupply: () => (/* reexport safe */ _Simulation__WEBPACK_IMPORTED_MODULE_1__.calculateMaxAmountForkAaveSupply),
+/* harmony export */   calculateMaxAmountForkAaveWithdraw: () => (/* reexport safe */ _Simulation__WEBPACK_IMPORTED_MODULE_1__.calculateMaxAmountForkAaveWithdraw),
 /* harmony export */   calculateMaxAmountRepay: () => (/* reexport safe */ _Simulation__WEBPACK_IMPORTED_MODULE_1__.calculateMaxAmountRepay),
 /* harmony export */   calculateMaxAmountSupply: () => (/* reexport safe */ _Simulation__WEBPACK_IMPORTED_MODULE_1__.calculateMaxAmountSupply),
 /* harmony export */   calculateMaxAmountWithdraw: () => (/* reexport safe */ _Simulation__WEBPACK_IMPORTED_MODULE_1__.calculateMaxAmountWithdraw),
@@ -66402,6 +66489,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   calculateNewLTV: () => (/* reexport safe */ _Simulation__WEBPACK_IMPORTED_MODULE_1__.calculateNewLTV),
 /* harmony export */   calculateNewLiquidThreshold: () => (/* reexport safe */ _Simulation__WEBPACK_IMPORTED_MODULE_1__.calculateNewLiquidThreshold),
 /* harmony export */   calculateVaultApr: () => (/* reexport safe */ _Simulation__WEBPACK_IMPORTED_MODULE_1__.calculateVaultApr),
+/* harmony export */   centic_api: () => (/* reexport safe */ _utils__WEBPACK_IMPORTED_MODULE_2__.centic_api),
+/* harmony export */   centic_api_key: () => (/* reexport safe */ _utils__WEBPACK_IMPORTED_MODULE_2__.centic_api_key),
 /* harmony export */   collectionSort: () => (/* reexport safe */ _Simulation__WEBPACK_IMPORTED_MODULE_1__.collectionSort),
 /* harmony export */   configure: () => (/* reexport safe */ _utils__WEBPACK_IMPORTED_MODULE_2__.configure),
 /* harmony export */   convertHexStringToAddress: () => (/* reexport safe */ _utils__WEBPACK_IMPORTED_MODULE_2__.convertHexStringToAddress),
@@ -66472,6 +66561,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   timeRemaining: () => (/* reexport safe */ _Simulation__WEBPACK_IMPORTED_MODULE_1__.timeRemaining),
 /* harmony export */   tokenLockOptions: () => (/* reexport safe */ _Simulation__WEBPACK_IMPORTED_MODULE_1__.tokenLockOptions),
 /* harmony export */   tokenSellOptions: () => (/* reexport safe */ _Simulation__WEBPACK_IMPORTED_MODULE_1__.tokenSellOptions),
+/* harmony export */   tramline_api: () => (/* reexport safe */ _utils__WEBPACK_IMPORTED_MODULE_2__.tramline_api),
 /* harmony export */   updateAllAccountVault: () => (/* reexport safe */ _Simulation__WEBPACK_IMPORTED_MODULE_1__.updateAllAccountVault),
 /* harmony export */   updateAuctioningNFTFromContract: () => (/* reexport safe */ _Simulation__WEBPACK_IMPORTED_MODULE_1__.updateAuctioningNFTFromContract),
 /* harmony export */   updateCollectionBalanceFromContract: () => (/* reexport safe */ _Simulation__WEBPACK_IMPORTED_MODULE_1__.updateCollectionBalanceFromContract),
@@ -66510,7 +66600,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _State__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(1);
 /* harmony import */ var _Simulation__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(18);
-/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(356);
+/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(348);
 /* harmony import */ var _Simulation_trava_nft_helpers_global__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(425);
 
 

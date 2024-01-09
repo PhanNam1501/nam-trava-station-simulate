@@ -5,38 +5,39 @@ import { getMode } from "../../utils/helper";
 import axios from "axios";
 import { ForkedCompound, WalletForkedCompoundLPState } from "../../State";
 import { entity_ids_compound } from "./forkCompoundLPConfig";
+import { centic_api, centic_api_key, tramline_api } from "../../utils";
 
 
 export async function updateForkCompoundLPState(appState1: ApplicationState, entity_id: string, force?: boolean): Promise<ApplicationState> {
     let appState = { ...appState1 };
     try {
-        if (appState.forkCompoundLPState.isFetch == false || force == true){
-        if (entity_ids_compound.some(x => x === entity_id)){
-            let data1 = await getDataLendingByAxios(entity_id, "0x" + appState.chainId.toString(16));
-            let data: ForkedCompound = {
-                id: data1["id"],
-                totalSupplyInUSD: data1["totalSupplyInUSD"],
-                numberOfLenders: data1["numberOfLenders"],
-                totalBorrowInUSD: data1["totalBorrowInUSD"],
-                markets: data1["markets"],
-                totalTVL: data1["totalTVL"],
+        if (appState.forkCompoundLPState.isFetch == false || force == true) {
+            if (entity_ids_compound.some(x => x === entity_id)) {
+                let data1 = await getDataLendingByAxios(entity_id, "0x" + appState.chainId.toString(16));
+                let data: ForkedCompound = {
+                    id: data1["id"],
+                    totalSupplyInUSD: data1["totalSupplyInUSD"],
+                    numberOfLenders: data1["numberOfLenders"],
+                    totalBorrowInUSD: data1["totalBorrowInUSD"],
+                    markets: data1["markets"],
+                    totalTVL: data1["totalTVL"],
+                }
+                appState.forkCompoundLPState.forkCompoundLP.set(entity_id, data);
             }
-            appState.forkCompoundLPState.forkCompoundLP.set(entity_id, data);
+            appState.forkCompoundLPState.isFetch = true;
+            appState = await updateUserInForkCompoundLPState(appState, appState.smartWalletState.address, entity_id);
         }
-        appState.forkCompoundLPState.isFetch = true;
-        appState = await updateUserInForkCompoundLPState(appState, appState.smartWalletState.address, entity_id);
-    }
     } catch (error) {
         console.error(error);
     }
     return appState;
 }
 
-export async function updateUserInForkCompoundLPState(appState1: ApplicationState, _from: EthAddress , entity_id: string ,force?: boolean): Promise<ApplicationState> {
+export async function updateUserInForkCompoundLPState(appState1: ApplicationState, _from: EthAddress, entity_id: string, force?: boolean): Promise<ApplicationState> {
     let appState = { ...appState1 };
     try {
         let mode = getMode(appState, _from);
-        if (entity_ids_compound.some(x => x === entity_id)){
+        if (entity_ids_compound.some(x => x === entity_id)) {
             let data1 = await getDataUserByAxios(_from, entity_id, "0x" + appState.chainId.toString(16));
             let from = _from;
             let dataLendingByAxiosTramline = await getDataLendingByAxiosTramline(entity_id, "0x" + appState.chainId.toString(16), from);
@@ -60,9 +61,12 @@ export async function updateUserInForkCompoundLPState(appState1: ApplicationStat
 }
 
 async function getDataLendingByAxios(entity_id: string, chain: string) {
-    let url = `https://develop.centic.io/dev/v3/projects/lending/${entity_id}/overview?chain=${chain}`
+    let url = `${centic_api}/v3/projects/lending/${entity_id}/overview?chain=${chain}`
     try {
-        const response = await axios.get(url)
+        const response = await axios.request({
+            method: "get",
+            url: url
+        })
         const data = response.data;
         return data;
     } catch (err) {
@@ -72,9 +76,15 @@ async function getDataLendingByAxios(entity_id: string, chain: string) {
 }
 
 async function getDataUserByAxios(address: EthAddress, entity_id: string, chain: string) {
-    let url = `https://develop.centic.io/dev/v3/wallets/${address}/lendings/${entity_id}?chain=${chain}`
+    let url = `${centic_api}/v3/wallets/${address}/lendings/${entity_id}?chain=${chain}`
     try {
-        const response = await axios.get(url)
+        const response = await axios.request({
+            method: "get",
+            url: url,
+            headers: {
+                "x-apikey": centic_api_key
+            }
+        })
         const data = response.data;
         return data;
     } catch (err) {
@@ -84,9 +94,12 @@ async function getDataUserByAxios(address: EthAddress, entity_id: string, chain:
 }
 
 async function getDataLendingByAxiosTramline(entity_id: string, chain: string, userAddress: EthAddress) {
-    let url = `https://tramlines-backend.trava.finance/api/trava-station/lending-pool/detail?entity=${entity_id}&chainId=${chain}&userAddress=${userAddress}`
+    let url = `${tramline_api}/trava-station/lending-pool/detail?entity=${entity_id}&chainId=${chain}&userAddress=${userAddress}`
     try {
-        const response = await axios.get(url)
+        const response = await axios.request({
+            method: "get",
+            url: url
+        })
         const data = response.data;
         return data;
     } catch (err) {

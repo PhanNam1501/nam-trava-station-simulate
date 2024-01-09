@@ -11,7 +11,7 @@ import { updateForkAaveLPState, updateUserInForkAaveLPState } from "../src/Simul
   // start 
   async function test(){
     console.log(BigNumber(0.1).toFixed())
-    const provider = new JsonRpcProvider("https://bsc-testnet.publicnode.com");
+    const provider = new JsonRpcProvider("https://bsc.publicnode.com");
     // const chainId = 56
     const chainId = 56
     //main net
@@ -34,23 +34,22 @@ import { updateForkAaveLPState, updateUserInForkAaveLPState } from "../src/Simul
     chainId
     )
     // appState = await updateTravaGovernanceState(appState);
-    appState = await updateForkCompoundLPState(appState, "venus");
-    appState = await updateUserInForkCompoundLPState(appState, userAddress, "venus");
+    // appState = await updateForkCompoundLPState(appState, "venus");
+    // appState = await updateUserInForkCompoundLPState(appState, userAddress, "venus");
     // console.log(appState.forkCompoundLPState.forkCompoundLP.get("wepiggy")?.markets[0].assets)
     // // console.log(appState.forkCompoundLPState)
     // console.log(appState.walletState.forkedCompoundLPState)
-    console.log(appState.walletState.forkedCompoundLPState.get("venus"))
-    // console.log(appState.walletState.forkedCompoundLPState.get("venus")?.dapps[0].reserves)
-    appState = await SimulationSupplyForkCompoundLP(appState, userAddress, "venus", "0xe9e7cea3dedca5984780bafc599bd69add087d56", "1000")
     // console.log(appState.walletState.forkedCompoundLPState.get("venus"))
-    console.log(appState.walletState.forkedCompoundLPState.get("venus")?.dapps[0].reserves[0].deposit)
+    // console.log(appState.walletState.forkedCompoundLPState.get("venus")?.dapps[0].reserves)
+    // appState = await SimulationSupplyForkCompoundLP(appState, userAddress, "venus", "0xe9e7cea3dedca5984780bafc599bd69add087d56", "1000")
+    // console.log(appState.walletState.forkedCompoundLPState.get("venus"))
+    // console.log(appState.walletState.forkedCompoundLPState.get("venus")?.dapps[0].reserves[0].deposit)
     
     // console.log("_______________________TEST AAVE_______________________")
 
       
-    // appState = await updateForkAaveLPState(appState, "valas-finance");
-    // appState = await updateUserInForkAaveLPState(appState, userAddress, "valas-finance");
-    // console.log(appState.walletState.forkedAaveLPState.get("valas-finance"))
+    appState = await updateForkAaveLPState(appState, "valas-finance");
+    console.log(appState.smartWalletState.forkedAaveLPState.get("valas-finance"))
     // let a = await getListTokenAddress(appState, "valas-finance");
     // console.log(a)
 

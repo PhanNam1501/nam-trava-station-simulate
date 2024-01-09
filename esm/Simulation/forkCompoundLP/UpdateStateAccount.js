@@ -10,6 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 import { getMode } from "../../utils/helper";
 import axios from "axios";
 import { entity_ids_compound } from "./forkCompoundLPConfig";
+import { centic_api, centic_api_key, tramline_api } from "../../utils";
 export function updateForkCompoundLPState(appState1, entity_id, force) {
     return __awaiter(this, void 0, void 0, function* () {
         let appState = Object.assign({}, appState1);
@@ -68,9 +69,12 @@ export function updateUserInForkCompoundLPState(appState1, _from, entity_id, for
 }
 function getDataLendingByAxios(entity_id, chain) {
     return __awaiter(this, void 0, void 0, function* () {
-        let url = `https://develop.centic.io/dev/v3/projects/lending/${entity_id}/overview?chain=${chain}`;
+        let url = `${centic_api}/v3/projects/lending/${entity_id}/overview?chain=${chain}`;
         try {
-            const response = yield axios.get(url);
+            const response = yield axios.request({
+                method: "get",
+                url: url
+            });
             const data = response.data;
             return data;
         }
@@ -82,9 +86,15 @@ function getDataLendingByAxios(entity_id, chain) {
 }
 function getDataUserByAxios(address, entity_id, chain) {
     return __awaiter(this, void 0, void 0, function* () {
-        let url = `https://develop.centic.io/dev/v3/wallets/${address}/lendings/${entity_id}?chain=${chain}`;
+        let url = `${centic_api}/v3/wallets/${address}/lendings/${entity_id}?chain=${chain}`;
         try {
-            const response = yield axios.get(url);
+            const response = yield axios.request({
+                method: "get",
+                url: url,
+                headers: {
+                    "x-apikey": centic_api_key
+                }
+            });
             const data = response.data;
             return data;
         }
@@ -96,9 +106,12 @@ function getDataUserByAxios(address, entity_id, chain) {
 }
 function getDataLendingByAxiosTramline(entity_id, chain, userAddress) {
     return __awaiter(this, void 0, void 0, function* () {
-        let url = `https://tramlines-backend.trava.finance/api/trava-station/lending-pool/detail?entity=${entity_id}&chainId=${chain}&userAddress=${userAddress}`;
+        let url = `${tramline_api}/trava-station/lending-pool/detail?entity=${entity_id}&chainId=${chain}&userAddress=${userAddress}`;
         try {
-            const response = yield axios.get(url);
+            const response = yield axios.request({
+                method: "get",
+                url: url
+            });
             const data = response.data;
             return data;
         }

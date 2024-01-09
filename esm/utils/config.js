@@ -78,3 +78,6 @@ export const HALF_PERCENT = PERCENTAGE_FACTOR.div(2);
 export const WAD = BigNumber(1e18);
 export const FEE_AUCTION_PERCENTAGE = 5 / 100;
 export const MINIMUM_BID_STEP_PERCENT = 5 / 100;
+export const tramline_api = "https://tramlines-backend.trava.finance/api";
+export const centic_api = "https://develop.centic.io/dev";
+export const centic_api_key = "3ATJtOInT7QfaV2pvAdhlRVMHbztLjyyAL16UrKe5Q6vMtlR";
