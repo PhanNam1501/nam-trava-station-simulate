@@ -49,9 +49,9 @@ import { SimulationSupplyForkAaveLP, SimulationWithdrawForkAaveLP, updateForkAav
 
       
     appState = await updateForkAaveLPState(appState, "valas-finance");
-    console.log(appState.smartWalletState.forkedAaveLPState.get("valas-finance"))
-    appState = await SimulationSupplyForkAaveLP(appState, userAddress, "valas-finance", "0xe9e7cea3dedca5984780bafc599bd69add087d56", "1000")
-    appState = await SimulationWithdrawForkAaveLP(appState, userAddress, "valas-finance", "0xe9e7cea3dedca5984780bafc599bd69add087d56", "1000")
+    // console.log(appState.smartWalletState.forkedAaveLPState.get("valas-finance"))
+    appState = await SimulationSupplyForkAaveLP(appState, proxyAddress, "valas-finance", "0xe9e7cea3dedca5984780bafc599bd69add087d56", "1000")
+    // appState = await SimulationWithdrawForkAaveLP(appState, proxyAddress, "valas-finance", "0xe9e7cea3dedca5984780bafc599bd69add087d56", "1000")
 
     // let a = await getListTokenAddress(appState, "valas-finance");
     // console.log(a)

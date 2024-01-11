@@ -33,7 +33,7 @@ export async function updateForkAaveLPState(appState1: ApplicationState, entity_
     return appState;
 }
 
-async function updateTokenDetailInOthersPools(appState1: ApplicationState, _from: EthAddress, entity_id: string): Promise<ApplicationState> {
+export async function updateTokenDetailInOthersPools(appState1: ApplicationState, _from: EthAddress, entity_id: string): Promise<ApplicationState> {
     let appState = { ...appState1 };
     try{
         let from = _from.toLowerCase();

@@ -3,7 +3,7 @@ import { ApplicationState, UserAsset } from "../../State";
 import { EthAddress } from "../../utils/types";
 import { updateUserTokenBalance } from "../basic";
 import { getMode } from "../../utils/helper";
-import { updateForkAaveLPState } from "./UpdateStateAccount";
+import { updateForkAaveLPState, updateTokenDetailInOthersPools } from "./UpdateStateAccount";
 import { MAX_UINT256 } from "../../utils";
 
 export async function calculateMaxAmountForkAaveSupply(appState: ApplicationState, _entity_id: string, _tokenAddress: string, _from: EthAddress): Promise<BigNumber> {
@@ -134,14 +134,10 @@ export async function SimulationSupplyForkAaveLP(
         );
 
         let data = appState.forkAaveLPState.forkAaveLP.get(_entity_id);
-        //fix
-        console.log("data: ", data)
         if (!data) {
-            throw new Error("data1 not found");
+            throw new Error("data not found");
         }
         let dataAssets = data.markets[0].assets.find((asset) => asset.address == tokenAddress);
-        //fix
-        console.log("dataAssets: ", dataAssets)
         let price = dataAssets?.price;
         if (!price) {
             price = 0;
@@ -153,10 +149,59 @@ export async function SimulationSupplyForkAaveLP(
         //fix
         console.log("dataWallet: ", dataWallet)
         if (!dataWallet) {
-            throw new Error("data2 not found");
+            dataWallet = {
+                id: _from,
+                address: _from,
+                totalAssets: 0,
+                totalClaimable: 0,
+                totalDebts: 0,
+                dapps: [
+                    {
+                        id: _entity_id,
+                        type: "", //TODO
+                        value: 0,
+                        depositInUSD: 0,
+                        borrowInUSD: 0,
+                        claimable: 0,
+                        reserves: [
+                            {
+                                category: "", //TODO
+                                healthFactor: 0,
+                                deposit: [],
+                                borrow: [],
+                            }
+                        ]
+                    }
+                ],
+                detailTokenInPool: new Map(),
+                healthFactor: "",
+                ltv: 0,
+                currentLiquidationThreshold: 0,
+            };
+            appState = await updateTokenDetailInOthersPools(appState, _entity_id, _from);
         }
+        console.log("dataWallet: ", dataWallet)
+        dataWallet.dapps.push({
+            id: _entity_id,
+            type: "", //TODO
+            value: 0,
+            depositInUSD: 0,
+            borrowInUSD: 0,
+            claimable: 0,
+            reserves: [
+                {
+                    category: "", //TODO
+                    healthFactor: 0,
+                    deposit: [],
+                    borrow: [],
+                }
+            ]
+        });
+        // MAI FIX TIEP
 
+        console.log("no bug in here")
         let dataInWallet = dataWallet.dapps[0].reserves[0].deposit.find((reserve) => reserve.address == tokenAddress);
+        console.log("no bug in here")
         if (!dataInWallet) {
             let newData: UserAsset = {
                 id: dataAssets?.id || "",
