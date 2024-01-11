@@ -17,7 +17,7 @@ export async function SimulationSupplyForkCompoundLP(
         let amount = BigNumber(_amount);
         let appState = { ...appState1 };
         if (appState.forkCompoundLPState.isFetch == false ){
-            updateForkCompoundLPState(appState, _idLP);
+            appState = await updateForkCompoundLPState(appState, _idLP);
         }
         const tokenAddress = _tokenAddress.toLowerCase();
         let  modeFrom = getMode(appState, _from);
@@ -108,7 +108,7 @@ export async function SimulationSupplyForkCompoundLP(
         let amount = BigNumber(_amount);
         let appState = { ...appState1 };
         if (appState.forkCompoundLPState.isFetch == false ){
-            updateForkCompoundLPState(appState, _idLP);
+            appState = await updateForkCompoundLPState(appState, _idLP);
         }
         const tokenAddress = _tokenAddress.toLowerCase();
         let  modeFrom = getMode(appState, _from);
@@ -196,7 +196,7 @@ export async function SimulationSupplyForkCompoundLP(
         let amount = BigNumber(_amount);
         let appState = { ...appState1 };
         if (appState.forkCompoundLPState.isFetch == false ){
-            updateForkCompoundLPState(appState, _idLP);
+            appState = await updateForkCompoundLPState(appState, _idLP);
         }
         const tokenAddress = _tokenAddress.toLowerCase();
         let  modeFrom = getMode(appState, _from);
@@ -289,7 +289,7 @@ export async function SimulationSupplyForkCompoundLP(
         let amount = BigNumber(_amount);
         let appState = { ...appState1 };
         if (appState.forkCompoundLPState.isFetch == false ){
-            updateForkCompoundLPState(appState, _idLP);
+            appState = await updateForkCompoundLPState(appState, _idLP);
         }
         const tokenAddress = _tokenAddress.toLowerCase();
         // Comming Soon .......

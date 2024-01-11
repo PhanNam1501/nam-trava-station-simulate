@@ -6,14 +6,16 @@ import { getMode } from "../../utils/helper";
 import { updateForkAaveLPState } from "./UpdateStateAccount";
 import { MAX_UINT256 } from "../../utils";
 
-export function calculateMaxAmountForkAaveSupply(appState: ApplicationState, _entity_id: string, _tokenAddress: string, _from: EthAddress): BigNumber {
+export async function calculateMaxAmountForkAaveSupply(appState: ApplicationState, _entity_id: string, _tokenAddress: string, _from: EthAddress): Promise<BigNumber> {
     const tokenAddress = _tokenAddress.toLowerCase();
     const mode = getMode(appState, _from);
 
     if (appState.forkAaveLPState.forkAaveLP.get(_entity_id) == undefined) {
-        updateForkAaveLPState(appState, _entity_id);
+        appState = await updateForkAaveLPState(appState, _entity_id);
     }
-
+    if (!appState[mode].tokenBalances.has(tokenAddress)) {
+        appState = await updateUserTokenBalance(appState, tokenAddress);
+    }
     const walletBalance = appState[mode].tokenBalances.get(tokenAddress)!;
     if (typeof walletBalance == undefined) {
         throw new Error("Token is not init in " + mode + " state!")
@@ -28,11 +30,11 @@ export function calculateMaxAmountForkAaveSupply(appState: ApplicationState, _en
     return BigNumber(appState[mode].tokenBalances.get(tokenAddress)!);
 }
 
-export function calculateMaxAmountForkAaveBorrow(appState: ApplicationState, _entity_id: string, _tokenAddress: string): BigNumber {
+export async function calculateMaxAmountForkAaveBorrow(appState: ApplicationState, _entity_id: string, _tokenAddress: string): Promise<BigNumber> {
     const tokenAddress = _tokenAddress.toLowerCase();
 
     if (appState.forkAaveLPState.forkAaveLP.get(_entity_id) == undefined) {
-        updateForkAaveLPState(appState, _entity_id);
+        appState = await updateForkAaveLPState(appState, _entity_id);
     }
 
     const lpState = appState.smartWalletState.forkedAaveLPState.get(_entity_id)!
@@ -46,14 +48,17 @@ export function calculateMaxAmountForkAaveBorrow(appState: ApplicationState, _en
     return BigNumber.max(BigNumber.min(nativeAvailableBorrow, tTokenReserveBalance), 0).multipliedBy(BigNumber("10").pow(tokenInfo.tToken.decimals));
 }
 
-export function calculateMaxAmountForkAaveRepay(appState: ApplicationState, _entity_id: string, _tokenAddress: string, _from: EthAddress): BigNumber {
+export async function calculateMaxAmountForkAaveRepay(appState: ApplicationState, _entity_id: string, _tokenAddress: string, _from: EthAddress): Promise<BigNumber> {
     const tokenAddress = _tokenAddress.toLowerCase();
     const mode = getMode(appState, _from);
 
     if (appState.forkAaveLPState.forkAaveLP.get(_entity_id) == undefined) {
-        updateForkAaveLPState(appState, _entity_id);
+        appState = await updateForkAaveLPState(appState, _entity_id);
     }
 
+    if (!appState[mode].tokenBalances.has(tokenAddress)) {
+        appState = await updateUserTokenBalance(appState, tokenAddress);
+    }
     const walletBalance = appState[mode].tokenBalances.get(tokenAddress)!;
     if (typeof walletBalance == undefined) {
         throw new Error("Token is not init in " + mode + " state!")
@@ -68,11 +73,11 @@ export function calculateMaxAmountForkAaveRepay(appState: ApplicationState, _ent
     return BigNumber.max(BigNumber.min(walletBalance, borrowed), 0);
   }
 
-  export function calculateMaxAmountForkAaveWithdraw(appState: ApplicationState, _entity_id: string, _tokenAddress: string): BigNumber {
+  export async function calculateMaxAmountForkAaveWithdraw(appState: ApplicationState, _entity_id: string, _tokenAddress: string): Promise<BigNumber> {
     const tokenAddress = _tokenAddress.toLowerCase();
 
     if (appState.forkAaveLPState.forkAaveLP.get(_entity_id) == undefined) {
-        updateForkAaveLPState(appState, _entity_id);
+        appState = await updateForkAaveLPState(appState, _entity_id);
     }
 
     const lpState = appState.smartWalletState.forkedAaveLPState.get(_entity_id)!
@@ -109,14 +114,14 @@ export async function SimulationSupplyForkAaveLP(
         let amount = BigNumber(_amount);
         let appState = { ...appState1 };
         if (appState.forkAaveLPState.forkAaveLP.get(_entity_id) == undefined) {
-            updateForkAaveLPState(appState, _entity_id);
+            appState = await updateForkAaveLPState(appState, _entity_id);
         }
 
         const tokenAddress = _tokenAddress.toLowerCase();
         let modeFrom = getMode(appState, _from);
 
         if (amount.isEqualTo(MAX_UINT256)) {
-            amount = calculateMaxAmountForkAaveSupply(appState, _entity_id, tokenAddress, _from)
+            amount = await calculateMaxAmountForkAaveSupply(appState, _entity_id, tokenAddress, _from)
         }
 
 
@@ -199,12 +204,12 @@ export async function SimulationWithdrawForkAaveLP(
         let amount = BigNumber(_amount);
         let appState = { ...appState1 };
         if (appState.forkAaveLPState.forkAaveLP.get(_entity_id) == undefined) {
-            updateForkAaveLPState(appState, _entity_id);
+            appState = await updateForkAaveLPState(appState, _entity_id);
         }
         const tokenAddress = _tokenAddress.toLowerCase();
         let modeFrom = getMode(appState, _from);
         if (amount.isEqualTo(MAX_UINT256)) {
-            amount = calculateMaxAmountForkAaveWithdraw(appState, _entity_id, tokenAddress);
+            amount = await calculateMaxAmountForkAaveWithdraw(appState, _entity_id, tokenAddress);
           }
 
         if (!appState[modeFrom].tokenBalances.has(tokenAddress)) {
@@ -287,12 +292,12 @@ export async function SimulationBorrowForkAaveLP(
         let amount = BigNumber(_amount);
         let appState = { ...appState1 };
         if (appState.forkAaveLPState.forkAaveLP.get(_entity_id) == undefined) {
-            updateForkAaveLPState(appState, _entity_id);
+            appState = await updateForkAaveLPState(appState, _entity_id);
         }
         const tokenAddress = _tokenAddress.toLowerCase();
         let modeFrom = getMode(appState, _from);
         if (amount.isEqualTo(MAX_UINT256)) {
-            amount = calculateMaxAmountForkAaveBorrow(
+            amount = await calculateMaxAmountForkAaveBorrow(
                 appState,
                 _entity_id,
               tokenAddress
@@ -378,12 +383,12 @@ export async function SimulationRepayForkAaveLP(
         let amount = BigNumber(_amount);
         let appState = { ...appState1 };
         if (appState.forkAaveLPState.forkAaveLP.get(_entity_id) == undefined) {
-            updateForkAaveLPState(appState, _entity_id);
+            appState = await updateForkAaveLPState(appState, _entity_id);
         }
         const tokenAddress = _tokenAddress.toLowerCase();
         let modeFrom = getMode(appState, _from);
         if (amount.isEqualTo(MAX_UINT256)) {
-            amount = calculateMaxAmountForkAaveRepay(appState, _entity_id, tokenAddress, _from);
+            amount = await calculateMaxAmountForkAaveRepay(appState, _entity_id, tokenAddress, _from);
           }
 
         if (!appState[modeFrom].tokenBalances.has(tokenAddress)) {
