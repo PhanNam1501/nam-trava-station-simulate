@@ -56,33 +56,25 @@ export async function SimulationSupplyForkCompoundLP(
 
         let dataInWallet = dataWallet.dapps[0].reserves[0].deposit.find((reserve) => reserve.address == tokenAddress);
         if (!dataInWallet) {
-            // data.numberOfLenders = BigNumber(data.numberOfLenders || 0).plus(1).toNumber();
-            // data.numberOfUsers = BigNumber(data.numberOfUsers || 0).plus(1).toNumber();
             let newData: UserAsset = {
-                // key: dataAssets?.key || "",
                 id: dataAssets?.id || "",
-                // name: dataAssets?.name || "",
                 type: "token",
                 address: tokenAddress,
                 symbol: dataAssets?.symbol || "",
                 amount: amount.toNumber(),
                 valueInUSD: amount.multipliedBy(price).toNumber(),
-                // imgUrl: dataAssets?.imgUrl || "",
                 totalValue: amount.multipliedBy(price).toNumber(),
             };
             dataWallet.dapps[0].reserves[0].deposit.push(newData);
         }
         else{
             let newData: UserAsset = {
-                // key: dataAssets?.key || "",
                 id: dataAssets?.id || "",
-                // name: dataAssets?.name || "",
                 type: "token",
                 address: tokenAddress,
                 symbol: dataAssets?.symbol || "",
                 amount: amount.toNumber()+dataInWallet.amount,
                 valueInUSD: amount.plus(dataInWallet.amount).multipliedBy(price).toNumber(),
-                // imgUrl: dataAssets?.imgUrl || "",
                 totalValue: amount.plus(dataInWallet.amount).multipliedBy(price).toNumber(),
             };
             dataWallet.dapps[0].value = BigNumber(dataWallet.dapps[0].value || 0).plus(amount).toNumber();
@@ -152,33 +144,25 @@ export async function SimulationSupplyForkCompoundLP(
 
         let dataInWallet = dataWallet.dapps[0].reserves[0].deposit.find((reserve) => reserve.address == tokenAddress);
         if (!dataInWallet) {
-            // data.numberOfLenders = BigNumber(data.numberOfLenders || 0).plus(1).toNumber();
-            // data.numberOfUsers = BigNumber(data.numberOfUsers || 0).plus(1).toNumber();
             let newData: UserAsset = {
-                // key: dataAssets?.key || "",
                 id: dataAssets?.id || "",
-                // name: dataAssets?.name || "",
                 type: "token",
                 address: tokenAddress,
                 symbol: dataAssets?.symbol || "",
                 amount: -amount.toNumber(),
                 valueInUSD: -amount.multipliedBy(price).toNumber(),
-                // imgUrl: dataAssets?.imgUrl || "",
                 totalValue: -amount.multipliedBy(price).toNumber(),
             };
             dataWallet.dapps[0].reserves[0].deposit.push(newData);
         }
         else{
             let newData: UserAsset = {
-                // key: dataAssets?.key || "",
                 id: dataAssets?.id || "",
-                // name: dataAssets?.name || "",
                 type: "token",
                 address: tokenAddress,
                 symbol: dataAssets?.symbol || "",
                 amount: -amount.toNumber()+dataInWallet.amount,
                 valueInUSD: amount.multipliedBy(-1).plus(dataInWallet.amount).multipliedBy(price).toNumber(),
-                // imgUrl: dataAssets?.imgUrl || "",
                 totalValue: amount.multipliedBy(-1).plus(dataInWallet.amount).multipliedBy(price).toNumber(),
             };
             dataWallet.dapps[0].value = BigNumber(dataWallet.dapps[0].value || 0).minus(amount).toNumber();
@@ -252,33 +236,25 @@ export async function SimulationSupplyForkCompoundLP(
 
         let dataInWallet = dataWallet.dapps[0].reserves[0].borrow.find((reserve) => reserve.address == tokenAddress);
         if (!dataInWallet) {
-            // data.numberOfLenders = BigNumber(data.numberOfLenders || 0).plus(1).toNumber();
-            // data.numberOfUsers = BigNumber(data.numberOfUsers || 0).plus(1).toNumber();
             let newData: UserAsset = {
-                // key: dataAssets?.key || "",
                 id: dataAssets?.id || "",
-                // name: dataAssets?.name || "",
                 type: "token",
                 address: tokenAddress,
                 symbol: dataAssets?.symbol || "",
                 amount: amount.toNumber(),
                 valueInUSD: amount.multipliedBy(price).toNumber(),
-                // imgUrl: dataAssets?.imgUrl || "",
                 totalValue: amount.multipliedBy(price).toNumber(),
             };
             dataWallet.dapps[0].reserves[0].borrow.push(newData);
         }
         else{
             let newData: UserAsset = {
-                // key: dataAssets?.key || "",
                 id: dataAssets?.id || "",
-                // name: dataAssets?.name || "",
                 type: "token",
                 address: tokenAddress,
                 symbol: dataAssets?.symbol || "",
                 amount: amount.toNumber()+dataInWallet.amount,
                 valueInUSD: amount.plus(dataInWallet.amount).multipliedBy(price).toNumber(),
-                // imgUrl: dataAssets?.imgUrl || "",
                 totalValue: amount.plus(dataInWallet.amount).multipliedBy(price).toNumber(),
             };
             dataWallet.dapps[0].value = BigNumber(dataWallet.dapps[0].value || 0).plus(amount).toNumber();
@@ -349,33 +325,25 @@ export async function SimulationSupplyForkCompoundLP(
 
         let dataInWallet = dataWallet.dapps[0].reserves[0].borrow.find((reserve) => reserve.address == tokenAddress);
         if (!dataInWallet) {
-            // data.numberOfLenders = BigNumber(data.numberOfLenders || 0).plus(1).toNumber();
-            // data.numberOfUsers = BigNumber(data.numberOfUsers || 0).plus(1).toNumber();
             let newData: UserAsset = {
-                // key: dataAssets?.key || "",
                 id: dataAssets?.id || "",
-                // name: dataAssets?.name || "",
                 type: "token",
                 address: tokenAddress,
                 symbol: dataAssets?.symbol || "",
                 amount: -amount.toNumber(),
                 valueInUSD: -amount.multipliedBy(price).toNumber(),
-                // imgUrl: dataAssets?.imgUrl || "",
                 totalValue: -amount.multipliedBy(price).toNumber(),
             };
             dataWallet.dapps[0].reserves[0].borrow.push(newData);
         }
         else{
             let newData: UserAsset = {
-                // key: dataAssets?.key || "",
                 id: dataAssets?.id || "",
-                // name: dataAssets?.name || "",
                 type: "token",
                 address: tokenAddress,
                 symbol: dataAssets?.symbol || "",
                 amount: -amount.toNumber()+dataInWallet.amount,
                 valueInUSD: amount.multipliedBy(-1).plus(dataInWallet.amount).multipliedBy(price).toNumber(),
-                // imgUrl: dataAssets?.imgUrl || "",
                 totalValue: amount.multipliedBy(-1).plus(dataInWallet.amount).multipliedBy(price).toNumber(),
             };
             dataWallet.dapps[0].value = BigNumber(dataWallet.dapps[0].value || 0).minus(amount).toNumber();

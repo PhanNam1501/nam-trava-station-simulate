@@ -2,8 +2,6 @@ import BigNumber from "bignumber.js";
 import { ApplicationState, UserAsset } from "../../State";
 import { EthAddress } from "../../utils/types";
 import { updateUserTokenBalance } from "../basic";
-// Comming Soon .......
-// import { calculateMaxAmountBorrow, calculateMaxAmountRepay, calculateMaxAmountSupply, calculateMaxAmountWithdraw, updateLPtTokenInfo } from "../trava";
 import { getMode } from "../../utils/helper";
 import { updateForkAaveLPState } from "./UpdateStateAccount";
 import { MAX_UINT256 } from "../../utils";
@@ -149,33 +147,25 @@ export async function SimulationSupplyForkAaveLP(
 
         let dataInWallet = dataWallet.dapps[0].reserves[0].deposit.find((reserve) => reserve.address == tokenAddress);
         if (!dataInWallet) {
-            // data.numberOfLenders = BigNumber(data.numberOfLenders || 0).plus(1).toNumber();
-            // data.numberOfUsers = BigNumber(data.numberOfUsers || 0).plus(1).toNumber();
             let newData: UserAsset = {
-                // key: dataAssets?.key || "",
                 id: dataAssets?.id || "",
-                // name: dataAssets?.name || "",
                 type: "token",
                 address: tokenAddress,
                 symbol: dataAssets?.symbol || "",
                 amount: amount.toNumber(),
                 valueInUSD: amount.multipliedBy(price).toNumber(),
-                // imgUrl: dataAssets?.imgUrl || "",
                 totalValue: amount.multipliedBy(price).toNumber(),
             };
             dataWallet.dapps[0].reserves[0].deposit.push(newData);
         }
         else {
             let newData: UserAsset = {
-                // key: dataAssets?.key || "",
                 id: dataAssets?.id || "",
-                // name: dataAssets?.name || "",
                 type: "token",
                 address: tokenAddress,
                 symbol: dataAssets?.symbol || "",
                 amount: amount.toNumber() + dataInWallet.amount,
                 valueInUSD: amount.plus(dataInWallet.amount).multipliedBy(price).toNumber(),
-                // imgUrl: dataAssets?.imgUrl || "",
                 totalValue: amount.plus(dataInWallet.amount).multipliedBy(price).toNumber(),
             };
             dataWallet.dapps[0].value = BigNumber(dataWallet.dapps[0].value || 0).plus(amount).toNumber();
@@ -301,7 +291,6 @@ export async function SimulationBorrowForkAaveLP(
         }
         const tokenAddress = _tokenAddress.toLowerCase();
         let modeFrom = getMode(appState, _from);
-        // Comming Soon .......
         if (amount.isEqualTo(MAX_UINT256)) {
             amount = calculateMaxAmountForkAaveBorrow(
                 appState,
@@ -393,7 +382,6 @@ export async function SimulationRepayForkAaveLP(
         }
         const tokenAddress = _tokenAddress.toLowerCase();
         let modeFrom = getMode(appState, _from);
-        // Comming Soon .......
         if (amount.isEqualTo(MAX_UINT256)) {
             amount = calculateMaxAmountForkAaveRepay(appState, _entity_id, tokenAddress, _from);
           }
