@@ -134,10 +134,14 @@ export async function SimulationSupplyForkAaveLP(
         );
 
         let data = appState.forkAaveLPState.forkAaveLP.get(_entity_id);
+        //fix
+        console.log(data)
         if (!data) {
-            throw new Error("data not found");
+            throw new Error("data1 not found");
         }
         let dataAssets = data.markets[0].assets.find((asset) => asset.address == tokenAddress);
+        //fix
+        console.log(dataAssets)
         let price = dataAssets?.price;
         if (!price) {
             throw new Error("price not found");
@@ -147,7 +151,7 @@ export async function SimulationSupplyForkAaveLP(
 
         let dataWallet = appState[modeFrom].forkedAaveLPState.get(_entity_id);
         if (!dataWallet) {
-            throw new Error("data not found");
+            throw new Error("data2 not found");
         }
 
         let dataInWallet = dataWallet.dapps[0].reserves[0].deposit.find((reserve) => reserve.address == tokenAddress);

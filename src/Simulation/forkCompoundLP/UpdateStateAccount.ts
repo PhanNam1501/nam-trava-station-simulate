@@ -64,8 +64,11 @@ async function getDataLendingByAxios(entity_id: string, chain: string) {
     let url = `${centic_api}/v3/projects/lending/${entity_id}/overview?chain=${chain}`
     try {
         const response = await axios.request({
-            method: "get",
-            url: url
+          method: "get",
+          url: url,
+          headers: {
+            "x-apikey": centic_api_key
+          }
         })
         const data = response.data;
         return data;
@@ -79,11 +82,11 @@ async function getDataUserByAxios(address: EthAddress, entity_id: string, chain:
     let url = `${centic_api}/v3/wallets/${address}/lendings/${entity_id}?chain=${chain}`
     try {
         const response = await axios.request({
-            method: "get",
-            url: url,
-            headers: {
-                "x-apikey": centic_api_key
-            }
+          method: "get",
+          url: url,
+          headers: {
+            "x-apikey": centic_api_key
+          }
         })
         const data = response.data;
         return data;
@@ -97,8 +100,24 @@ async function getDataLendingByAxiosTramline(entity_id: string, chain: string, u
     let url = `${tramline_api}/trava-station/lending-pool/detail?entity=${entity_id}&chainId=${chain}&userAddress=${userAddress}`
     try {
         const response = await axios.request({
-            method: "get",
-            url: url
+          method: "get",
+          url: url
+        })
+        const data = response.data;
+        return data;
+    } catch (err) {
+        console.log(err);
+        throw err;
+    }
+}
+
+async function getDataLendingByAxiosTramlineOverview(entity_id: string, chain: string) {
+    let url = `${tramline_api}/trava-station/lending-pool/overview?entity=${entity_id}&chainId=${chain}`
+    try {
+        const response = await axios.request({
+          method: "get",
+          url: url,
+
         })
         const data = response.data;
         return data;
