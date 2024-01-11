@@ -44,7 +44,7 @@ export async function SimulationSupplyForkCompoundLP(
         let dataAssets = data.markets[0].assets.find((asset) => asset.address == tokenAddress);   
         let price = dataAssets?.price;
             if (!price) {
-                throw new Error("price not found");
+                price = 0;
             }
 
             data.totalSupplyInUSD = BigNumber(data.totalSupplyInUSD || 0).plus(amount.multipliedBy(price)).toNumber();

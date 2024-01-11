@@ -135,21 +135,23 @@ export async function SimulationSupplyForkAaveLP(
 
         let data = appState.forkAaveLPState.forkAaveLP.get(_entity_id);
         //fix
-        console.log(data)
+        console.log("data: ", data)
         if (!data) {
             throw new Error("data1 not found");
         }
         let dataAssets = data.markets[0].assets.find((asset) => asset.address == tokenAddress);
         //fix
-        console.log(dataAssets)
+        console.log("dataAssets: ", dataAssets)
         let price = dataAssets?.price;
         if (!price) {
-            throw new Error("price not found");
+            price = 0;
         }
 
         data.totalSupplyInUSD = BigNumber(data.totalSupplyInUSD || 0).plus(amount.multipliedBy(price)).toNumber();
 
         let dataWallet = appState[modeFrom].forkedAaveLPState.get(_entity_id);
+        //fix
+        console.log("dataWallet: ", dataWallet)
         if (!dataWallet) {
             throw new Error("data2 not found");
         }
