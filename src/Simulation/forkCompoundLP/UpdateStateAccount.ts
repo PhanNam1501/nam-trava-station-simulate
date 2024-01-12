@@ -13,14 +13,14 @@ export async function updateForkCompoundLPState(appState1: ApplicationState, ent
     try {
         if (appState.forkCompoundLPState.isFetch == false || force == true) {
             if (entity_ids_compound.some(x => x === entity_id)) {
-                let data1 = await getDataLendingByAxios(entity_id, "0x" + appState.chainId.toString(16));
+                let dataLendingPool = await getDataLendingByAxios(entity_id, "0x" + appState.chainId.toString(16));
                 let data: ForkedCompound = {
-                    id: data1["id"],
-                    totalSupplyInUSD: data1["totalSupplyInUSD"],
-                    numberOfLenders: data1["numberOfLenders"],
-                    totalBorrowInUSD: data1["totalBorrowInUSD"],
-                    markets: data1["markets"],
-                    totalTVL: data1["totalTVL"],
+                    id: dataLendingPool["id"],
+                    totalSupplyInUSD: dataLendingPool["totalSupplyInUSD"],
+                    numberOfLenders: dataLendingPool["numberOfLenders"],
+                    totalBorrowInUSD: dataLendingPool["totalBorrowInUSD"],
+                    markets: dataLendingPool["markets"],
+                    totalTVL: dataLendingPool["totalTVL"],
                 }
                 appState.forkCompoundLPState.forkCompoundLP.set(entity_id, data);
             }
@@ -38,19 +38,38 @@ export async function updateUserInForkCompoundLPState(appState1: ApplicationStat
     try {
         let mode = getMode(appState, _from);
         if (entity_ids_compound.some(x => x === entity_id)) {
-            let data1 = await getDataUserByAxios(_from, entity_id, "0x" + appState.chainId.toString(16));
+            let dataLendingPool = await getDataUserByAxios(_from, entity_id, "0x" + appState.chainId.toString(16));
             let from = _from;
             let dataLendingByAxiosTramline = await getDataLendingByAxiosTramline(entity_id, "0x" + appState.chainId.toString(16), from);
             let data: WalletForkedCompoundLPState = {
-                id: data1["id"],
-                address: data1["address"],
-                totalAssets: data1["totalAssets"],
-                totalClaimable: data1["totalClaimable"],
-                totalDebts: data1["totalDebts"],
-                dapps: data1["dapps"],
+                id: dataLendingPool["id"],
+                address: dataLendingPool["address"],
+                totalAssets: dataLendingPool["totalAssets"],
+                totalClaimable: dataLendingPool["totalClaimable"],
+                totalDebts: dataLendingPool["totalDebts"],
+                dapps: dataLendingPool["dapps"],
                 healthFactor: dataLendingByAxiosTramline["accountPoolDataSlice"]["params"]["healthFactor"],
                 ltv: dataLendingByAxiosTramline["accountPoolDataSlice"]["params"]["ltv"],
                 currentLiquidationThreshold: dataLendingByAxiosTramline["accountPoolDataSlice"]["params"]["currentLiquidationThreshold"],
+            }
+            if (dataLendingPool["dapps"].length == 0){
+                data.dapps = [
+                  {
+                    id: dataLendingPool["id"],
+                    type: "project",
+                    value: 0,
+                    depositInUSD: 0,
+                    borrowInUSD: 0,
+                    claimable: 0,
+                    reserves: [
+                      {
+                        category: "Lending",
+                        healthFactor: 0,
+                        deposit: [],
+                        borrow: [],
+                  }
+                  ]
+              }]
             }
             appState[mode].forkedCompoundLPState.set(entity_id, data);
         }

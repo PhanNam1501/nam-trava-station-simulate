@@ -3,7 +3,7 @@ import { ApplicationState, UserAsset } from "../../State";
 import { EthAddress } from "../../utils/types";
 import { updateUserTokenBalance } from "../basic";
 import { getMode } from "../../utils/helper";
-import { updateForkAaveLPState, updateTokenDetailInOthersPools } from "./UpdateStateAccount";
+import { updateForkAaveLPState, updateTokenDetailInOthersPools, updateUserInForkAaveLPState } from "./UpdateStateAccount";
 import { MAX_UINT256 } from "../../utils";
 
 export async function calculateMaxAmountForkAaveSupply(appState: ApplicationState, _entity_id: string, _tokenAddress: string, _from: EthAddress): Promise<BigNumber> {
@@ -129,6 +129,10 @@ export async function SimulationSupplyForkAaveLP(
             appState = await updateUserTokenBalance(appState, tokenAddress);
         }
 
+        if (!appState[modeFrom].forkedAaveLPState.has(_entity_id)) {
+            appState = await updateUserInForkAaveLPState(appState, _from, _entity_id);
+        }
+
         const tokenAmount = BigNumber(
             appState[modeFrom].tokenBalances.get(tokenAddress)!
         );
@@ -145,63 +149,9 @@ export async function SimulationSupplyForkAaveLP(
 
         data.totalSupplyInUSD = BigNumber(data.totalSupplyInUSD || 0).plus(amount.multipliedBy(price)).toNumber();
 
-        let dataWallet = appState[modeFrom].forkedAaveLPState.get(_entity_id);
-        //fix
-        console.log("dataWallet: ", dataWallet)
-        if (!dataWallet) {
-            dataWallet = {
-                id: _from,
-                address: _from,
-                totalAssets: 0,
-                totalClaimable: 0,
-                totalDebts: 0,
-                dapps: [
-                    {
-                        id: _entity_id,
-                        type: "", //TODO
-                        value: 0,
-                        depositInUSD: 0,
-                        borrowInUSD: 0,
-                        claimable: 0,
-                        reserves: [
-                            {
-                                category: "", //TODO
-                                healthFactor: 0,
-                                deposit: [],
-                                borrow: [],
-                            }
-                        ]
-                    }
-                ],
-                detailTokenInPool: new Map(),
-                healthFactor: "",
-                ltv: 0,
-                currentLiquidationThreshold: 0,
-            };
-            appState = await updateTokenDetailInOthersPools(appState, _entity_id, _from);
-        }
-        console.log("dataWallet: ", dataWallet)
-        dataWallet.dapps.push({
-            id: _entity_id,
-            type: "", //TODO
-            value: 0,
-            depositInUSD: 0,
-            borrowInUSD: 0,
-            claimable: 0,
-            reserves: [
-                {
-                    category: "", //TODO
-                    healthFactor: 0,
-                    deposit: [],
-                    borrow: [],
-                }
-            ]
-        });
-        // MAI FIX TIEP
+        let dataWallet = appState[modeFrom].forkedAaveLPState.get(_entity_id)!;
 
-        console.log("no bug in here")
         let dataInWallet = dataWallet.dapps[0].reserves[0].deposit.find((reserve) => reserve.address == tokenAddress);
-        console.log("no bug in here")
         if (!dataInWallet) {
             let newData: UserAsset = {
                 id: dataAssets?.id || "",
@@ -267,6 +217,10 @@ export async function SimulationWithdrawForkAaveLP(
             appState = await updateUserTokenBalance(appState, tokenAddress);
         }
 
+        if (!appState[modeFrom].forkedAaveLPState.has(_entity_id)) {
+            appState = await updateUserInForkAaveLPState(appState, _from, _entity_id);
+        }
+
         const tokenAmount = BigNumber(
             appState[modeFrom].tokenBalances.get(tokenAddress)!
         );
@@ -283,10 +237,7 @@ export async function SimulationWithdrawForkAaveLP(
 
         data.totalSupplyInUSD = BigNumber(data.totalSupplyInUSD || 0).minus(amount.multipliedBy(price)).toNumber();
 
-        let dataWallet = appState[modeFrom].forkedAaveLPState.get(_entity_id);
-        if (!dataWallet) {
-            throw new Error("data not found");
-        }
+        let dataWallet = appState[modeFrom].forkedAaveLPState.get(_entity_id)!;
 
         let dataInWallet = dataWallet.dapps[0].reserves[0].deposit.find((reserve) => reserve.address == tokenAddress);
         if (!dataInWallet) {
@@ -358,6 +309,10 @@ export async function SimulationBorrowForkAaveLP(
         if (!appState[modeFrom].tokenBalances.has(tokenAddress)) {
             appState = await updateUserTokenBalance(appState, tokenAddress);
         }
+        if (!appState[modeFrom].forkedAaveLPState.has(_entity_id)) {
+            appState = await updateUserInForkAaveLPState(appState, _from, _entity_id);
+        }
+
 
         const tokenAmount = BigNumber(
             appState[modeFrom].tokenBalances.get(tokenAddress)!
@@ -374,10 +329,7 @@ export async function SimulationBorrowForkAaveLP(
 
         data.totalBorrowInUSD = BigNumber(data.totalBorrowInUSD || 0).plus(amount.multipliedBy(price)).toNumber();
 
-        let dataWallet = appState[modeFrom].forkedAaveLPState.get(_entity_id);
-        if (!dataWallet) {
-            throw new Error("data not found");
-        }
+        let dataWallet = appState[modeFrom].forkedAaveLPState.get(_entity_id)!;
 
         let dataInWallet = dataWallet.dapps[0].reserves[0].borrow.find((reserve) => reserve.address == tokenAddress);
         if (!dataInWallet) {
@@ -446,6 +398,10 @@ export async function SimulationRepayForkAaveLP(
             appState = await updateUserTokenBalance(appState, tokenAddress);
         }
 
+        if (!appState[modeFrom].forkedAaveLPState.has(_entity_id)) {
+            appState = await updateUserInForkAaveLPState(appState, _from, _entity_id);
+        }
+
         const tokenAmount = BigNumber(
             appState[modeFrom].tokenBalances.get(tokenAddress)!
         );
@@ -462,10 +418,7 @@ export async function SimulationRepayForkAaveLP(
 
         data.totalBorrowInUSD = BigNumber(data.totalBorrowInUSD || 0).minus(amount.multipliedBy(price)).toNumber();
 
-        let dataWallet = appState[modeFrom].forkedAaveLPState.get(_entity_id);
-        if (!dataWallet) {
-            throw new Error("data not found");
-        }
+        let dataWallet = appState[modeFrom].forkedAaveLPState.get(_entity_id)!;
 
         let dataInWallet = dataWallet.dapps[0].reserves[0].borrow.find((reserve) => reserve.address == tokenAddress);
         if (!dataInWallet) {

@@ -20,7 +20,7 @@ import { SimulationSupplyForkAaveLP, SimulationWithdrawForkAaveLP, updateForkAav
     //test net
     //https://bsc-testnet.publicnode.com
     //0x595622cBd0Fc4727DF476a1172AdA30A9dDf8F43
-    const userAddress = "0x595622cBd0Fc4727DF476a1172AdA30A9dDf8F43";
+    const userAddress = "0x5BAF597914E62182e5CCafbcc69C966919d5cBa8";
     const proxyAddress = "0x826D824BE55A403859A6Db67D5EeC5aC386307fE";
 
     //test AAVE
@@ -47,11 +47,9 @@ import { SimulationSupplyForkAaveLP, SimulationWithdrawForkAaveLP, updateForkAav
     
     // console.log("_______________________TEST AAVE_______________________")
 
-      
+    appState = await updateUserInForkAaveLPState(appState, userAddress, "valas-finance");
     appState = await updateForkAaveLPState(appState, "valas-finance");
-    // console.log(appState.smartWalletState.forkedAaveLPState.get("valas-finance"))
-    appState = await SimulationSupplyForkAaveLP(appState, proxyAddress, "valas-finance", "0xe9e7cea3dedca5984780bafc599bd69add087d56", "1000")
-    // appState = await SimulationWithdrawForkAaveLP(appState, proxyAddress, "valas-finance", "0xe9e7cea3dedca5984780bafc599bd69add087d56", "1000")
+    appState = await SimulationSupplyForkAaveLP(appState, userAddress, "valas-finance", "0xe9e7cea3dedca5984780bafc599bd69add087d56", "1000")
 
     // let a = await getListTokenAddress(appState, "valas-finance");
     // console.log(a)

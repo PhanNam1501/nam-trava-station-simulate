@@ -204,6 +204,25 @@ export async function updateUserInForkAaveLPState(appState1: ApplicationState, _
                 ltv: dataLendingByAxiosTramline["accountPoolDataSlice"]["params"]["ltv"],
                 currentLiquidationThreshold: dataLendingByAxiosTramline["accountPoolDataSlice"]["params"]["currentLiquidationThreshold"],
             }
+            if (dataLendingPool["dapps"].length == 0){
+              data.dapps = [
+                {
+                  id: dataLendingPool["id"],
+                  type: "project",
+                  value: 0,
+                  depositInUSD: 0,
+                  borrowInUSD: 0,
+                  claimable: 0,
+                  reserves: [
+                    {
+                      category: "Lending",
+                      healthFactor: 0,
+                      deposit: [],
+                      borrow: [],
+                }
+                ]
+            }]
+          }
             appState[mode].forkedAaveLPState.set(entity_id, data);
             appState = await updateTokenDetailInOthersPools(appState, _from, entity_id);
         }
