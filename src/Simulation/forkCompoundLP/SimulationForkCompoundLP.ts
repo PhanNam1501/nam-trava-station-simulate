@@ -5,6 +5,77 @@ import { updateUserTokenBalance } from "../basic";
 import _ from "lodash";
 import { getMode } from "../../utils/helper";
 import { updateForkCompoundLPState } from "./UpdateStateAccount";
+import { MAX_UINT256 } from "../../utils";
+
+export async function calculateMaxAmountForkCompoundSupply(appState: ApplicationState, _entity_id: string, _tokenAddress: string, _from: EthAddress): Promise<BigNumber> {
+    const tokenAddress = _tokenAddress.toLowerCase();
+    const mode = getMode(appState, _from);
+
+    if (appState.forkCompoundLPState.forkCompoundLP.get(_entity_id) == undefined) {
+        appState = await updateForkCompoundLPState(appState, _entity_id);
+    }
+    if (!appState[mode].tokenBalances.has(tokenAddress)) {
+        appState = await updateUserTokenBalance(appState, tokenAddress);
+    }
+    const walletBalance = appState[mode].tokenBalances.get(tokenAddress)!;
+    if (typeof walletBalance == undefined) {
+        throw new Error("Token is not init in " + mode + " state!")
+    }
+
+    return BigNumber(appState[mode].tokenBalances.get(tokenAddress)!);
+}
+
+export async function calculateMaxAmountForkCompoundBorrow(appState: ApplicationState, _entity_id: string, _tokenAddress: string, _from: EthAddress): Promise<BigNumber> {
+    //TODO
+    return BigNumber(0);
+}
+
+
+export async function calculateMaxAmountForkCompoundWithdraw(appState: ApplicationState, _entity_id: string, _tokenAddress: string, _from: EthAddress): Promise<BigNumber> {
+    const tokenAddress = _tokenAddress.toLowerCase();
+    const mode = getMode(appState, _from);
+
+    if (appState.forkCompoundLPState.forkCompoundLP.get(_entity_id) == undefined) {
+        appState = await updateForkCompoundLPState(appState, _entity_id);
+    }
+    if (!appState[mode].tokenBalances.has(tokenAddress)) {
+        appState = await updateUserTokenBalance(appState, tokenAddress);
+    }
+    const walletBalance = appState[mode].tokenBalances.get(tokenAddress)!;
+    if (typeof walletBalance == undefined) {
+        throw new Error("Token is not init in " + mode + " state!")
+    }
+
+    const dataWallet = appState[mode].forkedCompoundLPState.get(_entity_id);
+    const deposited = dataWallet?.dapps[0].reserves[0].deposit.find((reserve) => reserve.address == tokenAddress)?.amount;
+    if (!deposited) {
+        return BigNumber(0);
+    }
+    return BigNumber(deposited);
+}
+
+export async function calculateMaxAmountForkCompoundRepay(appState: ApplicationState, _entity_id: string, _tokenAddress: string, _from: EthAddress): Promise<BigNumber> {
+    const tokenAddress = _tokenAddress.toLowerCase();
+    const mode = getMode(appState, _from);
+
+    if (appState.forkCompoundLPState.forkCompoundLP.get(_entity_id) == undefined) {
+        appState = await updateForkCompoundLPState(appState, _entity_id);
+    }
+    if (!appState[mode].tokenBalances.has(tokenAddress)) {
+        appState = await updateUserTokenBalance(appState, tokenAddress);
+    }
+    const walletBalance = appState[mode].tokenBalances.get(tokenAddress)!;
+    if (typeof walletBalance == undefined) {
+        throw new Error("Token is not init in " + mode + " state!")
+    }
+
+    const dataWallet = appState[mode].forkedCompoundLPState.get(_entity_id);
+    const borrowed = dataWallet?.dapps[0].reserves[0].borrow.find((reserve) => reserve.address == tokenAddress)?.amount;
+    if (!borrowed) {
+        return BigNumber(0);
+    }
+    return BigNumber(borrowed);
+}
 
 export async function SimulationSupplyForkCompoundLP(
     appState1: ApplicationState,
@@ -21,13 +92,9 @@ export async function SimulationSupplyForkCompoundLP(
         }
         const tokenAddress = _tokenAddress.toLowerCase();
         let  modeFrom = getMode(appState, _from);
-        // Comming Soon .......
-        // if (
-        //     amount.toFixed(0) == MAX_UINT256 || amount.isEqualTo(MAX_UINT256)
-        //     ) {
-        //     amount = calculateMaxAmountSupply(appState, tokenAddress, modeFrom)
-        // }
-
+        if (amount.toFixed(0) == MAX_UINT256 || amount.isEqualTo(MAX_UINT256)) {
+            amount = await calculateMaxAmountForkCompoundSupply(appState, _idLP, tokenAddress, _from);
+        }
 
         if (!appState[modeFrom].tokenBalances.has(tokenAddress)) {
             appState = await updateUserTokenBalance(appState, tokenAddress);
@@ -112,11 +179,9 @@ export async function SimulationSupplyForkCompoundLP(
         }
         const tokenAddress = _tokenAddress.toLowerCase();
         let  modeFrom = getMode(appState, _from);
-        // Comming Soon .......
-        // if (amount.toFixed(0) == MAX_UINT256 || amount.isEqualTo(MAX_UINT256)) {
-        //     amount = calculateMaxAmountWithdraw(appState, tokenAddress, modeFrom);
-        //   }
-
+        if (amount.toFixed(0) == MAX_UINT256 || amount.isEqualTo(MAX_UINT256)) {
+            amount = await calculateMaxAmountForkCompoundWithdraw(appState, _idLP, tokenAddress, _from);
+          }
         if (!appState[modeFrom].tokenBalances.has(tokenAddress)) {
             appState = await updateUserTokenBalance(appState, tokenAddress);
         }
@@ -193,6 +258,8 @@ export async function SimulationSupplyForkCompoundLP(
     _amount: string
   ): Promise<ApplicationState> {
     try {
+        //TODO
+        // Amount max borrow, entered market 
         let amount = BigNumber(_amount);
         let appState = { ...appState1 };
         if (appState.forkCompoundLPState.isFetch == false ){
@@ -200,14 +267,9 @@ export async function SimulationSupplyForkCompoundLP(
         }
         const tokenAddress = _tokenAddress.toLowerCase();
         let  modeFrom = getMode(appState, _from);
-        // Comming Soon .......
-        // if (amount.toFixed(0) == MAX_UINT256 || amount.isEqualTo(MAX_UINT256)) {
-        //     amount = calculateMaxAmountBorrow(
-        //       appState,
-        //       tokenAddress
-        //      modeFrom
-        //     )
-        //   }
+        if (amount.toFixed(0) == MAX_UINT256 || amount.isEqualTo(MAX_UINT256)) {
+            amount = await calculateMaxAmountForkCompoundBorrow(appState, _idLP, tokenAddress, _from);
+        }
 
         if (!appState[modeFrom].tokenBalances.has(tokenAddress)) {
             appState = await updateUserTokenBalance(appState, tokenAddress);
@@ -286,16 +348,17 @@ export async function SimulationSupplyForkCompoundLP(
     _amount: string
   ): Promise<ApplicationState> {
     try {
+        //TODO
+        // Amount max borrow, entered market 
         let amount = BigNumber(_amount);
         let appState = { ...appState1 };
         if (appState.forkCompoundLPState.isFetch == false ){
             appState = await updateForkCompoundLPState(appState, _idLP);
         }
         const tokenAddress = _tokenAddress.toLowerCase();
-        // Comming Soon .......
-        // if (amount.toFixed(0) == MAX_UINT256 || amount.isEqualTo(MAX_UINT256)) {
-        //     amount = calculateMaxAmountRepay(appState, tokenAddress, modeFrom);
-        //   }
+        if (amount.toFixed(0) == MAX_UINT256 || amount.isEqualTo(MAX_UINT256)) {
+            amount = await calculateMaxAmountForkCompoundRepay(appState, _idLP, tokenAddress, _from);
+          }
         let  modeFrom = getMode(appState, _from);
 
         if (!appState[modeFrom].tokenBalances.has(tokenAddress)) {

@@ -4,7 +4,7 @@ import { simulateTravaGovernanceCreateLock } from "../src/Simulation/trava/gover
 import { ApplicationState } from "../src/State/ApplicationState";
 import { getAddr } from "../src/utils/address";
 import BigNumber from "bignumber.js";
-import { MONTH_TO_SECONDS, WEEK_TO_SECONDS } from "../src/utils/config";
+import { MAX_UINT256, MONTH_TO_SECONDS, WEEK_TO_SECONDS } from "../src/utils/config";
 import { updateForkCompoundLPState, updateUserInForkCompoundLPState } from "../src/Simulation/forkCompoundLP/UpdateStateAccount";
 import { SimulationBorrowForkCompoundLP, SimulationRepayForkCompoundLP, SimulationSupplyForkCompoundLP, SimulationWithdrawForkCompoundLP, updateLPtTokenInfo, updateSmartWalletTokenBalance, updateTravaLPInfo, updateUserTokenBalance } from "../src/Simulation";
 import { SimulationSupplyForkAaveLP, SimulationWithdrawForkAaveLP, updateForkAaveLPState, updateUserInForkAaveLPState } from "../src/Simulation/forkAaveLP";
@@ -47,9 +47,10 @@ import { SimulationSupplyForkAaveLP, SimulationWithdrawForkAaveLP, updateForkAav
     
     // console.log("_______________________TEST AAVE_______________________")
 
-    appState = await updateUserInForkAaveLPState(appState, userAddress, "valas-finance");
-    appState = await updateForkAaveLPState(appState, "valas-finance");
-    appState = await SimulationSupplyForkAaveLP(appState, userAddress, "valas-finance", "0xe9e7cea3dedca5984780bafc599bd69add087d56", "1000")
+    appState = await updateUserInForkCompoundLPState(appState, userAddress, "venus");
+    appState = await updateForkCompoundLPState(appState, "venus");
+    appState = await SimulationSupplyForkCompoundLP(appState, userAddress, "venus", "0xe9e7cea3dedca5984780bafc599bd69add087d56", "1000")
+    appState = await SimulationWithdrawForkCompoundLP(appState, userAddress, "venus", "0xe9e7cea3dedca5984780bafc599bd69add087d56", MAX_UINT256)
 
     // let a = await getListTokenAddress(appState, "valas-finance");
     // console.log(a)
