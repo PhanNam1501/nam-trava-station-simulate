@@ -428,3 +428,49 @@ export async function SimulationSupplyForkCompoundLP(
       throw err;
     }
   }
+
+  export async function SimulationCollateral(
+    appState1: ApplicationState,
+    _from: EthAddress,
+    _idLP: string,
+    _collateralList: Array<{tokenAddress: EthAddress, enableAsColl: number}>,
+  ): Promise<ApplicationState> {
+    try {
+      let appState = { ...appState1 };
+      let mode = getMode(appState, _from);
+      let dataWallet = appState[mode].forkedCompoundLPState.get(_idLP);
+        if (!dataWallet) {
+            throw new Error("data not found");
+        }
+      let assetsIn = dataWallet.dapps[0].reserves[0].assetsIn;
+      console.log(assetsIn);
+      for (let collateral of _collateralList){
+        let dataTokenAddress = dataWallet.detailTokenInPool.get(collateral.tokenAddress);
+        if (!dataTokenAddress){
+            throw new Error("TokenAddress not found");
+        }
+        let cTokenAddress = dataTokenAddress.cToken.address;
+        console.log(cTokenAddress)
+        if (collateral.enableAsColl == 1){
+            if (assetsIn.find((asset) => asset == cTokenAddress)){
+                continue;
+            }
+            else{
+                assetsIn.push(cTokenAddress)
+            }
+        }
+        else if(collateral.enableAsColl == 0){
+            //TODO
+        }
+        else{
+            throw new Error("collateral.enableAsColl must be 0 or 1");
+        }
+        console.log(assetsIn);
+        dataWallet.dapps[0].reserves[0].assetsIn = assetsIn;
+        appState[mode].forkedCompoundLPState.set(_idLP, dataWallet);
+      }
+      return appState;
+    } catch (err) {
+      throw err;
+    }
+  }

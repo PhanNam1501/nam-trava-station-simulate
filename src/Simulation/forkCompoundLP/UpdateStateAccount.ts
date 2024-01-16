@@ -198,7 +198,12 @@ export async function updateUserInForkCompoundLPState(appState1: ApplicationStat
             }
             let unitrollerContract = new Contract(unitrollerAddress, ForkCompoundController, appState.web3)
             let assetsIn = await unitrollerContract.getAssetsIn(from);
-            data.dapps[0].reserves[0].assetsIn = assetsIn;
+            let assetsInList = [] as Array<string>;
+            for (let i = 0; i < assetsIn.length; i++){
+                assetsInList.push(assetsIn[i].toLowerCase());
+            }
+
+            data.dapps[0].reserves[0].assetsIn = assetsInList;
             appState[mode].forkedCompoundLPState.set(entity_id, data);
             appState = await updateTokenDetailInOthersPoolsCompound(appState, from, entity_id);
         }

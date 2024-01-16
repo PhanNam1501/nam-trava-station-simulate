@@ -6,7 +6,7 @@ import { convertHexStringToAddress, getAddr } from "../src/utils/address";
 import BigNumber from "bignumber.js";
 import { MAX_UINT256, MONTH_TO_SECONDS, WEEK_TO_SECONDS } from "../src/utils/config";
 import { updateForkCompoundLPState, updateUserInForkCompoundLPState } from "../src/Simulation/forkCompoundLP/UpdateStateAccount";
-import { SimulationBorrowForkCompoundLP, SimulationRepayForkCompoundLP, SimulationSupplyForkCompoundLP, SimulationWithdrawForkCompoundLP, updateLPtTokenInfo, updateSmartWalletTokenBalance, updateTravaLPInfo, updateUserTokenBalance } from "../src/Simulation";
+import { SimulationBorrowForkCompoundLP, SimulationCollateral, SimulationRepayForkCompoundLP, SimulationSupplyForkCompoundLP, SimulationWithdrawForkCompoundLP, updateLPtTokenInfo, updateSmartWalletTokenBalance, updateTravaLPInfo, updateUserTokenBalance } from "../src/Simulation";
 import { SimulationSupplyForkAaveLP, SimulationWithdrawForkAaveLP, updateForkAaveLPState, updateUserInForkAaveLPState } from "../src/Simulation/forkAaveLP";
 import { multiCall } from "../src/utils/helper";
 import ForkCompoundController from "../src/abis/ForkCompoundController.json";
@@ -29,34 +29,30 @@ import ForkCompoundController from "../src/abis/ForkCompoundController.json";
     // 0x5BAF597914E62182e5CCafbcc69C966919d5cBa8
     // https://bsc.publicnode.com
 
+    // Controller "0xfD36E2c2a6789Db23113685031d7F16329158384"
+    // BNB cToekn "0xa07c5b74c9b40447a954e1466938b865b6bbea36"
+    // snapshot "0xfB0f09dB330dC842a6637BfB959209424BbFE8C7"
     let appState = new ApplicationState( 
     userAddress,
     proxyAddress,
     provider,
     chainId
     )
-    // appState = await updateTravaGovernanceState(appState);
-    // appState = await updateForkCompoundLPState(appState, "venus");
-    // appState = await updateUserInForkCompoundLPState(appState, userAddress, "venus");
-    // console.log(appState.forkCompoundLPState.forkCompoundLP.get("wepiggy")?.markets[0].assets)
-    // // console.log(appState.forkCompoundLPState)
-    // console.log(appState.walletState.forkedCompoundLPState)
-    // console.log(appState.walletState.forkedCompoundLPState.get("venus"))
-    // console.log(appState.walletState.forkedCompoundLPState.get("venus")?.dapps[0].reserves)
-    // appState = await SimulationSupplyForkCompoundLP(appState, userAddress, "venus", "0xe9e7cea3dedca5984780bafc599bd69add087d56", "1000")
-    // console.log(appState.walletState.forkedCompoundLPState.get("venus"))
-    // console.log(appState.walletState.forkedCompoundLPState.get("venus")?.dapps[0].reserves[0].deposit)
     
     console.log("_______________________TEST COMPOUND_______________________")
 
-    appState = await updateForkCompoundLPState(appState, "venus");
+    // appState = await updateForkCompoundLPState(appState, "venus");
     appState = await updateUserInForkCompoundLPState(appState, userAddress, "venus");
-    appState = await SimulationSupplyForkCompoundLP(appState, userAddress, "venus", "0xe9e7cea3dedca5984780bafc599bd69add087d56", "1000")
-    appState = await SimulationWithdrawForkCompoundLP(appState, userAddress, "venus", "0xe9e7cea3dedca5984780bafc599bd69add087d56", MAX_UINT256)
+    // appState = await SimulationSupplyForkCompoundLP(appState, userAddress, "venus", "0xe9e7cea3dedca5984780bafc599bd69add087d56", "1000")
+    // appState = await SimulationWithdrawForkCompoundLP(appState, userAddress, "venus", "0xe9e7cea3dedca5984780bafc599bd69add087d56", MAX_UINT256)
+    console.log("_______________________TEST Collateral_______________________")
+    let inputCollateral = [
+    {tokenAddress:"0xe9e7cea3dedca5984780bafc599bd69add087d56", enableAsColl: 1},
+    {tokenAddress:"0xe9e7cea3dedca5984780bafc599bd69add087d56", enableAsColl: 1},
+    {tokenAddress:"0xe9e7cea3dedca5984780bafc599bd69add087d56", enableAsColl: 1},
+    ]
+    appState = await SimulationCollateral(appState, userAddress, "venus", inputCollateral)
 
-    // Controller "0xfD36E2c2a6789Db23113685031d7F16329158384"
-    // BNB cToekn "0xa07c5b74c9b40447a954e1466938b865b6bbea36"
-    // snapshot "0xfB0f09dB330dC842a6637BfB959209424BbFE8C7"
 
     // console.log("_______________________TEST AAVE_______________________")
 
