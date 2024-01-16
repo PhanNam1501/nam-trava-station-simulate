@@ -49,8 +49,8 @@ import ForkCompoundController from "../src/abis/ForkCompoundController.json";
     
     console.log("_______________________TEST COMPOUND_______________________")
 
-    appState = await updateUserInForkCompoundLPState(appState, userAddress, "venus");
     appState = await updateForkCompoundLPState(appState, "venus");
+    appState = await updateUserInForkCompoundLPState(appState, userAddress, "venus");
     appState = await SimulationSupplyForkCompoundLP(appState, userAddress, "venus", "0xe9e7cea3dedca5984780bafc599bd69add087d56", "1000")
     appState = await SimulationWithdrawForkCompoundLP(appState, userAddress, "venus", "0xe9e7cea3dedca5984780bafc599bd69add087d56", MAX_UINT256)
 

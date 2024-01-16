@@ -41,24 +41,32 @@ export async function updateTokenDetailInOthersPoolsCompound(appState1: Applicat
     try{
         let from = _from.toLowerCase();
         let mode = getMode(appState, from);
+        const zeroAddress = "0x0000000000000000000000000000000000000000";
         let dataLendingByAxiosTramline = await getDataLendingByAxiosTramline(entity_id, "0x" + appState.chainId.toString(16), from);
         let dataLendingByAxiosTramlineOverview = await getDataLendingByAxiosTramlineOverview(entity_id, "0x" + appState.chainId.toString(16));
         let listToken = dataLendingByAxiosTramlineOverview["listToken"];
         let listTokenAddress: string[] = [];
+        let haveBNB = false;
         for (let i = 0; i < listToken.length; i++){
             if (listToken[i]["address"]){
+                if (listToken[i]["address"] == zeroAddress){
+                    haveBNB = true;
+                    continue;
+                }
                 listTokenAddress.push(listToken[i]["address"] as string);
             }
         }
         let token = dataLendingByAxiosTramline["poolDataSlice"]["pools"][dataLendingByAxiosTramlineOverview["address"]]["token"];
         let cTokenAddress: string;
-        let cTokenList = [] as Array<string>;      
+        let cTokenList = [] as Array<string>;
         for (let i = 0; i < listTokenAddress.length; i++){
             cTokenAddress = token[listTokenAddress[i]]["cToken"].toString()
             cTokenList.push(cTokenAddress)
         }
-        console.log(listTokenAddress)
-        console.log(cTokenList)
+        if (haveBNB) {
+            cTokenList.push(token[zeroAddress]["cToken"].toString())
+        }
+        
         let [cTokenBalance,
             cTokenDecimal,
             cTokenTotalSupply, 
@@ -105,6 +113,12 @@ export async function updateTokenDetailInOthersPoolsCompound(appState1: Applicat
               appState.chainId
             ),
           ]);
+    
+        if (haveBNB) {
+            const balance = String(await appState.web3?.getBalance(token[zeroAddress]["cToken"].toString()));
+            originIncTokenBalance.push(balance);
+            listTokenAddress.push(zeroAddress);
+        }
 
         let walletForkedCompoundLPState = appState[mode].forkedCompoundLPState.get(entity_id);
         if (!walletForkedCompoundLPState) {
@@ -128,7 +142,6 @@ export async function updateTokenDetailInOthersPoolsCompound(appState1: Applicat
                 liqThres: token[listTokenAddress[i]]["risk"]["liqThres"].toString(),
                 price: token[listTokenAddress[i]]["price"].toString(),
             });
-            console.log(cTokenData)
         }
         appState[mode].forkedCompoundLPState.set(entity_id, walletForkedCompoundLPState);
     return appState;
@@ -186,8 +199,8 @@ export async function updateUserInForkCompoundLPState(appState1: ApplicationStat
             let unitrollerContract = new Contract(unitrollerAddress, ForkCompoundController, appState.web3)
             let assetsIn = await unitrollerContract.getAssetsIn(from);
             data.dapps[0].reserves[0].assetsIn = assetsIn;
-            appState = await updateTokenDetailInOthersPoolsCompound(appState, from, entity_id);
             appState[mode].forkedCompoundLPState.set(entity_id, data);
+            appState = await updateTokenDetailInOthersPoolsCompound(appState, from, entity_id);
         }
     } catch (error) {
         console.error(error);
