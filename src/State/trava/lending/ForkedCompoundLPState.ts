@@ -1,4 +1,5 @@
 import { EthAddress, uint256 } from "../../../utils/types";
+import { TokenInPoolData } from "../../SmartWalletState";
 import { UserAsset, Market } from "./ForkedLPState";
 
 
@@ -20,6 +21,14 @@ export class ForkedCompoundLPState {
     }
 }
 
+export interface DetailTokenInPoolCompound {
+  decimals: string;
+  cToken: TokenInPoolData;
+  maxLTV: string;
+  liqThres: string;
+  price: string;
+}
+
 export interface WalletForkedCompoundLPState {
   id: string;
   address: EthAddress;
@@ -27,6 +36,7 @@ export interface WalletForkedCompoundLPState {
   totalClaimable: number;
   totalDebts: number;
   dapps: Array<DappCompound>;
+  detailTokenInPool: Map<string, DetailTokenInPoolCompound>;
   healthFactor: string;
   ltv: number;
   currentLiquidationThreshold: number;

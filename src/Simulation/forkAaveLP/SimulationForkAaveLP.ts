@@ -3,7 +3,7 @@ import { ApplicationState, UserAsset } from "../../State";
 import { EthAddress } from "../../utils/types";
 import { updateUserTokenBalance } from "../basic";
 import { getMode } from "../../utils/helper";
-import { updateForkAaveLPState, updateTokenDetailInOthersPools, updateUserInForkAaveLPState } from "./UpdateStateAccount";
+import { updateForkAaveLPState, updateUserInForkAaveLPState } from "./UpdateStateAccount";
 import { MAX_UINT256 } from "../../utils";
 
 export async function calculateMaxAmountForkAaveSupply(appState: ApplicationState, _entity_id: string, _tokenAddress: string, _from: EthAddress): Promise<BigNumber> {
