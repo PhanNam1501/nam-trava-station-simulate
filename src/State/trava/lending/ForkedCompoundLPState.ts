@@ -1,5 +1,5 @@
 import { EthAddress, uint256 } from "../../../utils/types";
-import { Dapp, Market } from "./ForkedLPState";
+import { UserAsset, Market } from "./ForkedLPState";
 
 
 export interface ForkedCompound{ 
@@ -26,8 +26,26 @@ export interface WalletForkedCompoundLPState {
   totalAssets: number;
   totalClaimable: number;
   totalDebts: number;
-  dapps: Array<Dapp>;
+  dapps: Array<DappCompound>;
   healthFactor: string;
   ltv: number;
   currentLiquidationThreshold: number;
+}
+
+export interface ReserveCompound {
+  category: string;
+  healthFactor: number;
+  deposit: Array<UserAsset>;
+  borrow: Array<UserAsset>;
+  assetsIn: Array<EthAddress>;
+}
+
+export interface DappCompound {
+  id: string;
+  type: string;
+  value: number;
+  depositInUSD: number;
+  borrowInUSD: number;
+  claimable: number;
+  reserves: Array<ReserveCompound>;
 }

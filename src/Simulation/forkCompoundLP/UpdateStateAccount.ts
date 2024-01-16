@@ -6,14 +6,16 @@ import axios from "axios";
 import { ForkedCompound, WalletForkedCompoundLPState } from "../../State";
 import { entity_ids_compound } from "./forkCompoundLPConfig";
 import { centic_api, centic_api_key, tramline_api } from "../../utils";
-
-
+import { Contract } from "ethers";
+import ForkCompoundController from "../../abis/ForkCompoundController.json";
+import { compoundConfig } from "./forkCompoundLPConfig";
 export async function updateForkCompoundLPState(appState1: ApplicationState, entity_id: string, force?: boolean): Promise<ApplicationState> {
     let appState = { ...appState1 };
     try {
         if (appState.forkCompoundLPState.isFetch == false || force == true) {
             if (entity_ids_compound.some(x => x === entity_id)) {
                 let dataLendingPool = await getDataLendingByAxios(entity_id, "0x" + appState.chainId.toString(16));
+                console.log("dataLendingPoolNoFrom", dataLendingPool)
                 let data: ForkedCompound = {
                     id: dataLendingPool["id"],
                     totalSupplyInUSD: dataLendingPool["totalSupplyInUSD"],
@@ -67,10 +69,19 @@ export async function updateUserInForkCompoundLPState(appState1: ApplicationStat
                         healthFactor: 0,
                         deposit: [],
                         borrow: [],
+                        assetsIn: [],
                   }
                   ]
               }]
             }
+
+            let unitrollerAddress = compoundConfig.find(config => config.entity_id === entity_id)?.controller;
+            if (unitrollerAddress == undefined) {
+                throw new Error("unitrollerAddress is undefined");
+            }
+            let unitrollerContract = new Contract(unitrollerAddress, ForkCompoundController, appState.web3)
+            let assetsIn = await unitrollerContract.getAssetsIn(from);
+            data.dapps[0].reserves[0].assetsIn = assetsIn;
             appState[mode].forkedCompoundLPState.set(entity_id, data);
         }
     } catch (error) {

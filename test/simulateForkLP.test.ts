@@ -2,12 +2,14 @@ import { Contract, JsonRpcProvider, ethers } from "ethers";
 import { updateTravaGovernanceState, updateUserLockBalance } from "../src/Simulation/trava/governance/UpdateStateAccount";
 import { simulateTravaGovernanceCreateLock } from "../src/Simulation/trava/governance/SimulationGovernance";
 import { ApplicationState } from "../src/State/ApplicationState";
-import { getAddr } from "../src/utils/address";
+import { convertHexStringToAddress, getAddr } from "../src/utils/address";
 import BigNumber from "bignumber.js";
 import { MAX_UINT256, MONTH_TO_SECONDS, WEEK_TO_SECONDS } from "../src/utils/config";
 import { updateForkCompoundLPState, updateUserInForkCompoundLPState } from "../src/Simulation/forkCompoundLP/UpdateStateAccount";
 import { SimulationBorrowForkCompoundLP, SimulationRepayForkCompoundLP, SimulationSupplyForkCompoundLP, SimulationWithdrawForkCompoundLP, updateLPtTokenInfo, updateSmartWalletTokenBalance, updateTravaLPInfo, updateUserTokenBalance } from "../src/Simulation";
 import { SimulationSupplyForkAaveLP, SimulationWithdrawForkAaveLP, updateForkAaveLPState, updateUserInForkAaveLPState } from "../src/Simulation/forkAaveLP";
+import { multiCall } from "../src/utils/helper";
+import ForkCompoundController from "../src/abis/ForkCompoundController.json";
   // start 
   async function test(){
     console.log(BigNumber(0.1).toFixed())
@@ -20,7 +22,7 @@ import { SimulationSupplyForkAaveLP, SimulationWithdrawForkAaveLP, updateForkAav
     //test net
     //https://bsc-testnet.publicnode.com
     //0x595622cBd0Fc4727DF476a1172AdA30A9dDf8F43
-    const userAddress = "0x5BAF597914E62182e5CCafbcc69C966919d5cBa8";
+    const userAddress = "0x00328B8a90652b37672F2f8c6c1d39CE718D7F89";
     const proxyAddress = "0x826D824BE55A403859A6Db67D5EeC5aC386307fE";
 
     //test AAVE
@@ -45,15 +47,17 @@ import { SimulationSupplyForkAaveLP, SimulationWithdrawForkAaveLP, updateForkAav
     // console.log(appState.walletState.forkedCompoundLPState.get("venus"))
     // console.log(appState.walletState.forkedCompoundLPState.get("venus")?.dapps[0].reserves[0].deposit)
     
-    // console.log("_______________________TEST AAVE_______________________")
+    console.log("_______________________TEST_______________________")
 
     appState = await updateUserInForkCompoundLPState(appState, userAddress, "venus");
     appState = await updateForkCompoundLPState(appState, "venus");
     appState = await SimulationSupplyForkCompoundLP(appState, userAddress, "venus", "0xe9e7cea3dedca5984780bafc599bd69add087d56", "1000")
     appState = await SimulationWithdrawForkCompoundLP(appState, userAddress, "venus", "0xe9e7cea3dedca5984780bafc599bd69add087d56", MAX_UINT256)
 
-    // let a = await getListTokenAddress(appState, "valas-finance");
-    // console.log(a)
+    //Controller "0xfD36E2c2a6789Db23113685031d7F16329158384"
+    //BNB cToekn "0xa07c5b74c9b40447a954e1466938b865b6bbea36"
+    // snapshot "0xfB0f09dB330dC842a6637BfB959209424BbFE8C7"
+
 
   }
 test()
