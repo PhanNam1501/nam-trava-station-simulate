@@ -105,6 +105,7 @@ export async function updateTokenDetailInOthersPoolsCompound(appState1: Applicat
               appState.chainId
             ),
           ]);
+
         let walletForkedCompoundLPState = appState[mode].forkedCompoundLPState.get(entity_id);
         if (!walletForkedCompoundLPState) {
             throw new Error("WalletForkedCompoundLPState is not initialized");

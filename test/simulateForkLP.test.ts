@@ -47,16 +47,23 @@ import ForkCompoundController from "../src/abis/ForkCompoundController.json";
     // console.log(appState.walletState.forkedCompoundLPState.get("venus"))
     // console.log(appState.walletState.forkedCompoundLPState.get("venus")?.dapps[0].reserves[0].deposit)
     
-    console.log("_______________________TEST_______________________")
+    console.log("_______________________TEST COMPOUND_______________________")
 
     appState = await updateUserInForkCompoundLPState(appState, userAddress, "venus");
     appState = await updateForkCompoundLPState(appState, "venus");
     appState = await SimulationSupplyForkCompoundLP(appState, userAddress, "venus", "0xe9e7cea3dedca5984780bafc599bd69add087d56", "1000")
     appState = await SimulationWithdrawForkCompoundLP(appState, userAddress, "venus", "0xe9e7cea3dedca5984780bafc599bd69add087d56", MAX_UINT256)
 
-    //Controller "0xfD36E2c2a6789Db23113685031d7F16329158384"
-    //BNB cToekn "0xa07c5b74c9b40447a954e1466938b865b6bbea36"
+    // Controller "0xfD36E2c2a6789Db23113685031d7F16329158384"
+    // BNB cToekn "0xa07c5b74c9b40447a954e1466938b865b6bbea36"
     // snapshot "0xfB0f09dB330dC842a6637BfB959209424BbFE8C7"
+
+    // console.log("_______________________TEST AAVE_______________________")
+
+    // appState = await updateUserInForkAaveLPState(appState, userAddress, "valas-finance");
+    // appState = await updateForkAaveLPState(appState, "valas-finance");
+    // appState = await SimulationSupplyForkAaveLP(appState, userAddress, "valas-finance", "0xe9e7cea3dedca5984780bafc599bd69add087d56", "1000")
+    // appState = await SimulationWithdrawForkAaveLP(appState, userAddress, "valas-finance", "0xe9e7cea3dedca5984780bafc599bd69add087d56", MAX_UINT256)
 
 
   }

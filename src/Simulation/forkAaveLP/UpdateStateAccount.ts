@@ -33,7 +33,7 @@ export async function updateForkAaveLPState(appState1: ApplicationState, entity_
     return appState;
 }
 
-export async function updateTokenDetailInOthersPoolsAave(appState1: ApplicationState, _from: EthAddress, entity_id: string): Promise<ApplicationState> {
+export async function updateTokenDetailInOthersPools(appState1: ApplicationState, _from: EthAddress, entity_id: string): Promise<ApplicationState> {
     let appState = { ...appState1 };
     try{
         let from = _from.toLowerCase();
@@ -224,7 +224,7 @@ export async function updateUserInForkAaveLPState(appState1: ApplicationState, _
             }]
           }
             appState[mode].forkedAaveLPState.set(entity_id, data);
-            appState = await updateTokenDetailInOthersPoolsAave(appState, _from, entity_id);
+            appState = await updateTokenDetailInOthersPools(appState, _from, entity_id);
         }
     return appState;
     } catch (err) {
