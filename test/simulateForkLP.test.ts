@@ -47,9 +47,9 @@ import ForkCompoundController from "../src/abis/ForkCompoundController.json";
     // appState = await SimulationWithdrawForkCompoundLP(appState, userAddress, "venus", "0xe9e7cea3dedca5984780bafc599bd69add087d56", MAX_UINT256)
     console.log("_______________________TEST Collateral_______________________")
     let inputCollateral = [
-    {tokenAddress:"0xe9e7cea3dedca5984780bafc599bd69add087d56", enableAsColl: 1},
-    {tokenAddress:"0xe9e7cea3dedca5984780bafc599bd69add087d56", enableAsColl: 1},
-    {tokenAddress:"0xe9e7cea3dedca5984780bafc599bd69add087d56", enableAsColl: 1},
+    {tokenAddress:"0xe9e7cea3dedca5984780bafc599bd69add087d56", enableAsColl: 1}, // BUSD
+    {tokenAddress:"0x55d398326f99059ff775485246999027b3197955", enableAsColl: 1}, // USDT
+    {tokenAddress:"0x2170ed0880ac9a755fd29b2688956bd959f933f8", enableAsColl: 1}, // WETH
     ]
     appState = await SimulationCollateral(appState, userAddress, "venus", inputCollateral)
 
