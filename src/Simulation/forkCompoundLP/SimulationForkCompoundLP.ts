@@ -436,39 +436,75 @@ export async function SimulationSupplyForkCompoundLP(
     _collateralList: Array<{tokenAddress: EthAddress, enableAsColl: number}>,
   ): Promise<ApplicationState> {
     try {
-      let appState = { ...appState1 };
-      let mode = getMode(appState, _from);
-      let dataWallet = appState[mode].forkedCompoundLPState.get(_idLP);
-        if (!dataWallet) {
-            throw new Error("data not found");
-        }
-      let assetsIn = dataWallet.dapps[0].reserves[0].assetsIn;
-      console.log(assetsIn);
-      for (let collateral of _collateralList){
-        let dataTokenAddress = dataWallet.detailTokenInPool.get(collateral.tokenAddress);
-        if (!dataTokenAddress){
-            throw new Error("TokenAddress not found");
-        }
-        let cTokenAddress = dataTokenAddress.cToken.address;
-        console.log(cTokenAddress)
-        if (collateral.enableAsColl == 1){
-            if (assetsIn.find((asset) => asset == cTokenAddress)){
-                continue;
+        let appState = { ...appState1 };
+        let mode = getMode(appState, _from);
+        let dataWallet = appState[mode].forkedCompoundLPState.get(_idLP);
+            if (!dataWallet) {
+                throw new Error("data not found");
+            }
+        let assetsIn = dataWallet.dapps[0].reserves[0].assetsIn;
+        let assetsOut: string[] = [];
+        for (let collateral of _collateralList){
+            let dataTokenAddress = dataWallet.detailTokenInPool.get(collateral.tokenAddress);
+            if (!dataTokenAddress){
+                throw new Error("TokenAddress not found");
+            }
+            let cTokenAddress = dataTokenAddress.cToken.address;
+            if (collateral.enableAsColl == 1){
+                if (!(assetsIn.find((asset) => asset == cTokenAddress))){
+                    assetsIn.push(cTokenAddress)
+                }
+            }
+            else if(collateral.enableAsColl == 0){
+                if (assetsIn.find((asset) => asset == cTokenAddress)){
+                    assetsOut.push(cTokenAddress)
+                    assetsIn = assetsIn.filter((asset) => asset != cTokenAddress);
+                }
             }
             else{
-                assetsIn.push(cTokenAddress)
+                throw new Error("collateral.enableAsColl must be 0 or 1");
             }
         }
-        else if(collateral.enableAsColl == 0){
-            //TODO
+        
+        let tokenBorrowing = [];
+        // totalCollateral (sumSupplyByUSDAssetsInMultipliedLTV)
+        let totalCollateral = BigNumber(0);
+        let sumBorrowByUSD = BigNumber(0);
+        for (let collateral of _collateralList){
+            let dataTokenAddress = dataWallet.detailTokenInPool.get(collateral.tokenAddress)
+            if (!dataTokenAddress){
+                throw new Error("TokenAddress not found");
+            }
+            let cTokenAddress = dataTokenAddress.cToken.address;
+            let maxLTV = dataTokenAddress.maxLTV;
+            let dataAssetDeposit = dataWallet.dapps[0].reserves[0].deposit.find((reserve) => reserve.address == collateral.tokenAddress);
+            if (dataAssetDeposit){
+                if (assetsIn.find((asset) => asset == cTokenAddress)){
+                    totalCollateral = totalCollateral.plus(BigNumber(dataAssetDeposit.valueInUSD).multipliedBy(maxLTV));
+                }
+            }
+            let dataAssetBorrow = dataWallet.dapps[0].reserves[0].borrow.find((reserve) => reserve.address == collateral.tokenAddress);
+            if (dataAssetBorrow){
+                sumBorrowByUSD = sumBorrowByUSD.plus(dataAssetBorrow.valueInUSD);
+                if (dataAssetBorrow.amount != 0){
+                    tokenBorrowing.push(cTokenAddress)
+                }
+            }
         }
-        else{
-            throw new Error("collateral.enableAsColl must be 0 or 1");
+        if (assetsOut.length > 0){
+            console.log("totalCollateral: ", totalCollateral.toFixed())
+            console.log("sumBorrowByUSD: ", sumBorrowByUSD.toFixed())
+            for (let asset of assetsOut){
+                if (tokenBorrowing.find((token) => token == asset)){
+                    throw new Error("Can't remove collateral when borrowing")
+                }
+            }
+            if (totalCollateral.isLessThan(sumBorrowByUSD)){
+                throw new Error("Can't remove collateral, please repay first")
+            }
         }
-        console.log(assetsIn);
         dataWallet.dapps[0].reserves[0].assetsIn = assetsIn;
         appState[mode].forkedCompoundLPState.set(_idLP, dataWallet);
-      }
       return appState;
     } catch (err) {
       throw err;

@@ -9,6 +9,7 @@ import { updateForkCompoundLPState, updateUserInForkCompoundLPState } from "../s
 import { SimulationBorrowForkCompoundLP, SimulationCollateral, SimulationRepayForkCompoundLP, SimulationSupplyForkCompoundLP, SimulationWithdrawForkCompoundLP, updateLPtTokenInfo, updateSmartWalletTokenBalance, updateTravaLPInfo, updateUserTokenBalance } from "../src/Simulation";
 import { SimulationSupplyForkAaveLP, SimulationWithdrawForkAaveLP, updateForkAaveLPState, updateUserInForkAaveLPState } from "../src/Simulation/forkAaveLP";
 import { multiCall } from "../src/utils/helper";
+import cToken from "../src/abis/cToken.json";
 import ForkCompoundController from "../src/abis/ForkCompoundController.json";
   // start 
   async function test(){
@@ -31,7 +32,9 @@ import ForkCompoundController from "../src/abis/ForkCompoundController.json";
 
     // Controller "0xfD36E2c2a6789Db23113685031d7F16329158384"
     // BNB cToekn "0xa07c5b74c9b40447a954e1466938b865b6bbea36"
-    // snapshot "0xfB0f09dB330dC842a6637BfB959209424BbFE8C7"
+    // USDC "0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d"
+    // USDC cToken "0xeca88125a5adbe82614ffc12d0db554e2e2867c8"
+
     let appState = new ApplicationState( 
     userAddress,
     proxyAddress,
@@ -39,20 +42,12 @@ import ForkCompoundController from "../src/abis/ForkCompoundController.json";
     chainId
     )
     
-    console.log("_______________________TEST COMPOUND_______________________")
+    // console.log("_______________________TEST COMPOUND_______________________")
 
     // appState = await updateForkCompoundLPState(appState, "venus");
     appState = await updateUserInForkCompoundLPState(appState, userAddress, "venus");
     // appState = await SimulationSupplyForkCompoundLP(appState, userAddress, "venus", "0xe9e7cea3dedca5984780bafc599bd69add087d56", "1000")
     // appState = await SimulationWithdrawForkCompoundLP(appState, userAddress, "venus", "0xe9e7cea3dedca5984780bafc599bd69add087d56", MAX_UINT256)
-    console.log("_______________________TEST Collateral_______________________")
-    let inputCollateral = [
-    {tokenAddress:"0xe9e7cea3dedca5984780bafc599bd69add087d56", enableAsColl: 1}, // BUSD
-    {tokenAddress:"0x55d398326f99059ff775485246999027b3197955", enableAsColl: 1}, // USDT
-    {tokenAddress:"0x2170ed0880ac9a755fd29b2688956bd959f933f8", enableAsColl: 1}, // WETH
-    ]
-    appState = await SimulationCollateral(appState, userAddress, "venus", inputCollateral)
-
 
     // console.log("_______________________TEST AAVE_______________________")
 
@@ -62,5 +57,108 @@ import ForkCompoundController from "../src/abis/ForkCompoundController.json";
     // appState = await SimulationWithdrawForkAaveLP(appState, userAddress, "valas-finance", "0xe9e7cea3dedca5984780bafc599bd69add087d56", MAX_UINT256)
 
 
+    console.log("_______________________TEST Collateral_______________________")
+    let inputCollateral = [
+    {tokenAddress:"0x0000000000000000000000000000000000000000", enableAsColl: 0}, // BNB
+    //0xa07c5b74c9b40447a954e1466938b865b6bbea36
+
+    {tokenAddress:"0xe9e7cea3dedca5984780bafc599bd69add087d56", enableAsColl: 0}, // BUSD
+    //0x95c78222b3d6e262426483d42cfa53685a67ab9d
+    
+    {tokenAddress:"0x55d398326f99059ff775485246999027b3197955", enableAsColl: 1}, // USDT
+    //0xfd5840cd36d94d7229439859c0112a4185bc0255
+    
+    {tokenAddress:"0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d", enableAsColl: 1}, // USDC
+    //0xeca88125a5adbe82614ffc12d0db554e2e2867c8
+    ]
+    appState = await SimulationCollateral(appState, userAddress, "venus", inputCollateral)
+    console.log(appState.walletState.forkedCompoundLPState.get("venus"))
+// DOGE coin 0xbA2aE424d960c26247Dd6c32edC70B295c744C43
+
+
+    let oracleContract = new Contract("0xfd5840cd36d94d7229439859c0112a4185bc0255", cToken, appState.web3)
+    let a = await oracleContract.getAccountSnapshot("0x00328B8a90652b37672F2f8c6c1d39CE718D7F89")
+    console.log(a)
+
+    let controllerContract = new Contract("0xfD36E2c2a6789Db23113685031d7F16329158384", ForkCompoundController, appState.web3)
+    let b = await controllerContract.markets("0xfd5840cd36d94d7229439859c0112a4185bc0255")
+    console.log(b)
+
+    //Các điều kiện check
+    // 1. Phải có tồn tại acc 
+    // 2. Đồng đó phải không có khoản vay
+    // 3. Thất bại nếu người gửi không được phép đổi tất cả mã thông báo của họ
+      // MarketFacet.sol
+        //      uint256 allowed = redeemAllowedInternal(vTokenAddress, msg.sender, tokensHeld);
+        //        if (allowed != 0) {
+        //          FAIL
+        //          }  
+        //
+        //
+          // FacetBase.sol
+          //   function redeemAllowedInternal(
+          //     address vToken,
+          //     address redeemer,
+          //     uint256 redeemTokens
+          // )
+            //   /* Otherwise, perform a hypothetical liquidity check to guard against shortfall */
+            //   (Error err, , uint256 shortfall) = getHypotheticalAccountLiquidityInternal(
+            //       redeemer,
+            //       VToken(vToken),
+            //       redeemTokens,
+            //       0
+            //   );
+            //   if (shortfall != 0) {
+            //       FAIL
+            //   }
+              // function getHypotheticalAccountLiquidityInternal(
+              //   address account,
+              //   VToken vTokenModify,
+              //   uint256 redeemTokens,
+              //   uint256 borrowAmount
+              // ) internal view returns (Error, uint256, uint256) {
+              //     (uint256 err, uint256 liquidity, uint256 shortfall) = comptrollerLens.getHypotheticalAccountLiquidity(
+              //         address(this),
+              //         account,
+              //         vTokenModify,
+              //         redeemTokens,
+              //         borrowAmount
+              //     );
+              //     return (Error(err), liquidity, shortfall);
+              // }
+              //
+              //
+                // ComptrollerLens.sol
+                //   /**
+                //  * @notice Computes the hypothetical liquidity and shortfall of an account given a hypothetical borrow
+                //  *      A snapshot of the account is taken and the total borrow amount of the account is calculated
+                //  * @param comptroller Address of comptroller
+                //  * @param account Address of the borrowed vToken
+                //  * @param vTokenModify Address of collateral for vToken
+                //  * @param redeemTokens Number of vTokens being redeemed
+                //  * @param borrowAmount Amount borrowed
+                //  * @return Returns a tuple of error code, liquidity, and shortfall
+                //  */
+                  // /**
+                  //  * @dev Local vars for avoiding stack-depth limits in calculating account liquidity.
+                  //  *  Note that `vTokenBalance` is the number of vTokens the account owns in the market,
+                  //  *  whereas `borrowBalance` is the amount of underlying that the account has borrowed.
+                  //  */
+                  // struct AccountLiquidityLocalVars {
+                  //   uint sumCollateral;
+                  //   uint sumBorrowPlusEffects;
+                  //   uint vTokenBalance;
+                  //   uint borrowBalance;
+                  //   uint exchangeRateMantissa;
+                  //   uint oraclePriceMantissa;
+                  //   Exp collateralFactor;
+                  //   Exp exchangeRate;
+                  //   Exp oraclePrice;
+                  //   Exp tokensToDenom;
+                  // }
+      // node: Khi tắt đi thì sẽ phải check xem có bị thiếu hụt hay không có nghĩa là sẽ
+      //        phải check thứ tự hoạt động của colleral
+
+    // 4. Trả về true nếu người gửi chưa tham gia Market
   }
 test()
