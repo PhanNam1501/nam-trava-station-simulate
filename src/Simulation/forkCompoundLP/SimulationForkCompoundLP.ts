@@ -117,7 +117,7 @@ export async function SimulationSupplyForkCompoundLP(
         }
         const tokenAddress = _tokenAddress.toLowerCase();
         let  modeFrom = getMode(appState, _from);
-        if (amount.toFixed(0) == MAX_UINT256 || amount.isEqualTo(MAX_UINT256)) {
+        if (amount.toFixed() == MAX_UINT256 || amount.isEqualTo(MAX_UINT256)) {
             amount = await calculateMaxAmountForkCompoundSupply(appState, _idLP, tokenAddress, _from);
         }
 
@@ -178,7 +178,7 @@ export async function SimulationSupplyForkCompoundLP(
                 return reserve;
             });
         }
-        const newAmount = tokenAmount.minus(amount).toFixed(0);
+        const newAmount = tokenAmount.minus(amount).toFixed();
         appState[modeFrom].tokenBalances.set(tokenAddress, newAmount); 
         appState[modeFrom].forkedCompoundLPState.set(_idLP, dataWallet);
         appState.forkCompoundLPState.forkCompoundLP.set(_idLP, data!);
@@ -204,7 +204,7 @@ export async function SimulationSupplyForkCompoundLP(
         }
         const tokenAddress = _tokenAddress.toLowerCase();
         let  modeFrom = getMode(appState, _from);
-        if (amount.toFixed(0) == MAX_UINT256 || amount.isEqualTo(MAX_UINT256)) {
+        if (amount.toFixed() == MAX_UINT256 || amount.isEqualTo(MAX_UINT256)) {
             amount = await calculateMaxAmountForkCompoundWithdraw(appState, _idLP, tokenAddress, _from);
           }
         if (!appState[modeFrom].tokenBalances.has(tokenAddress)) {
@@ -264,7 +264,7 @@ export async function SimulationSupplyForkCompoundLP(
                 return reserve;
             });
         }
-        const newAmount = tokenAmount.plus(amount).toFixed(0);
+        const newAmount = tokenAmount.plus(amount).toFixed();
         appState[modeFrom].tokenBalances.set(tokenAddress, newAmount);
         appState[modeFrom].forkedCompoundLPState.set(_idLP, dataWallet);
         appState.forkCompoundLPState.forkCompoundLP.set(_idLP, data!);
@@ -283,8 +283,6 @@ export async function SimulationSupplyForkCompoundLP(
     _amount: string
   ): Promise<ApplicationState> {
     try {
-        //TODO
-        // Amount max borrow, entered market 
         let amount = BigNumber(_amount);
         let appState = { ...appState1 };
         if (appState.forkCompoundLPState.isFetch == false ){
@@ -292,7 +290,7 @@ export async function SimulationSupplyForkCompoundLP(
         }
         const tokenAddress = _tokenAddress.toLowerCase();
         let  modeFrom = getMode(appState, _from);
-        if (amount.toFixed(0) == MAX_UINT256 || amount.isEqualTo(MAX_UINT256)) {
+        if (amount.toFixed() == MAX_UINT256 || amount.isEqualTo(MAX_UINT256)) {
             amount = await calculateMaxAmountForkCompoundBorrow(appState, _idLP, tokenAddress, _from);
         }
 
@@ -353,7 +351,12 @@ export async function SimulationSupplyForkCompoundLP(
                 return reserve;
             });
         }
-        const newAmount = tokenAmount.plus(amount).toFixed(0);
+        let assetsIn = dataWallet.dapps[0].reserves[0].assetsIn;
+        let cTokenAddress = detailTokenAddressToCToken(appState, _from, _idLP, tokenAddress);
+        if (!assetsIn.find((asset) => asset == cTokenAddress)){
+            dataWallet.dapps[0].reserves[0].assetsIn.push(cTokenAddress);
+        }
+        const newAmount = tokenAmount.plus(amount).toFixed();
         appState[modeFrom].tokenBalances.set(tokenAddress, newAmount);
         appState[modeFrom].forkedCompoundLPState.set(_idLP, dataWallet);
         appState.forkCompoundLPState.forkCompoundLP.set(_idLP, data!);
@@ -373,15 +376,13 @@ export async function SimulationSupplyForkCompoundLP(
     _amount: string
   ): Promise<ApplicationState> {
     try {
-        //TODO
-        // Amount max borrow, entered market 
         let amount = BigNumber(_amount);
         let appState = { ...appState1 };
         if (appState.forkCompoundLPState.isFetch == false ){
             appState = await updateForkCompoundLPState(appState, _idLP);
         }
         const tokenAddress = _tokenAddress.toLowerCase();
-        if (amount.toFixed(0) == MAX_UINT256 || amount.isEqualTo(MAX_UINT256)) {
+        if (amount.toFixed() == MAX_UINT256 || amount.isEqualTo(MAX_UINT256)) {
             amount = await calculateMaxAmountForkCompoundRepay(appState, _idLP, tokenAddress, _from);
           }
         let  modeFrom = getMode(appState, _from);
@@ -443,7 +444,7 @@ export async function SimulationSupplyForkCompoundLP(
                 return reserve;
             });
         }
-        const newAmount = tokenAmount.minus(amount).toFixed(0);
+        const newAmount = tokenAmount.minus(amount).toFixed();
         appState[modeFrom].tokenBalances.set(tokenAddress, newAmount);
         appState[modeFrom].forkedCompoundLPState.set(_idLP, dataWallet);
         appState.forkCompoundLPState.forkCompoundLP.set(_idLP, data!);
@@ -517,8 +518,6 @@ export async function SimulationSupplyForkCompoundLP(
             }
         }
         if (assetsOut.length > 0){
-            console.log("totalCollateral: ", totalCollateral.toFixed())
-            console.log("sumBorrowByUSD: ", sumBorrowByUSD.toFixed())
             for (let asset of assetsOut){
                 if (tokenBorrowing.find((token) => token == asset)){
                     throw new Error("Can't remove collateral when borrowing")
@@ -560,6 +559,35 @@ export async function SimulationSupplyForkCompoundLP(
             }
         }
         return detailTokenAddress;
+    } catch (err) {
+        throw err;
+    }
+}
+
+export function detailTokenAddressToCToken(
+    appState1: ApplicationState,
+    _from: EthAddress,
+    _idLP: string,
+    detailTokenAddress: EthAddress,
+  ): string {
+    try {
+        let appState = { ...appState1 };
+        let mode = getMode(appState, _from);
+        let dataWallet = appState[mode].forkedCompoundLPState.get(_idLP);
+        if (!dataWallet) {
+            throw new Error("data not found");
+        }
+        let dataTokenAddress = dataWallet.detailTokenInPool;
+        if (!dataTokenAddress){
+            throw new Error("TokenAddress not found");
+        }
+        let cTokenAddress: EthAddress = "";
+        for (const [key, value] of dataTokenAddress) {
+            if (key == detailTokenAddress){
+                cTokenAddress = value.cToken.address;
+            }
+        }
+        return cTokenAddress;
     } catch (err) {
         throw err;
     }

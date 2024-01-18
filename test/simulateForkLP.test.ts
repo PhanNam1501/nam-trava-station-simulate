@@ -46,10 +46,8 @@ import ForkCompoundController from "../src/abis/ForkCompoundController.json";
 
     appState = await updateForkCompoundLPState(appState, "venus");
     appState = await updateUserInForkCompoundLPState(appState, userAddress, "venus");
-    let borrowMax = await calculateMaxAmountForkCompoundBorrow(appState, "venus", "0x0000000000000000000000000000000000000000", userAddress)
-    console.log(borrowMax.toFixed())
-    // appState = await SimulationSupplyForkCompoundLP(appState, userAddress, "venus", "0xe9e7cea3dedca5984780bafc599bd69add087d56", "1000")
-    // appState = await SimulationWithdrawForkCompoundLP(appState, userAddress, "venus", "0xe9e7cea3dedca5984780bafc599bd69add087d56", MAX_UINT256)
+    appState = await SimulationSupplyForkCompoundLP(appState, userAddress, "venus", "0xe9e7cea3dedca5984780bafc599bd69add087d56", "1000")
+    appState = await SimulationBorrowForkCompoundLP(appState, userAddress, "venus", "0xe9e7cea3dedca5984780bafc599bd69add087d56", MAX_UINT256)
 
     // console.log("_______________________TEST AAVE_______________________")
 
