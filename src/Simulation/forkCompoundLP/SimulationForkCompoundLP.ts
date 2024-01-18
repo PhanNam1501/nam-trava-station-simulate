@@ -178,6 +178,20 @@ export async function SimulationSupplyForkCompoundLP(
                 return reserve;
             });
         }
+        let dataToken = dataWallet.detailTokenInPool.get(tokenAddress);
+        if (!dataToken){
+            throw new Error("dataToken not found");
+        }
+        dataToken.cToken.originToken.balances = (Number(dataToken.cToken.originToken.balances) + amount.toNumber()).toString();
+        dataWallet.detailTokenInPool.set(tokenAddress, dataToken);
+
+        let cTokenAddress = detailTokenAddressToCToken(appState, _from, _idLP, tokenAddress);
+        const cTokenAmount = BigNumber(
+            appState[modeFrom].tokenBalances.get(cTokenAddress)!
+        );
+        const newcTokenAmount = cTokenAmount.plus(amount).toFixed();
+        appState[modeFrom].tokenBalances.set(cTokenAddress, newcTokenAmount);
+
         const newAmount = tokenAmount.minus(amount).toFixed();
         appState[modeFrom].tokenBalances.set(tokenAddress, newAmount); 
         appState[modeFrom].forkedCompoundLPState.set(_idLP, dataWallet);
@@ -264,6 +278,21 @@ export async function SimulationSupplyForkCompoundLP(
                 return reserve;
             });
         }
+        let dataToken = dataWallet.detailTokenInPool.get(tokenAddress);
+        if (!dataToken){
+            throw new Error("dataToken not found");
+        }
+        dataToken.cToken.originToken.balances = (Number(dataToken.cToken.originToken.balances) - amount.toNumber()).toString();
+        dataToken.cToken.balances = (Number(dataToken.cToken.balances) + amount.toNumber()).toString();
+        dataWallet.detailTokenInPool.set(tokenAddress, dataToken);
+
+        let cTokenAddress = detailTokenAddressToCToken(appState, _from, _idLP, tokenAddress);
+        const cTokenAmount = BigNumber(
+            appState[modeFrom].tokenBalances.get(cTokenAddress)!
+        );
+        const newcTokenAmount = cTokenAmount.minus(amount).toFixed();
+        appState[modeFrom].tokenBalances.set(cTokenAddress, newcTokenAmount);
+
         const newAmount = tokenAmount.plus(amount).toFixed();
         appState[modeFrom].tokenBalances.set(tokenAddress, newAmount);
         appState[modeFrom].forkedCompoundLPState.set(_idLP, dataWallet);
@@ -351,6 +380,13 @@ export async function SimulationSupplyForkCompoundLP(
                 return reserve;
             });
         }
+        let dataToken = dataWallet.detailTokenInPool.get(tokenAddress);
+        if (!dataToken){
+            throw new Error("dataToken not found");
+        }
+        dataToken.cToken.originToken.balances = (Number(dataToken.cToken.originToken.balances) - amount.toNumber()).toString();
+        dataWallet.detailTokenInPool.set(tokenAddress, dataToken);
+
         let assetsIn = dataWallet.dapps[0].reserves[0].assetsIn;
         let cTokenAddress = detailTokenAddressToCToken(appState, _from, _idLP, tokenAddress);
         if (!assetsIn.find((asset) => asset == cTokenAddress)){
@@ -444,6 +480,13 @@ export async function SimulationSupplyForkCompoundLP(
                 return reserve;
             });
         }
+        let dataToken = dataWallet.detailTokenInPool.get(tokenAddress);
+        if (!dataToken){
+            throw new Error("dataToken not found");
+        }
+        dataToken.cToken.originToken.balances = (Number(dataToken.cToken.originToken.balances) + amount.toNumber()).toString();
+        dataWallet.detailTokenInPool.set(tokenAddress, dataToken);
+
         const newAmount = tokenAmount.minus(amount).toFixed();
         appState[modeFrom].tokenBalances.set(tokenAddress, newAmount);
         appState[modeFrom].forkedCompoundLPState.set(_idLP, dataWallet);

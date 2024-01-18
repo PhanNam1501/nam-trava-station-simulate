@@ -48,7 +48,9 @@ import ForkCompoundController from "../src/abis/ForkCompoundController.json";
     appState = await updateUserInForkCompoundLPState(appState, userAddress, "venus");
     appState = await SimulationSupplyForkCompoundLP(appState, userAddress, "venus", "0xe9e7cea3dedca5984780bafc599bd69add087d56", "1000")
     appState = await SimulationBorrowForkCompoundLP(appState, userAddress, "venus", "0xe9e7cea3dedca5984780bafc599bd69add087d56", MAX_UINT256)
-
+    appState = await SimulationWithdrawForkCompoundLP(appState, userAddress, "venus", "0xe9e7cea3dedca5984780bafc599bd69add087d56", MAX_UINT256)
+    appState = await SimulationRepayForkCompoundLP(appState, userAddress, "venus", "0xe9e7cea3dedca5984780bafc599bd69add087d56", MAX_UINT256)
+      
     // console.log("_______________________TEST AAVE_______________________")
 
     // appState = await updateUserInForkAaveLPState(appState, userAddress, "valas-finance");
