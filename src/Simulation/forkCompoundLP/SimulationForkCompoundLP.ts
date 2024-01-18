@@ -35,6 +35,7 @@ export async function calculateMaxAmountForkCompoundBorrow(appState1: Applicatio
         }
     let assetsIn = dataWallet.dapps[0].reserves[0].assetsIn;
     let sumSupplyByUSD = BigNumber(0);
+    let sumBorrowedByUSD = BigNumber(0);
     for (let asset of assetsIn){
         let assetTokenDetail = cTokenToDetailTokenAddress(appState, _from, _entity_id, asset);
         if (!assetTokenDetail || assetTokenDetail == ""){
@@ -42,17 +43,21 @@ export async function calculateMaxAmountForkCompoundBorrow(appState1: Applicatio
         }
         
         let dataAssetDeposit = dataWallet.dapps[0].reserves[0].deposit.find((reserve) => reserve.address == assetTokenDetail);
+        let dataAssetBorrow = dataWallet.dapps[0].reserves[0].borrow.find((reserve) => reserve.address == assetTokenDetail);
         let maxLTV = dataWallet.detailTokenInPool.get(assetTokenDetail)?.maxLTV;
         if (dataAssetDeposit && maxLTV){
             sumSupplyByUSD = sumSupplyByUSD.plus(BigNumber(dataAssetDeposit.valueInUSD).multipliedBy(maxLTV));
         }
+        if (dataAssetBorrow && maxLTV){
+            sumBorrowedByUSD = sumBorrowedByUSD.plus(BigNumber(dataAssetBorrow.valueInUSD).multipliedBy(maxLTV));
         }
+    }
     let tokenInfo = appState[mode].forkedCompoundLPState.get(_entity_id)?.detailTokenInPool.get(tokenAddress);
     if (!tokenInfo){
         throw new Error("tokenInfo not found");
     }
     let tokenPrice = tokenInfo.price;
-    return sumSupplyByUSD.div(tokenPrice);
+    return (sumSupplyByUSD.minus(sumBorrowedByUSD)).dividedBy(tokenPrice);
 }
 
 
