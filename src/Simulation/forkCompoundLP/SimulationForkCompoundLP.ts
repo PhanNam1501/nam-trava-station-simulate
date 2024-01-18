@@ -1,5 +1,5 @@
 import BigNumber from "bignumber.js";
-import { ApplicationState, UserAsset } from "../../State";
+import { ApplicationState, UserAsset, inputCollateral } from "../../State";
 import { EthAddress } from "../../utils/types";
 import { updateUserTokenBalance } from "../basic";
 import _, { sum } from "lodash";
@@ -507,7 +507,7 @@ export async function SimulationSupplyForkCompoundLP(
     appState1: ApplicationState,
     _from: EthAddress,
     _idLP: string,
-    _collateralList: Array<{tokenAddress: EthAddress, enableAsColl: number}>,
+    _collateralList: Array<inputCollateral>,
   ): Promise<ApplicationState> {
     try {
         let appState = { ...appState1 };

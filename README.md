@@ -77,6 +77,7 @@
   - [Simulate Borrow](#simulate-borrow)
   - [Simulate Repay](#simulate-repay)
   - [Simulate Withdraw](#simulate-withdraw)
+  - [Simulate Collateral](#simulate-collateral)
 
 ```
 import { ApplicationState } from "../State/ApplicationState";
@@ -384,7 +385,9 @@ appState = await updateTokenBalance(appState, from address, trava token address)
 ```
 
 ### Tuong tac voi liquidity Campain
+
 Update state cua smart wallet
+
 ```
 newAppState = await updateLiquidityCampainState(
     appState
@@ -546,7 +549,6 @@ Khi chọn bất cứ action nào của Others Lending pools fork Aave
 appState = await updateForkAaveLPState(appState, entity_id);
 appState = await updateUserInForkAaveLPState(appState, userAddress, entity_id);
 ```
-
 
 # Simulate state
 
@@ -945,7 +947,6 @@ newAppState = await SimulationClaimRewardLiquidity(
 )
 ```
 
-
 # Simulate Trava Staking
 
 ## Simulate Trava Staking Stake
@@ -1219,4 +1220,23 @@ appState1 = await SimulationWithdrawForkAaveLP(
     tokenAddress,
     amount
 );
+```
+
+### Simulate Collateral
+
+- Compound
+
+```
+inputCollateral {
+  tokenAddress: EthAddress,
+  enableAsColl: 0|1,
+}
+```
+
+```
+inputCollaterals = Array<inputCollateral>
+```
+
+```
+appState = await SimulationCollateral(appState, userAddress, entity_id, inputCollaterals);
 ```

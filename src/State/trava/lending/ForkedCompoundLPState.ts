@@ -59,3 +59,8 @@ export interface DappCompound {
   claimable: number;
   reserves: Array<ReserveCompound>;
 }
+
+export interface inputCollateral { 
+  tokenAddress: EthAddress,
+  enableAsColl: number,
+}
