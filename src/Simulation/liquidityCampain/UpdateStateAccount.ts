@@ -89,7 +89,7 @@ export async function updateLiquidityCampainState(
                     IVaultABI,
                     stakedTokenAddress.map((address: string, _: number) => ({
                     address: address,
-                    name: "stakerRewardsToClaim",
+                    name: "getTotalRewardsBalance",
                     params: [appState.smartWalletState.address],
                     })),
                     appState.web3,

@@ -59,7 +59,7 @@ export function updateLiquidityCampainState(appState1, force) {
                     })), appState.web3, appState.chainId),
                     multiCall(IVaultABI, stakedTokenAddress.map((address, _) => ({
                         address: address,
-                        name: "stakerRewardsToClaim",
+                        name: "getTotalRewardsBalance",
                         params: [appState.smartWalletState.address],
                     })), appState.web3, appState.chainId),
                     multiCall(IVaultABI, stakedTokenAddress.map((address, _) => ({

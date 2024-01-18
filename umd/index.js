@@ -55872,6 +55872,7 @@ function getDataUserByAxios(_x13, _x14, _x15) {
 function _getDataUserByAxios() {
   _getDataUserByAxios = _asyncToGenerator(function* (address, entity_id, chain) {
     var url = "".concat(_utils__WEBPACK_IMPORTED_MODULE_3__.centic_api, "/v3/wallets/").concat(address, "/lendings/").concat(entity_id, "?chain=").concat(chain);
+    console.log(url);
     try {
       var response = yield axios__WEBPACK_IMPORTED_MODULE_4__["default"].request({
         method: "get",
@@ -56391,7 +56392,6 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
 
 // Comming Soon .......
-// import { calculateMaxAmountBorrow, calculateMaxAmountRepay, calculateMaxAmountSupply, calculateMaxAmountWithdraw, updateLPtTokenInfo } from "../trava";
 
 
 
@@ -56468,7 +56468,7 @@ function _SimulationSupplyForkAaveLP() {
       var amount = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_0__["default"])(_amount);
       var appState = _objectSpread({}, appState1);
       if (appState.forkAaveLPState.forkAaveLP.get(_entity_id) == undefined) {
-        (0,_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_3__.updateForkAaveLPState)(appState, _entity_id);
+        appState = yield (0,_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_3__.updateForkAaveLPState)(appState, _entity_id);
       }
       var tokenAddress = _tokenAddress.toLowerCase();
       var modeFrom = (0,_utils_helper__WEBPACK_IMPORTED_MODULE_2__.getMode)(appState, _from);
@@ -56489,14 +56489,29 @@ function _SimulationSupplyForkAaveLP() {
         throw new Error("price not found");
       }
       data.totalSupplyInUSD = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_0__["default"])(data.totalSupplyInUSD || 0).plus(amount.multipliedBy(price)).toNumber();
-      var dataWallet = appState[modeFrom].forkedAaveLPState.get(_entity_id);
-      if (!dataWallet) {
-        throw new Error("data not found");
+      var dataWallet = appState.smartWalletState.forkedAaveLPState.get(_entity_id);
+      if (dataWallet.dapps.length == 0) {
+        var reserve = {
+          category: "Lending",
+          healthFactor: Number(_utils__WEBPACK_IMPORTED_MODULE_4__.MAX_UINT256),
+          deposit: new Array(),
+          borrow: new Array()
+        };
+        var reserves = new Array();
+        reserves.push(reserve);
+        var dapp = {
+          id: _entity_id,
+          type: "token",
+          value: amount.multipliedBy(price).toNumber(),
+          depositInUSD: amount.multipliedBy(price).toNumber(),
+          borrowInUSD: 0,
+          claimable: 0,
+          reserves: reserves
+        };
+        dataWallet.dapps.push(dapp);
       }
       var dataInWallet = dataWallet.dapps[0].reserves[0].deposit.find(reserve => reserve.address == tokenAddress);
       if (!dataInWallet) {
-        // data.numberOfLenders = BigNumber(data.numberOfLenders || 0).plus(1).toNumber();
-        // data.numberOfUsers = BigNumber(data.numberOfUsers || 0).plus(1).toNumber();
         var newData = {
           // key: dataAssets?.key || "",
           id: (dataAssets === null || dataAssets === void 0 ? void 0 : dataAssets.id) || "",
@@ -56534,7 +56549,7 @@ function _SimulationSupplyForkAaveLP() {
       }
       var newAmount = tokenAmount.minus(amount).toFixed(0);
       appState[modeFrom].tokenBalances.set(tokenAddress, newAmount);
-      appState[modeFrom].forkedAaveLPState.set(_entity_id, dataWallet);
+      appState.smartWalletState.forkedAaveLPState.set(_entity_id, dataWallet);
       appState.forkAaveLPState.forkAaveLP.set(_entity_id, data);
       return appState;
     } catch (err) {
@@ -56552,7 +56567,7 @@ function _SimulationWithdrawForkAaveLP() {
       var amount = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_0__["default"])(_amount);
       var appState = _objectSpread({}, appState1);
       if (appState.forkAaveLPState.forkAaveLP.get(_entity_id) == undefined) {
-        (0,_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_3__.updateForkAaveLPState)(appState, _entity_id);
+        appState = yield (0,_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_3__.updateForkAaveLPState)(appState, _entity_id);
       }
       var tokenAddress = _tokenAddress.toLowerCase();
       var modeFrom = (0,_utils_helper__WEBPACK_IMPORTED_MODULE_2__.getMode)(appState, _from);
@@ -56573,9 +56588,26 @@ function _SimulationWithdrawForkAaveLP() {
         throw new Error("price not found");
       }
       data.totalSupplyInUSD = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_0__["default"])(data.totalSupplyInUSD || 0).minus(amount.multipliedBy(price)).toNumber();
-      var dataWallet = appState[modeFrom].forkedAaveLPState.get(_entity_id);
-      if (!dataWallet) {
-        throw new Error("data not found");
+      var dataWallet = appState.smartWalletState.forkedAaveLPState.get(_entity_id);
+      if (dataWallet.dapps.length == 0) {
+        var reserve = {
+          category: "Lending",
+          healthFactor: Number(_utils__WEBPACK_IMPORTED_MODULE_4__.MAX_UINT256),
+          deposit: new Array(),
+          borrow: new Array()
+        };
+        var reserves = new Array();
+        reserves.push(reserve);
+        var dapp = {
+          id: _entity_id,
+          type: "token",
+          value: 0,
+          depositInUSD: 0,
+          borrowInUSD: 0,
+          claimable: 0,
+          reserves: reserves
+        };
+        dataWallet.dapps.push(dapp);
       }
       var dataInWallet = dataWallet.dapps[0].reserves[0].deposit.find(reserve => reserve.address == tokenAddress);
       if (!dataInWallet) {
@@ -56610,7 +56642,7 @@ function _SimulationWithdrawForkAaveLP() {
       }
       var newAmount = tokenAmount.plus(amount).toFixed(0);
       appState[modeFrom].tokenBalances.set(tokenAddress, newAmount);
-      appState[modeFrom].forkedAaveLPState.set(_entity_id, dataWallet);
+      appState.smartWalletState.forkedAaveLPState.set(_entity_id, dataWallet);
       appState.forkAaveLPState.forkAaveLP.set(_entity_id, data);
       return appState;
     } catch (err) {
@@ -56628,7 +56660,7 @@ function _SimulationBorrowForkAaveLP() {
       var amount = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_0__["default"])(_amount);
       var appState = _objectSpread({}, appState1);
       if (appState.forkAaveLPState.forkAaveLP.get(_entity_id) == undefined) {
-        (0,_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_3__.updateForkAaveLPState)(appState, _entity_id);
+        appState = yield (0,_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_3__.updateForkAaveLPState)(appState, _entity_id);
       }
       var tokenAddress = _tokenAddress.toLowerCase();
       var modeFrom = (0,_utils_helper__WEBPACK_IMPORTED_MODULE_2__.getMode)(appState, _from);
@@ -56650,9 +56682,26 @@ function _SimulationBorrowForkAaveLP() {
         throw new Error("price not found");
       }
       data.totalBorrowInUSD = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_0__["default"])(data.totalBorrowInUSD || 0).plus(amount.multipliedBy(price)).toNumber();
-      var dataWallet = appState[modeFrom].forkedAaveLPState.get(_entity_id);
-      if (!dataWallet) {
-        throw new Error("data not found");
+      var dataWallet = appState.smartWalletState.forkedAaveLPState.get(_entity_id);
+      if (dataWallet.dapps.length == 0) {
+        var reserve = {
+          category: "Lending",
+          healthFactor: Number(_utils__WEBPACK_IMPORTED_MODULE_4__.MAX_UINT256),
+          deposit: new Array(),
+          borrow: new Array()
+        };
+        var reserves = new Array();
+        reserves.push(reserve);
+        var dapp = {
+          id: _entity_id,
+          type: "token",
+          value: 0,
+          depositInUSD: 0,
+          borrowInUSD: 0,
+          claimable: 0,
+          reserves: reserves
+        };
+        dataWallet.dapps.push(dapp);
       }
       var dataInWallet = dataWallet.dapps[0].reserves[0].borrow.find(reserve => reserve.address == tokenAddress);
       if (!dataInWallet) {
@@ -56687,7 +56736,7 @@ function _SimulationBorrowForkAaveLP() {
       }
       var newAmount = tokenAmount.plus(amount).toFixed(0);
       appState[modeFrom].tokenBalances.set(tokenAddress, newAmount);
-      appState[modeFrom].forkedAaveLPState.set(_entity_id, dataWallet);
+      appState.smartWalletState.forkedAaveLPState.set(_entity_id, dataWallet);
       appState.forkAaveLPState.forkAaveLP.set(_entity_id, data);
       return appState;
     } catch (err) {
@@ -56705,7 +56754,7 @@ function _SimulationRepayForkAaveLP() {
       var amount = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_0__["default"])(_amount);
       var appState = _objectSpread({}, appState1);
       if (appState.forkAaveLPState.forkAaveLP.get(_entity_id) == undefined) {
-        (0,_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_3__.updateForkAaveLPState)(appState, _entity_id);
+        appState = yield (0,_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_3__.updateForkAaveLPState)(appState, _entity_id);
       }
       var tokenAddress = _tokenAddress.toLowerCase();
       var modeFrom = (0,_utils_helper__WEBPACK_IMPORTED_MODULE_2__.getMode)(appState, _from);
@@ -56727,9 +56776,26 @@ function _SimulationRepayForkAaveLP() {
         throw new Error("price not found");
       }
       data.totalBorrowInUSD = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_0__["default"])(data.totalBorrowInUSD || 0).minus(amount.multipliedBy(price)).toNumber();
-      var dataWallet = appState[modeFrom].forkedAaveLPState.get(_entity_id);
-      if (!dataWallet) {
-        throw new Error("data not found");
+      var dataWallet = appState.smartWalletState.forkedAaveLPState.get(_entity_id);
+      if (dataWallet.dapps.length == 0) {
+        var reserve = {
+          category: "Lending",
+          healthFactor: Number(_utils__WEBPACK_IMPORTED_MODULE_4__.MAX_UINT256),
+          deposit: new Array(),
+          borrow: new Array()
+        };
+        var reserves = new Array();
+        reserves.push(reserve);
+        var dapp = {
+          id: _entity_id,
+          type: "token",
+          value: 0,
+          depositInUSD: 0,
+          borrowInUSD: 0,
+          claimable: 0,
+          reserves: reserves
+        };
+        dataWallet.dapps.push(dapp);
       }
       var dataInWallet = dataWallet.dapps[0].reserves[0].borrow.find(reserve => reserve.address == tokenAddress);
       if (!dataInWallet) {
@@ -56764,7 +56830,7 @@ function _SimulationRepayForkAaveLP() {
       }
       var newAmount = tokenAmount.minus(amount).toFixed(0);
       appState[modeFrom].tokenBalances.set(tokenAddress, newAmount);
-      appState[modeFrom].forkedAaveLPState.set(_entity_id, dataWallet);
+      appState.smartWalletState.forkedAaveLPState.set(_entity_id, dataWallet);
       appState.forkAaveLPState.forkAaveLP.set(_entity_id, data);
       return appState;
     } catch (err) {
@@ -57019,7 +57085,7 @@ function _SimulationSupplyForkCompoundLP() {
         throw new Error("price not found");
       }
       data.totalSupplyInUSD = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_0__["default"])(data.totalSupplyInUSD || 0).plus(amount.multipliedBy(price)).toNumber();
-      var dataWallet = appState[modeFrom].forkedCompoundLPState.get(_idLP);
+      var dataWallet = appState.smartWalletState.forkedCompoundLPState.get(_idLP);
       if (!dataWallet) {
         throw new Error("data not found");
       }
@@ -57064,7 +57130,7 @@ function _SimulationSupplyForkCompoundLP() {
       }
       var newAmount = tokenAmount.minus(amount).toFixed(0);
       appState[modeFrom].tokenBalances.set(tokenAddress, newAmount);
-      appState[modeFrom].forkedCompoundLPState.set(_idLP, dataWallet);
+      appState.smartWalletState.forkedCompoundLPState.set(_idLP, dataWallet);
       appState.forkCompoundLPState.forkCompoundLP.set(_idLP, data);
       return appState;
     } catch (err) {
@@ -57105,38 +57171,30 @@ function _SimulationWithdrawForkCompoundLP() {
         throw new Error("price not found");
       }
       data.totalSupplyInUSD = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_0__["default"])(data.totalSupplyInUSD || 0).minus(amount.multipliedBy(price)).toNumber();
-      var dataWallet = appState[modeFrom].forkedCompoundLPState.get(_idLP);
+      var dataWallet = appState.smartWalletState.forkedCompoundLPState.get(_idLP);
       if (!dataWallet) {
         throw new Error("data not found");
       }
       var dataInWallet = dataWallet.dapps[0].reserves[0].deposit.find(reserve => reserve.address == tokenAddress);
       if (!dataInWallet) {
-        // data.numberOfLenders = BigNumber(data.numberOfLenders || 0).plus(1).toNumber();
-        // data.numberOfUsers = BigNumber(data.numberOfUsers || 0).plus(1).toNumber();
         var newData = {
-          // key: dataAssets?.key || "",
           id: (dataAssets === null || dataAssets === void 0 ? void 0 : dataAssets.id) || "",
-          // name: dataAssets?.name || "",
           type: "token",
           address: tokenAddress,
           symbol: (dataAssets === null || dataAssets === void 0 ? void 0 : dataAssets.symbol) || "",
           amount: -amount.toNumber(),
           valueInUSD: -amount.multipliedBy(price).toNumber(),
-          // imgUrl: dataAssets?.imgUrl || "",
           totalValue: -amount.multipliedBy(price).toNumber()
         };
         dataWallet.dapps[0].reserves[0].deposit.push(newData);
       } else {
         var _newData2 = {
-          // key: dataAssets?.key || "",
           id: (dataAssets === null || dataAssets === void 0 ? void 0 : dataAssets.id) || "",
-          // name: dataAssets?.name || "",
           type: "token",
           address: tokenAddress,
           symbol: (dataAssets === null || dataAssets === void 0 ? void 0 : dataAssets.symbol) || "",
           amount: -amount.toNumber() + dataInWallet.amount,
           valueInUSD: amount.multipliedBy(-1).plus(dataInWallet.amount).multipliedBy(price).toNumber(),
-          // imgUrl: dataAssets?.imgUrl || "",
           totalValue: amount.multipliedBy(-1).plus(dataInWallet.amount).multipliedBy(price).toNumber()
         };
         dataWallet.dapps[0].value = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_0__["default"])(dataWallet.dapps[0].value || 0).minus(amount).toNumber();
@@ -57150,7 +57208,7 @@ function _SimulationWithdrawForkCompoundLP() {
       }
       var newAmount = tokenAmount.plus(amount).toFixed(0);
       appState[modeFrom].tokenBalances.set(tokenAddress, newAmount);
-      appState[modeFrom].forkedCompoundLPState.set(_idLP, dataWallet);
+      appState.smartWalletState.forkedCompoundLPState.set(_idLP, dataWallet);
       appState.forkCompoundLPState.forkCompoundLP.set(_idLP, data);
       return appState;
     } catch (err) {
@@ -57195,7 +57253,7 @@ function _SimulationBorrowForkCompoundLP() {
         throw new Error("price not found");
       }
       data.totalBorrowInUSD = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_0__["default"])(data.totalBorrowInUSD || 0).plus(amount.multipliedBy(price)).toNumber();
-      var dataWallet = appState[modeFrom].forkedCompoundLPState.get(_idLP);
+      var dataWallet = appState.smartWalletState.forkedCompoundLPState.get(_idLP);
       if (!dataWallet) {
         throw new Error("data not found");
       }
@@ -57240,7 +57298,7 @@ function _SimulationBorrowForkCompoundLP() {
       }
       var newAmount = tokenAmount.plus(amount).toFixed(0);
       appState[modeFrom].tokenBalances.set(tokenAddress, newAmount);
-      appState[modeFrom].forkedCompoundLPState.set(_idLP, dataWallet);
+      appState.smartWalletState.forkedCompoundLPState.set(_idLP, dataWallet);
       appState.forkCompoundLPState.forkCompoundLP.set(_idLP, data);
       return appState;
     } catch (err) {
@@ -57280,7 +57338,7 @@ function _SimulationRepayForkCompoundLP() {
         throw new Error("price not found");
       }
       data.totalBorrowInUSD = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_0__["default"])(data.totalBorrowInUSD || 0).minus(amount.multipliedBy(price)).toNumber();
-      var dataWallet = appState[modeFrom].forkedCompoundLPState.get(_idLP);
+      var dataWallet = appState.smartWalletState.forkedCompoundLPState.get(_idLP);
       if (!dataWallet) {
         throw new Error("data not found");
       }
@@ -57325,7 +57383,7 @@ function _SimulationRepayForkCompoundLP() {
       }
       var newAmount = tokenAmount.minus(amount).toFixed(0);
       appState[modeFrom].tokenBalances.set(tokenAddress, newAmount);
-      appState[modeFrom].forkedCompoundLPState.set(_idLP, dataWallet);
+      appState.smartWalletState.forkedCompoundLPState.set(_idLP, dataWallet);
       appState.forkCompoundLPState.forkCompoundLP.set(_idLP, data);
       return appState;
     } catch (err) {
@@ -57432,7 +57490,7 @@ function _updateLiquidityCampainState() {
           params: []
         })), appState.web3, appState.chainId), (0,orchai_combinator_bsc_simulation__WEBPACK_IMPORTED_MODULE_2__.multiCall)(_abis_IVault_json__WEBPACK_IMPORTED_MODULE_4__, stakedTokenAddress.map((address, _) => ({
           address: address,
-          name: "stakerRewardsToClaim",
+          name: "getTotalRewardsBalance",
           params: [appState.smartWalletState.address]
         })), appState.web3, appState.chainId), (0,orchai_combinator_bsc_simulation__WEBPACK_IMPORTED_MODULE_2__.multiCall)(_abis_IVault_json__WEBPACK_IMPORTED_MODULE_4__, stakedTokenAddress.map((address, _) => ({
           address: address,

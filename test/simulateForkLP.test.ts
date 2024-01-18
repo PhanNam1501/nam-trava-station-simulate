@@ -48,8 +48,8 @@ import { updateForkAaveLPState, updateUserInForkAaveLPState } from "../src/Simul
     // console.log("_______________________TEST AAVE_______________________")
 
       
-    appState = await updateForkAaveLPState(appState, "valas-finance");
-    console.log(appState.smartWalletState.forkedAaveLPState.get("valas-finance"))
+    appState = await updateForkAaveLPState(appState, "radiant-v2");
+    console.log(appState.smartWalletState.forkedAaveLPState.get("radiant-v2")!.dapps)
     // let a = await getListTokenAddress(appState, "valas-finance");
     // console.log(a)
 

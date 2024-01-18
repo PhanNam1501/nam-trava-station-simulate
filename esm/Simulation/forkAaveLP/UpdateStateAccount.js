@@ -202,6 +202,7 @@ function getDataLendingByAxios(entity_id, chain) {
 function getDataUserByAxios(address, entity_id, chain) {
     return __awaiter(this, void 0, void 0, function* () {
         let url = `${centic_api}/v3/wallets/${address}/lendings/${entity_id}?chain=${chain}`;
+        console.log(url);
         try {
             const response = yield axios.request({
                 method: "get",

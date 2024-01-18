@@ -10,7 +10,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 import BigNumber from "bignumber.js";
 import { updateUserTokenBalance } from "../basic";
 // Comming Soon .......
-// import { calculateMaxAmountBorrow, calculateMaxAmountRepay, calculateMaxAmountSupply, calculateMaxAmountWithdraw, updateLPtTokenInfo } from "../trava";
 import { getMode } from "../../utils/helper";
 import { updateForkAaveLPState } from "./UpdateStateAccount";
 import { MAX_UINT256 } from "../../utils";
@@ -86,7 +85,7 @@ export function SimulationSupplyForkAaveLP(appState1, _from, _entity_id, _tokenA
             let amount = BigNumber(_amount);
             let appState = Object.assign({}, appState1);
             if (appState.forkAaveLPState.forkAaveLP.get(_entity_id) == undefined) {
-                updateForkAaveLPState(appState, _entity_id);
+                appState = yield updateForkAaveLPState(appState, _entity_id);
             }
             const tokenAddress = _tokenAddress.toLowerCase();
             let modeFrom = getMode(appState, _from);
@@ -107,14 +106,29 @@ export function SimulationSupplyForkAaveLP(appState1, _from, _entity_id, _tokenA
                 throw new Error("price not found");
             }
             data.totalSupplyInUSD = BigNumber(data.totalSupplyInUSD || 0).plus(amount.multipliedBy(price)).toNumber();
-            let dataWallet = appState[modeFrom].forkedAaveLPState.get(_entity_id);
-            if (!dataWallet) {
-                throw new Error("data not found");
+            let dataWallet = appState.smartWalletState.forkedAaveLPState.get(_entity_id);
+            if (dataWallet.dapps.length == 0) {
+                let reserve = {
+                    category: "Lending",
+                    healthFactor: Number(MAX_UINT256),
+                    deposit: new Array(),
+                    borrow: new Array()
+                };
+                let reserves = new Array();
+                reserves.push(reserve);
+                let dapp = {
+                    id: _entity_id,
+                    type: "token",
+                    value: amount.multipliedBy(price).toNumber(),
+                    depositInUSD: amount.multipliedBy(price).toNumber(),
+                    borrowInUSD: 0,
+                    claimable: 0,
+                    reserves: reserves
+                };
+                dataWallet.dapps.push(dapp);
             }
             let dataInWallet = dataWallet.dapps[0].reserves[0].deposit.find((reserve) => reserve.address == tokenAddress);
             if (!dataInWallet) {
-                // data.numberOfLenders = BigNumber(data.numberOfLenders || 0).plus(1).toNumber();
-                // data.numberOfUsers = BigNumber(data.numberOfUsers || 0).plus(1).toNumber();
                 let newData = {
                     // key: dataAssets?.key || "",
                     id: (dataAssets === null || dataAssets === void 0 ? void 0 : dataAssets.id) || "",
@@ -153,7 +167,7 @@ export function SimulationSupplyForkAaveLP(appState1, _from, _entity_id, _tokenA
             }
             const newAmount = tokenAmount.minus(amount).toFixed(0);
             appState[modeFrom].tokenBalances.set(tokenAddress, newAmount);
-            appState[modeFrom].forkedAaveLPState.set(_entity_id, dataWallet);
+            appState.smartWalletState.forkedAaveLPState.set(_entity_id, dataWallet);
             appState.forkAaveLPState.forkAaveLP.set(_entity_id, data);
             return appState;
         }
@@ -168,7 +182,7 @@ export function SimulationWithdrawForkAaveLP(appState1, _from, _entity_id, _toke
             let amount = BigNumber(_amount);
             let appState = Object.assign({}, appState1);
             if (appState.forkAaveLPState.forkAaveLP.get(_entity_id) == undefined) {
-                updateForkAaveLPState(appState, _entity_id);
+                appState = yield updateForkAaveLPState(appState, _entity_id);
             }
             const tokenAddress = _tokenAddress.toLowerCase();
             let modeFrom = getMode(appState, _from);
@@ -189,9 +203,26 @@ export function SimulationWithdrawForkAaveLP(appState1, _from, _entity_id, _toke
                 throw new Error("price not found");
             }
             data.totalSupplyInUSD = BigNumber(data.totalSupplyInUSD || 0).minus(amount.multipliedBy(price)).toNumber();
-            let dataWallet = appState[modeFrom].forkedAaveLPState.get(_entity_id);
-            if (!dataWallet) {
-                throw new Error("data not found");
+            let dataWallet = appState.smartWalletState.forkedAaveLPState.get(_entity_id);
+            if (dataWallet.dapps.length == 0) {
+                let reserve = {
+                    category: "Lending",
+                    healthFactor: Number(MAX_UINT256),
+                    deposit: new Array(),
+                    borrow: new Array()
+                };
+                let reserves = new Array();
+                reserves.push(reserve);
+                let dapp = {
+                    id: _entity_id,
+                    type: "token",
+                    value: 0,
+                    depositInUSD: 0,
+                    borrowInUSD: 0,
+                    claimable: 0,
+                    reserves: reserves
+                };
+                dataWallet.dapps.push(dapp);
             }
             let dataInWallet = dataWallet.dapps[0].reserves[0].deposit.find((reserve) => reserve.address == tokenAddress);
             if (!dataInWallet) {
@@ -227,7 +258,7 @@ export function SimulationWithdrawForkAaveLP(appState1, _from, _entity_id, _toke
             }
             const newAmount = tokenAmount.plus(amount).toFixed(0);
             appState[modeFrom].tokenBalances.set(tokenAddress, newAmount);
-            appState[modeFrom].forkedAaveLPState.set(_entity_id, dataWallet);
+            appState.smartWalletState.forkedAaveLPState.set(_entity_id, dataWallet);
             appState.forkAaveLPState.forkAaveLP.set(_entity_id, data);
             return appState;
         }
@@ -242,7 +273,7 @@ export function SimulationBorrowForkAaveLP(appState1, _from, _entity_id, _tokenA
             let amount = BigNumber(_amount);
             let appState = Object.assign({}, appState1);
             if (appState.forkAaveLPState.forkAaveLP.get(_entity_id) == undefined) {
-                updateForkAaveLPState(appState, _entity_id);
+                appState = yield updateForkAaveLPState(appState, _entity_id);
             }
             const tokenAddress = _tokenAddress.toLowerCase();
             let modeFrom = getMode(appState, _from);
@@ -264,9 +295,26 @@ export function SimulationBorrowForkAaveLP(appState1, _from, _entity_id, _tokenA
                 throw new Error("price not found");
             }
             data.totalBorrowInUSD = BigNumber(data.totalBorrowInUSD || 0).plus(amount.multipliedBy(price)).toNumber();
-            let dataWallet = appState[modeFrom].forkedAaveLPState.get(_entity_id);
-            if (!dataWallet) {
-                throw new Error("data not found");
+            let dataWallet = appState.smartWalletState.forkedAaveLPState.get(_entity_id);
+            if (dataWallet.dapps.length == 0) {
+                let reserve = {
+                    category: "Lending",
+                    healthFactor: Number(MAX_UINT256),
+                    deposit: new Array(),
+                    borrow: new Array()
+                };
+                let reserves = new Array();
+                reserves.push(reserve);
+                let dapp = {
+                    id: _entity_id,
+                    type: "token",
+                    value: 0,
+                    depositInUSD: 0,
+                    borrowInUSD: 0,
+                    claimable: 0,
+                    reserves: reserves
+                };
+                dataWallet.dapps.push(dapp);
             }
             let dataInWallet = dataWallet.dapps[0].reserves[0].borrow.find((reserve) => reserve.address == tokenAddress);
             if (!dataInWallet) {
@@ -302,7 +350,7 @@ export function SimulationBorrowForkAaveLP(appState1, _from, _entity_id, _tokenA
             }
             const newAmount = tokenAmount.plus(amount).toFixed(0);
             appState[modeFrom].tokenBalances.set(tokenAddress, newAmount);
-            appState[modeFrom].forkedAaveLPState.set(_entity_id, dataWallet);
+            appState.smartWalletState.forkedAaveLPState.set(_entity_id, dataWallet);
             appState.forkAaveLPState.forkAaveLP.set(_entity_id, data);
             return appState;
         }
@@ -317,7 +365,7 @@ export function SimulationRepayForkAaveLP(appState1, _from, _entity_id, _tokenAd
             let amount = BigNumber(_amount);
             let appState = Object.assign({}, appState1);
             if (appState.forkAaveLPState.forkAaveLP.get(_entity_id) == undefined) {
-                updateForkAaveLPState(appState, _entity_id);
+                appState = yield updateForkAaveLPState(appState, _entity_id);
             }
             const tokenAddress = _tokenAddress.toLowerCase();
             let modeFrom = getMode(appState, _from);
@@ -339,9 +387,26 @@ export function SimulationRepayForkAaveLP(appState1, _from, _entity_id, _tokenAd
                 throw new Error("price not found");
             }
             data.totalBorrowInUSD = BigNumber(data.totalBorrowInUSD || 0).minus(amount.multipliedBy(price)).toNumber();
-            let dataWallet = appState[modeFrom].forkedAaveLPState.get(_entity_id);
-            if (!dataWallet) {
-                throw new Error("data not found");
+            let dataWallet = appState.smartWalletState.forkedAaveLPState.get(_entity_id);
+            if (dataWallet.dapps.length == 0) {
+                let reserve = {
+                    category: "Lending",
+                    healthFactor: Number(MAX_UINT256),
+                    deposit: new Array(),
+                    borrow: new Array()
+                };
+                let reserves = new Array();
+                reserves.push(reserve);
+                let dapp = {
+                    id: _entity_id,
+                    type: "token",
+                    value: 0,
+                    depositInUSD: 0,
+                    borrowInUSD: 0,
+                    claimable: 0,
+                    reserves: reserves
+                };
+                dataWallet.dapps.push(dapp);
             }
             let dataInWallet = dataWallet.dapps[0].reserves[0].borrow.find((reserve) => reserve.address == tokenAddress);
             if (!dataInWallet) {
@@ -377,7 +442,7 @@ export function SimulationRepayForkAaveLP(appState1, _from, _entity_id, _tokenAd
             }
             const newAmount = tokenAmount.minus(amount).toFixed(0);
             appState[modeFrom].tokenBalances.set(tokenAddress, newAmount);
-            appState[modeFrom].forkedAaveLPState.set(_entity_id, dataWallet);
+            appState.smartWalletState.forkedAaveLPState.set(_entity_id, dataWallet);
             appState.forkAaveLPState.forkAaveLP.set(_entity_id, data);
             return appState;
         }
