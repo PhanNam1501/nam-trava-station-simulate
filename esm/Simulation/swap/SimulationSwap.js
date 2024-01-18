@@ -1,3 +1,4 @@
+"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -7,12 +8,17 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-import { updateSmartWalletTokenBalance, updateUserTokenBalance } from "../basic/UpdateStateAccount";
-import { MAX_UINT256 } from "../../utils/config";
-import { getMode, isWallet } from "../../utils/helper";
-import BigNumber from "bignumber.js";
-import { getAddr } from "../../utils";
-export function simulateSwap(appState1, _fromToken, _toToken, _fromAmount, _toAmount, _fromAddress, _toAddress) {
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.simulateSwap = void 0;
+const UpdateStateAccount_1 = require("../basic/UpdateStateAccount");
+const config_1 = require("../../utils/config");
+const helper_1 = require("../../utils/helper");
+const bignumber_js_1 = __importDefault(require("bignumber.js"));
+const utils_1 = require("../../utils");
+function simulateSwap(appState1, _fromToken, _toToken, _fromAmount, _toAmount, _fromAddress, _toAddress) {
     return __awaiter(this, void 0, void 0, function* () {
         let fromAmount = _fromAmount;
         let toAmount = _toAmount;
@@ -20,21 +26,21 @@ export function simulateSwap(appState1, _fromToken, _toToken, _fromAmount, _toAm
         let toToken = _toToken.toLowerCase();
         let appState = Object.assign({}, appState1);
         if (!appState.walletState.tokenBalances.has(fromToken)) {
-            appState = yield updateUserTokenBalance(appState, fromToken);
-            appState = yield updateSmartWalletTokenBalance(appState, fromToken);
+            appState = yield (0, UpdateStateAccount_1.updateUserTokenBalance)(appState, fromToken);
+            appState = yield (0, UpdateStateAccount_1.updateSmartWalletTokenBalance)(appState, fromToken);
         }
         if (!appState.walletState.tokenBalances.has(toToken)) {
-            appState = yield updateUserTokenBalance(appState, toToken);
-            appState = yield updateSmartWalletTokenBalance(appState, toToken);
+            appState = yield (0, UpdateStateAccount_1.updateUserTokenBalance)(appState, toToken);
+            appState = yield (0, UpdateStateAccount_1.updateSmartWalletTokenBalance)(appState, toToken);
         }
-        let modeFrom = getMode(appState, _fromAddress);
+        let modeFrom = (0, helper_1.getMode)(appState, _fromAddress);
         let currentBalance = appState[modeFrom].tokenBalances.get(fromToken);
-        if (fromAmount.toString() == MAX_UINT256 || BigInt(fromAmount) == BigInt(MAX_UINT256)) {
+        if (fromAmount.toString() == config_1.MAX_UINT256 || BigInt(fromAmount) == BigInt(config_1.MAX_UINT256)) {
             fromAmount = currentBalance;
         }
-        let newBalance = BigNumber(currentBalance).minus(fromAmount).toFixed(0);
+        let newBalance = (0, bignumber_js_1.default)(currentBalance).minus(fromAmount).toFixed(0);
         appState[modeFrom].tokenBalances.set(fromToken, newBalance);
-        if (fromToken.toLowerCase() == getAddr("BNB_ADDRESS", appState.chainId).toLowerCase()) {
+        if (fromToken.toLowerCase() == (0, utils_1.getAddr)("BNB_ADDRESS", appState.chainId).toLowerCase()) {
             appState[modeFrom].ethBalances = newBalance;
         }
         // if(_fromAddress.toLowerCase() == appState.walletState.address.toLowerCase())
@@ -49,9 +55,9 @@ export function simulateSwap(appState1, _fromToken, _toToken, _fromAmount, _toAm
         //     let newFromBalance = BigInt(appState.smartWalletState.tokenBalances.get(fromToken)!) - BigInt(fromAmount)
         //     appState.smartWalletState.tokenBalances.set(fromToken, String(BigInt(newFromBalance)))
         // }
-        if (isWallet(appState, _toAddress)) {
-            let modeTo = getMode(appState, _toAddress);
-            let newBalance = BigNumber(appState[modeTo].tokenBalances.get(toToken)).plus(toAmount).toFixed(0);
+        if ((0, helper_1.isWallet)(appState, _toAddress)) {
+            let modeTo = (0, helper_1.getMode)(appState, _toAddress);
+            let newBalance = (0, bignumber_js_1.default)(appState[modeTo].tokenBalances.get(toToken)).plus(toAmount).toFixed(0);
             appState[modeTo].tokenBalances.set(toToken, newBalance);
         }
         // if(_toAddress.toLowerCase() == appState.walletState.address.toLowerCase())
@@ -69,3 +75,4 @@ export function simulateSwap(appState1, _fromToken, _toToken, _fromAmount, _toAm
         return appState;
     });
 }
+exports.simulateSwap = simulateSwap;

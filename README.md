@@ -77,6 +77,7 @@
   - [Simulate Borrow](#simulate-borrow)
   - [Simulate Repay](#simulate-repay)
   - [Simulate Withdraw](#simulate-withdraw)
+  - [Simulate Collateral](#simulate-collateral)
 
 ```
 import { ApplicationState } from "../State/ApplicationState";
@@ -384,7 +385,9 @@ appState = await updateTokenBalance(appState, from address, trava token address)
 ```
 
 ### Tuong tac voi liquidity Campain
+
 Update state cua smart wallet
+
 ```
 newAppState = await updateLiquidityCampainState(
     appState
@@ -537,16 +540,13 @@ Khi chọn bất cứ action nào của Others Lending pools fork Compound
 
 ```
 appState = await updateForkCompoundLPState(appState, entity_id);
-appState = await updateUserInForkCompoundLPState(appState, userAddress, entity_id);
 ```
 
 Khi chọn bất cứ action nào của Others Lending pools fork Aave
 
 ```
 appState = await updateForkAaveLPState(appState, entity_id);
-appState = await updateUserInForkAaveLPState(appState, userAddress, entity_id);
 ```
-
 
 # Simulate state
 
@@ -945,7 +945,6 @@ newAppState = await SimulationClaimRewardLiquidity(
 )
 ```
 
-
 # Simulate Trava Staking
 
 ## Simulate Trava Staking Stake
@@ -1124,7 +1123,7 @@ appState1 = await simulateNFTVeTravaTranfer(
 ```
 appState1 = await SimulationSupplyForkCompoundLP(
     appState,
-    userAddress,
+    from address,
     entity_id,
     tokenAddress,
     amount
@@ -1136,7 +1135,7 @@ appState1 = await SimulationSupplyForkCompoundLP(
 ```
 appState1 = await SimulationSupplyForkAaveLP(
     appState,
-    userAddress,
+    from address,
     entity_id,
     tokenAddress,
     amount
@@ -1150,7 +1149,7 @@ appState1 = await SimulationSupplyForkAaveLP(
 ```
 appState1 = await SimulationBorrowForkCompoundLP(
     appState,
-    userAddress,
+    to address,
     entity_id,
     tokenAddress,
     amount
@@ -1162,7 +1161,7 @@ appState1 = await SimulationBorrowForkCompoundLP(
 ```
 appState1 = await SimulationBorrowForkAaveLP(
     appState,
-    userAddress,
+    to address,
     entity_id,
     tokenAddress,
     amount
@@ -1176,7 +1175,7 @@ appState1 = await SimulationBorrowForkAaveLP(
 ```
 appState1 = await SimulationRepayForkCompoundLP(
     appState,
-    userAddress,
+    from address,
     entity_id,
     tokenAddress,
     amount
@@ -1188,7 +1187,7 @@ appState1 = await SimulationRepayForkCompoundLP(
 ```
 appState1 = await SimulationRepayForkAaveLP(
     appState,
-    userAddress,
+    from address,
     entity_id,
     tokenAddress,
     amount
@@ -1202,7 +1201,7 @@ appState1 = await SimulationRepayForkAaveLP(
 ```
 appState1 = await SimulationWithdrawForkCompoundLP(
     appState,
-    userAddress,
+    to address,
     entity_id,
     tokenAddress,
     amount
@@ -1214,9 +1213,33 @@ appState1 = await SimulationWithdrawForkCompoundLP(
 ```
 appState1 = await SimulationWithdrawForkAaveLP(
     appState,
-    userAddress,
+    to address,
     entity_id,
     tokenAddress,
     amount
 );
+```
+
+### Simulate Collateral
+
+- Compound
+
+```
+inputCollateral {
+  tokenAddress: EthAddress,
+  enableAsColl: 0|1,
+}
+```
+
+```
+inputCollaterals = Array<inputCollateral>
+```
+
+```
+appState = await SimulationCollateral(
+    appState, 
+    smart wallet address, 
+    entity_id, 
+    inputCollaterals
+    );
 ```

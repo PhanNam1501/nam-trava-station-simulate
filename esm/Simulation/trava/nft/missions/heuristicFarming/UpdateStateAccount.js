@@ -1,3 +1,4 @@
+"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -7,26 +8,31 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-import { BASE18, DAY_TO_SECONDS, getAddr } from "../../../../../utils";
-import { heuristicFamingConfig } from "./heuristicFarmingConfig";
-import NFTFarmingBaseExpABI from "../../../../../abis/NFTFarmingBaseExp.json";
-import NFTCollectionABI from "../../../../../abis/NFTCollection.json";
-import NFTCoreABI from "../../../../../abis/TravaNFTCore.json";
-import { Contract } from "ethers";
-import BigNumber from "bignumber.js";
-import { multiCall } from "../../../../../utils/helper";
-import { RarityMapping } from "../../helpers";
-export function updateFarmingState(appState1, force = false) {
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.calculateVaultApr = exports.calculateKnightApr = exports.updateFarmingState = void 0;
+const utils_1 = require("../../../../../utils");
+const heuristicFarmingConfig_1 = require("./heuristicFarmingConfig");
+const NFTFarmingBaseExp_json_1 = __importDefault(require("../../../../../abis/NFTFarmingBaseExp.json"));
+const NFTCollection_json_1 = __importDefault(require("../../../../../abis/NFTCollection.json"));
+const TravaNFTCore_json_1 = __importDefault(require("../../../../../abis/TravaNFTCore.json"));
+const ethers_1 = require("ethers");
+const bignumber_js_1 = __importDefault(require("bignumber.js"));
+const helper_1 = require("../../../../../utils/helper");
+const helpers_1 = require("../../helpers");
+function updateFarmingState(appState1, force = false) {
     return __awaiter(this, void 0, void 0, function* () {
         let appState = appState1;
         try {
             if (!appState.smartWalletState.NFTFarmingsState.isFetch || force) {
-                let vaults = heuristicFamingConfig[appState.chainId];
-                let nftHeuristicFamringAddress = getAddr("NFT_FARMING_BASE_EXP", appState.chainId);
-                let nftCollectionAddress = getAddr("NFT_COLLECTION_ADDRESS", appState.chainId);
-                let nftCoreAddress = getAddr("NFT_CORE_ADDRESS", appState.chainId);
-                let NFTHeuristicContract = new Contract(nftHeuristicFamringAddress, NFTFarmingBaseExpABI, appState.web3);
-                let NFTCollectionContract = new Contract(nftCollectionAddress, NFTCollectionABI, appState.web3);
+                let vaults = heuristicFarmingConfig_1.heuristicFamingConfig[appState.chainId];
+                let nftHeuristicFamringAddress = (0, utils_1.getAddr)("NFT_FARMING_BASE_EXP", appState.chainId);
+                let nftCollectionAddress = (0, utils_1.getAddr)("NFT_COLLECTION_ADDRESS", appState.chainId);
+                let nftCoreAddress = (0, utils_1.getAddr)("NFT_CORE_ADDRESS", appState.chainId);
+                let NFTHeuristicContract = new ethers_1.Contract(nftHeuristicFamringAddress, NFTFarmingBaseExp_json_1.default, appState.web3);
+                let NFTCollectionContract = new ethers_1.Contract(nftCollectionAddress, NFTCollection_json_1.default, appState.web3);
                 for (const vaultId in vaults) {
                     if (vaults.hasOwnProperty(vaultId)) {
                         const vault = vaults[vaultId];
@@ -35,9 +41,9 @@ export function updateFarmingState(appState1, force = false) {
                             NFTHeuristicContract.poolInfos(vault.level),
                             NFTHeuristicContract.getEmissionPerSecond(vault.level),
                         ]);
-                        const dailyReward = BigNumber(eps)
-                            .multipliedBy(DAY_TO_SECONDS)
-                            .dividedBy(BASE18)
+                        const dailyReward = (0, bignumber_js_1.default)(eps)
+                            .multipliedBy(utils_1.DAY_TO_SECONDS)
+                            .dividedBy(utils_1.BASE18)
                             .toNumber();
                         const numberKnightOfUser = idList.length;
                         const totalNFTs = poolInfos.nftCount;
@@ -48,22 +54,22 @@ export function updateFarmingState(appState1, force = false) {
                         }
                         const totalRewardOfUser = yield NFTHeuristicContract.getTotalRewardsBalance(idList1);
                         const [nftInformation, expEarned, exp, balance] = yield Promise.all([
-                            multiCall(NFTFarmingBaseExpABI, idList.map((id, _) => ({
+                            (0, helper_1.multiCall)(NFTFarmingBaseExp_json_1.default, idList.map((id, _) => ({
                                 address: nftHeuristicFamringAddress,
                                 name: "nftInfos",
                                 params: [id],
                             })), appState.web3, appState.chainId),
-                            multiCall(NFTFarmingBaseExpABI, idList.map((id, _) => ({
+                            (0, helper_1.multiCall)(NFTFarmingBaseExp_json_1.default, idList.map((id, _) => ({
                                 address: nftHeuristicFamringAddress,
                                 name: "getExpEarnedAndValueEarned",
                                 params: [id],
                             })), appState.web3, appState.chainId),
-                            multiCall(NFTCollectionABI, idList.map((id, _) => ({
+                            (0, helper_1.multiCall)(NFTCollection_json_1.default, idList.map((id, _) => ({
                                 address: nftCollectionAddress,
                                 name: "getCollectionExperience",
                                 params: [id],
                             })), appState.web3, appState.chainId),
-                            multiCall(NFTFarmingBaseExpABI, idList.map((id, _) => ({
+                            (0, helper_1.multiCall)(NFTFarmingBaseExp_json_1.default, idList.map((id, _) => ({
                                 address: nftHeuristicFamringAddress,
                                 name: "getTotalRewardsBalance",
                                 params: [[id]],
@@ -77,7 +83,7 @@ export function updateFarmingState(appState1, force = false) {
                                 lastPolishTime: parseInt(data["lastPolishTime"]) * 1000,
                                 id: Number(idList[index]),
                                 exp: Number(expEarned[index][0]),
-                                earn: BigNumber(balance[index]).dividedBy(BASE18).toNumber(),
+                                earn: (0, bignumber_js_1.default)(balance[index]).dividedBy(utils_1.BASE18).toNumber(),
                                 value: Number(expEarned[index][1]),
                             });
                         });
@@ -90,7 +96,7 @@ export function updateFarmingState(appState1, force = false) {
                                 collectionMetadata[0][3],
                             ];
                             const [itemsMetadata] = yield Promise.all([
-                                multiCall(NFTCoreABI, itemIdList.map((tokenId, _) => ({
+                                (0, helper_1.multiCall)(TravaNFTCore_json_1.default, itemIdList.map((tokenId, _) => ({
                                     address: nftCoreAddress,
                                     name: "getTokenMetadata",
                                     params: [tokenId],
@@ -100,7 +106,7 @@ export function updateFarmingState(appState1, force = false) {
                             let helmetMetadata = itemsMetadata[1];
                             let shieldMetadata = itemsMetadata[2];
                             let weaponMetadata = itemsMetadata[3];
-                            const rarityStr = RarityMapping[parseInt(collectionMetadata[1]) - 1];
+                            const rarityStr = helpers_1.RarityMapping[parseInt(collectionMetadata[1]) - 1];
                             const price = vaults[`${rarityStr}-vault`].collectionPrice;
                             return {
                                 armorMetadata,
@@ -154,13 +160,16 @@ export function updateFarmingState(appState1, force = false) {
         return appState;
     });
 }
-export function calculateKnightApr(dailyReward, collectionVaultValue, totalVaultValue, collectionPrice) {
+exports.updateFarmingState = updateFarmingState;
+function calculateKnightApr(dailyReward, collectionVaultValue, totalVaultValue, collectionPrice) {
     if (totalVaultValue == 0 || collectionPrice == 0)
         return 0;
-    return ((((BigNumber(dailyReward).multipliedBy(collectionVaultValue)).div(totalVaultValue)).multipliedBy(365)).div(collectionPrice)).multipliedBy(100).toNumber();
+    return (((((0, bignumber_js_1.default)(dailyReward).multipliedBy(collectionVaultValue)).div(totalVaultValue)).multipliedBy(365)).div(collectionPrice)).multipliedBy(100).toNumber();
 }
-export function calculateVaultApr(dailyReward, totalNFTs, collectionPrice) {
+exports.calculateKnightApr = calculateKnightApr;
+function calculateVaultApr(dailyReward, totalNFTs, collectionPrice) {
     if (totalNFTs == 0 || collectionPrice == 0)
         return 0;
-    return (((BigNumber(dailyReward).multipliedBy(365)).div(totalNFTs).div(collectionPrice)).multipliedBy(100)).toNumber();
+    return ((((0, bignumber_js_1.default)(dailyReward).multipliedBy(365)).div(totalNFTs).div(collectionPrice)).multipliedBy(100)).toNumber();
 }
+exports.calculateVaultApr = calculateVaultApr;

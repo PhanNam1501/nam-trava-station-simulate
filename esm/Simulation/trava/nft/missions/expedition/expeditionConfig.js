@@ -1,6 +1,9 @@
-import { NETWORKS } from "../../../../../utils";
-export const expeditionOptions = {
-    [NETWORKS.bscTestnet.chainId]: [
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.expeditionOptions = void 0;
+const utils_1 = require("../../../../../utils");
+exports.expeditionOptions = {
+    [utils_1.NETWORKS.bscTestnet.chainId]: [
         {
             id: "rookie",
             contractAddress: "0xCF8B29E9762a8bE82d8Bc9822Ce3096D4F03388c",
@@ -44,7 +47,7 @@ export const expeditionOptions = {
             failureRefund: 0,
         },
     ],
-    [NETWORKS.bscMainnet.chainId]: [
+    [utils_1.NETWORKS.bscMainnet.chainId]: [
         {
             id: "rookie",
             contractAddress: "0x5B9050F8C56EaF91a283aEB2fbB4eC5D61Ab682B",

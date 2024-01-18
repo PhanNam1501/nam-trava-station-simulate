@@ -1,3 +1,4 @@
+"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -7,17 +8,22 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-import BEP20ABI from "../../abis/BEP20.json";
-import { getMode, multiCall } from "../../utils/helper";
-import axios from "axios";
-import { entity_ids_aave } from "./forkAaveLPConfig";
-import { centic_api, centic_api_key, tramline_api } from "../../utils";
-export function updateForkAaveLPState(appState1, entity_id, force) {
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.updateUserInForkAaveLPState = exports.updateTokenDetailInOthersPools = exports.updateForkAaveLPState = void 0;
+const BEP20_json_1 = __importDefault(require("../../abis/BEP20.json"));
+const helper_1 = require("../../utils/helper");
+const axios_1 = __importDefault(require("axios"));
+const forkAaveLPConfig_1 = require("./forkAaveLPConfig");
+const utils_1 = require("../../utils");
+function updateForkAaveLPState(appState1, entity_id, force) {
     return __awaiter(this, void 0, void 0, function* () {
         let appState = Object.assign({}, appState1);
         try {
             if (appState.forkAaveLPState.forkAaveLP.get(entity_id) == undefined || force == true) {
-                if (entity_ids_aave.some(x => x === entity_id)) {
+                if (forkAaveLPConfig_1.entity_ids_aave.some(x => x === entity_id)) {
                     let dataLendingPool = yield getDataLendingByAxios(entity_id, "0x" + appState.chainId.toString(16));
                     let data = {
                         id: dataLendingPool["id"],
@@ -38,12 +44,13 @@ export function updateForkAaveLPState(appState1, entity_id, force) {
         return appState;
     });
 }
+exports.updateForkAaveLPState = updateForkAaveLPState;
 function updateTokenDetailInOthersPools(appState1, _from, entity_id) {
     return __awaiter(this, void 0, void 0, function* () {
         let appState = Object.assign({}, appState1);
         try {
             let from = _from.toLowerCase();
-            let mode = getMode(appState, from);
+            let mode = (0, helper_1.getMode)(appState, from);
             let dataLendingByAxiosTramline = yield getDataLendingByAxiosTramline(entity_id, "0x" + appState.chainId.toString(16), from);
             let dataLendingByAxiosTramlineOverview = yield getDataLendingByAxiosTramlineOverview(entity_id, "0x" + appState.chainId.toString(16));
             let listToken = dataLendingByAxiosTramlineOverview["listToken"];
@@ -65,42 +72,42 @@ function updateTokenDetailInOthersPools(appState1, _from, entity_id) {
                 dTokenList.push(dTokenAddress);
             }
             let [tTokenBalance, tTokenDecimal, tTokenTotalSupply, originInTTokenBalance, dTokenBalance, dTokenDecimal, dTokenTotalSupply, originInDTokenBalance] = yield Promise.all([
-                multiCall(BEP20ABI, tTokenList.map((address, _) => ({
+                (0, helper_1.multiCall)(BEP20_json_1.default, tTokenList.map((address, _) => ({
                     address: address,
                     name: "balanceOf",
                     params: [from],
                 })), appState.web3, appState.chainId),
-                multiCall(BEP20ABI, tTokenList.map((address, _) => ({
+                (0, helper_1.multiCall)(BEP20_json_1.default, tTokenList.map((address, _) => ({
                     address: address,
                     name: "decimals",
                     params: [],
                 })), appState.web3, appState.chainId),
-                multiCall(BEP20ABI, tTokenList.map((address, _) => ({
+                (0, helper_1.multiCall)(BEP20_json_1.default, tTokenList.map((address, _) => ({
                     address: address,
                     name: "totalSupply",
                     params: [],
                 })), appState.web3, appState.chainId),
-                multiCall(BEP20ABI, listTokenAddress.map((address, index) => ({
+                (0, helper_1.multiCall)(BEP20_json_1.default, listTokenAddress.map((address, index) => ({
                     address: address,
                     name: "balanceOf",
                     params: [tTokenList[index]],
                 })), appState.web3, appState.chainId),
-                multiCall(BEP20ABI, dTokenList.map((address, _) => ({
+                (0, helper_1.multiCall)(BEP20_json_1.default, dTokenList.map((address, _) => ({
                     address: address,
                     name: "balanceOf",
                     params: [from],
                 })), appState.web3, appState.chainId),
-                multiCall(BEP20ABI, dTokenList.map((address, _) => ({
+                (0, helper_1.multiCall)(BEP20_json_1.default, dTokenList.map((address, _) => ({
                     address: address,
                     name: "decimals",
                     params: [],
                 })), appState.web3, appState.chainId),
-                multiCall(BEP20ABI, dTokenList.map((address, _) => ({
+                (0, helper_1.multiCall)(BEP20_json_1.default, dTokenList.map((address, _) => ({
                     address: address,
                     name: "totalSupply",
                     params: [],
                 })), appState.web3, appState.chainId),
-                multiCall(BEP20ABI, listTokenAddress.map((address, index) => ({
+                (0, helper_1.multiCall)(BEP20_json_1.default, listTokenAddress.map((address, index) => ({
                     address: address,
                     name: "balanceOf",
                     params: [dTokenList[index]],
@@ -147,12 +154,13 @@ function updateTokenDetailInOthersPools(appState1, _from, entity_id) {
         }
     });
 }
-export function updateUserInForkAaveLPState(appState1, _from, entity_id, force) {
+exports.updateTokenDetailInOthersPools = updateTokenDetailInOthersPools;
+function updateUserInForkAaveLPState(appState1, _from, entity_id, force) {
     return __awaiter(this, void 0, void 0, function* () {
         let appState = Object.assign({}, appState1);
         try {
-            let mode = getMode(appState, _from);
-            if (entity_ids_aave.some(x => x === entity_id)) {
+            let mode = (0, helper_1.getMode)(appState, _from);
+            if (forkAaveLPConfig_1.entity_ids_aave.some(x => x === entity_id)) {
                 let from = _from;
                 let dataLendingByAxiosTramline = yield getDataLendingByAxiosTramline(entity_id, "0x" + appState.chainId.toString(16), from);
                 let dataLendingPool = yield getDataUserByAxios(_from, entity_id, "0x" + appState.chainId.toString(16));
@@ -168,6 +176,26 @@ export function updateUserInForkAaveLPState(appState1, _from, entity_id, force) 
                     ltv: dataLendingByAxiosTramline["accountPoolDataSlice"]["params"]["ltv"],
                     currentLiquidationThreshold: dataLendingByAxiosTramline["accountPoolDataSlice"]["params"]["currentLiquidationThreshold"],
                 };
+                if (dataLendingPool["dapps"].length == 0) {
+                    data.dapps = [
+                        {
+                            id: dataLendingPool["id"],
+                            type: "project",
+                            value: 0,
+                            depositInUSD: 0,
+                            borrowInUSD: 0,
+                            claimable: 0,
+                            reserves: [
+                                {
+                                    category: "Lending",
+                                    healthFactor: 0,
+                                    deposit: [],
+                                    borrow: [],
+                                }
+                            ]
+                        }
+                    ];
+                }
                 appState[mode].forkedAaveLPState.set(entity_id, data);
                 appState = yield updateTokenDetailInOthersPools(appState, _from, entity_id);
             }
@@ -179,15 +207,16 @@ export function updateUserInForkAaveLPState(appState1, _from, entity_id, force) 
         }
     });
 }
+exports.updateUserInForkAaveLPState = updateUserInForkAaveLPState;
 function getDataLendingByAxios(entity_id, chain) {
     return __awaiter(this, void 0, void 0, function* () {
-        let url = `${centic_api}/v3/projects/lending/${entity_id}/overview?chain=${chain}`;
+        let url = `${utils_1.centic_api}/v3/projects/lending/${entity_id}/overview?chain=${chain}`;
         try {
-            const response = yield axios.request({
+            const response = yield axios_1.default.request({
                 method: "get",
                 url: url,
                 headers: {
-                    "x-apikey": centic_api_key
+                    "x-apikey": utils_1.centic_api_key
                 }
             });
             const data = response.data;
@@ -201,14 +230,14 @@ function getDataLendingByAxios(entity_id, chain) {
 }
 function getDataUserByAxios(address, entity_id, chain) {
     return __awaiter(this, void 0, void 0, function* () {
-        let url = `${centic_api}/v3/wallets/${address}/lendings/${entity_id}?chain=${chain}`;
+        let url = `${utils_1.centic_api}/v3/wallets/${address}/lendings/${entity_id}?chain=${chain}`;
         console.log(url);
         try {
-            const response = yield axios.request({
+            const response = yield axios_1.default.request({
                 method: "get",
                 url: url,
                 headers: {
-                    "x-apikey": centic_api_key
+                    "x-apikey": utils_1.centic_api_key
                 }
             });
             const data = response.data;
@@ -222,9 +251,9 @@ function getDataUserByAxios(address, entity_id, chain) {
 }
 function getDataLendingByAxiosTramline(entity_id, chain, userAddress) {
     return __awaiter(this, void 0, void 0, function* () {
-        let url = `${tramline_api}/trava-station/lending-pool/detail?entity=${entity_id}&chainId=${chain}&userAddress=${userAddress}`;
+        let url = `${utils_1.tramline_api}/trava-station/lending-pool/detail?entity=${entity_id}&chainId=${chain}&userAddress=${userAddress}`;
         try {
-            const response = yield axios.request({
+            const response = yield axios_1.default.request({
                 method: "get",
                 url: url
             });
@@ -239,9 +268,9 @@ function getDataLendingByAxiosTramline(entity_id, chain, userAddress) {
 }
 function getDataLendingByAxiosTramlineOverview(entity_id, chain) {
     return __awaiter(this, void 0, void 0, function* () {
-        let url = `${tramline_api}/trava-station/lending-pool/overview?entity=${entity_id}&chainId=${chain}`;
+        let url = `${utils_1.tramline_api}/trava-station/lending-pool/overview?entity=${entity_id}&chainId=${chain}`;
         try {
-            const response = yield axios.request({
+            const response = yield axios_1.default.request({
                 method: "get",
                 url: url,
             });

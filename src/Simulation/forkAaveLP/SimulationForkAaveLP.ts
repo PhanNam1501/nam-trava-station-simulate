@@ -2,19 +2,20 @@ import BigNumber from "bignumber.js";
 import { ApplicationState, Dapp, Reserve, UserAsset } from "../../State";
 import { EthAddress } from "../../utils/types";
 import { updateUserTokenBalance } from "../basic";
-// Comming Soon .......
 import { getMode } from "../../utils/helper";
-import { updateForkAaveLPState } from "./UpdateStateAccount";
+import { updateForkAaveLPState, updateUserInForkAaveLPState } from "./UpdateStateAccount";
 import { MAX_UINT256 } from "../../utils";
 
-export function calculateMaxAmountForkAaveSupply(appState: ApplicationState, _entity_id: string, _tokenAddress: string, _from: EthAddress): BigNumber {
+export async function calculateMaxAmountForkAaveSupply(appState: ApplicationState, _entity_id: string, _tokenAddress: string, _from: EthAddress): Promise<BigNumber> {
     const tokenAddress = _tokenAddress.toLowerCase();
     const mode = getMode(appState, _from);
 
     if (appState.forkAaveLPState.forkAaveLP.get(_entity_id) == undefined) {
-        updateForkAaveLPState(appState, _entity_id);
+        appState = await updateForkAaveLPState(appState, _entity_id);
     }
-
+    if (!appState[mode].tokenBalances.has(tokenAddress)) {
+        appState = await updateUserTokenBalance(appState, tokenAddress);
+    }
     const walletBalance = appState[mode].tokenBalances.get(tokenAddress)!;
     if (typeof walletBalance == undefined) {
         throw new Error("Token is not init in " + mode + " state!")
@@ -29,11 +30,11 @@ export function calculateMaxAmountForkAaveSupply(appState: ApplicationState, _en
     return BigNumber(appState[mode].tokenBalances.get(tokenAddress)!);
 }
 
-export function calculateMaxAmountForkAaveBorrow(appState: ApplicationState, _entity_id: string, _tokenAddress: string): BigNumber {
+export async function calculateMaxAmountForkAaveBorrow(appState: ApplicationState, _entity_id: string, _tokenAddress: string): Promise<BigNumber> {
     const tokenAddress = _tokenAddress.toLowerCase();
 
     if (appState.forkAaveLPState.forkAaveLP.get(_entity_id) == undefined) {
-        updateForkAaveLPState(appState, _entity_id);
+        appState = await updateForkAaveLPState(appState, _entity_id);
     }
 
     const lpState = appState.smartWalletState.forkedAaveLPState.get(_entity_id)!
@@ -47,14 +48,17 @@ export function calculateMaxAmountForkAaveBorrow(appState: ApplicationState, _en
     return BigNumber.max(BigNumber.min(nativeAvailableBorrow, tTokenReserveBalance), 0).multipliedBy(BigNumber("10").pow(tokenInfo.tToken.decimals));
 }
 
-export function calculateMaxAmountForkAaveRepay(appState: ApplicationState, _entity_id: string, _tokenAddress: string, _from: EthAddress): BigNumber {
+export async function calculateMaxAmountForkAaveRepay(appState: ApplicationState, _entity_id: string, _tokenAddress: string, _from: EthAddress): Promise<BigNumber> {
     const tokenAddress = _tokenAddress.toLowerCase();
     const mode = getMode(appState, _from);
 
     if (appState.forkAaveLPState.forkAaveLP.get(_entity_id) == undefined) {
-        updateForkAaveLPState(appState, _entity_id);
+        appState = await updateForkAaveLPState(appState, _entity_id);
     }
 
+    if (!appState[mode].tokenBalances.has(tokenAddress)) {
+        appState = await updateUserTokenBalance(appState, tokenAddress);
+    }
     const walletBalance = appState[mode].tokenBalances.get(tokenAddress)!;
     if (typeof walletBalance == undefined) {
         throw new Error("Token is not init in " + mode + " state!")
@@ -69,11 +73,11 @@ export function calculateMaxAmountForkAaveRepay(appState: ApplicationState, _ent
     return BigNumber.max(BigNumber.min(walletBalance, borrowed), 0);
 }
 
-export function calculateMaxAmountForkAaveWithdraw(appState: ApplicationState, _entity_id: string, _tokenAddress: string): BigNumber {
+export async function calculateMaxAmountForkAaveWithdraw(appState: ApplicationState, _entity_id: string, _tokenAddress: string): Promise<BigNumber> {
     const tokenAddress = _tokenAddress.toLowerCase();
 
     if (appState.forkAaveLPState.forkAaveLP.get(_entity_id) == undefined) {
-        updateForkAaveLPState(appState, _entity_id);
+        appState = await updateForkAaveLPState(appState, _entity_id);
     }
 
     const lpState = appState.smartWalletState.forkedAaveLPState.get(_entity_id)!
@@ -117,12 +121,16 @@ export async function SimulationSupplyForkAaveLP(
         let modeFrom = getMode(appState, _from);
 
         if (amount.isEqualTo(MAX_UINT256)) {
-            amount = calculateMaxAmountForkAaveSupply(appState, _entity_id, tokenAddress, _from)
+            amount = await calculateMaxAmountForkAaveSupply(appState, _entity_id, tokenAddress, _from)
         }
 
 
         if (!appState[modeFrom].tokenBalances.has(tokenAddress)) {
             appState = await updateUserTokenBalance(appState, tokenAddress);
+        }
+
+        if (!appState[modeFrom].forkedAaveLPState.has(_entity_id)) {
+            appState = await updateUserInForkAaveLPState(appState, _from, _entity_id);
         }
 
         const tokenAmount = BigNumber(
@@ -136,7 +144,7 @@ export async function SimulationSupplyForkAaveLP(
         let dataAssets = data.markets[0].assets.find((asset) => asset.address == tokenAddress);
         let price = dataAssets?.price;
         if (!price) {
-            throw new Error("price not found");
+            price = 0;
         }
 
         data.totalSupplyInUSD = BigNumber(data.totalSupplyInUSD || 0).plus(amount.multipliedBy(price)).toNumber();
@@ -170,30 +178,24 @@ export async function SimulationSupplyForkAaveLP(
         let dataInWallet = dataWallet.dapps[0].reserves[0].deposit.find((reserve) => reserve.address == tokenAddress);
         if (!dataInWallet) {
             let newData: UserAsset = {
-                // key: dataAssets?.key || "",
                 id: dataAssets?.id || "",
-                // name: dataAssets?.name || "",
                 type: "token",
                 address: tokenAddress,
                 symbol: dataAssets?.symbol || "",
                 amount: amount.toNumber(),
                 valueInUSD: amount.multipliedBy(price).toNumber(),
-                // imgUrl: dataAssets?.imgUrl || "",
                 totalValue: amount.multipliedBy(price).toNumber(),
             };
             dataWallet.dapps[0].reserves[0].deposit.push(newData);
         }
         else {
             let newData: UserAsset = {
-                // key: dataAssets?.key || "",
                 id: dataAssets?.id || "",
-                // name: dataAssets?.name || "",
                 type: "token",
                 address: tokenAddress,
                 symbol: dataAssets?.symbol || "",
                 amount: amount.toNumber() + dataInWallet.amount,
                 valueInUSD: amount.plus(dataInWallet.amount).multipliedBy(price).toNumber(),
-                // imgUrl: dataAssets?.imgUrl || "",
                 totalValue: amount.plus(dataInWallet.amount).multipliedBy(price).toNumber(),
             };
             dataWallet.dapps[0].value = BigNumber(dataWallet.dapps[0].value || 0).plus(amount).toNumber();
@@ -235,11 +237,15 @@ export async function SimulationWithdrawForkAaveLP(
         const tokenAddress = _tokenAddress.toLowerCase();
         let modeFrom = getMode(appState, _from);
         if (amount.isEqualTo(MAX_UINT256)) {
-            amount = calculateMaxAmountForkAaveWithdraw(appState, _entity_id, tokenAddress);
+            amount = await calculateMaxAmountForkAaveWithdraw(appState, _entity_id, tokenAddress);
         }
 
         if (!appState[modeFrom].tokenBalances.has(tokenAddress)) {
             appState = await updateUserTokenBalance(appState, tokenAddress);
+        }
+
+        if (!appState[modeFrom].forkedAaveLPState.has(_entity_id)) {
+            appState = await updateUserInForkAaveLPState(appState, _from, _entity_id);
         }
 
         const tokenAmount = BigNumber(
@@ -345,9 +351,8 @@ export async function SimulationBorrowForkAaveLP(
         }
         const tokenAddress = _tokenAddress.toLowerCase();
         let modeFrom = getMode(appState, _from);
-        // Comming Soon .......
         if (amount.isEqualTo(MAX_UINT256)) {
-            amount = calculateMaxAmountForkAaveBorrow(
+            amount = await calculateMaxAmountForkAaveBorrow(
                 appState,
                 _entity_id,
                 tokenAddress
@@ -357,6 +362,10 @@ export async function SimulationBorrowForkAaveLP(
         if (!appState[modeFrom].tokenBalances.has(tokenAddress)) {
             appState = await updateUserTokenBalance(appState, tokenAddress);
         }
+        if (!appState[modeFrom].forkedAaveLPState.has(_entity_id)) {
+            appState = await updateUserInForkAaveLPState(appState, _from, _entity_id);
+        }
+
 
         const tokenAmount = BigNumber(
             appState[modeFrom].tokenBalances.get(tokenAddress)!
@@ -458,13 +467,16 @@ export async function SimulationRepayForkAaveLP(
         }
         const tokenAddress = _tokenAddress.toLowerCase();
         let modeFrom = getMode(appState, _from);
-        // Comming Soon .......
         if (amount.isEqualTo(MAX_UINT256)) {
-            amount = calculateMaxAmountForkAaveRepay(appState, _entity_id, tokenAddress, _from);
+            amount = await calculateMaxAmountForkAaveRepay(appState, _entity_id, tokenAddress, _from);
         }
 
         if (!appState[modeFrom].tokenBalances.has(tokenAddress)) {
             appState = await updateUserTokenBalance(appState, tokenAddress);
+        }
+
+        if (!appState[modeFrom].forkedAaveLPState.has(_entity_id)) {
+            appState = await updateUserInForkAaveLPState(appState, _from, _entity_id);
         }
 
         const tokenAmount = BigNumber(

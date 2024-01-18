@@ -1,4 +1,7 @@
-export class TravaGovernanceState {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.VeTravaListState = exports.TravaGovernanceState = void 0;
+class TravaGovernanceState {
     constructor() {
         this.totalSupply = "",
             this.rewardTokenInfo = {
@@ -8,9 +11,11 @@ export class TravaGovernanceState {
         this.tokensInGovernance = new Map();
     }
 }
-export class VeTravaListState {
+exports.TravaGovernanceState = TravaGovernanceState;
+class VeTravaListState {
     constructor() {
         this.veTravaList = new Map();
         this.isFetch = false;
     }
 }
+exports.VeTravaListState = VeTravaListState;

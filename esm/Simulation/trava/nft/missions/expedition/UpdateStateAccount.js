@@ -1,3 +1,4 @@
+"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -7,27 +8,32 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-import { getAddr } from "../../../../../utils";
-import { getMode, multiCall } from "../../../../../utils/helper";
-import { expeditionOptions } from "./expeditionConfig";
-import ExpeditionABI from "../../../../../abis/NFTExpeditionABI.json";
-import BigNumber from "bignumber.js";
-import { fetchBasicCollections, fetchNormalItems } from "../../helpers";
-export function updateOwnerKnightInExpeditionState(appState1, _from, force = false) {
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.updateExpeditionState = exports.updateOwnerKnightInExpeditionState = void 0;
+const utils_1 = require("../../../../../utils");
+const helper_1 = require("../../../../../utils/helper");
+const expeditionConfig_1 = require("./expeditionConfig");
+const NFTExpeditionABI_json_1 = __importDefault(require("../../../../../abis/NFTExpeditionABI.json"));
+const bignumber_js_1 = __importDefault(require("bignumber.js"));
+const helpers_1 = require("../../helpers");
+function updateOwnerKnightInExpeditionState(appState1, _from, force = false) {
     return __awaiter(this, void 0, void 0, function* () {
         let appState = Object.assign({}, appState1);
         try {
-            let mode = getMode(appState, _from);
+            let mode = (0, helper_1.getMode)(appState, _from);
             if (!appState[mode].knightInExpeditionState.isFetch || force) {
                 _from = _from.toLowerCase();
-                const listexpedition = expeditionOptions[appState.chainId];
+                const listexpedition = expeditionConfig_1.expeditionOptions[appState.chainId];
                 let expeditionsAddress = [];
                 for (let i = 0; i < listexpedition.length; i++) {
                     expeditionsAddress.push(listexpedition[i].contractAddress.toLowerCase());
                 }
                 expeditionsAddress = expeditionsAddress.filter((address) => address !== "");
                 const [tokenOfOwner] = yield Promise.all([
-                    multiCall(ExpeditionABI, expeditionsAddress.map((address) => ({
+                    (0, helper_1.multiCall)(NFTExpeditionABI_json_1.default, expeditionsAddress.map((address) => ({
                         address: address,
                         name: "getTokenOfOwnerBalance",
                         params: [_from],
@@ -45,7 +51,7 @@ export function updateOwnerKnightInExpeditionState(appState1, _from, force = fal
                         continue;
                     }
                     let [NFTInExpedition] = yield Promise.all([
-                        multiCall(ExpeditionABI, list.map((id, _) => ({
+                        (0, helper_1.multiCall)(NFTExpeditionABI_json_1.default, list.map((id, _) => ({
                             address: expeditionsAddress[i],
                             name: "getTokenOfOwnerAtIndex",
                             params: [_from, id],
@@ -61,7 +67,7 @@ export function updateOwnerKnightInExpeditionState(appState1, _from, force = fal
                     if (collectionIds.length == 0) {
                         continue;
                     }
-                    const { normalCollections, specialCollections } = yield fetchBasicCollections(collectionIds, appState);
+                    const { normalCollections, specialCollections } = yield (0, helpers_1.fetchBasicCollections)(collectionIds, appState);
                     const armorTokenIdArray = [];
                     const helmetTokenIdArray = [];
                     const shieldTokenIdArray = [];
@@ -72,19 +78,19 @@ export function updateOwnerKnightInExpeditionState(appState1, _from, force = fal
                         shieldTokenIdArray.push(item.shieldTokenId.toString());
                         weaponTokenIdArray.push(item.weaponTokenId.toString());
                     });
-                    const normalItemsCollections = yield fetchNormalItems(armorTokenIdArray, helmetTokenIdArray, shieldTokenIdArray, weaponTokenIdArray, appState);
+                    const normalItemsCollections = yield (0, helpers_1.fetchNormalItems)(armorTokenIdArray, helmetTokenIdArray, shieldTokenIdArray, weaponTokenIdArray, appState);
                     const [deployTimestamp, successRate, accruedExperience] = yield Promise.all([
-                        multiCall(ExpeditionABI, collectionIds.map((id, _) => ({
+                        (0, helper_1.multiCall)(NFTExpeditionABI_json_1.default, collectionIds.map((id, _) => ({
                             address: expeditionsAddress[i],
                             name: 'getDeployTimestamp',
                             params: [id],
                         })), appState.web3, appState.chainId),
-                        multiCall(ExpeditionABI, collectionIds.map((id, _) => ({
+                        (0, helper_1.multiCall)(NFTExpeditionABI_json_1.default, collectionIds.map((id, _) => ({
                             address: expeditionsAddress[i],
                             name: 'getSuccessRate',
                             params: [id],
                         })), appState.web3, appState.chainId),
-                        multiCall(ExpeditionABI, collectionIds.map((id, _) => ({
+                        (0, helper_1.multiCall)(NFTExpeditionABI_json_1.default, collectionIds.map((id, _) => ({
                             address: expeditionsAddress[i],
                             name: 'getAccruedExperience',
                             params: [id],
@@ -107,12 +113,13 @@ export function updateOwnerKnightInExpeditionState(appState1, _from, force = fal
         return appState;
     });
 }
-export function updateExpeditionState(appState1, force = false) {
+exports.updateOwnerKnightInExpeditionState = updateOwnerKnightInExpeditionState;
+function updateExpeditionState(appState1, force = false) {
     return __awaiter(this, void 0, void 0, function* () {
         let appState = Object.assign({}, appState1);
         try {
             if (!appState.ExpeditionState.isFetch || force) {
-                const listexpedition = expeditionOptions[appState.chainId];
+                const listexpedition = expeditionConfig_1.expeditionOptions[appState.chainId];
                 let expeditionsAddress = [];
                 for (let i = 0; i < listexpedition.length; i++) {
                     expeditionsAddress.push(listexpedition[i].contractAddress.toLowerCase());
@@ -127,10 +134,10 @@ export function updateExpeditionState(appState1, force = false) {
                     }));
                     datas = datas.concat(ExpeditionCount);
                 }
-                const [expeditions] = yield Promise.all([multiCall(ExpeditionABI, datas, appState.web3, appState.chainId)]);
+                const [expeditions] = yield Promise.all([(0, helper_1.multiCall)(NFTExpeditionABI_json_1.default, datas, appState.web3, appState.chainId)]);
                 let listRaritys = new Array();
                 let listTotal = [];
-                for (let i = 0; i < Number(BigNumber(expeditions.length).dividedBy(6)); i++) {
+                for (let i = 0; i < Number((0, bignumber_js_1.default)(expeditions.length).dividedBy(6)); i++) {
                     let raritys = new Array();
                     let ListAcceptableRarities = listexpedition[i].acceptableRarities;
                     let Total = 0;
@@ -145,22 +152,22 @@ export function updateExpeditionState(appState1, force = false) {
                     listTotal.push(Total);
                 }
                 const [expeditionPrices, successPayouts, hugeSuccessPayouts, expeditionDurations] = yield Promise.all([
-                    multiCall(ExpeditionABI, expeditionsAddress.map((address) => ({
+                    (0, helper_1.multiCall)(NFTExpeditionABI_json_1.default, expeditionsAddress.map((address) => ({
                         address: address,
                         name: "getExpeditionPrice",
                         params: [],
                     })), appState.web3, appState.chainId),
-                    multiCall(ExpeditionABI, expeditionsAddress.map((address) => ({
+                    (0, helper_1.multiCall)(NFTExpeditionABI_json_1.default, expeditionsAddress.map((address) => ({
                         address: address,
                         name: "getSuccessPayout",
                         params: [],
                     })), appState.web3, appState.chainId),
-                    multiCall(ExpeditionABI, expeditionsAddress.map((address) => ({
+                    (0, helper_1.multiCall)(NFTExpeditionABI_json_1.default, expeditionsAddress.map((address) => ({
                         address: address,
                         name: "getHugeSuccessPayout",
                         params: [],
                     })), appState.web3, appState.chainId),
-                    multiCall(ExpeditionABI, expeditionsAddress.map((address) => ({
+                    (0, helper_1.multiCall)(NFTExpeditionABI_json_1.default, expeditionsAddress.map((address) => ({
                         address: address,
                         name: "getExpeditionDuration",
                         params: [],
@@ -184,12 +191,12 @@ export function updateExpeditionState(appState1, force = false) {
                         profession = expeditionDurations[i].toString();
                     }
                     const [buffSuccessRate, buffExp] = yield Promise.all([
-                        multiCall(ExpeditionABI, [1, 2, 3, 4, 5].map((id) => ({
+                        (0, helper_1.multiCall)(NFTExpeditionABI_json_1.default, [1, 2, 3, 4, 5].map((id) => ({
                             address: expeditionsAddress[i],
                             name: "buffWinRate",
                             params: [id],
                         })), appState.web3, appState.chainId),
-                        multiCall(ExpeditionABI, [1, 2, 3, 4, 5].map((id) => ({
+                        (0, helper_1.multiCall)(NFTExpeditionABI_json_1.default, [1, 2, 3, 4, 5].map((id) => ({
                             address: expeditionsAddress[i],
                             name: "buffExp",
                             params: [id],
@@ -202,7 +209,7 @@ export function updateExpeditionState(appState1, force = false) {
                         buffExp[j] = parseInt(buffExp[j]);
                     }
                     let expedition = Object.assign(Object.assign({}, listexpedition[i]), { totalKnight: total, raritys: raritys, profession: profession, expeditionPrice: expeditionPrice, successPayout: successPayout, successReward: hugeSuccessPayout, buffSuccessRate: buffSuccessRate, buffExp: buffExp, token: {
-                            address: getAddr("TRAVA_TOKEN", appState.chainId).toLowerCase(),
+                            address: (0, utils_1.getAddr)("TRAVA_TOKEN", appState.chainId).toLowerCase(),
                             decimals: 18,
                         } });
                     appState.ExpeditionState.expeditions.set(expeditionsAddress[i], expedition);
@@ -216,3 +223,4 @@ export function updateExpeditionState(appState1, force = false) {
         return appState;
     });
 }
+exports.updateExpeditionState = updateExpeditionState;

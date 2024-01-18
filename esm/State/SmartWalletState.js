@@ -1,26 +1,30 @@
-import { NFTAuctioningState, NFTFarmingsState, NFTSellingState, NFTTicketState } from "./trava/nft/TravaNFTState";
-import { WalletTravaLPState, } from "./trava/lending/TravaDeFiState";
-import { CollectionOwned, KnightInExpeditionState, NFTOwned } from "./WalletState";
-import { VeTravaListState } from "./trava/lending/TravaGovenanceState";
-import { LiquidityCampainState } from "./trava";
-export class SmartWalletState {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.SmartWalletState = void 0;
+const TravaNFTState_1 = require("./trava/nft/TravaNFTState");
+const TravaDeFiState_1 = require("./trava/lending/TravaDeFiState");
+const WalletState_1 = require("./WalletState");
+const TravaGovenanceState_1 = require("./trava/lending/TravaGovenanceState");
+const trava_1 = require("./trava");
+class SmartWalletState {
     constructor(address) {
         this.address = address;
         this.tokenBalances = new Map();
-        this.nfts = new NFTOwned();
-        this.travaLPState = new WalletTravaLPState();
+        this.nfts = new WalletState_1.NFTOwned();
+        this.travaLPState = new TravaDeFiState_1.WalletTravaLPState();
         this.forkedCompoundLPState = new Map();
         this.forkedAaveLPState = new Map();
-        this.collection = new CollectionOwned();
+        this.collection = new WalletState_1.CollectionOwned();
         this.ethBalances = "";
-        this.sellingNFT = new NFTSellingState();
-        this.auctioningState = new NFTAuctioningState();
-        this.NFTFarmingsState = new NFTFarmingsState();
+        this.sellingNFT = new TravaNFTState_1.NFTSellingState();
+        this.auctioningState = new TravaNFTState_1.NFTAuctioningState();
+        this.NFTFarmingsState = new TravaNFTState_1.NFTFarmingsState();
         this.detailTokenInPool = new Map();
         this.travaLPStakingStateList = new Map();
-        this.veTravaListState = new VeTravaListState();
-        this.knightInExpeditionState = new KnightInExpeditionState();
-        this.ticket = new NFTTicketState();
-        this.liquidityCampainState = new LiquidityCampainState();
+        this.veTravaListState = new TravaGovenanceState_1.VeTravaListState();
+        this.knightInExpeditionState = new WalletState_1.KnightInExpeditionState();
+        this.ticket = new TravaNFTState_1.NFTTicketState();
+        this.liquidityCampainState = new trava_1.LiquidityCampainState();
     }
 }
+exports.SmartWalletState = SmartWalletState;

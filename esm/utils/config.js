@@ -1,12 +1,18 @@
-import { set as dfsTokensSetConfig } from "@zennomi/tokens";
-import { ethers } from "ethers";
-import BigNumber from "bignumber.js";
-import { DivisionByZeroError, MultiplicationOverflowError } from "./error";
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.centic_api_key = exports.centic_api = exports.tramline_api = exports.MINIMUM_BID_STEP_PERCENT = exports.FEE_AUCTION_PERCENTAGE = exports.WAD = exports.HALF_PERCENT = exports.PERCENTAGE_FACTOR = exports.MAX_UINT256 = exports.BASE18 = exports.HOUR_TO_SECONDS = exports.DAY_TO_SECONDS = exports.WEEK_TO_SECONDS = exports.MONTH_TO_SECONDS = exports.YEAR_TO_SECONDS = exports.MAX_LOCK_TIMES = exports.ZERO_ADDRESS = exports.wadDiv = exports.percentMul = exports.configure = exports.CONFIG = exports.NETWORKS = void 0;
+const tokens_1 = require("@zennomi/tokens");
+const ethers_1 = require("ethers");
+const bignumber_js_1 = __importDefault(require("bignumber.js"));
+const error_1 = require("./error");
 /**
  *
  * @type {Networks}
  */
-export const NETWORKS = {
+exports.NETWORKS = {
     bscTestnet: {
         chainId: 97,
         chainName: "Binance Smart Chain Testnet",
@@ -27,57 +33,60 @@ export const NETWORKS = {
 /**
  *
  */
-export const CONFIG = {
-    chainId: NETWORKS.bscTestnet.chainId,
+exports.CONFIG = {
+    chainId: exports.NETWORKS.bscTestnet.chainId,
     testingMode: false,
 };
 /**
  *
  * @param config
  */
-export const configure = (config) => {
+const configure = (config) => {
     if (!config || typeof config !== "object")
         throw new Error("Object expected");
     const newKeys = Object.keys(config);
     newKeys.forEach((key) => {
-        CONFIG[key] = config[key];
+        exports.CONFIG[key] = config[key];
         if (key === "chainId")
-            dfsTokensSetConfig("network", config[key]);
+            (0, tokens_1.set)("network", config[key]);
     });
 };
-export const percentMul = (value, percentage) => {
+exports.configure = configure;
+const percentMul = (value, percentage) => {
     if (value.toFixed(0) == "0" || percentage.isZero()) {
-        return BigNumber(0);
+        return (0, bignumber_js_1.default)(0);
     }
-    if (value.isGreaterThanOrEqualTo(BigNumber(MAX_UINT256).minus(HALF_PERCENT))) {
-        throw new MultiplicationOverflowError("MATH_MULTIPLICATION_OVERFLOW");
+    if (value.isGreaterThanOrEqualTo((0, bignumber_js_1.default)(exports.MAX_UINT256).minus(exports.HALF_PERCENT))) {
+        throw new error_1.MultiplicationOverflowError("MATH_MULTIPLICATION_OVERFLOW");
     }
-    return BigNumber(value.multipliedBy(percentage).plus(HALF_PERCENT).div(PERCENTAGE_FACTOR).toFixed(0));
+    return (0, bignumber_js_1.default)(value.multipliedBy(percentage).plus(exports.HALF_PERCENT).div(exports.PERCENTAGE_FACTOR).toFixed(0));
 };
-export const wadDiv = (a, b) => {
+exports.percentMul = percentMul;
+const wadDiv = (a, b) => {
     if (a.toFixed(0) == "0") {
-        throw new DivisionByZeroError("MATH_DIVISION_BY_ZERO");
+        throw new error_1.DivisionByZeroError("MATH_DIVISION_BY_ZERO");
     }
     let halfB = b.div(2);
-    if (a.isGreaterThan(BigNumber(MAX_UINT256).minus(halfB).div(WAD))) {
-        throw new MultiplicationOverflowError("MATH_MULTIPLICATION_OVERFLOW");
+    if (a.isGreaterThan((0, bignumber_js_1.default)(exports.MAX_UINT256).minus(halfB).div(exports.WAD))) {
+        throw new error_1.MultiplicationOverflowError("MATH_MULTIPLICATION_OVERFLOW");
     }
-    return a.multipliedBy(WAD).plus(halfB).div(b);
+    return a.multipliedBy(exports.WAD).plus(halfB).div(b);
 };
-export const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
-export const MAX_LOCK_TIMES = 4 * 365 * 24 * 60 * 60;
-export const YEAR_TO_SECONDS = 365 * 24 * 60 * 60;
-export const MONTH_TO_SECONDS = 30 * 24 * 60 * 60;
-export const WEEK_TO_SECONDS = 7 * 24 * 60 * 60;
-export const DAY_TO_SECONDS = 24 * 60 * 60;
-export const HOUR_TO_SECONDS = 60 * 60;
-export const BASE18 = BigNumber("1000000000000000000");
-export const MAX_UINT256 = ethers.MaxUint256.toString();
-export const PERCENTAGE_FACTOR = BigNumber(1e4);
-export const HALF_PERCENT = PERCENTAGE_FACTOR.div(2);
-export const WAD = BigNumber(1e18);
-export const FEE_AUCTION_PERCENTAGE = 5 / 100;
-export const MINIMUM_BID_STEP_PERCENT = 5 / 100;
-export const tramline_api = "https://tramlines-backend.trava.finance/api";
-export const centic_api = "https://develop.centic.io/dev";
-export const centic_api_key = "3ATJtOInT7QfaV2pvAdhlRVMHbztLjyyAL16UrKe5Q6vMtlR";
+exports.wadDiv = wadDiv;
+exports.ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
+exports.MAX_LOCK_TIMES = 4 * 365 * 24 * 60 * 60;
+exports.YEAR_TO_SECONDS = 365 * 24 * 60 * 60;
+exports.MONTH_TO_SECONDS = 30 * 24 * 60 * 60;
+exports.WEEK_TO_SECONDS = 7 * 24 * 60 * 60;
+exports.DAY_TO_SECONDS = 24 * 60 * 60;
+exports.HOUR_TO_SECONDS = 60 * 60;
+exports.BASE18 = (0, bignumber_js_1.default)("1000000000000000000");
+exports.MAX_UINT256 = ethers_1.ethers.MaxUint256.toString();
+exports.PERCENTAGE_FACTOR = (0, bignumber_js_1.default)(1e4);
+exports.HALF_PERCENT = exports.PERCENTAGE_FACTOR.div(2);
+exports.WAD = (0, bignumber_js_1.default)(1e18);
+exports.FEE_AUCTION_PERCENTAGE = 5 / 100;
+exports.MINIMUM_BID_STEP_PERCENT = 5 / 100;
+exports.tramline_api = "https://tramlines-backend.trava.finance/api";
+exports.centic_api = "https://develop.centic.io/dev";
+exports.centic_api_key = "3ATJtOInT7QfaV2pvAdhlRVMHbztLjyyAL16UrKe5Q6vMtlR";

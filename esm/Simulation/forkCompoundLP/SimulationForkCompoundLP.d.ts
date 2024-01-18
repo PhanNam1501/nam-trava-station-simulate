@@ -1,6 +1,14 @@
-import { ApplicationState } from "../../State";
+import BigNumber from "bignumber.js";
+import { ApplicationState, inputCollateral } from "../../State";
 import { EthAddress } from "../../utils/types";
+export declare function calculateMaxAmountForkCompoundSupply(appState: ApplicationState, _entity_id: string, _tokenAddress: string, _from: EthAddress): Promise<BigNumber>;
+export declare function calculateMaxAmountForkCompoundBorrow(appState1: ApplicationState, _entity_id: string, _tokenAddress: string, _from: EthAddress): Promise<BigNumber>;
+export declare function calculateMaxAmountForkCompoundWithdraw(appState: ApplicationState, _entity_id: string, _tokenAddress: string, _from: EthAddress): Promise<BigNumber>;
+export declare function calculateMaxAmountForkCompoundRepay(appState: ApplicationState, _entity_id: string, _tokenAddress: string, _from: EthAddress): Promise<BigNumber>;
 export declare function SimulationSupplyForkCompoundLP(appState1: ApplicationState, _from: EthAddress, _idLP: string, _tokenAddress: EthAddress, _amount: string): Promise<ApplicationState>;
 export declare function SimulationWithdrawForkCompoundLP(appState1: ApplicationState, _from: EthAddress, _idLP: string, _tokenAddress: EthAddress, _amount: string): Promise<ApplicationState>;
 export declare function SimulationBorrowForkCompoundLP(appState1: ApplicationState, _from: EthAddress, _idLP: string, _tokenAddress: EthAddress, _amount: string): Promise<ApplicationState>;
 export declare function SimulationRepayForkCompoundLP(appState1: ApplicationState, _from: EthAddress, _idLP: string, _tokenAddress: EthAddress, _amount: string): Promise<ApplicationState>;
+export declare function SimulationCollateral(appState1: ApplicationState, _from: EthAddress, _idLP: string, _collateralList: Array<inputCollateral>): Promise<ApplicationState>;
+export declare function cTokenToDetailTokenAddress(appState1: ApplicationState, _from: EthAddress, _idLP: string, cTokenAddress: EthAddress): string;
+export declare function detailTokenAddressToCToken(appState1: ApplicationState, _from: EthAddress, _idLP: string, detailTokenAddress: EthAddress): string;

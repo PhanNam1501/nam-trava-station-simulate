@@ -1,3 +1,4 @@
+"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -7,95 +8,120 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-import BigNumber from "bignumber.js";
-import { updateUserTokenBalance } from "../basic";
-// Comming Soon .......
-import { getMode } from "../../utils/helper";
-import { updateForkAaveLPState } from "./UpdateStateAccount";
-import { MAX_UINT256 } from "../../utils";
-export function calculateMaxAmountForkAaveSupply(appState, _entity_id, _tokenAddress, _from) {
-    const tokenAddress = _tokenAddress.toLowerCase();
-    const mode = getMode(appState, _from);
-    if (appState.forkAaveLPState.forkAaveLP.get(_entity_id) == undefined) {
-        updateForkAaveLPState(appState, _entity_id);
-    }
-    const walletBalance = appState[mode].tokenBalances.get(tokenAddress);
-    if (typeof walletBalance == undefined) {
-        throw new Error("Token is not init in " + mode + " state!");
-    }
-    const lpState = appState.smartWalletState.forkedAaveLPState.get(_entity_id);
-    let tokenInfo = lpState.detailTokenInPool.get(tokenAddress);
-    if (typeof tokenInfo == undefined) {
-        throw new Error("Token is not init in smart wallet lending pool state!");
-    }
-    return BigNumber(appState[mode].tokenBalances.get(tokenAddress));
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.SimulationRepayForkAaveLP = exports.SimulationBorrowForkAaveLP = exports.SimulationWithdrawForkAaveLP = exports.SimulationSupplyForkAaveLP = exports.calculateMaxAmountForkAaveWithdraw = exports.calculateMaxAmountForkAaveRepay = exports.calculateMaxAmountForkAaveBorrow = exports.calculateMaxAmountForkAaveSupply = void 0;
+const bignumber_js_1 = __importDefault(require("bignumber.js"));
+const basic_1 = require("../basic");
+const helper_1 = require("../../utils/helper");
+const UpdateStateAccount_1 = require("./UpdateStateAccount");
+const utils_1 = require("../../utils");
+function calculateMaxAmountForkAaveSupply(appState, _entity_id, _tokenAddress, _from) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const tokenAddress = _tokenAddress.toLowerCase();
+        const mode = (0, helper_1.getMode)(appState, _from);
+        if (appState.forkAaveLPState.forkAaveLP.get(_entity_id) == undefined) {
+            appState = yield (0, UpdateStateAccount_1.updateForkAaveLPState)(appState, _entity_id);
+        }
+        if (!appState[mode].tokenBalances.has(tokenAddress)) {
+            appState = yield (0, basic_1.updateUserTokenBalance)(appState, tokenAddress);
+        }
+        const walletBalance = appState[mode].tokenBalances.get(tokenAddress);
+        if (typeof walletBalance == undefined) {
+            throw new Error("Token is not init in " + mode + " state!");
+        }
+        const lpState = appState.smartWalletState.forkedAaveLPState.get(_entity_id);
+        let tokenInfo = lpState.detailTokenInPool.get(tokenAddress);
+        if (typeof tokenInfo == undefined) {
+            throw new Error("Token is not init in smart wallet lending pool state!");
+        }
+        return (0, bignumber_js_1.default)(appState[mode].tokenBalances.get(tokenAddress));
+    });
 }
-export function calculateMaxAmountForkAaveBorrow(appState, _entity_id, _tokenAddress) {
-    const tokenAddress = _tokenAddress.toLowerCase();
-    if (appState.forkAaveLPState.forkAaveLP.get(_entity_id) == undefined) {
-        updateForkAaveLPState(appState, _entity_id);
-    }
-    const lpState = appState.smartWalletState.forkedAaveLPState.get(_entity_id);
-    let tokenInfo = lpState.detailTokenInPool.get(tokenAddress);
-    const tTokenReserveBalanceRaw = BigNumber(tokenInfo.tToken.originToken.balances);
-    const tTokenReserveBalance = BigNumber(tTokenReserveBalanceRaw).div(BigNumber("10").pow(tokenInfo.tToken.decimals));
-    const availableBorrowsUSD = BigNumber(appState.smartWalletState.travaLPState.availableBorrowsUSD);
-    const nativeAvailableBorrow = availableBorrowsUSD.div(tokenInfo.price);
-    return BigNumber.max(BigNumber.min(nativeAvailableBorrow, tTokenReserveBalance), 0).multipliedBy(BigNumber("10").pow(tokenInfo.tToken.decimals));
+exports.calculateMaxAmountForkAaveSupply = calculateMaxAmountForkAaveSupply;
+function calculateMaxAmountForkAaveBorrow(appState, _entity_id, _tokenAddress) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const tokenAddress = _tokenAddress.toLowerCase();
+        if (appState.forkAaveLPState.forkAaveLP.get(_entity_id) == undefined) {
+            appState = yield (0, UpdateStateAccount_1.updateForkAaveLPState)(appState, _entity_id);
+        }
+        const lpState = appState.smartWalletState.forkedAaveLPState.get(_entity_id);
+        let tokenInfo = lpState.detailTokenInPool.get(tokenAddress);
+        const tTokenReserveBalanceRaw = (0, bignumber_js_1.default)(tokenInfo.tToken.originToken.balances);
+        const tTokenReserveBalance = (0, bignumber_js_1.default)(tTokenReserveBalanceRaw).div((0, bignumber_js_1.default)("10").pow(tokenInfo.tToken.decimals));
+        const availableBorrowsUSD = (0, bignumber_js_1.default)(appState.smartWalletState.travaLPState.availableBorrowsUSD);
+        const nativeAvailableBorrow = availableBorrowsUSD.div(tokenInfo.price);
+        return bignumber_js_1.default.max(bignumber_js_1.default.min(nativeAvailableBorrow, tTokenReserveBalance), 0).multipliedBy((0, bignumber_js_1.default)("10").pow(tokenInfo.tToken.decimals));
+    });
 }
-export function calculateMaxAmountForkAaveRepay(appState, _entity_id, _tokenAddress, _from) {
-    const tokenAddress = _tokenAddress.toLowerCase();
-    const mode = getMode(appState, _from);
-    if (appState.forkAaveLPState.forkAaveLP.get(_entity_id) == undefined) {
-        updateForkAaveLPState(appState, _entity_id);
-    }
-    const walletBalance = appState[mode].tokenBalances.get(tokenAddress);
-    if (typeof walletBalance == undefined) {
-        throw new Error("Token is not init in " + mode + " state!");
-    }
-    const lpState = appState.smartWalletState.forkedAaveLPState.get(_entity_id);
-    let tokenInfo = lpState.detailTokenInPool.get(tokenAddress);
-    let dTokenBalance = tokenInfo.dToken.balances;
-    const borrowed = new BigNumber(dTokenBalance);
-    return BigNumber.max(BigNumber.min(walletBalance, borrowed), 0);
+exports.calculateMaxAmountForkAaveBorrow = calculateMaxAmountForkAaveBorrow;
+function calculateMaxAmountForkAaveRepay(appState, _entity_id, _tokenAddress, _from) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const tokenAddress = _tokenAddress.toLowerCase();
+        const mode = (0, helper_1.getMode)(appState, _from);
+        if (appState.forkAaveLPState.forkAaveLP.get(_entity_id) == undefined) {
+            appState = yield (0, UpdateStateAccount_1.updateForkAaveLPState)(appState, _entity_id);
+        }
+        if (!appState[mode].tokenBalances.has(tokenAddress)) {
+            appState = yield (0, basic_1.updateUserTokenBalance)(appState, tokenAddress);
+        }
+        const walletBalance = appState[mode].tokenBalances.get(tokenAddress);
+        if (typeof walletBalance == undefined) {
+            throw new Error("Token is not init in " + mode + " state!");
+        }
+        const lpState = appState.smartWalletState.forkedAaveLPState.get(_entity_id);
+        let tokenInfo = lpState.detailTokenInPool.get(tokenAddress);
+        let dTokenBalance = tokenInfo.dToken.balances;
+        const borrowed = new bignumber_js_1.default(dTokenBalance);
+        return bignumber_js_1.default.max(bignumber_js_1.default.min(walletBalance, borrowed), 0);
+    });
 }
-export function calculateMaxAmountForkAaveWithdraw(appState, _entity_id, _tokenAddress) {
-    const tokenAddress = _tokenAddress.toLowerCase();
-    if (appState.forkAaveLPState.forkAaveLP.get(_entity_id) == undefined) {
-        updateForkAaveLPState(appState, _entity_id);
-    }
-    const lpState = appState.smartWalletState.forkedAaveLPState.get(_entity_id);
-    let tokenInfo = lpState.detailTokenInPool.get(tokenAddress);
-    const depositedRaw = tokenInfo.tToken.balances;
-    const deposited = BigNumber(depositedRaw).dividedBy(BigNumber("10").pow(tokenInfo.tToken.decimals));
-    const tTokenReserveBalanceRaw = tokenInfo.tToken.originToken.balances;
-    const tTokenReserveBalance = BigNumber(tTokenReserveBalanceRaw).dividedBy(BigNumber("10").pow(tokenInfo.tToken.decimals));
-    let nativeAvailableWithdraw = BigNumber(appState.smartWalletState.travaLPState.totalCollateralUSD)
-        .minus(BigNumber(appState.smartWalletState.travaLPState.totalDebtUSD).div(BigNumber(appState.smartWalletState.travaLPState.ltv)))
-        .div(tokenInfo.price);
-    const available = BigNumber(tokenInfo.tToken.totalSupply).minus(tokenInfo.dToken.totalSupply).div(tokenInfo.price);
-    if (nativeAvailableWithdraw.isNaN()) {
-        nativeAvailableWithdraw = BigNumber(0);
-    }
-    return BigNumber.max(BigNumber.min(deposited, nativeAvailableWithdraw, tTokenReserveBalance, available), 0).multipliedBy(BigNumber("10").pow(tokenInfo.tToken.decimals));
+exports.calculateMaxAmountForkAaveRepay = calculateMaxAmountForkAaveRepay;
+function calculateMaxAmountForkAaveWithdraw(appState, _entity_id, _tokenAddress) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const tokenAddress = _tokenAddress.toLowerCase();
+        if (appState.forkAaveLPState.forkAaveLP.get(_entity_id) == undefined) {
+            appState = yield (0, UpdateStateAccount_1.updateForkAaveLPState)(appState, _entity_id);
+        }
+        const lpState = appState.smartWalletState.forkedAaveLPState.get(_entity_id);
+        let tokenInfo = lpState.detailTokenInPool.get(tokenAddress);
+        const depositedRaw = tokenInfo.tToken.balances;
+        const deposited = (0, bignumber_js_1.default)(depositedRaw).dividedBy((0, bignumber_js_1.default)("10").pow(tokenInfo.tToken.decimals));
+        const tTokenReserveBalanceRaw = tokenInfo.tToken.originToken.balances;
+        const tTokenReserveBalance = (0, bignumber_js_1.default)(tTokenReserveBalanceRaw).dividedBy((0, bignumber_js_1.default)("10").pow(tokenInfo.tToken.decimals));
+        let nativeAvailableWithdraw = (0, bignumber_js_1.default)(appState.smartWalletState.travaLPState.totalCollateralUSD)
+            .minus((0, bignumber_js_1.default)(appState.smartWalletState.travaLPState.totalDebtUSD).div((0, bignumber_js_1.default)(appState.smartWalletState.travaLPState.ltv)))
+            .div(tokenInfo.price);
+        const available = (0, bignumber_js_1.default)(tokenInfo.tToken.totalSupply).minus(tokenInfo.dToken.totalSupply).div(tokenInfo.price);
+        if (nativeAvailableWithdraw.isNaN()) {
+            nativeAvailableWithdraw = (0, bignumber_js_1.default)(0);
+        }
+        return bignumber_js_1.default.max(bignumber_js_1.default.min(deposited, nativeAvailableWithdraw, tTokenReserveBalance, available), 0).multipliedBy((0, bignumber_js_1.default)("10").pow(tokenInfo.tToken.decimals));
+    });
 }
-export function SimulationSupplyForkAaveLP(appState1, _from, _entity_id, _tokenAddress, _amount) {
+exports.calculateMaxAmountForkAaveWithdraw = calculateMaxAmountForkAaveWithdraw;
+function SimulationSupplyForkAaveLP(appState1, _from, _entity_id, _tokenAddress, _amount) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            let amount = BigNumber(_amount);
+            let amount = (0, bignumber_js_1.default)(_amount);
             let appState = Object.assign({}, appState1);
             if (appState.forkAaveLPState.forkAaveLP.get(_entity_id) == undefined) {
-                appState = yield updateForkAaveLPState(appState, _entity_id);
+                appState = yield (0, UpdateStateAccount_1.updateForkAaveLPState)(appState, _entity_id);
             }
             const tokenAddress = _tokenAddress.toLowerCase();
-            let modeFrom = getMode(appState, _from);
-            if (amount.isEqualTo(MAX_UINT256)) {
-                amount = calculateMaxAmountForkAaveSupply(appState, _entity_id, tokenAddress, _from);
+            let modeFrom = (0, helper_1.getMode)(appState, _from);
+            if (amount.isEqualTo(utils_1.MAX_UINT256)) {
+                amount = yield calculateMaxAmountForkAaveSupply(appState, _entity_id, tokenAddress, _from);
             }
             if (!appState[modeFrom].tokenBalances.has(tokenAddress)) {
-                appState = yield updateUserTokenBalance(appState, tokenAddress);
+                appState = yield (0, basic_1.updateUserTokenBalance)(appState, tokenAddress);
             }
-            const tokenAmount = BigNumber(appState[modeFrom].tokenBalances.get(tokenAddress));
+            if (!appState[modeFrom].forkedAaveLPState.has(_entity_id)) {
+                appState = yield (0, UpdateStateAccount_1.updateUserInForkAaveLPState)(appState, _from, _entity_id);
+            }
+            const tokenAmount = (0, bignumber_js_1.default)(appState[modeFrom].tokenBalances.get(tokenAddress));
             let data = appState.forkAaveLPState.forkAaveLP.get(_entity_id);
             if (!data) {
                 throw new Error("data not found");
@@ -103,14 +129,14 @@ export function SimulationSupplyForkAaveLP(appState1, _from, _entity_id, _tokenA
             let dataAssets = data.markets[0].assets.find((asset) => asset.address == tokenAddress);
             let price = dataAssets === null || dataAssets === void 0 ? void 0 : dataAssets.price;
             if (!price) {
-                throw new Error("price not found");
+                price = 0;
             }
-            data.totalSupplyInUSD = BigNumber(data.totalSupplyInUSD || 0).plus(amount.multipliedBy(price)).toNumber();
+            data.totalSupplyInUSD = (0, bignumber_js_1.default)(data.totalSupplyInUSD || 0).plus(amount.multipliedBy(price)).toNumber();
             let dataWallet = appState.smartWalletState.forkedAaveLPState.get(_entity_id);
             if (dataWallet.dapps.length == 0) {
                 let reserve = {
                     category: "Lending",
-                    healthFactor: Number(MAX_UINT256),
+                    healthFactor: Number(utils_1.MAX_UINT256),
                     deposit: new Array(),
                     borrow: new Array()
                 };
@@ -130,34 +156,28 @@ export function SimulationSupplyForkAaveLP(appState1, _from, _entity_id, _tokenA
             let dataInWallet = dataWallet.dapps[0].reserves[0].deposit.find((reserve) => reserve.address == tokenAddress);
             if (!dataInWallet) {
                 let newData = {
-                    // key: dataAssets?.key || "",
                     id: (dataAssets === null || dataAssets === void 0 ? void 0 : dataAssets.id) || "",
-                    // name: dataAssets?.name || "",
                     type: "token",
                     address: tokenAddress,
                     symbol: (dataAssets === null || dataAssets === void 0 ? void 0 : dataAssets.symbol) || "",
                     amount: amount.toNumber(),
                     valueInUSD: amount.multipliedBy(price).toNumber(),
-                    // imgUrl: dataAssets?.imgUrl || "",
                     totalValue: amount.multipliedBy(price).toNumber(),
                 };
                 dataWallet.dapps[0].reserves[0].deposit.push(newData);
             }
             else {
                 let newData = {
-                    // key: dataAssets?.key || "",
                     id: (dataAssets === null || dataAssets === void 0 ? void 0 : dataAssets.id) || "",
-                    // name: dataAssets?.name || "",
                     type: "token",
                     address: tokenAddress,
                     symbol: (dataAssets === null || dataAssets === void 0 ? void 0 : dataAssets.symbol) || "",
                     amount: amount.toNumber() + dataInWallet.amount,
                     valueInUSD: amount.plus(dataInWallet.amount).multipliedBy(price).toNumber(),
-                    // imgUrl: dataAssets?.imgUrl || "",
                     totalValue: amount.plus(dataInWallet.amount).multipliedBy(price).toNumber(),
                 };
-                dataWallet.dapps[0].value = BigNumber(dataWallet.dapps[0].value || 0).plus(amount).toNumber();
-                dataWallet.dapps[0].depositInUSD = BigNumber(dataWallet.dapps[0].depositInUSD || 0).plus(amount.multipliedBy(price)).toNumber();
+                dataWallet.dapps[0].value = (0, bignumber_js_1.default)(dataWallet.dapps[0].value || 0).plus(amount).toNumber();
+                dataWallet.dapps[0].depositInUSD = (0, bignumber_js_1.default)(dataWallet.dapps[0].depositInUSD || 0).plus(amount.multipliedBy(price)).toNumber();
                 dataWallet.dapps[0].reserves[0].deposit = dataWallet.dapps[0].reserves[0].deposit.map((reserve) => {
                     if (reserve.address == tokenAddress) {
                         return newData;
@@ -176,23 +196,27 @@ export function SimulationSupplyForkAaveLP(appState1, _from, _entity_id, _tokenA
         }
     });
 }
-export function SimulationWithdrawForkAaveLP(appState1, _from, _entity_id, _tokenAddress, _amount) {
+exports.SimulationSupplyForkAaveLP = SimulationSupplyForkAaveLP;
+function SimulationWithdrawForkAaveLP(appState1, _from, _entity_id, _tokenAddress, _amount) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            let amount = BigNumber(_amount);
+            let amount = (0, bignumber_js_1.default)(_amount);
             let appState = Object.assign({}, appState1);
             if (appState.forkAaveLPState.forkAaveLP.get(_entity_id) == undefined) {
-                appState = yield updateForkAaveLPState(appState, _entity_id);
+                appState = yield (0, UpdateStateAccount_1.updateForkAaveLPState)(appState, _entity_id);
             }
             const tokenAddress = _tokenAddress.toLowerCase();
-            let modeFrom = getMode(appState, _from);
-            if (amount.isEqualTo(MAX_UINT256)) {
-                amount = calculateMaxAmountForkAaveWithdraw(appState, _entity_id, tokenAddress);
+            let modeFrom = (0, helper_1.getMode)(appState, _from);
+            if (amount.isEqualTo(utils_1.MAX_UINT256)) {
+                amount = yield calculateMaxAmountForkAaveWithdraw(appState, _entity_id, tokenAddress);
             }
             if (!appState[modeFrom].tokenBalances.has(tokenAddress)) {
-                appState = yield updateUserTokenBalance(appState, tokenAddress);
+                appState = yield (0, basic_1.updateUserTokenBalance)(appState, tokenAddress);
             }
-            const tokenAmount = BigNumber(appState[modeFrom].tokenBalances.get(tokenAddress));
+            if (!appState[modeFrom].forkedAaveLPState.has(_entity_id)) {
+                appState = yield (0, UpdateStateAccount_1.updateUserInForkAaveLPState)(appState, _from, _entity_id);
+            }
+            const tokenAmount = (0, bignumber_js_1.default)(appState[modeFrom].tokenBalances.get(tokenAddress));
             let data = appState.forkAaveLPState.forkAaveLP.get(_entity_id);
             if (!data) {
                 throw new Error("data not found");
@@ -202,12 +226,12 @@ export function SimulationWithdrawForkAaveLP(appState1, _from, _entity_id, _toke
             if (!price) {
                 throw new Error("price not found");
             }
-            data.totalSupplyInUSD = BigNumber(data.totalSupplyInUSD || 0).minus(amount.multipliedBy(price)).toNumber();
+            data.totalSupplyInUSD = (0, bignumber_js_1.default)(data.totalSupplyInUSD || 0).minus(amount.multipliedBy(price)).toNumber();
             let dataWallet = appState.smartWalletState.forkedAaveLPState.get(_entity_id);
             if (dataWallet.dapps.length == 0) {
                 let reserve = {
                     category: "Lending",
-                    healthFactor: Number(MAX_UINT256),
+                    healthFactor: Number(utils_1.MAX_UINT256),
                     deposit: new Array(),
                     borrow: new Array()
                 };
@@ -244,11 +268,11 @@ export function SimulationWithdrawForkAaveLP(appState1, _from, _entity_id, _toke
                     address: tokenAddress,
                     symbol: (dataAssets === null || dataAssets === void 0 ? void 0 : dataAssets.symbol) || "",
                     amount: -amount.toNumber() + dataInWallet.amount,
-                    valueInUSD: BigNumber(dataInWallet.amount).minus(amount).multipliedBy(price).toNumber(),
-                    totalValue: BigNumber(dataInWallet.amount).minus(amount).multipliedBy(price).toNumber(),
+                    valueInUSD: (0, bignumber_js_1.default)(dataInWallet.amount).minus(amount).multipliedBy(price).toNumber(),
+                    totalValue: (0, bignumber_js_1.default)(dataInWallet.amount).minus(amount).multipliedBy(price).toNumber(),
                 };
-                dataWallet.dapps[0].value = BigNumber(dataWallet.dapps[0].value || 0).minus(amount).toNumber();
-                dataWallet.dapps[0].depositInUSD = BigNumber(dataWallet.dapps[0].depositInUSD || 0).minus(amount.multipliedBy(price)).toNumber();
+                dataWallet.dapps[0].value = (0, bignumber_js_1.default)(dataWallet.dapps[0].value || 0).minus(amount).toNumber();
+                dataWallet.dapps[0].depositInUSD = (0, bignumber_js_1.default)(dataWallet.dapps[0].depositInUSD || 0).minus(amount.multipliedBy(price)).toNumber();
                 dataWallet.dapps[0].reserves[0].deposit = dataWallet.dapps[0].reserves[0].deposit.map((reserve) => {
                     if (reserve.address == tokenAddress) {
                         return newData;
@@ -267,24 +291,27 @@ export function SimulationWithdrawForkAaveLP(appState1, _from, _entity_id, _toke
         }
     });
 }
-export function SimulationBorrowForkAaveLP(appState1, _from, _entity_id, _tokenAddress, _amount) {
+exports.SimulationWithdrawForkAaveLP = SimulationWithdrawForkAaveLP;
+function SimulationBorrowForkAaveLP(appState1, _from, _entity_id, _tokenAddress, _amount) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            let amount = BigNumber(_amount);
+            let amount = (0, bignumber_js_1.default)(_amount);
             let appState = Object.assign({}, appState1);
             if (appState.forkAaveLPState.forkAaveLP.get(_entity_id) == undefined) {
-                appState = yield updateForkAaveLPState(appState, _entity_id);
+                appState = yield (0, UpdateStateAccount_1.updateForkAaveLPState)(appState, _entity_id);
             }
             const tokenAddress = _tokenAddress.toLowerCase();
-            let modeFrom = getMode(appState, _from);
-            // Comming Soon .......
-            if (amount.isEqualTo(MAX_UINT256)) {
-                amount = calculateMaxAmountForkAaveBorrow(appState, _entity_id, tokenAddress);
+            let modeFrom = (0, helper_1.getMode)(appState, _from);
+            if (amount.isEqualTo(utils_1.MAX_UINT256)) {
+                amount = yield calculateMaxAmountForkAaveBorrow(appState, _entity_id, tokenAddress);
             }
             if (!appState[modeFrom].tokenBalances.has(tokenAddress)) {
-                appState = yield updateUserTokenBalance(appState, tokenAddress);
+                appState = yield (0, basic_1.updateUserTokenBalance)(appState, tokenAddress);
             }
-            const tokenAmount = BigNumber(appState[modeFrom].tokenBalances.get(tokenAddress));
+            if (!appState[modeFrom].forkedAaveLPState.has(_entity_id)) {
+                appState = yield (0, UpdateStateAccount_1.updateUserInForkAaveLPState)(appState, _from, _entity_id);
+            }
+            const tokenAmount = (0, bignumber_js_1.default)(appState[modeFrom].tokenBalances.get(tokenAddress));
             let data = appState.forkAaveLPState.forkAaveLP.get(_entity_id);
             if (!data) {
                 throw new Error("data not found");
@@ -294,12 +321,12 @@ export function SimulationBorrowForkAaveLP(appState1, _from, _entity_id, _tokenA
             if (!price) {
                 throw new Error("price not found");
             }
-            data.totalBorrowInUSD = BigNumber(data.totalBorrowInUSD || 0).plus(amount.multipliedBy(price)).toNumber();
+            data.totalBorrowInUSD = (0, bignumber_js_1.default)(data.totalBorrowInUSD || 0).plus(amount.multipliedBy(price)).toNumber();
             let dataWallet = appState.smartWalletState.forkedAaveLPState.get(_entity_id);
             if (dataWallet.dapps.length == 0) {
                 let reserve = {
                     category: "Lending",
-                    healthFactor: Number(MAX_UINT256),
+                    healthFactor: Number(utils_1.MAX_UINT256),
                     deposit: new Array(),
                     borrow: new Array()
                 };
@@ -339,8 +366,8 @@ export function SimulationBorrowForkAaveLP(appState1, _from, _entity_id, _tokenA
                     valueInUSD: amount.plus(dataInWallet.amount).multipliedBy(price).toNumber(),
                     totalValue: amount.plus(dataInWallet.amount).multipliedBy(price).toNumber(),
                 };
-                dataWallet.dapps[0].value = BigNumber(dataWallet.dapps[0].value || 0).plus(amount).toNumber();
-                dataWallet.dapps[0].borrowInUSD = BigNumber(dataWallet.dapps[0].borrowInUSD || 0).plus(amount.multipliedBy(price)).toNumber();
+                dataWallet.dapps[0].value = (0, bignumber_js_1.default)(dataWallet.dapps[0].value || 0).plus(amount).toNumber();
+                dataWallet.dapps[0].borrowInUSD = (0, bignumber_js_1.default)(dataWallet.dapps[0].borrowInUSD || 0).plus(amount.multipliedBy(price)).toNumber();
                 dataWallet.dapps[0].reserves[0].borrow = dataWallet.dapps[0].reserves[0].borrow.map((reserve) => {
                     if (reserve.address == tokenAddress) {
                         return newData;
@@ -359,24 +386,27 @@ export function SimulationBorrowForkAaveLP(appState1, _from, _entity_id, _tokenA
         }
     });
 }
-export function SimulationRepayForkAaveLP(appState1, _from, _entity_id, _tokenAddress, _amount) {
+exports.SimulationBorrowForkAaveLP = SimulationBorrowForkAaveLP;
+function SimulationRepayForkAaveLP(appState1, _from, _entity_id, _tokenAddress, _amount) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            let amount = BigNumber(_amount);
+            let amount = (0, bignumber_js_1.default)(_amount);
             let appState = Object.assign({}, appState1);
             if (appState.forkAaveLPState.forkAaveLP.get(_entity_id) == undefined) {
-                appState = yield updateForkAaveLPState(appState, _entity_id);
+                appState = yield (0, UpdateStateAccount_1.updateForkAaveLPState)(appState, _entity_id);
             }
             const tokenAddress = _tokenAddress.toLowerCase();
-            let modeFrom = getMode(appState, _from);
-            // Comming Soon .......
-            if (amount.isEqualTo(MAX_UINT256)) {
-                amount = calculateMaxAmountForkAaveRepay(appState, _entity_id, tokenAddress, _from);
+            let modeFrom = (0, helper_1.getMode)(appState, _from);
+            if (amount.isEqualTo(utils_1.MAX_UINT256)) {
+                amount = yield calculateMaxAmountForkAaveRepay(appState, _entity_id, tokenAddress, _from);
             }
             if (!appState[modeFrom].tokenBalances.has(tokenAddress)) {
-                appState = yield updateUserTokenBalance(appState, tokenAddress);
+                appState = yield (0, basic_1.updateUserTokenBalance)(appState, tokenAddress);
             }
-            const tokenAmount = BigNumber(appState[modeFrom].tokenBalances.get(tokenAddress));
+            if (!appState[modeFrom].forkedAaveLPState.has(_entity_id)) {
+                appState = yield (0, UpdateStateAccount_1.updateUserInForkAaveLPState)(appState, _from, _entity_id);
+            }
+            const tokenAmount = (0, bignumber_js_1.default)(appState[modeFrom].tokenBalances.get(tokenAddress));
             let data = appState.forkAaveLPState.forkAaveLP.get(_entity_id);
             if (!data) {
                 throw new Error("data not found");
@@ -386,12 +416,12 @@ export function SimulationRepayForkAaveLP(appState1, _from, _entity_id, _tokenAd
             if (!price) {
                 throw new Error("price not found");
             }
-            data.totalBorrowInUSD = BigNumber(data.totalBorrowInUSD || 0).minus(amount.multipliedBy(price)).toNumber();
+            data.totalBorrowInUSD = (0, bignumber_js_1.default)(data.totalBorrowInUSD || 0).minus(amount.multipliedBy(price)).toNumber();
             let dataWallet = appState.smartWalletState.forkedAaveLPState.get(_entity_id);
             if (dataWallet.dapps.length == 0) {
                 let reserve = {
                     category: "Lending",
-                    healthFactor: Number(MAX_UINT256),
+                    healthFactor: Number(utils_1.MAX_UINT256),
                     deposit: new Array(),
                     borrow: new Array()
                 };
@@ -428,11 +458,11 @@ export function SimulationRepayForkAaveLP(appState1, _from, _entity_id, _tokenAd
                     address: tokenAddress,
                     symbol: (dataAssets === null || dataAssets === void 0 ? void 0 : dataAssets.symbol) || "",
                     amount: -amount.toNumber() + dataInWallet.amount,
-                    valueInUSD: BigNumber(dataInWallet.amount).minus(amount).multipliedBy(price).toNumber(),
-                    totalValue: BigNumber(dataInWallet.amount).minus(amount).multipliedBy(price).toNumber(),
+                    valueInUSD: (0, bignumber_js_1.default)(dataInWallet.amount).minus(amount).multipliedBy(price).toNumber(),
+                    totalValue: (0, bignumber_js_1.default)(dataInWallet.amount).minus(amount).multipliedBy(price).toNumber(),
                 };
-                dataWallet.dapps[0].value = BigNumber(dataWallet.dapps[0].value || 0).minus(amount).toNumber();
-                dataWallet.dapps[0].borrowInUSD = BigNumber(dataWallet.dapps[0].borrowInUSD || 0).minus(amount.multipliedBy(price)).toNumber();
+                dataWallet.dapps[0].value = (0, bignumber_js_1.default)(dataWallet.dapps[0].value || 0).minus(amount).toNumber();
+                dataWallet.dapps[0].borrowInUSD = (0, bignumber_js_1.default)(dataWallet.dapps[0].borrowInUSD || 0).minus(amount.multipliedBy(price)).toNumber();
                 dataWallet.dapps[0].reserves[0].borrow = dataWallet.dapps[0].reserves[0].borrow.map((reserve) => {
                     if (reserve.address == tokenAddress) {
                         return newData;
@@ -451,3 +481,4 @@ export function SimulationRepayForkAaveLP(appState1, _from, _entity_id, _tokenAd
         }
     });
 }
+exports.SimulationRepayForkAaveLP = SimulationRepayForkAaveLP;

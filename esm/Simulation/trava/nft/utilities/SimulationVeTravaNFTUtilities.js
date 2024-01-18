@@ -1,3 +1,4 @@
+"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -7,10 +8,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-import { NFTNotFoundError } from "../../../../utils/error";
-import { updateTravaGovernanceState } from "../../governance/UpdateStateAccount";
-import { getMode } from "../../../../utils/helper";
-export function simulateNFTVeTravaTranfer(_appState1, _NFTId, _from, _to) {
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.simulateNFTVeTravaTranfer = void 0;
+const error_1 = require("../../../../utils/error");
+const UpdateStateAccount_1 = require("../../governance/UpdateStateAccount");
+const helper_1 = require("../../../../utils/helper");
+function simulateNFTVeTravaTranfer(_appState1, _NFTId, _from, _to) {
     return __awaiter(this, void 0, void 0, function* () {
         let appState = Object.assign({}, _appState1);
         try {
@@ -18,16 +21,16 @@ export function simulateNFTVeTravaTranfer(_appState1, _NFTId, _from, _to) {
             _to = _to.toLowerCase();
             let tokenAddress = "";
             if (appState.TravaGovernanceState.totalSupply == "") {
-                appState = yield updateTravaGovernanceState(appState);
+                appState = yield (0, UpdateStateAccount_1.updateTravaGovernanceState)(appState);
             }
-            let modeFrom = getMode(appState, _from);
+            let modeFrom = (0, helper_1.getMode)(appState, _from);
             if (!appState[modeFrom].veTravaListState.veTravaList.has(_NFTId)) {
-                throw new NFTNotFoundError("NFT not found");
+                throw new error_1.NFTNotFoundError("NFT not found");
             }
             if (_to == appState.walletState.address.toLowerCase() || _to == appState.smartWalletState.address.toLowerCase()) {
                 let data = appState[modeFrom].veTravaListState.veTravaList.get(_NFTId);
                 appState[modeFrom].veTravaListState.veTravaList.delete(_NFTId);
-                appState[getMode(appState, _to)].veTravaListState.veTravaList.set(_NFTId, data);
+                appState[(0, helper_1.getMode)(appState, _to)].veTravaListState.veTravaList.set(_NFTId, data);
                 tokenAddress = data.tokenInVeTrava.tokenLockOption.address;
             }
             else {
@@ -40,3 +43,4 @@ export function simulateNFTVeTravaTranfer(_appState1, _NFTId, _from, _to) {
         return appState;
     });
 }
+exports.simulateNFTVeTravaTranfer = simulateNFTVeTravaTranfer;

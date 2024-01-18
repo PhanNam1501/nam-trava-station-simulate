@@ -1,6 +1,9 @@
-import { NFTAuctioningState, NFTSellingState, NFTTicketState } from "./trava/nft/TravaNFTState";
-import { WalletTravaLPState } from "./trava/lending/TravaDeFiState";
-import { VeTravaListState } from "./trava/lending/TravaGovenanceState";
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.WalletState = exports.Ticket = exports.KnightInExpeditionState = exports.CollectionOwned = exports.NFTOwned = void 0;
+const TravaNFTState_1 = require("./trava/nft/TravaNFTState");
+const TravaDeFiState_1 = require("./trava/lending/TravaDeFiState");
+const TravaGovenanceState_1 = require("./trava/lending/TravaGovenanceState");
 // export class NFTData {
 //   id: string | number;
 //   data?: any;
@@ -17,14 +20,15 @@ import { VeTravaListState } from "./trava/lending/TravaGovenanceState";
 //     this.v2 = new Array<NFTData>();
 //   }
 // }
-export class NFTOwned {
+class NFTOwned {
     constructor() {
         this.v1 = {};
         this.v2 = {};
         this.isFetch = false;
     }
 }
-export class CollectionOwned {
+exports.NFTOwned = NFTOwned;
+class CollectionOwned {
     constructor() {
         this.v1 = [];
         this.v2 = [];
@@ -32,32 +36,36 @@ export class CollectionOwned {
         this.isFetch = false;
     }
 }
-export class KnightInExpeditionState {
+exports.CollectionOwned = CollectionOwned;
+class KnightInExpeditionState {
     constructor() {
         this.expedition = new Map();
         this.isFetch = false;
     }
 }
-export class Ticket {
+exports.KnightInExpeditionState = KnightInExpeditionState;
+class Ticket {
     constructor() {
         this.ticket = "";
         this.amount = 0;
     }
 }
-export class WalletState {
+exports.Ticket = Ticket;
+class WalletState {
     constructor(address) {
         this.address = address;
         this.tokenBalances = new Map();
         this.nfts = new NFTOwned();
         this.collection = new CollectionOwned();
-        this.travaLPState = new WalletTravaLPState();
+        this.travaLPState = new TravaDeFiState_1.WalletTravaLPState();
         this.forkedCompoundLPState = new Map();
         this.forkedAaveLPState = new Map();
         this.ethBalances = "";
-        this.sellingNFT = new NFTSellingState();
-        this.auctioningState = new NFTAuctioningState();
-        this.veTravaListState = new VeTravaListState();
+        this.sellingNFT = new TravaNFTState_1.NFTSellingState();
+        this.auctioningState = new TravaNFTState_1.NFTAuctioningState();
+        this.veTravaListState = new TravaGovenanceState_1.VeTravaListState();
         this.knightInExpeditionState = new KnightInExpeditionState();
-        this.ticket = new NFTTicketState();
+        this.ticket = new TravaNFTState_1.NFTTicketState();
     }
 }
+exports.WalletState = WalletState;

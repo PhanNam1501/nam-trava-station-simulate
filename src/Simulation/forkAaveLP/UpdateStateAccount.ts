@@ -33,7 +33,7 @@ export async function updateForkAaveLPState(appState1: ApplicationState, entity_
     return appState;
 }
 
-async function updateTokenDetailInOthersPools(appState1: ApplicationState, _from: EthAddress, entity_id: string): Promise<ApplicationState> {
+export async function updateTokenDetailInOthersPools(appState1: ApplicationState, _from: EthAddress, entity_id: string): Promise<ApplicationState> {
     let appState = { ...appState1 };
     try{
         let from = _from.toLowerCase();
@@ -204,6 +204,25 @@ export async function updateUserInForkAaveLPState(appState1: ApplicationState, _
                 ltv: dataLendingByAxiosTramline["accountPoolDataSlice"]["params"]["ltv"],
                 currentLiquidationThreshold: dataLendingByAxiosTramline["accountPoolDataSlice"]["params"]["currentLiquidationThreshold"],
             }
+            if (dataLendingPool["dapps"].length == 0){
+              data.dapps = [
+                {
+                  id: dataLendingPool["id"],
+                  type: "project",
+                  value: 0,
+                  depositInUSD: 0,
+                  borrowInUSD: 0,
+                  claimable: 0,
+                  reserves: [
+                    {
+                      category: "Lending",
+                      healthFactor: 0,
+                      deposit: [],
+                      borrow: [],
+                }
+                ]
+            }]
+          }
             appState[mode].forkedAaveLPState.set(entity_id, data);
             appState = await updateTokenDetailInOthersPools(appState, _from, entity_id);
         }

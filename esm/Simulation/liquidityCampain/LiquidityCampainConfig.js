@@ -1,10 +1,13 @@
-import { NETWORKS } from "../../utils";
-export const LIQUIDITY_TOKENS_NAME = {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.listLiquidityVault = exports.LIQUIDITY_TOKENS_NAME = void 0;
+const utils_1 = require("../../utils");
+exports.LIQUIDITY_TOKENS_NAME = {
     TOD: "TOD Vault",
     TRAVA: "Trava Vault",
 };
-export const listLiquidityVault = {
-    [NETWORKS.bscTestnet.chainId]: [
+exports.listLiquidityVault = {
+    [utils_1.NETWORKS.bscTestnet.chainId]: [
         {
             id: "TRAVA",
             name: "Trava",
@@ -16,7 +19,7 @@ export const listLiquidityVault = {
             lpAddress: "0x85Ddc89670e6dF515B00A69e86916e3208feb8e3",
             stakedTokenAddress: "0x1537263E42f81424A5099f992c1111D9d8c012B3",
             claimable: true,
-            tokenName: LIQUIDITY_TOKENS_NAME.TRAVA,
+            tokenName: exports.LIQUIDITY_TOKENS_NAME.TRAVA,
             rewardToken: {
                 symbol: "TRAVA",
                 address: "0xE1F005623934D3D8C724EC68Cc9bFD95498D4435",
@@ -34,7 +37,7 @@ export const listLiquidityVault = {
             lpAddress: "0x8E402D21cb184B84A55d7331f2C700d459ABADaa",
             stakedTokenAddress: "0x58FDCe55D226491B03A440192C85Cb6CDfB05a42",
             claimable: true,
-            tokenName: LIQUIDITY_TOKENS_NAME.TOD,
+            tokenName: exports.LIQUIDITY_TOKENS_NAME.TOD,
             rewardToken: {
                 symbol: "TRAVA",
                 address: "0xE1F005623934D3D8C724EC68Cc9bFD95498D4435",
@@ -42,7 +45,7 @@ export const listLiquidityVault = {
             }
         },
     ],
-    [NETWORKS.bscMainnet.chainId]: [
+    [utils_1.NETWORKS.bscMainnet.chainId]: [
         {
             id: "TRAVA",
             name: "Trava",
@@ -54,7 +57,7 @@ export const listLiquidityVault = {
             otherTokenInLpAddress: "0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c",
             lpAddress: "0x865c77d4ff6383e06c58350a2cfb95cca2c0f056",
             claimable: true,
-            tokenName: LIQUIDITY_TOKENS_NAME.TRAVA,
+            tokenName: exports.LIQUIDITY_TOKENS_NAME.TRAVA,
             rewardToken: {
                 symbol: "TRAVA",
                 address: "0x0391bE54E72F7e001f6BBc331777710b4f2999Ef",
@@ -72,7 +75,7 @@ export const listLiquidityVault = {
             otherTokenInLpAddress: "0xe9e7cea3dedca5984780bafc599bd69add087d56",
             lpAddress: "0x62848473Ccb5a10d1Aa19B7a31BCEF9385E8165B",
             claimable: true,
-            tokenName: LIQUIDITY_TOKENS_NAME.TOD,
+            tokenName: exports.LIQUIDITY_TOKENS_NAME.TOD,
             rewardToken: {
                 symbol: "TRAVA",
                 address: "0x0391bE54E72F7e001f6BBc331777710b4f2999Ef",
