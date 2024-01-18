@@ -6,7 +6,7 @@ import { convertHexStringToAddress, getAddr } from "../src/utils/address";
 import BigNumber from "bignumber.js";
 import { MAX_UINT256, MONTH_TO_SECONDS, WEEK_TO_SECONDS } from "../src/utils/config";
 import { updateForkCompoundLPState, updateUserInForkCompoundLPState } from "../src/Simulation/forkCompoundLP/UpdateStateAccount";
-import { SimulationBorrowForkCompoundLP, SimulationCollateral, SimulationRepayForkCompoundLP, SimulationSupplyForkCompoundLP, SimulationWithdrawForkCompoundLP, updateLPtTokenInfo, updateSmartWalletTokenBalance, updateTravaLPInfo, updateUserTokenBalance } from "../src/Simulation";
+import { SimulationBorrowForkCompoundLP, SimulationCollateral, SimulationRepayForkCompoundLP, SimulationSupplyForkCompoundLP, SimulationWithdrawForkCompoundLP, cTokenToDetailTokenAddress, calculateMaxAmountForkCompoundBorrow, updateLPtTokenInfo, updateSmartWalletTokenBalance, updateTravaLPInfo, updateUserTokenBalance } from "../src/Simulation";
 import { SimulationSupplyForkAaveLP, SimulationWithdrawForkAaveLP, updateForkAaveLPState, updateUserInForkAaveLPState } from "../src/Simulation/forkAaveLP";
 import { multiCall } from "../src/utils/helper";
 import cToken from "../src/abis/cToken.json";
@@ -24,7 +24,7 @@ import ForkCompoundController from "../src/abis/ForkCompoundController.json";
     //https://bsc-testnet.publicnode.com
     //0x595622cBd0Fc4727DF476a1172AdA30A9dDf8F43
     const userAddress = "0x00328B8a90652b37672F2f8c6c1d39CE718D7F89";
-    const proxyAddress = "0x826D824BE55A403859A6Db67D5EeC5aC386307fE";
+    const proxyAddress = "0x00328B8a90652b37672F2f8c6c1d39CE718D7F89";
 
     //test AAVE
     // 0x5BAF597914E62182e5CCafbcc69C966919d5cBa8
@@ -44,8 +44,10 @@ import ForkCompoundController from "../src/abis/ForkCompoundController.json";
     
     // console.log("_______________________TEST COMPOUND_______________________")
 
-    // appState = await updateForkCompoundLPState(appState, "venus");
+    appState = await updateForkCompoundLPState(appState, "venus");
     appState = await updateUserInForkCompoundLPState(appState, userAddress, "venus");
+    let borrowMax = await calculateMaxAmountForkCompoundBorrow(appState, "venus", "0x0000000000000000000000000000000000000000", userAddress)
+    console.log(borrowMax.toFixed())
     // appState = await SimulationSupplyForkCompoundLP(appState, userAddress, "venus", "0xe9e7cea3dedca5984780bafc599bd69add087d56", "1000")
     // appState = await SimulationWithdrawForkCompoundLP(appState, userAddress, "venus", "0xe9e7cea3dedca5984780bafc599bd69add087d56", MAX_UINT256)
 
@@ -57,32 +59,32 @@ import ForkCompoundController from "../src/abis/ForkCompoundController.json";
     // appState = await SimulationWithdrawForkAaveLP(appState, userAddress, "valas-finance", "0xe9e7cea3dedca5984780bafc599bd69add087d56", MAX_UINT256)
 
 
-    console.log("_______________________TEST Collateral_______________________")
-    let inputCollateral = [
-    {tokenAddress:"0x0000000000000000000000000000000000000000", enableAsColl: 0}, // BNB
-    //0xa07c5b74c9b40447a954e1466938b865b6bbea36
+    // console.log("_______________________TEST Collateral_______________________")
+    // let inputCollateral = [
+    // {tokenAddress:"0x0000000000000000000000000000000000000000", enableAsColl: 0}, // BNB
+    // //0xa07c5b74c9b40447a954e1466938b865b6bbea36
 
-    {tokenAddress:"0xe9e7cea3dedca5984780bafc599bd69add087d56", enableAsColl: 0}, // BUSD
-    //0x95c78222b3d6e262426483d42cfa53685a67ab9d
+    // {tokenAddress:"0xe9e7cea3dedca5984780bafc599bd69add087d56", enableAsColl: 0}, // BUSD
+    // //0x95c78222b3d6e262426483d42cfa53685a67ab9d
     
-    {tokenAddress:"0x55d398326f99059ff775485246999027b3197955", enableAsColl: 1}, // USDT
-    //0xfd5840cd36d94d7229439859c0112a4185bc0255
+    // {tokenAddress:"0x55d398326f99059ff775485246999027b3197955", enableAsColl: 1}, // USDT
+    // //0xfd5840cd36d94d7229439859c0112a4185bc0255
     
-    {tokenAddress:"0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d", enableAsColl: 1}, // USDC
-    //0xeca88125a5adbe82614ffc12d0db554e2e2867c8
-    ]
-    appState = await SimulationCollateral(appState, userAddress, "venus", inputCollateral)
-    console.log(appState.walletState.forkedCompoundLPState.get("venus"))
-// DOGE coin 0xbA2aE424d960c26247Dd6c32edC70B295c744C43
+    // {tokenAddress:"0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d", enableAsColl: 1}, // USDC
+    // //0xeca88125a5adbe82614ffc12d0db554e2e2867c8
+    // ]
+    // // DOGE coin 0xbA2aE424d960c26247Dd6c32edC70B295c744C43
+    // appState = await SimulationCollateral(appState, userAddress, "venus", inputCollateral)
+    // console.log(appState.walletState.forkedCompoundLPState.get("venus"))
 
 
-    let oracleContract = new Contract("0xfd5840cd36d94d7229439859c0112a4185bc0255", cToken, appState.web3)
-    let a = await oracleContract.getAccountSnapshot("0x00328B8a90652b37672F2f8c6c1d39CE718D7F89")
-    console.log(a)
+    // let oracleContract = new Contract("0xfd5840cd36d94d7229439859c0112a4185bc0255", cToken, appState.web3)
+    // let a = await oracleContract.getAccountSnapshot("0x00328B8a90652b37672F2f8c6c1d39CE718D7F89")
+    // console.log(a)
 
-    let controllerContract = new Contract("0xfD36E2c2a6789Db23113685031d7F16329158384", ForkCompoundController, appState.web3)
-    let b = await controllerContract.markets("0xfd5840cd36d94d7229439859c0112a4185bc0255")
-    console.log(b)
+    // let controllerContract = new Contract("0xfD36E2c2a6789Db23113685031d7F16329158384", ForkCompoundController, appState.web3)
+    // let b = await controllerContract.markets("0xfd5840cd36d94d7229439859c0112a4185bc0255")
+    // console.log(b)
 
     //Các điều kiện check
     // 1. Phải có tồn tại acc 

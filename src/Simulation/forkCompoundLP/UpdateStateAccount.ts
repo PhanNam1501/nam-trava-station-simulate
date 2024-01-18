@@ -16,7 +16,6 @@ export async function updateForkCompoundLPState(appState1: ApplicationState, ent
         if (appState.forkCompoundLPState.isFetch == false || force == true) {
             if (entity_ids_compound.some(x => x === entity_id)) {
                 let dataLendingPool = await getDataLendingByAxios(entity_id, "0x" + appState.chainId.toString(16));
-                console.log("dataLendingPoolNoFrom", dataLendingPool)
                 let data: ForkedCompound = {
                     id: dataLendingPool["id"],
                     totalSupplyInUSD: dataLendingPool["totalSupplyInUSD"],

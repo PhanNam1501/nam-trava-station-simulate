@@ -2,7 +2,7 @@ import BigNumber from "bignumber.js";
 import { ApplicationState, UserAsset } from "../../State";
 import { EthAddress } from "../../utils/types";
 import { updateUserTokenBalance } from "../basic";
-import _ from "lodash";
+import _, { sum } from "lodash";
 import { getMode } from "../../utils/helper";
 import { updateForkCompoundLPState } from "./UpdateStateAccount";
 import { MAX_UINT256 } from "../../utils";
@@ -25,9 +25,34 @@ export async function calculateMaxAmountForkCompoundSupply(appState: Application
     return BigNumber(appState[mode].tokenBalances.get(tokenAddress)!);
 }
 
-export async function calculateMaxAmountForkCompoundBorrow(appState: ApplicationState, _entity_id: string, _tokenAddress: string, _from: EthAddress): Promise<BigNumber> {
-    //TODO
-    return BigNumber(0);
+export async function calculateMaxAmountForkCompoundBorrow(appState1: ApplicationState, _entity_id: string, _tokenAddress: string, _from: EthAddress): Promise<BigNumber> {
+    let appState = { ...appState1 };
+    let mode = getMode(appState, _from);
+    let tokenAddress = _tokenAddress.toLowerCase();
+    let dataWallet = appState[mode].forkedCompoundLPState.get(_entity_id);
+        if (!dataWallet) {
+            throw new Error("data not found");
+        }
+    let assetsIn = dataWallet.dapps[0].reserves[0].assetsIn;
+    let sumSupplyByUSD = BigNumber(0);
+    for (let asset of assetsIn){
+        let assetTokenDetail = cTokenToDetailTokenAddress(appState, _from, _entity_id, asset);
+        if (!assetTokenDetail || assetTokenDetail == ""){
+            throw new Error("assetTokenDetail not found");
+        }
+        
+        let dataAssetDeposit = dataWallet.dapps[0].reserves[0].deposit.find((reserve) => reserve.address == assetTokenDetail);
+        let maxLTV = dataWallet.detailTokenInPool.get(assetTokenDetail)?.maxLTV;
+        if (dataAssetDeposit && maxLTV){
+            sumSupplyByUSD = sumSupplyByUSD.plus(BigNumber(dataAssetDeposit.valueInUSD).multipliedBy(maxLTV));
+        }
+        }
+    let tokenInfo = appState[mode].forkedCompoundLPState.get(_entity_id)?.detailTokenInPool.get(tokenAddress);
+    if (!tokenInfo){
+        throw new Error("tokenInfo not found");
+    }
+    let tokenPrice = tokenInfo.price;
+    return sumSupplyByUSD.div(tokenPrice);
 }
 
 
@@ -74,7 +99,7 @@ export async function calculateMaxAmountForkCompoundRepay(appState: ApplicationS
     if (!borrowed) {
         return BigNumber(0);
     }
-    return BigNumber(borrowed);
+    return BigNumber.max(BigNumber.min(walletBalance, borrowed), 0);
 }
 
 export async function SimulationSupplyForkCompoundLP(
@@ -467,7 +492,7 @@ export async function SimulationSupplyForkCompoundLP(
         }
         
         let tokenBorrowing = [];
-        // totalCollateral (sumSupplyByUSDAssetsInMultipliedLTV)
+        // totalCollateral (sum Supply By USD Assets In Multiplied LTV)
         let totalCollateral = BigNumber(0);
         let sumBorrowByUSD = BigNumber(0);
         for (let collateral of _collateralList){
@@ -510,3 +535,32 @@ export async function SimulationSupplyForkCompoundLP(
       throw err;
     }
   }
+
+  export function cTokenToDetailTokenAddress(
+    appState1: ApplicationState,
+    _from: EthAddress,
+    _idLP: string,
+    cTokenAddress: EthAddress,
+  ): string {
+    try {
+        let appState = { ...appState1 };
+        let mode = getMode(appState, _from);
+        let dataWallet = appState[mode].forkedCompoundLPState.get(_idLP);
+        if (!dataWallet) {
+            throw new Error("data not found");
+        }
+        let dataTokenAddress = dataWallet.detailTokenInPool;
+        if (!dataTokenAddress){
+            throw new Error("TokenAddress not found");
+        }
+        let detailTokenAddress: EthAddress = "";
+        for (const [key, value] of dataTokenAddress) {
+            if (value.cToken.address == cTokenAddress){
+                detailTokenAddress = key;
+            }
+        }
+        return detailTokenAddress;
+    } catch (err) {
+        throw err;
+    }
+}
