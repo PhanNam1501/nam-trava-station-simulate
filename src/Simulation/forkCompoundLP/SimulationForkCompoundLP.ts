@@ -540,6 +540,9 @@ export async function SimulationSupplyForkCompoundLP(
         let assetsIn = dataWallet.dapps[0].reserves[0].assetsIn;
         let assetsOut: string[] = [];
         for (let collateral of _collateralList){
+            if (collateral.tokenAddress == getAddr("BNB_ADDRESS")){
+                collateral.tokenAddress = ZERO_ADDRESS;
+            }
             let dataTokenAddress = dataWallet.detailTokenInPool.get(collateral.tokenAddress);
             if (!dataTokenAddress){
                 throw new Error("TokenAddress not found");
@@ -566,6 +569,9 @@ export async function SimulationSupplyForkCompoundLP(
         let totalCollateral = BigNumber(0);
         let sumBorrowByUSD = BigNumber(0);
         for (let collateral of _collateralList){
+            if (collateral.tokenAddress == getAddr("BNB_ADDRESS")){
+                collateral.tokenAddress = ZERO_ADDRESS;
+            }
             let dataTokenAddress = dataWallet.detailTokenInPool.get(collateral.tokenAddress)
             if (!dataTokenAddress){
                 throw new Error("TokenAddress not found");
