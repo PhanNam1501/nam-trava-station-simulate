@@ -146,7 +146,7 @@ export async function SimulationSupplyForkCompoundLP(
 
             data.totalSupplyInUSD = BigNumber(data.totalSupplyInUSD || 0).plus(amount.multipliedBy(price)).toNumber();
             
-            let dataWallet = appState[modeFrom].forkedCompoundLPState.get(_idLP);
+            let dataWallet = appState.smartWalletState.forkedCompoundLPState.get(_idLP);
         if (!dataWallet) {
             throw new Error("data not found");
         }
@@ -199,7 +199,7 @@ export async function SimulationSupplyForkCompoundLP(
 
         const newAmount = tokenAmount.minus(amount).toFixed();
         appState[modeFrom].tokenBalances.set(tokenAddress, newAmount); 
-        appState[modeFrom].forkedCompoundLPState.set(_idLP, dataWallet);
+        appState.smartWalletState.forkedCompoundLPState.set(_idLP, dataWallet);
         appState.forkCompoundLPState.forkCompoundLP.set(_idLP, data!);
 
       return appState;
@@ -246,7 +246,7 @@ export async function SimulationSupplyForkCompoundLP(
 
             data.totalSupplyInUSD = BigNumber(data.totalSupplyInUSD || 0).minus(amount.multipliedBy(price)).toNumber();
             
-            let dataWallet = appState[modeFrom].forkedCompoundLPState.get(_idLP);
+            let dataWallet = appState.smartWalletState.forkedCompoundLPState.get(_idLP);
         if (!dataWallet) {
             throw new Error("data not found");
         }
@@ -300,7 +300,7 @@ export async function SimulationSupplyForkCompoundLP(
 
         const newAmount = tokenAmount.plus(amount).toFixed();
         appState[modeFrom].tokenBalances.set(tokenAddress, newAmount);
-        appState[modeFrom].forkedCompoundLPState.set(_idLP, dataWallet);
+        appState.smartWalletState.forkedCompoundLPState.set(_idLP, dataWallet);
         appState.forkCompoundLPState.forkCompoundLP.set(_idLP, data!);
 
       return appState;
@@ -348,7 +348,7 @@ export async function SimulationSupplyForkCompoundLP(
 
             data.totalBorrowInUSD = BigNumber(data.totalBorrowInUSD || 0).plus(amount.multipliedBy(price)).toNumber();
             
-            let dataWallet = appState[modeFrom].forkedCompoundLPState.get(_idLP);
+            let dataWallet = appState.smartWalletState.forkedCompoundLPState.get(_idLP);
         if (!dataWallet) {
             throw new Error("data not found");
         }
@@ -399,7 +399,7 @@ export async function SimulationSupplyForkCompoundLP(
         }
         const newAmount = tokenAmount.plus(amount).toFixed();
         appState[modeFrom].tokenBalances.set(tokenAddress, newAmount);
-        appState[modeFrom].forkedCompoundLPState.set(_idLP, dataWallet);
+        appState.smartWalletState.forkedCompoundLPState.set(_idLP, dataWallet);
         appState.forkCompoundLPState.forkCompoundLP.set(_idLP, data!);
 
       return appState;
@@ -448,7 +448,7 @@ export async function SimulationSupplyForkCompoundLP(
 
             data.totalBorrowInUSD = BigNumber(data.totalBorrowInUSD || 0).minus(amount.multipliedBy(price)).toNumber();
             
-            let dataWallet = appState[modeFrom].forkedCompoundLPState.get(_idLP);
+            let dataWallet = appState.smartWalletState.forkedCompoundLPState.get(_idLP);
         if (!dataWallet) {
             throw new Error("data not found");
         }
@@ -494,7 +494,7 @@ export async function SimulationSupplyForkCompoundLP(
 
         const newAmount = tokenAmount.minus(amount).toFixed();
         appState[modeFrom].tokenBalances.set(tokenAddress, newAmount);
-        appState[modeFrom].forkedCompoundLPState.set(_idLP, dataWallet);
+        appState.smartWalletState.forkedCompoundLPState.set(_idLP, dataWallet);
         appState.forkCompoundLPState.forkCompoundLP.set(_idLP, data!);
 
       return appState;
