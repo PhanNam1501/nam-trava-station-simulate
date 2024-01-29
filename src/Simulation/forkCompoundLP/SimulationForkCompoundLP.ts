@@ -5,10 +5,13 @@ import { updateUserTokenBalance } from "../basic";
 import _, { sum } from "lodash";
 import { getMode } from "../../utils/helper";
 import { updateForkCompoundLPState } from "./UpdateStateAccount";
-import { MAX_UINT256 } from "../../utils";
+import { MAX_UINT256, ZERO_ADDRESS, getAddr } from "../../utils";
 
 export async function calculateMaxAmountForkCompoundSupply(appState: ApplicationState, _entity_id: string, _tokenAddress: string, _from: EthAddress): Promise<BigNumber> {
-    const tokenAddress = _tokenAddress.toLowerCase();
+    let tokenAddress = _tokenAddress.toLowerCase();
+    if (tokenAddress == getAddr("BNB_ADDRESS")){
+        tokenAddress = ZERO_ADDRESS;
+    }
     const mode = getMode(appState, _from);
 
     if (appState.forkCompoundLPState.forkCompoundLP.get(_entity_id) == undefined) {
@@ -62,7 +65,10 @@ export async function calculateMaxAmountForkCompoundBorrow(appState1: Applicatio
 
 
 export async function calculateMaxAmountForkCompoundWithdraw(appState: ApplicationState, _entity_id: string, _tokenAddress: string, _from: EthAddress): Promise<BigNumber> {
-    const tokenAddress = _tokenAddress.toLowerCase();
+    let tokenAddress = _tokenAddress.toLowerCase();
+    if (tokenAddress == getAddr("BNB_ADDRESS")){
+        tokenAddress = ZERO_ADDRESS;
+    }
     const mode = getMode(appState, _from);
 
     if (appState.forkCompoundLPState.forkCompoundLP.get(_entity_id) == undefined) {
@@ -85,7 +91,10 @@ export async function calculateMaxAmountForkCompoundWithdraw(appState: Applicati
 }
 
 export async function calculateMaxAmountForkCompoundRepay(appState: ApplicationState, _entity_id: string, _tokenAddress: string, _from: EthAddress): Promise<BigNumber> {
-    const tokenAddress = _tokenAddress.toLowerCase();
+    let tokenAddress = _tokenAddress.toLowerCase();
+    if (tokenAddress == getAddr("BNB_ADDRESS")){
+        tokenAddress = ZERO_ADDRESS;
+    }
     const mode = getMode(appState, _from);
 
     if (appState.forkCompoundLPState.forkCompoundLP.get(_entity_id) == undefined) {
@@ -120,7 +129,10 @@ export async function SimulationSupplyForkCompoundLP(
         if (appState.forkCompoundLPState.isFetch == false ){
             appState = await updateForkCompoundLPState(appState, _idLP);
         }
-        const tokenAddress = _tokenAddress.toLowerCase();
+        let tokenAddress = _tokenAddress.toLowerCase();
+        if (tokenAddress == getAddr("BNB_ADDRESS")){
+            tokenAddress = ZERO_ADDRESS;
+        }
         let  modeFrom = getMode(appState, _from);
         if (amount.toFixed() == MAX_UINT256 || amount.isEqualTo(MAX_UINT256)) {
             amount = await calculateMaxAmountForkCompoundSupply(appState, _idLP, tokenAddress, _from);
@@ -221,7 +233,10 @@ export async function SimulationSupplyForkCompoundLP(
         if (appState.forkCompoundLPState.isFetch == false ){
             appState = await updateForkCompoundLPState(appState, _idLP);
         }
-        const tokenAddress = _tokenAddress.toLowerCase();
+        let tokenAddress = _tokenAddress.toLowerCase();
+        if (tokenAddress == getAddr("BNB_ADDRESS")){
+            tokenAddress = ZERO_ADDRESS;
+        }
         let  modeFrom = getMode(appState, _from);
         if (amount.toFixed() == MAX_UINT256 || amount.isEqualTo(MAX_UINT256)) {
             amount = await calculateMaxAmountForkCompoundWithdraw(appState, _idLP, tokenAddress, _from);
@@ -322,7 +337,10 @@ export async function SimulationSupplyForkCompoundLP(
         if (appState.forkCompoundLPState.isFetch == false ){
             appState = await updateForkCompoundLPState(appState, _idLP);
         }
-        const tokenAddress = _tokenAddress.toLowerCase();
+        let tokenAddress = _tokenAddress.toLowerCase();
+        if (tokenAddress == getAddr("BNB_ADDRESS")){
+            tokenAddress = ZERO_ADDRESS;
+        }
         let  modeFrom = getMode(appState, _from);
         if (amount.toFixed() == MAX_UINT256 || amount.isEqualTo(MAX_UINT256)) {
             amount = await calculateMaxAmountForkCompoundBorrow(appState, _idLP, tokenAddress, _from);
@@ -422,7 +440,10 @@ export async function SimulationSupplyForkCompoundLP(
         if (appState.forkCompoundLPState.isFetch == false ){
             appState = await updateForkCompoundLPState(appState, _idLP);
         }
-        const tokenAddress = _tokenAddress.toLowerCase();
+        let tokenAddress = _tokenAddress.toLowerCase();
+        if (tokenAddress == getAddr("BNB_ADDRESS")){
+            tokenAddress = ZERO_ADDRESS;
+        }
         if (amount.toFixed() == MAX_UINT256 || amount.isEqualTo(MAX_UINT256)) {
             amount = await calculateMaxAmountForkCompoundRepay(appState, _idLP, tokenAddress, _from);
           }
