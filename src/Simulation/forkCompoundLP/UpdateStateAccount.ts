@@ -5,7 +5,7 @@ import { getMode, multiCall } from "../../utils/helper";
 import axios from "axios";
 import { DetailTokenInPoolCompound, ForkedCompound, WalletForkedCompoundLPState } from "../../State";
 import { entity_ids_compound } from "./forkCompoundLPConfig";
-import { centic_api, centic_api_key, tramline_api } from "../../utils";
+import { ZERO_ADDRESS, centic_api, centic_api_key, getAddr, tramline_api } from "../../utils";
 import { Contract } from "ethers";
 import ForkCompoundController from "../../abis/ForkCompoundController.json";
 import { compoundConfig } from "./forkCompoundLPConfig";
@@ -16,12 +16,17 @@ export async function updateForkCompoundLPState(appState1: ApplicationState, ent
         if (appState.forkCompoundLPState.isFetch == false || force == true) {
             if (entity_ids_compound.some(x => x === entity_id)) {
                 let dataLendingPool = await getDataLendingByAxios(entity_id, "0x" + appState.chainId.toString(16));
+                let markets = dataLendingPool["markets"];
+                if (markets[0].assets.find((x: any) => x.name == "BNB")) {
+                    markets[0].assets.find((x: any) => x.name == "BNB").address = getAddr("BNB_ADDRESS").toLowerCase();
+                }
+
                 let data: ForkedCompound = {
                     id: dataLendingPool["id"],
                     totalSupplyInUSD: dataLendingPool["totalSupplyInUSD"],
                     numberOfLenders: dataLendingPool["numberOfLenders"],
                     totalBorrowInUSD: dataLendingPool["totalBorrowInUSD"],
-                    markets: dataLendingPool["markets"],
+                    markets: markets,
                     totalTVL: dataLendingPool["totalTVL"],
                 }
                 appState.forkCompoundLPState.forkCompoundLP.set(entity_id, data);
@@ -40,7 +45,6 @@ export async function updateTokenDetailInOthersPoolsCompound(appState1: Applicat
     try{
         let from = _from.toLowerCase();
         let mode = getMode(appState, from);
-        const zeroAddress = "0x0000000000000000000000000000000000000000";
         let dataLendingByAxiosTramline = await getDataLendingByAxiosTramline(entity_id, "0x" + appState.chainId.toString(16), from);
         let dataLendingByAxiosTramlineOverview = await getDataLendingByAxiosTramlineOverview(entity_id, "0x" + appState.chainId.toString(16));
         let listToken = dataLendingByAxiosTramlineOverview["listToken"];
@@ -48,7 +52,7 @@ export async function updateTokenDetailInOthersPoolsCompound(appState1: Applicat
         let haveBNB = false;
         for (let i = 0; i < listToken.length; i++){
             if (listToken[i]["address"]){
-                if (listToken[i]["address"] == zeroAddress){
+                if (listToken[i]["address"] == ZERO_ADDRESS){
                     haveBNB = true;
                     continue;
                 }
@@ -63,7 +67,7 @@ export async function updateTokenDetailInOthersPoolsCompound(appState1: Applicat
             cTokenList.push(cTokenAddress)
         }
         if (haveBNB) {
-            cTokenList.push(token[zeroAddress]["cToken"].toString())
+            cTokenList.push(token[ZERO_ADDRESS]["cToken"].toString())
         }
         
         let [cTokenBalance,
@@ -114,9 +118,9 @@ export async function updateTokenDetailInOthersPoolsCompound(appState1: Applicat
           ]);
     
         if (haveBNB) {
-            const balance = String(await appState.web3?.getBalance(token[zeroAddress]["cToken"].toString()));
+            const balance = String(await appState.web3?.getBalance(token[ZERO_ADDRESS]["cToken"].toString()));
             originIncTokenBalance.push(balance);
-            listTokenAddress.push(zeroAddress);
+            listTokenAddress.push(ZERO_ADDRESS);
         }
 
         let walletForkedCompoundLPState = appState[mode].forkedCompoundLPState.get(entity_id);
@@ -134,13 +138,24 @@ export async function updateTokenDetailInOthersPoolsCompound(appState1: Applicat
                     balances: originIncTokenBalance[i].toString(),
                 }
             }
-            walletForkedCompoundLPState.detailTokenInPool.set(listTokenAddress[i], {
-                decimals: token[listTokenAddress[i]]["decimal"].toString(),
-                cToken: cTokenData,
-                maxLTV: token[listTokenAddress[i]]["risk"]["maxLTV"].toString(),
-                liqThres: token[listTokenAddress[i]]["risk"]["liqThres"].toString(),
-                price: token[listTokenAddress[i]]["price"].toString(),
-            });
+            if (listTokenAddress[i] == ZERO_ADDRESS){
+                walletForkedCompoundLPState.detailTokenInPool.set(getAddr("BNB_ADDRESS").toLowerCase(), {
+                    decimals: token[listTokenAddress[i]]["decimal"].toString(),
+                    cToken: cTokenData,
+                    maxLTV: token[listTokenAddress[i]]["risk"]["maxLTV"].toString(),
+                    liqThres: token[listTokenAddress[i]]["risk"]["liqThres"].toString(),
+                    price: token[listTokenAddress[i]]["price"].toString(),
+                });
+            }
+            else{
+                walletForkedCompoundLPState.detailTokenInPool.set(listTokenAddress[i], {
+                    decimals: token[listTokenAddress[i]]["decimal"].toString(),
+                    cToken: cTokenData,
+                    maxLTV: token[listTokenAddress[i]]["risk"]["maxLTV"].toString(),
+                    liqThres: token[listTokenAddress[i]]["risk"]["liqThres"].toString(),
+                    price: token[listTokenAddress[i]]["price"].toString(),
+                });
+            }
         }
         appState[mode].forkedCompoundLPState.set(entity_id, walletForkedCompoundLPState);
     return appState;
@@ -190,7 +205,14 @@ export async function updateUserInForkCompoundLPState(appState1: ApplicationStat
                   ]
               }]
             }
-
+            else {
+                if (dataLendingPool["dapps"][0].reserves[0].deposit.find((x: any) => x.name == "BNB")) {
+                    dataLendingPool["dapps"][0].reserves[0].deposit.find((x: any) => x.name == "BNB").address = getAddr("BNB_ADDRESS").toLowerCase();
+                }
+                if (dataLendingPool["dapps"][0].reserves[0].borrow.find((x: any) => x.name == "BNB")) {
+                    dataLendingPool["dapps"][0].reserves[0].borrow.find((x: any) => x.name == "BNB").address = getAddr("BNB_ADDRESS").toLowerCase();
+                }
+            }
             let unitrollerAddress = compoundConfig.find(config => config.entity_id === entity_id)?.controller;
             if (unitrollerAddress == undefined) {
                 throw new Error("unitrollerAddress is undefined");

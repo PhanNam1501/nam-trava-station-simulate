@@ -46,10 +46,10 @@ import ForkCompoundController from "../src/abis/ForkCompoundController.json";
 
     appState = await updateForkCompoundLPState(appState, "venus");
     appState = await updateUserInForkCompoundLPState(appState, userAddress, "venus");
-    appState = await SimulationSupplyForkCompoundLP(appState, userAddress, "venus", "0x55d398326f99059ff775485246999027b3197955", "1000")
-    appState = await SimulationBorrowForkCompoundLP(appState, userAddress, "venus", "0x55d398326f99059ff775485246999027b3197955", MAX_UINT256)
-    appState = await SimulationWithdrawForkCompoundLP(appState, userAddress, "venus", "0x55d398326f99059ff775485246999027b3197955", MAX_UINT256)
-    appState = await SimulationRepayForkCompoundLP(appState, userAddress, "venus", "0x55d398326f99059ff775485246999027b3197955", MAX_UINT256)
+    appState = await SimulationSupplyForkCompoundLP(appState, userAddress, "venus", "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE", "1000")
+    appState = await SimulationBorrowForkCompoundLP(appState, userAddress, "venus", "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE", MAX_UINT256)
+    appState = await SimulationWithdrawForkCompoundLP(appState, userAddress, "venus", "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE", MAX_UINT256)
+    appState = await SimulationRepayForkCompoundLP(appState, userAddress, "venus", "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE", MAX_UINT256)
       
     // console.log("_______________________TEST AAVE_______________________")
 
