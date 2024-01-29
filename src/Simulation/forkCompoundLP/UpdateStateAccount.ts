@@ -48,7 +48,7 @@ export async function updateTokenDetailInOthersPoolsCompound(appState1: Applicat
         let dataLendingByAxiosTramline = await getDataLendingByAxiosTramline(entity_id, "0x" + appState.chainId.toString(16), from);
         let dataLendingByAxiosTramlineOverview = await getDataLendingByAxiosTramlineOverview(entity_id, "0x" + appState.chainId.toString(16));
         let listToken = dataLendingByAxiosTramlineOverview["listToken"];
-        let listTokenAddress: string[] = [];
+        let listTokenAddress: EthAddress[] = [];
         let haveBNB = false;
         for (let i = 0; i < listToken.length; i++){
             if (listToken[i]["address"]){
@@ -56,12 +56,12 @@ export async function updateTokenDetailInOthersPoolsCompound(appState1: Applicat
                     haveBNB = true;
                     continue;
                 }
-                listTokenAddress.push(listToken[i]["address"] as string);
+                listTokenAddress.push(listToken[i]["address"] as EthAddress);
             }
         }
         let token = dataLendingByAxiosTramline["poolDataSlice"]["pools"][dataLendingByAxiosTramlineOverview["address"]]["token"];
-        let cTokenAddress: string;
-        let cTokenList = [] as Array<string>;
+        let cTokenAddress: EthAddress;
+        let cTokenList = [] as Array<EthAddress>;
         for (let i = 0; i < listTokenAddress.length; i++){
             cTokenAddress = token[listTokenAddress[i]]["cToken"].toString()
             cTokenList.push(cTokenAddress)
@@ -77,7 +77,7 @@ export async function updateTokenDetailInOthersPoolsCompound(appState1: Applicat
         ] = await Promise.all([
             multiCall(
               BEP20ABI,
-              cTokenList.map((address: string, _: number) => ({
+              cTokenList.map((address: EthAddress, _: number) => ({
                 address: address,
                 name: "balanceOf",
                 params: [from],
@@ -87,7 +87,7 @@ export async function updateTokenDetailInOthersPoolsCompound(appState1: Applicat
             ),
             multiCall(
               BEP20ABI,
-              cTokenList.map((address: string, _: number) => ({
+              cTokenList.map((address: EthAddress, _: number) => ({
                 address: address,
                 name: "decimals",
                 params: [],
@@ -97,7 +97,7 @@ export async function updateTokenDetailInOthersPoolsCompound(appState1: Applicat
             ),
             multiCall(
               BEP20ABI,
-              cTokenList.map((address: string, _: number) => ({
+              cTokenList.map((address: EthAddress, _: number) => ({
                 address: address,
                 name: "totalSupply",
                 params: [],
@@ -107,7 +107,7 @@ export async function updateTokenDetailInOthersPoolsCompound(appState1: Applicat
             ),
             multiCall(
               BEP20ABI,
-              listTokenAddress.map((address: string, index: number) => ({
+              listTokenAddress.map((address: EthAddress, index: number) => ({
                 address: address,
                 name: "balanceOf",
                 params: [cTokenList[index]],
@@ -138,23 +138,18 @@ export async function updateTokenDetailInOthersPoolsCompound(appState1: Applicat
                     balances: originIncTokenBalance[i].toString(),
                 }
             }
+            let data = {
+                decimals: token[listTokenAddress[i]]["decimal"].toString(),
+                cToken: cTokenData,
+                maxLTV: token[listTokenAddress[i]]["risk"]["maxLTV"].toString(),
+                liqThres: token[listTokenAddress[i]]["risk"]["liqThres"].toString(),
+                price: token[listTokenAddress[i]]["price"].toString(),
+            }
             if (listTokenAddress[i] == ZERO_ADDRESS){
-                walletForkedCompoundLPState.detailTokenInPool.set(getAddr("BNB_ADDRESS").toLowerCase(), {
-                    decimals: token[listTokenAddress[i]]["decimal"].toString(),
-                    cToken: cTokenData,
-                    maxLTV: token[listTokenAddress[i]]["risk"]["maxLTV"].toString(),
-                    liqThres: token[listTokenAddress[i]]["risk"]["liqThres"].toString(),
-                    price: token[listTokenAddress[i]]["price"].toString(),
-                });
+                walletForkedCompoundLPState.detailTokenInPool.set(getAddr("BNB_ADDRESS").toLowerCase(), data);
             }
             else{
-                walletForkedCompoundLPState.detailTokenInPool.set(listTokenAddress[i], {
-                    decimals: token[listTokenAddress[i]]["decimal"].toString(),
-                    cToken: cTokenData,
-                    maxLTV: token[listTokenAddress[i]]["risk"]["maxLTV"].toString(),
-                    liqThres: token[listTokenAddress[i]]["risk"]["liqThres"].toString(),
-                    price: token[listTokenAddress[i]]["price"].toString(),
-                });
+                walletForkedCompoundLPState.detailTokenInPool.set(listTokenAddress[i], data);
             }
         }
         appState[mode].forkedCompoundLPState.set(entity_id, walletForkedCompoundLPState);
@@ -219,7 +214,7 @@ export async function updateUserInForkCompoundLPState(appState1: ApplicationStat
             }
             let unitrollerContract = new Contract(unitrollerAddress, ForkCompoundController, appState.web3)
             let assetsIn = await unitrollerContract.getAssetsIn(from);
-            let assetsInList = [] as Array<string>;
+            let assetsInList = [] as Array<EthAddress>;
             for (let i = 0; i < assetsIn.length; i++){
                 assetsInList.push(assetsIn[i].toLowerCase());
             }

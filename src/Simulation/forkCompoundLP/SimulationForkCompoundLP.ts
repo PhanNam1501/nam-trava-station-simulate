@@ -647,3 +647,98 @@ export function detailTokenAddressToCToken(
         throw err;
     }
 }
+
+export async function SimulationClaimRewardsForkCompoundLP(
+    appState1: ApplicationState,
+    _idLP: string
+  ): Promise<ApplicationState> {
+    try {
+        let appState = { ...appState1 };
+    //     if (appState.forkCompoundLPState.isFetch == false ){
+    //         appState = await updateForkCompoundLPState(appState, _idLP);
+    //     }
+    //     // Co trong market
+    //     const tokenAddress = _tokenAddress.toLowerCase();
+        
+    //     if (!appState.smartWalletState.tokenBalances.has(tokenAddress)) {
+    //         appState = await updateUserTokenBalance(appState, tokenAddress);
+    //     }
+
+    //     const tokenAmount = BigNumber(
+    //         appState.smartWalletState.tokenBalances.get(tokenAddress)!
+    //     );
+
+    //     let data = appState.forkCompoundLPState.forkCompoundLP.get(_idLP);
+    //     if (!data) {
+    //         throw new Error("data not found");
+    //     }
+    //     let dataAssets = data.markets[0].assets.find((asset) => asset.address == tokenAddress);   
+    //     let price = dataAssets?.price;
+    //         if (!price) {
+    //             throw new Error("price not found");
+    //         }
+
+    //         data.totalSupplyInUSD = BigNumber(data.totalSupplyInUSD || 0).minus(amount.multipliedBy(price)).toNumber();
+            
+    //         let dataWallet = appState.smartWalletState.forkedCompoundLPState.get(_idLP);
+    //     if (!dataWallet) {
+    //         throw new Error("data not found");
+    //     }
+
+    //     let dataInWallet = dataWallet.dapps[0].reserves[0].deposit.find((reserve) => reserve.address == tokenAddress);
+    //     if (!dataInWallet) {
+    //         let newData: UserAsset = {
+    //             id: dataAssets?.id || "",
+    //             type: "token",
+    //             address: tokenAddress,
+    //             symbol: dataAssets?.symbol || "",
+    //             amount: -amount.toNumber(),
+    //             valueInUSD: -amount.multipliedBy(price).toNumber(),
+    //             totalValue: -amount.multipliedBy(price).toNumber(),
+    //         };
+    //         dataWallet.dapps[0].reserves[0].deposit.push(newData);
+    //     }
+    //     else{
+    //         let newData: UserAsset = {
+    //             id: dataAssets?.id || "",
+    //             type: "token",
+    //             address: tokenAddress,
+    //             symbol: dataAssets?.symbol || "",
+    //             amount: -amount.toNumber()+dataInWallet.amount,
+    //             valueInUSD: amount.multipliedBy(-1).plus(dataInWallet.amount).multipliedBy(price).toNumber(),
+    //             totalValue: amount.multipliedBy(-1).plus(dataInWallet.amount).multipliedBy(price).toNumber(),
+    //         };
+    //         dataWallet.dapps[0].value = BigNumber(dataWallet.dapps[0].value || 0).minus(amount).toNumber();
+    //         dataWallet.dapps[0].depositInUSD = BigNumber(dataWallet.dapps[0].depositInUSD || 0).minus(amount.multipliedBy(price)).toNumber();
+    //         dataWallet.dapps[0].reserves[0].deposit = dataWallet.dapps[0].reserves[0].deposit.map((reserve) => {
+    //             if (reserve.address == tokenAddress) {
+    //                 return newData;
+    //             }
+    //             return reserve;
+    //         });
+    //     }
+    //     let dataToken = dataWallet.detailTokenInPool.get(tokenAddress);
+    //     if (!dataToken){
+    //         throw new Error("dataToken not found");
+    //     }
+    //     dataToken.cToken.originToken.balances = (Number(dataToken.cToken.originToken.balances) - amount.toNumber()).toString();
+    //     dataToken.cToken.balances = (Number(dataToken.cToken.balances) + amount.toNumber()).toString();
+    //     dataWallet.detailTokenInPool.set(tokenAddress, dataToken);
+
+    //     let cTokenAddress = detailTokenAddressToCToken(appState, _from, _idLP, tokenAddress);
+    //     const cTokenAmount = BigNumber(
+    //         appState[modeFrom].tokenBalances.get(cTokenAddress)!
+    //     );
+    //     const newcTokenAmount = cTokenAmount.minus(amount).toFixed();
+    //     appState[modeFrom].tokenBalances.set(cTokenAddress, newcTokenAmount);
+
+    //     const newAmount = tokenAmount.plus(amount).toFixed();
+    //     appState[modeFrom].tokenBalances.set(tokenAddress, newAmount);
+    //     appState.smartWalletState.forkedCompoundLPState.set(_idLP, dataWallet);
+    //     appState.forkCompoundLPState.forkCompoundLP.set(_idLP, data!);
+
+        return appState;
+    } catch (err) {
+      throw err;
+    }
+  }
