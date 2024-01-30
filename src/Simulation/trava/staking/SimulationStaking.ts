@@ -120,6 +120,49 @@ export async function simulateStakingRedeem(appState1: ApplicationState, _stakin
     return appState;
 
 }
+
+export async function simulateTransfer(appState1: ApplicationState, _stakingPool: EthAddress,from:EthAddress,proxy: EthAddress, to: EthAddress, _amount: number | string){
+   let appState={...appState1};
+    let stakingPool = _stakingPool.toLowerCase()
+    let amount = BigNumber(_amount)
+    let stakedTokenAddress = stakingPool.toLowerCase()
+    console.log("staked")
+
+    let vault = appState.smartWalletState.travaLPStakingStateList.get(stakingPool);
+    if (vault && vault.stakedToken.stakedTokenAddress.toLowerCase() == stakedTokenAddress) {
+        let underlyingToken = vault.underlyingToken.underlyingAddress.toLowerCase();
+
+        if (amount.toFixed(0) == MAX_UINT256 || amount.isEqualTo(MAX_UINT256)) {
+            amount = BigNumber(vault.deposited);
+        }
+        if(from==proxy){
+            const newStakedToken=BigNumber(appState.smartWalletState.tokenBalances.get(underlyingToken)!).minus(amount);
+            appState.smartWalletState.tokenBalances.set(underlyingToken,newStakedToken.toString());
+
+            const newRewardBalance = BigNumber(appState.smartWalletState.tokenBalances.get(stakedTokenAddress)!).minus(amount);
+            appState.smartWalletState.tokenBalances.set(stakedTokenAddress.toLowerCase(), newRewardBalance.toFixed(0));
+
+        }else{
+            const newStakedToken=BigNumber(appState.walletState.tokenBalances.get(underlyingToken)!).minus(amount);
+            appState.walletState.tokenBalances.set(underlyingToken,newStakedToken.toString());
+
+            const newRewardBalance = BigNumber(appState.walletState.tokenBalances.get(stakedTokenAddress)!).minus(amount);
+            appState.walletState.tokenBalances.set(stakedTokenAddress.toLowerCase(), newRewardBalance.toFixed(0));
+
+        }
+        let amountUSD = amount.div(vault.underlyingToken.reserveDecimals).multipliedBy(vault.underlyingToken.price)
+        let oldTVL = vault.TVL
+        let newTVL = BigNumber(oldTVL).minus(amountUSD).toFixed()
+        let oldAPR = vault.APR
+
+        vault.TVL = newTVL;
+        vault.APR = calculateNewAPR(oldAPR, oldTVL, newTVL);
+
+    }
+    return appState;
+
+
+}
 export async function simulateStakingClaimRewards(appState1: ApplicationState, _stakingPool: EthAddress, _to: EthAddress, _amount: number | string) {
     /// ???
     let appState = { ...appState1 };
