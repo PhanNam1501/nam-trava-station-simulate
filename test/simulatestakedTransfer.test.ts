@@ -34,7 +34,7 @@ async function test(){
 
 
     const farmTravaAddress = ""
-    appState = await updateAllAccountVault(appState);
+    appState = await updateAllAccountVault(appState,proxyAddress);
     const vault = appState.smartWalletState.travaLPStakingStateList.get(stakingPool.toLowerCase())!;
     appState = await updateUserTokenBalance(appState,underLyingToken);
     appState = await updateSmartWalletTokenBalance(appState,underLyingToken)
