@@ -11,9 +11,10 @@ import OracleABI from "../../../abis/AaveOracle.json";
 import { updateSmartWalletTokenBalance } from "../../basic/UpdateStateAccount";
 import BEP20ABI from "../../../abis/BEP20.json";
 import {getMode, multiCall} from "../../../utils/helper";
-// import { EthAddress } from "../../utils/types";
+import {EthAddress} from "../../../utils/types";
 
-export async function updateAllAccountVault(appState1: ApplicationState,_address:string,  force = false) {
+
+export async function updateAllAccountVault(appState1: ApplicationState,_address:EthAddress,  force = false) {
   const vaultConfigList = listStakingVault[appState1.chainId];
   let appState = { ...appState1 };
   let modeFrom = getMode(appState, _address);

@@ -48,10 +48,11 @@ async function test(){
 
     console.log("-----------After stake--------");
     const vault1 =  appState.smartWalletState.travaLPStakingStateList.get(stakingPool.toLowerCase())!;
-    console.log("Trava Balance of user",appState.walletState.tokenBalances.get(String(underLyingToken).toLowerCase()))
-    const newst=Number(appState.walletState.tokenBalances.get(String(underLyingToken).toLowerCase()))
-    console.log(st-newst);
-    console.log("Farming Trava of Smart Wallet",appState.smartWalletState.tokenBalances.get(String(underLyingToken).toLowerCase()))
+    console.log(vault1);
+    // console.log("Trava Balance of user",appState.walletState.tokenBalances.get(String(underLyingToken).toLowerCase()))
+    // const newst=Number(appState.walletState.tokenBalances.get(String(underLyingToken).toLowerCase()))
+    // console.log(st-newst);
+    // console.log("Farming Trava of Smart Wallet",appState.smartWalletState.tokenBalances.get(String(underLyingToken).toLowerCase()))
 
     console.log("Deposited",vault1.deposited)
 

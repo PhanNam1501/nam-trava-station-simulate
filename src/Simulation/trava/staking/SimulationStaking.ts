@@ -1,11 +1,12 @@
 import {ApplicationState} from "../../../State/ApplicationState";
-import {EthAddress} from "../../../utils/types";
+import {EthAddress, uint256} from "../../../utils/types";
 import {updateSmartWalletTokenBalance, updateUserTokenBalance} from "../../basic/UpdateStateAccount";
 import {MAX_UINT256} from "../../../utils/config";
 import BigNumber from "bignumber.js";
 import {values} from "lodash";
 import {updateAllAccountVault} from "./UpdateStateAccount";
 import {getMode} from "../../../utils/helper";
+import {isUserAddress} from "orchai-combinator-bsc-simulation";
 
 export function calculateNewAPR(oldAPR: string, oldTVL: string, newTVL: string): string {
     if (newTVL == "0") {
@@ -125,27 +126,25 @@ export async function simulateStakingRedeem(appState1: ApplicationState, _stakin
 
 }
 
-export async function simulateTransfer(appState1: ApplicationState, _stakingPool: EthAddress, from: EthAddress,  to: EthAddress, _amount: number | string) {
+export async function simulateTransfer(appState1: ApplicationState, _stakingPool: EthAddress, from: EthAddress,  to: EthAddress, _amount: uint256 | string) {
     let appState = {...appState1};
     let stakingPool = _stakingPool.toLowerCase()
     let amount = BigNumber(_amount)
     let stakedTokenAddress = stakingPool.toLowerCase()
-    let sendVault;
-    let vaultWallet;
+    let vaultFrom;
     let modeFrom = getMode(appState, from);
     if(appState[modeFrom].travaLPStakingStateList.size==0){
         appState = await updateAllAccountVault(appState,from);
     }
-    sendVault= appState[modeFrom].travaLPStakingStateList.get(stakingPool)!;
-    if (sendVault.stakedToken.stakedTokenAddress.toLowerCase() == stakedTokenAddress) {
-        let underLyingToken = sendVault.underlyingToken.underlyingAddress.toLowerCase();
-        if (!appState[modeFrom].tokenBalances.has(underLyingToken)) {
-            appState = await updateUserTokenBalance(appState,underLyingToken);
-            appState = await updateSmartWalletTokenBalance(appState,underLyingToken);
+    vaultFrom= appState[modeFrom].travaLPStakingStateList.get(stakingPool)!;
+    if (vaultFrom.stakedToken.stakedTokenAddress.toLowerCase() == stakedTokenAddress) {
+        if (!appState[modeFrom].tokenBalances.has(stakedTokenAddress)) {
+            if(modeFrom=="walletState")  appState = await updateUserTokenBalance(appState,stakedTokenAddress);
+             else appState = await updateSmartWalletTokenBalance(appState,stakedTokenAddress);
         }
 
         if (amount.toFixed(0) == MAX_UINT256 || amount.isEqualTo(MAX_UINT256)) {
-            amount = BigNumber(sendVault.deposited);
+            amount = BigNumber(vaultFrom.deposited);
         }
 
 
@@ -153,8 +152,12 @@ export async function simulateTransfer(appState1: ApplicationState, _stakingPool
         appState[modeFrom].tokenBalances.set(stakedTokenAddress.toLowerCase(), newRewardBalance.toFixed(0));
 
         //handle with a case that to equal wallet state
-        if (to == appState.walletState.address || to==appState.smartWalletState.address ) {
+        if (isUserAddress(appState,to) ) {
             let modeTo=getMode(appState, to);
+            if (!appState[modeTo].tokenBalances.has(stakedTokenAddress)) {
+                if (modeTo=="walletState")   appState = await updateUserTokenBalance(appState,stakedTokenAddress);
+                else appState = await updateSmartWalletTokenBalance(appState,stakedTokenAddress);
+            }
 
             const newRewardBalance = BigNumber(appState[modeTo].tokenBalances.get(stakedTokenAddress)!).plus(amount);
             appState[modeTo].tokenBalances.set(stakedTokenAddress.toLowerCase(), newRewardBalance.toFixed(0));
@@ -162,19 +165,18 @@ export async function simulateTransfer(appState1: ApplicationState, _stakingPool
             if (appState[modeTo].travaLPStakingStateList.size==0){
                 appState = await updateAllAccountVault(appState,to);
             }
-            let toVault= appState[modeTo].travaLPStakingStateList.get(stakingPool)!;
-            toVault.deposited = BigNumber(toVault.deposited).plus(amount).toFixed(0);
-            appState.walletState.travaLPStakingStateList.set(
+            let vaultTo= appState[modeTo].travaLPStakingStateList.get(stakingPool)!;
+            vaultTo.deposited = BigNumber(vaultTo.deposited).plus(amount).toFixed(0);
+            appState[modeTo].travaLPStakingStateList.set(
                 stakingPool,
-                toVault
+                vaultTo
             )
         }
 
-        sendVault.deposited = BigNumber(sendVault.deposited).minus(amount).toFixed(0);
-
+        vaultFrom.deposited = BigNumber(vaultFrom.deposited).minus(amount).toFixed(0);
         appState[modeFrom].travaLPStakingStateList.set(
             stakingPool,
-            sendVault
+            vaultFrom
         )
     }
 
