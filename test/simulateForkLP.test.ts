@@ -24,7 +24,7 @@ import ForkCompoundController from "../src/abis/ForkCompoundController.json";
     //https://bsc-testnet.publicnode.com
     //0x595622cBd0Fc4727DF476a1172AdA30A9dDf8F43
     const userAddress = "0x00328B8a90652b37672F2f8c6c1d39CE718D7F89";
-    const proxyAddress = "0x00328B8a90652b37672F2f8c6c1d39CE718D7F89";
+    const proxyAddress = "0x1Ef0246F251211676810778415370C135526F5D1";
 
     //test AAVE
     // 0x5BAF597914E62182e5CCafbcc69C966919d5cBa8
@@ -46,10 +46,10 @@ import ForkCompoundController from "../src/abis/ForkCompoundController.json";
 
     appState = await updateForkCompoundLPState(appState, "venus");
     appState = await updateUserInForkCompoundLPState(appState, userAddress, "venus");
-    appState = await SimulationSupplyForkCompoundLP(appState, userAddress, "venus", "0xe9e7cea3dedca5984780bafc599bd69add087d56", "1000")
-    appState = await SimulationBorrowForkCompoundLP(appState, userAddress, "venus", "0xe9e7cea3dedca5984780bafc599bd69add087d56", MAX_UINT256)
-    appState = await SimulationWithdrawForkCompoundLP(appState, userAddress, "venus", "0xe9e7cea3dedca5984780bafc599bd69add087d56", MAX_UINT256)
-    appState = await SimulationRepayForkCompoundLP(appState, userAddress, "venus", "0xe9e7cea3dedca5984780bafc599bd69add087d56", MAX_UINT256)
+    appState = await SimulationSupplyForkCompoundLP(appState, userAddress, "venus", "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE", "1000")
+    appState = await SimulationBorrowForkCompoundLP(appState, userAddress, "venus", "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE", MAX_UINT256)
+    appState = await SimulationWithdrawForkCompoundLP(appState, userAddress, "venus", "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE", MAX_UINT256)
+    appState = await SimulationRepayForkCompoundLP(appState, userAddress, "venus", "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE", MAX_UINT256)
       
     // console.log("_______________________TEST AAVE_______________________")
 
