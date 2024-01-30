@@ -1,8 +1,9 @@
-import { ApplicationState } from "../../../State/ApplicationState";
-import { EthAddress } from "../../../utils/types";
-import { updateSmartWalletTokenBalance, updateUserTokenBalance } from "../../basic/UpdateStateAccount";
-import { MAX_UINT256 } from "../../../utils/config";
+import {ApplicationState} from "../../../State/ApplicationState";
+import {EthAddress} from "../../../utils/types";
+import {updateSmartWalletTokenBalance, updateUserTokenBalance} from "../../basic/UpdateStateAccount";
+import {MAX_UINT256} from "../../../utils/config";
 import BigNumber from "bignumber.js";
+import {values} from "lodash";
 
 export function calculateNewAPR(oldAPR: string, oldTVL: string, newTVL: string): string {
     if (newTVL == "0") {
@@ -12,7 +13,7 @@ export function calculateNewAPR(oldAPR: string, oldTVL: string, newTVL: string):
 }
 
 export async function simulateStakeStaking(appState1: ApplicationState, _stakingPool: EthAddress, from: EthAddress, _amount: number | string) {
-    let appState = { ...appState1 };
+    let appState = {...appState1};
     let stakingPool = _stakingPool.toLowerCase()
     let amount = BigNumber(_amount)
     let stakedTokenAddress = stakingPool
@@ -65,15 +66,16 @@ export async function simulateStakeStaking(appState1: ApplicationState, _staking
             stakingPool,
             vault
         )
-        
+
         appState.smartWalletState.tokenBalances.set(stakedTokenAddress.toLowerCase(), newRewardBalance.toFixed(0));
     }
     return appState;
 
 
 }
+
 export async function simulateStakingRedeem(appState1: ApplicationState, _stakingPool: EthAddress, to: EthAddress, _amount: number | string) {
-    let appState = { ...appState1 };
+    let appState = {...appState1};
     let stakingPool = _stakingPool.toLowerCase()
     let amount = BigNumber(_amount)
     let stakedTokenAddress = stakingPool.toLowerCase()
@@ -121,51 +123,107 @@ export async function simulateStakingRedeem(appState1: ApplicationState, _stakin
 
 }
 
-export async function simulateTransfer(appState1: ApplicationState, _stakingPool: EthAddress,from:EthAddress,proxy: EthAddress, to: EthAddress, _amount: number | string){
-   let appState={...appState1};
+export async function simulateTransfer(appState1: ApplicationState, _stakingPool: EthAddress, from: EthAddress,  to: EthAddress, _amount: number | string) {
+    let appState = {...appState1};
     let stakingPool = _stakingPool.toLowerCase()
     let amount = BigNumber(_amount)
     let stakedTokenAddress = stakingPool.toLowerCase()
-    console.log("staked")
 
-    let vault = appState.smartWalletState.travaLPStakingStateList.get(stakingPool);
-    if (vault && vault.stakedToken.stakedTokenAddress.toLowerCase() == stakedTokenAddress) {
-        let underlyingToken = vault.underlyingToken.underlyingAddress.toLowerCase();
+    let vaultSmartWallet = appState.smartWalletState.travaLPStakingStateList.get(stakingPool);
+    let vaultWallet = appState.walletState.travaLPStakingStateList.get(stakingPool);
 
-        if (amount.toFixed(0) == MAX_UINT256 || amount.isEqualTo(MAX_UINT256)) {
-            amount = BigNumber(vault.deposited);
-        }
-        if(from==proxy){
-            const newStakedToken=BigNumber(appState.smartWalletState.tokenBalances.get(underlyingToken)!).minus(amount);
-            appState.smartWalletState.tokenBalances.set(underlyingToken,newStakedToken.toString());
+    if (from == appState.smartWalletState.address) {
+
+        if (vaultSmartWallet && vaultSmartWallet.stakedToken.stakedTokenAddress.toLowerCase() == stakedTokenAddress) {
+            let underlyingToken = vaultSmartWallet.underlyingToken.underlyingAddress.toLowerCase();
+
+            if (amount.toFixed(0) == MAX_UINT256 || amount.isEqualTo(MAX_UINT256)) {
+                amount = BigNumber(vaultSmartWallet.deposited);
+            }
+            const newStakedToken = BigNumber(appState.smartWalletState.tokenBalances.get(underlyingToken)!).minus(amount);
+            appState.smartWalletState.tokenBalances.set(underlyingToken, newStakedToken.toString());
 
             const newRewardBalance = BigNumber(appState.smartWalletState.tokenBalances.get(stakedTokenAddress)!).minus(amount);
             appState.smartWalletState.tokenBalances.set(stakedTokenAddress.toLowerCase(), newRewardBalance.toFixed(0));
 
-        }else{
-            const newStakedToken=BigNumber(appState.walletState.tokenBalances.get(underlyingToken)!).minus(amount);
-            appState.walletState.tokenBalances.set(underlyingToken,newStakedToken.toString());
+            //handle with a case that to equal wallet state
+            if (to == appState.walletState.address) {
+                const newStakedToken = BigNumber(appState.walletState.tokenBalances.get(underlyingToken)!).plus(amount);
+                appState.walletState.tokenBalances.set(underlyingToken, newStakedToken.toString());
+
+                const newRewardBalance = BigNumber(appState.walletState.tokenBalances.get(stakedTokenAddress)!).plus(amount);
+                appState.walletState.tokenBalances.set(stakedTokenAddress.toLowerCase(), newRewardBalance.toFixed(0));
+
+
+                if (vaultWallet && vaultWallet.stakedToken.stakedTokenAddress.toLowerCase() == stakedTokenAddress){
+                    vaultWallet.deposited = BigNumber(vaultWallet.deposited).plus(amount).toFixed(0);
+                    appState.walletState.travaLPStakingStateList.set(
+                        stakingPool,
+                        vaultWallet
+                    )
+                }
+            }
+
+            vaultSmartWallet.deposited = BigNumber(vaultSmartWallet.deposited).minus(amount).toFixed(0);
+
+            appState.smartWalletState.travaLPStakingStateList.set(
+                stakingPool,
+                vaultSmartWallet
+            )
+        }
+
+    } else {
+        if (vaultWallet && vaultWallet.stakedToken.stakedTokenAddress.toLowerCase() == stakedTokenAddress) {
+            let underlyingToken = vaultWallet.underlyingToken.underlyingAddress.toLowerCase();
+
+            if (amount.toFixed(0) == MAX_UINT256 || amount.isEqualTo(MAX_UINT256)) {
+                amount = BigNumber(vaultWallet.deposited);
+            }
+
+            //update a number of underlying tokens and staked tokens
+            const newStakedToken = BigNumber(appState.walletState.tokenBalances.get(underlyingToken)!).minus(amount);
+            appState.walletState.tokenBalances.set(underlyingToken, newStakedToken.toString());
 
             const newRewardBalance = BigNumber(appState.walletState.tokenBalances.get(stakedTokenAddress)!).minus(amount);
             appState.walletState.tokenBalances.set(stakedTokenAddress.toLowerCase(), newRewardBalance.toFixed(0));
 
-        }
-        let amountUSD = amount.div(vault.underlyingToken.reserveDecimals).multipliedBy(vault.underlyingToken.price)
-        let oldTVL = vault.TVL
-        let newTVL = BigNumber(oldTVL).minus(amountUSD).toFixed()
-        let oldAPR = vault.APR
 
-        vault.TVL = newTVL;
-        vault.APR = calculateNewAPR(oldAPR, oldTVL, newTVL);
+            //handle with a case that to equal smart wallet state
+            if (to == appState.smartWalletState.address) {
+                const newStakedToken = BigNumber(appState.smartWalletState.tokenBalances.get(underlyingToken)!).plus(amount);
+                appState.smartWalletState.tokenBalances.set(underlyingToken, newStakedToken.toString());
+
+                const newRewardBalance = BigNumber(appState.smartWalletState.tokenBalances.get(stakedTokenAddress)!).plus(amount);
+                appState.smartWalletState.tokenBalances.set(stakedTokenAddress.toLowerCase(), newRewardBalance.toFixed(0));
+
+                if (vaultSmartWallet && vaultSmartWallet.stakedToken.stakedTokenAddress.toLowerCase() == stakedTokenAddress){
+                    vaultSmartWallet.deposited = BigNumber(vaultWallet.deposited).plus(amount).toFixed(0);
+                    appState.smartWalletState.travaLPStakingStateList.set(
+                        stakingPool,
+                        vaultSmartWallet
+                    )
+                }
+
+            }
+            vaultWallet.deposited = BigNumber(vaultWallet.deposited).minus(amount).toFixed(0);
+
+            appState.walletState.travaLPStakingStateList.set(
+                stakingPool,
+                vaultWallet
+            )
+        }
 
     }
+
+
     return appState;
 
 
 }
+
 export async function simulateStakingClaimRewards(appState1: ApplicationState, _stakingPool: EthAddress, _to: EthAddress, _amount: number | string) {
     /// ???
-    let appState = { ...appState1 };
+    let appState = {...appState1};
     let stakingPool = _stakingPool.toLowerCase()
     let amount = BigNumber(_amount)
     let stakedTokenAddress = stakingPool.toLowerCase()
@@ -175,7 +233,7 @@ export async function simulateStakingClaimRewards(appState1: ApplicationState, _
     if (vault && vault.stakedToken.stakedTokenAddress.toLowerCase() == stakedTokenAddress) {
         let rewardTokenAddress = vault.rewardToken.address.toLowerCase();
 
-        if (amount.toFixed(0) == MAX_UINT256 || amount.isEqualTo(MAX_UINT256) ) {
+        if (amount.toFixed(0) == MAX_UINT256 || amount.isEqualTo(MAX_UINT256)) {
             amount = BigNumber(vault.claimableReward);
         }
 

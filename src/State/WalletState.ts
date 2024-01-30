@@ -1,7 +1,7 @@
 import { ArmouryObject, NormalKnight, NormalKnightInExpedition, SpecialKnight } from "../Simulation/trava/nft/helpers/global";
 import { EthAddress } from "../utils/types";
 import { NFTAuctioningState, NFTSellingState, NFTTicketState } from "./trava/nft/TravaNFTState";
-import { WalletTravaLPState } from "./trava/lending/TravaDeFiState";
+import {BaseAccountVault, WalletTravaLPState} from "./trava/lending/TravaDeFiState";
 import { VeTravaListState, VeTravaState } from "./trava/lending/TravaGovenanceState";
 import { WalletForkedAaveLPState, WalletForkedCompoundLPState } from "./trava";
 import { DetailTokenInPool } from "./SmartWalletState";
@@ -81,6 +81,7 @@ export class WalletState {
   veTravaListState: VeTravaListState;
   knightInExpeditionState: KnightInExpeditionState;
   ticket: NFTTicketState;
+  travaLPStakingStateList: Map<string, BaseAccountVault>;
   constructor(address: string) {
     this.address = address;
     this.tokenBalances = new Map<string, string>();
@@ -95,6 +96,7 @@ export class WalletState {
     this.veTravaListState = new VeTravaListState();
     this.knightInExpeditionState = new KnightInExpeditionState();
     this.ticket = new NFTTicketState();
+    this.travaLPStakingStateList = new Map();
   }
 
   // async getTokenAmount(tokenAddress: string): Promise<string> {

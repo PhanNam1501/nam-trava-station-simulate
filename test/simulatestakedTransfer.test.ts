@@ -43,7 +43,7 @@ async function test(){
     const st=Number(appState.walletState.tokenBalances.get(String(underLyingToken).toLowerCase()));
     console.log("Farming Trava of Smart Wallet",appState.smartWalletState.tokenBalances.get(String(underLyingToken).toLowerCase()))
     console.log("vault", vault)
-    appState = await simulateTransfer(appState,stakingPool,userAddress,proxyAddress,proxyAddress,
+    appState = await simulateTransfer(appState,stakingPool,proxyAddress,userAddress,
         "100000000000000000");
 
     console.log("-----------After stake--------");
