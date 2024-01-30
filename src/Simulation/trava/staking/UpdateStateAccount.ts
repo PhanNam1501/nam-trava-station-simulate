@@ -8,7 +8,7 @@ import { YEAR_TO_SECONDS } from "../../../utils/config";
 import { BaseAccountVault, RewardTokenData, StakedTokenData, UnderlyingTokenData } from "../../../State/trava/lending/TravaDeFiState";
 import BigNumber from "bignumber.js";
 import OracleABI from "../../../abis/AaveOracle.json";
-import { updateSmartWalletTokenBalance } from "../../basic/UpdateStateAccount";
+import {updateTokenBalance} from "../../basic/UpdateStateAccount";
 import BEP20ABI from "../../../abis/BEP20.json";
 import {getMode, multiCall} from "../../../utils/helper";
 import {EthAddress} from "../../../utils/types";
@@ -186,7 +186,7 @@ export async function updateAllAccountVault(appState1: ApplicationState,_address
       appState[modeFrom].travaLPStakingStateList.set(vaultConfigList[i].stakedTokenAddress.toLowerCase(), accountVaults);
       if (!appState[modeFrom].tokenBalances.has(vaultConfigList[i].stakedTokenAddress.toLowerCase())) {
         // store balance of stakedTokenAddress
-        appState = await updateSmartWalletTokenBalance(appState, vaultConfigList[i].stakedTokenAddress.toLowerCase())
+        appState = await updateTokenBalance(appState, vaultConfigList[i].stakedTokenAddress.toLowerCase())
       }
     }
   }
