@@ -12,7 +12,8 @@ import BigNumber from "bignumber.js";
 import OraclePrice from "../../../utils/oraclePrice";
 import { updateSmartWalletTokenBalance, updateUserTokenBalance } from "../../basic/UpdateStateAccount";
 import { calculateMaxRewards } from "./SimulationWalletTravaLP";
-import { multiCall } from "../../../utils/helper";
+import { getMode, multiCall } from "../../../utils/helper";
+import { wallet_mode } from "orchai-combinator-bsc-simulation/esm/utils/types";
 
 
 export async function getTokenBalance(appState: ApplicationState, tokenAddress: EthAddress) {
@@ -35,7 +36,7 @@ export async function getTokenBalance(appState: ApplicationState, tokenAddress: 
   }
 }
 
-export async function updateLPtTokenInfo(
+export async function updateLPtTokenInfoInW(
   appState1: ApplicationState,
   _tokenAddress: EthAddress
 ) {
@@ -43,10 +44,12 @@ export async function updateLPtTokenInfo(
     const appState = { ...appState1 };
     let tokenAddress = convertHexStringToAddress(_tokenAddress);
     let tokenAddressState = tokenAddress.toLowerCase();
-
-    if (!appState.smartWalletState.detailTokenInPool.has(tokenAddressState)
-      && appState.smartWalletState.detailTokenInPool.get(tokenAddressState)!.tToken == undefined) {
-      let tokenPrice = appState.smartWalletState.detailTokenInPool.get(tokenAddressState)?.price;
+    
+    if (!appState.walletState.detailTokenInPool.has(tokenAddressState)
+      && appState.walletState.detailTokenInPool.get(tokenAddressState)!.tToken == undefined) {
+        console.log("hihi");
+        
+      let tokenPrice = appState.walletState.detailTokenInPool.get(tokenAddressState)?.price;
       if (tokenPrice == undefined) {
         const oraclePrice = new OraclePrice(
           getAddr("ORACLE_ADDRESS", appState.chainId),
@@ -92,7 +95,7 @@ export async function updateLPtTokenInfo(
         );
 
         const tTokenBalance = await tTokenContract.balanceOf(
-          appState.smartWalletState.address
+          appState.walletState.address
         );
 
         const tokenDecimal = await tTokenContract.decimals();
@@ -105,8 +108,118 @@ export async function updateLPtTokenInfo(
         const maxLTV = parseInt(binaryAssetConfig.slice(-15), 2);
         const liqThres = parseInt(binaryAssetConfig.slice(-31, -16), 2);
 
-        appState.smartWalletState.detailTokenInPool =
-          appState.smartWalletState.detailTokenInPool.set(tokenAddressState, {
+        appState.walletState.detailTokenInPool =
+          appState.walletState.detailTokenInPool.set(tokenAddressState, {
+            decimals: originTokenDecimal,
+            tToken: {
+              address: tTokenAddress.toLowerCase(),
+              balances: tTokenBalance.toString(),
+              decimals: tokenDecimal.toString(),
+              totalSupply: tTokenTotalSupply.toString(),
+              originToken: {
+                balances: originBalanceInTToken.toString()
+              }
+            },
+            dToken: {
+              address: "",
+              balances: "",
+              decimals: "",
+              totalSupply: "",
+              originToken: {
+                balances: "",
+              }
+            },
+            maxLTV: maxLTV.toFixed(0),
+            liqThres: liqThres.toFixed(0),
+            price: tokenPrice!
+          });
+      } else {
+        throw new Error(`Can't update info of LP tToken ${tokenAddress}`);
+      }
+    }
+    return appState;
+  } catch (error) {
+    console.log(error);
+    
+    throw new Error("Can't update LP tToken info !");
+  }
+
+}
+
+export async function updateLPtTokenInfo(
+  appState1: ApplicationState,
+  _tokenAddress: EthAddress,
+  _from: EthAddress
+) {
+  try {
+    const appState = { ...appState1 };
+    let tokenAddress = convertHexStringToAddress(_tokenAddress);
+    let tokenAddressState = tokenAddress.toLowerCase();
+    let modeFrom =getMode(appState,_from);
+
+    if (!appState[modeFrom].detailTokenInPool.has(tokenAddressState)
+      && appState[modeFrom].detailTokenInPool?.get(tokenAddressState)?.tToken == undefined) {
+      let tokenPrice = appState[modeFrom].detailTokenInPool.get(tokenAddressState)?.price;
+      if (tokenPrice == undefined) {
+        const oraclePrice = new OraclePrice(
+          getAddr("ORACLE_ADDRESS", appState.chainId),
+          appState.web3!
+        );
+        tokenPrice = String(await oraclePrice.getAssetPrice(tokenAddress));
+      }
+
+      const travaLP = new Contract(
+        getAddr("TRAVA_LENDING_POOL_MARKET", appState.chainId),
+        ABITravaLP,
+        appState.web3!
+      );
+
+      let reverseList = await travaLP.getReservesList();
+
+
+      if (
+        reverseList.includes(tokenAddress)
+      ) {
+        // get reserve data
+        const reserveData = await travaLP.getReserveData(tokenAddress);
+
+        // token address
+        const tTokenAddress = String(reserveData[6]).toLowerCase();
+
+        const originTokenContract = new Contract(
+          tokenAddress,
+          BEP20ABI,
+          appState.web3
+        );
+
+        const originTokenDecimal = await originTokenContract.decimals();
+        const originBalanceInTToken = await originTokenContract.balanceOf(
+          tTokenAddress
+        );
+
+        // get amount
+        const tTokenContract = new Contract(
+          tTokenAddress,
+          BEP20ABI,
+          appState.web3
+        );
+
+        const tTokenBalance = await tTokenContract.balanceOf(
+          appState[modeFrom].address
+        );
+
+        const tokenDecimal = await tTokenContract.decimals();
+        const tTokenTotalSupply = await tTokenContract.totalSupply();
+
+        let binaryAssetConfig = BigNumber(reserveData[0]).toString(2);
+        if (binaryAssetConfig.length < 80) {
+          binaryAssetConfig = "0".repeat(80 - binaryAssetConfig.length) + binaryAssetConfig;
+        }
+        const maxLTV = parseInt(binaryAssetConfig.slice(-15), 2);
+        const liqThres = parseInt(binaryAssetConfig.slice(-31, -16), 2);
+
+        appState[modeFrom].detailTokenInPool =
+          appState[modeFrom].detailTokenInPool.set(tokenAddressState, {
             decimals: originTokenDecimal,
             tToken: {
               address: tTokenAddress.toLowerCase(),
@@ -140,6 +253,8 @@ export async function updateLPtTokenInfo(
   }
 
 }
+
+
 
 export async function updateLPDebtTokenInfo(
   appState1: ApplicationState,
@@ -451,7 +566,6 @@ async function updateTokenInPoolInfo(
 
     appState.smartWalletState.travaLPState.lpReward.claimableReward = maxRewardCanGet.toString();
     appState.smartWalletState.travaLPState.lpReward.tokenAddress = String(rTravaAddress).toLowerCase();
-
   }
 
   return appState
@@ -472,9 +586,10 @@ export async function updateTravaLPInfo(
       ABITravaLP,
       appState.web3!
     );
-    const reserveAddressList = await TravaLendingPool.getReservesList();
+    const reserveAddressList = await TravaLendingPool.getReservesList(); //danh sách địa chỉ tài sản dự trữ trong LP
     let [userTokenInPoolBalance, smartWalletTokenInPoolBalance,] = await Promise.all([
-      multiCall(
+      // gọi cùng 1 phương thức 'balanceOf' trên tất cả địa chỉ tài sản dự trữ
+      multiCall( //lấy số dư của người dùng
         BEP20ABI,
         reserveAddressList.map((address: string, _: number) => ({
           address: address,
@@ -484,7 +599,7 @@ export async function updateTravaLPInfo(
         appState.web3,
         appState.chainId
       ),
-      multiCall(
+      multiCall(//lấy số dư smart wallet
         BEP20ABI,
         reserveAddressList.map((address: string, _: number) => ({
           address: address,
@@ -494,8 +609,7 @@ export async function updateTravaLPInfo(
         appState.web3,
         appState.chainId
       )
-
-    ]);
+    ]);    
 
     if (reserveAddressList.length == 0) {
       throw new Error("No reserve in TravaLP");

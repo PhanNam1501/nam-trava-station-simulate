@@ -9,7 +9,7 @@
     "build:esm": "tsc -b",
     "build:umd": "webpack --config=webpack.umd.js",
     "build": " npm run build:umd && npm run build:esm",
-    "testnft": "ts-node ./test/simulationWalletTravaLP2.test.ts"
+    "testnft": "ts-node ./test/simulationWalletTravaLP.test.ts"
   },
   "author": "Trava Station",
   "repository": "https://github.com/TravaStation/trava-simulation-route",

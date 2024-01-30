@@ -81,6 +81,7 @@ export class WalletState {
   veTravaListState: VeTravaListState;
   knightInExpeditionState: KnightInExpeditionState;
   ticket: NFTTicketState;
+  detailTokenInPool: Map<string, DetailTokenInPool>;
   constructor(address: string) {
     this.address = address;
     this.tokenBalances = new Map<string, string>();
@@ -95,6 +96,7 @@ export class WalletState {
     this.veTravaListState = new VeTravaListState();
     this.knightInExpeditionState = new KnightInExpeditionState();
     this.ticket = new NFTTicketState();
+    this.detailTokenInPool = new Map();
   }
 
   // async getTokenAmount(tokenAddress: string): Promise<string> {
