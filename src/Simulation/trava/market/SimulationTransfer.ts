@@ -26,9 +26,6 @@ export async function SimulationTransfer(
   
       await updateLPtTokenInfo(appState, _tokenAddress, _from );
       let tokenInfoFrom = appState[modeFrom].detailTokenInPool.get(_tokenAddress)!;
-        
-      await updateLPtTokenInfo(appState, _tokenAddress, _to);
-      let tokenInfoTo = appState[modeTo].detailTokenInPool.get(_tokenAddress)!;
       
       // check tokenAddress is exist on reverseList
       if (!appState[modeFrom].tokenBalances.has(_tokenAddress)) {
@@ -47,8 +44,8 @@ export async function SimulationTransfer(
       let newLiquidTreshold = calculateNewLiquidThreshold(BigNumber(oldTotalCollateralUSD), BigNumber(oldLiquidTreshold), newTotalCollateralUSD, BigNumber(tokenInfoFrom.liqThres));
   
       // if totalDebtUSD = 0  , not update healthFactor
-      let healthFactor = calculateNewHealFactor(newTotalCollateralUSD, newLiquidTreshold, BigNumber(appState[modeFrom].travaLPState.totalDebtUSD));
-      let availableBorrowsUSD = calculateNewAvailableBorrow(newTotalCollateralUSD, newLTV, BigNumber(appState[modeFrom].travaLPState.totalDebtUSD));
+      const healthFactor = calculateNewHealFactor(newTotalCollateralUSD, newLiquidTreshold, BigNumber(appState[modeFrom].travaLPState.totalDebtUSD));
+      const availableBorrowsUSD = calculateNewAvailableBorrow(newTotalCollateralUSD, newLTV, BigNumber(appState[modeFrom].travaLPState.totalDebtUSD));
   
   
       appState[modeFrom].travaLPState.totalCollateralUSD = newTotalCollateralUSD.toFixed(0);
@@ -71,27 +68,32 @@ export async function SimulationTransfer(
         _tokenAddress,
         tokenInfoFrom
       );
-  
+      
+      if (_to.toLowerCase() == appState.walletState.address.toLowerCase() || _to.toLowerCase() == appState.smartWalletState.address.toLowerCase() ) {
+        
+        await updateLPtTokenInfo(appState, _tokenAddress, _to);
+        let tokenInfoTo = appState[modeTo].detailTokenInPool.get(_tokenAddress)!;
+
         // check tokenAddress is exist on reverseList
         if (!appState[modeTo].tokenBalances.has(_tokenAddress)) {
           await updateUserTokenBalance(appState, _tokenAddress);
         }
   
-        transferUSD = getBalanceUsdFromAmount(amount, tokenInfoTo);
-        oldTotalCollateralUSD = appState[modeTo].travaLPState.totalCollateralUSD;
-        newTotalCollateralUSD = BigNumber(appState[modeTo].travaLPState.totalCollateralUSD).plus(transferUSD);
+        let transferUSD = getBalanceUsdFromAmount(amount, tokenInfoTo);
+        let oldTotalCollateralUSD = appState[modeTo].travaLPState.totalCollateralUSD;
+        let newTotalCollateralUSD = BigNumber(appState[modeTo].travaLPState.totalCollateralUSD).plus(transferUSD);
         // update state for smart wallet in travaLP state ( availableBorrowUSD , totalDebtUSD , healthFactor)
   
-        oldLTV = appState[modeTo].travaLPState.ltv;
-        newLTV = calculateNewLTV(BigNumber(oldTotalCollateralUSD), BigNumber(oldLTV), newTotalCollateralUSD, BigNumber(tokenInfoTo.maxLTV))
+        let oldLTV = appState[modeTo].travaLPState.ltv;
+        let newLTV = calculateNewLTV(BigNumber(oldTotalCollateralUSD), BigNumber(oldLTV), newTotalCollateralUSD, BigNumber(tokenInfoTo.maxLTV))
     
         //Calculate liquid threshold
-        oldLiquidTreshold = appState[modeTo].travaLPState.currentLiquidationThreshold;
-        newLiquidTreshold = calculateNewLiquidThreshold(BigNumber(oldTotalCollateralUSD), BigNumber(oldLiquidTreshold), newTotalCollateralUSD, BigNumber(tokenInfoTo.liqThres));
+        let oldLiquidTreshold = appState[modeTo].travaLPState.currentLiquidationThreshold;
+        let newLiquidTreshold = calculateNewLiquidThreshold(BigNumber(oldTotalCollateralUSD), BigNumber(oldLiquidTreshold), newTotalCollateralUSD, BigNumber(tokenInfoTo.liqThres));
     
         // if totalDebtUSD = 0  , not update healthFactor
-        healthFactor = calculateNewHealFactor(newTotalCollateralUSD, newLiquidTreshold, BigNumber(appState[modeTo].travaLPState.totalDebtUSD));
-        availableBorrowsUSD = calculateNewAvailableBorrow(newTotalCollateralUSD, newLTV, BigNumber(appState[modeTo].travaLPState.totalDebtUSD));
+        const healthFactor = calculateNewHealFactor(newTotalCollateralUSD, newLiquidTreshold, BigNumber(appState[modeTo].travaLPState.totalDebtUSD));
+        const availableBorrowsUSD = calculateNewAvailableBorrow(newTotalCollateralUSD, newLTV, BigNumber(appState[modeTo].travaLPState.totalDebtUSD));
     
     
         appState[modeTo].travaLPState.totalCollateralUSD = newTotalCollateralUSD.toFixed(0);
@@ -115,7 +117,7 @@ export async function SimulationTransfer(
           _tokenAddress,
           tokenInfoTo
         );
-      
+      };
       return appState;
     } catch (err) {
       throw err;
