@@ -12,6 +12,7 @@ import {
   SimulationWithdraw,
   calculateMaxAmountBorrow,
   calculateMaxAmountWithdraw,
+  SimulationTransferTToken
 } from "../src/Simulation/trava/market/SimulationWalletTravaLP";
 
 import {
@@ -24,7 +25,6 @@ import { getAddr } from "../src/utils/address";
 import ABITravaLP from "../src/abis/TravaLendingPool.json";
 import { MAX_UINT256 } from "../src/utils/config";
 import BigNumber from "bignumber.js";
-import { SimulationTransfer } from "../src/Simulation/trava/market/SimulationTransfer";
 // start 
 
 const test = async () => {
@@ -116,7 +116,7 @@ const test = async () => {
     BigNumber(3e18).toFixed()
   );
 
-  const appState5 = await SimulationTransfer(
+  const appState5 = await SimulationTransferTToken(
     appState4,
     proxyAddress,
     userAddress,
