@@ -9,8 +9,7 @@ import {MAX_UINT256} from "../../../utils/config";
 import BigNumber from "bignumber.js";
 import {values} from "lodash";
 import {updateAllAccountVault} from "./UpdateStateAccount";
-import {getMode} from "../../../utils/helper";
-import {isUserAddress} from "orchai-combinator-bsc-simulation";
+import {getMode, isWallet} from "../../../utils/helper";
 
 export function calculateNewAPR(oldAPR: string, oldTVL: string, newTVL: string): string {
     if (newTVL == "0") {
@@ -191,7 +190,7 @@ export async function simulateTransfer(appState1: ApplicationState, _stakingPool
         appState[modeFrom].tokenBalances.set(stakedTokenAddress.toLowerCase(), newRewardBalance.toFixed(0));
 
         //handle with a case that to equal wallet state
-        if (isUserAddress(appState,to) ) {
+        if (isWallet(appState,to) ) {
             let modeTo  =getMode(appState, to);
             if (!appState[modeTo].tokenBalances.has(stakedTokenAddress)) {
                 appState=await  updateTokenBalance(appState,stakedTokenAddress);

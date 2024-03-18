@@ -127,7 +127,7 @@ const test = async () => {
 
   console.log("final");
   console.log(appState5.smartWalletState.detailTokenInPool.get(tokenAddress.toLowerCase())?.tToken);
-  // console.log(appState5.walletState.detailTokenInPool.get(tokenAddress.toLowerCase())?.tToken);
+  console.log(appState5.walletState.detailTokenInPool.get(tokenAddress.toLowerCase())?.tToken);
   
 
   // console.log("ahuhu1", appState4.smartWalletState.travaLPState, appState4.smartWalletState.tokenBalances.get(tokenAddress.toLowerCase()), calculateMaxAmountBorrow(appState4, tokenAddress).toFixed());

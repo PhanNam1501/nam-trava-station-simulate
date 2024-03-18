@@ -168,7 +168,7 @@ export async function simulateTravaNFTHeuristicFarmingWithdraw(appState1: Applic
         }
 
         if (appState.smartWalletState.travaLPStakingStateList.size == 0) {
-            appState = await updateAllAccountVault(appState);
+            appState = await updateAllAccountVault(appState, appState.smartWalletState.address);
         }
 
         appState = await simulateStakingClaimRewards(appState, getAddr("FARMING_REWARD_VAULT", appState.chainId), appState.smartWalletState.address, heuristicFarmingVault.totalRewardOfUser);
@@ -195,7 +195,7 @@ export async function simulateTravaNFTHeuristicFarmingClaim(appState1: Applicati
         let heuristicFarmingVault = appState.smartWalletState.NFTFarmingsState.nftFarmings.get(_vaultId.toLowerCase())!
 
         if (appState.smartWalletState.travaLPStakingStateList.size == 0) {
-            appState = await updateAllAccountVault(appState);
+            appState = await updateAllAccountVault(appState, appState.smartWalletState.address);
         }
 
         appState = await simulateStakingClaimRewards(appState, getAddr("FARMING_REWARD_VAULT", appState.chainId), appState.smartWalletState.address, heuristicFarmingVault.totalRewardOfUser);
