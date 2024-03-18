@@ -10,7 +10,7 @@ const testBuy = async () => {
   const provider = new JsonRpcProvider("https://bsc-testnet.publicnode.com")
   const chainId = Number((await provider.getNetwork()).chainId)
   const appState = new ApplicationState(
-    "0x595622cBd0Fc4727DF476a1172AdA30A9dDf8F43",
+    "0xFA5aB4faF47d3515048b8a030b1e2146F637691C",
     "0x826D824BE55A403859A6Db67D5EeC5aC386307fE",
     provider,
     chainId

@@ -81,6 +81,7 @@ export async function updateNFTBalanceFromContract(
         appState.chainId
       ),
     ]);
+    
     const openedTokens = [] as Array<{ tokenId: string; version: number }>;
     tokenIdsFlattened.forEach((tokenId: string, index: number) => {
       const version = parseInt(data[index][0]);
@@ -122,6 +123,7 @@ export async function updateNFTBalanceFromContract(
         appState[mode].nfts.isFetch = true;
       }
     });
+
   }
   } catch (e) {
     console.log(e);
