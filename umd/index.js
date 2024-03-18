@@ -834,7 +834,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   simulateStakingClaimRewards: () => (/* reexport safe */ _trava__WEBPACK_IMPORTED_MODULE_5__.simulateStakingClaimRewards),
 /* harmony export */   simulateStakingRedeem: () => (/* reexport safe */ _trava__WEBPACK_IMPORTED_MODULE_5__.simulateStakingRedeem),
 /* harmony export */   simulateSwap: () => (/* reexport safe */ _swap__WEBPACK_IMPORTED_MODULE_4__.simulateSwap),
-/* harmony export */   simulateTransfer: () => (/* reexport safe */ _trava__WEBPACK_IMPORTED_MODULE_5__.simulateTransfer),
+/* harmony export */   simulateTransferStakedToken: () => (/* reexport safe */ _trava__WEBPACK_IMPORTED_MODULE_5__.simulateTransferStakedToken),
 /* harmony export */   simulateTravaGovernanceChangeUnlockTime: () => (/* reexport safe */ _trava__WEBPACK_IMPORTED_MODULE_5__.simulateTravaGovernanceChangeUnlockTime),
 /* harmony export */   simulateTravaGovernanceCompound: () => (/* reexport safe */ _trava__WEBPACK_IMPORTED_MODULE_5__.simulateTravaGovernanceCompound),
 /* harmony export */   simulateTravaGovernanceCreateLock: () => (/* reexport safe */ _trava__WEBPACK_IMPORTED_MODULE_5__.simulateTravaGovernanceCreateLock),
@@ -60533,7 +60533,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   simulateStakeStaking: () => (/* reexport safe */ _staking__WEBPACK_IMPORTED_MODULE_2__.simulateStakeStaking),
 /* harmony export */   simulateStakingClaimRewards: () => (/* reexport safe */ _staking__WEBPACK_IMPORTED_MODULE_2__.simulateStakingClaimRewards),
 /* harmony export */   simulateStakingRedeem: () => (/* reexport safe */ _staking__WEBPACK_IMPORTED_MODULE_2__.simulateStakingRedeem),
-/* harmony export */   simulateTransfer: () => (/* reexport safe */ _staking__WEBPACK_IMPORTED_MODULE_2__.simulateTransfer),
+/* harmony export */   simulateTransferStakedToken: () => (/* reexport safe */ _staking__WEBPACK_IMPORTED_MODULE_2__.simulateTransferStakedToken),
 /* harmony export */   simulateTravaGovernanceChangeUnlockTime: () => (/* reexport safe */ _governance__WEBPACK_IMPORTED_MODULE_3__.simulateTravaGovernanceChangeUnlockTime),
 /* harmony export */   simulateTravaGovernanceCompound: () => (/* reexport safe */ _governance__WEBPACK_IMPORTED_MODULE_3__.simulateTravaGovernanceCompound),
 /* harmony export */   simulateTravaGovernanceCreateLock: () => (/* reexport safe */ _governance__WEBPACK_IMPORTED_MODULE_3__.simulateTravaGovernanceCreateLock),
@@ -65912,7 +65912,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   simulateStakeStaking: () => (/* reexport safe */ _SimulationStaking__WEBPACK_IMPORTED_MODULE_1__.simulateStakeStaking),
 /* harmony export */   simulateStakingClaimRewards: () => (/* reexport safe */ _SimulationStaking__WEBPACK_IMPORTED_MODULE_1__.simulateStakingClaimRewards),
 /* harmony export */   simulateStakingRedeem: () => (/* reexport safe */ _SimulationStaking__WEBPACK_IMPORTED_MODULE_1__.simulateStakingRedeem),
-/* harmony export */   simulateTransfer: () => (/* reexport safe */ _SimulationStaking__WEBPACK_IMPORTED_MODULE_1__.simulateTransfer),
+/* harmony export */   simulateTransferStakedToken: () => (/* reexport safe */ _SimulationStaking__WEBPACK_IMPORTED_MODULE_1__.simulateTransferStakedToken),
 /* harmony export */   updateAllAccountVault: () => (/* reexport safe */ _UpdateStateAccount__WEBPACK_IMPORTED_MODULE_0__.updateAllAccountVault)
 /* harmony export */ });
 /* harmony import */ var _UpdateStateAccount__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(460);
@@ -66136,7 +66136,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   simulateStakeStaking: () => (/* binding */ simulateStakeStaking),
 /* harmony export */   simulateStakingClaimRewards: () => (/* binding */ simulateStakingClaimRewards),
 /* harmony export */   simulateStakingRedeem: () => (/* binding */ simulateStakingRedeem),
-/* harmony export */   simulateTransfer: () => (/* binding */ simulateTransfer)
+/* harmony export */   simulateTransferStakedToken: () => (/* binding */ simulateTransferStakedToken)
 /* harmony export */ });
 /* harmony import */ var _basic_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(20);
 /* harmony import */ var _utils_config__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(24);
@@ -66276,11 +66276,11 @@ function _simulateStakingRedeem() {
   });
   return _simulateStakingRedeem.apply(this, arguments);
 }
-function simulateTransfer(_x9, _x10, _x11, _x12, _x13) {
-  return _simulateTransfer.apply(this, arguments);
+function simulateTransferStakedToken(_x9, _x10, _x11, _x12, _x13) {
+  return _simulateTransferStakedToken.apply(this, arguments);
 }
-function _simulateTransfer() {
-  _simulateTransfer = _asyncToGenerator(function* (appState1, _stakingPool, from, to, _amount) {
+function _simulateTransferStakedToken() {
+  _simulateTransferStakedToken = _asyncToGenerator(function* (appState1, _stakingPool, from, to, _amount) {
     var appState = _objectSpread({}, appState1);
     var stakingPool = _stakingPool.toLowerCase();
     var amount = (0,bignumber_js__WEBPACK_IMPORTED_MODULE_2__["default"])(_amount);
@@ -66321,7 +66321,7 @@ function _simulateTransfer() {
     }
     return appState;
   });
-  return _simulateTransfer.apply(this, arguments);
+  return _simulateTransferStakedToken.apply(this, arguments);
 }
 function simulateStakingClaimRewards(_x14, _x15, _x16, _x17) {
   return _simulateStakingClaimRewards.apply(this, arguments);
@@ -67468,7 +67468,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   simulateStakingClaimRewards: () => (/* reexport safe */ _Simulation__WEBPACK_IMPORTED_MODULE_1__.simulateStakingClaimRewards),
 /* harmony export */   simulateStakingRedeem: () => (/* reexport safe */ _Simulation__WEBPACK_IMPORTED_MODULE_1__.simulateStakingRedeem),
 /* harmony export */   simulateSwap: () => (/* reexport safe */ _Simulation__WEBPACK_IMPORTED_MODULE_1__.simulateSwap),
-/* harmony export */   simulateTransfer: () => (/* reexport safe */ _Simulation__WEBPACK_IMPORTED_MODULE_1__.simulateTransfer),
+/* harmony export */   simulateTransferStakedToken: () => (/* reexport safe */ _Simulation__WEBPACK_IMPORTED_MODULE_1__.simulateTransferStakedToken),
 /* harmony export */   simulateTravaGovernanceChangeUnlockTime: () => (/* reexport safe */ _Simulation__WEBPACK_IMPORTED_MODULE_1__.simulateTravaGovernanceChangeUnlockTime),
 /* harmony export */   simulateTravaGovernanceCompound: () => (/* reexport safe */ _Simulation__WEBPACK_IMPORTED_MODULE_1__.simulateTravaGovernanceCompound),
 /* harmony export */   simulateTravaGovernanceCreateLock: () => (/* reexport safe */ _Simulation__WEBPACK_IMPORTED_MODULE_1__.simulateTravaGovernanceCreateLock),

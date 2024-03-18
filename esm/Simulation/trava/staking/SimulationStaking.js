@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.simulateStakingClaimRewards = exports.simulateTransfer = exports.simulateStakingRedeem = exports.simulateStakeStaking = exports.calculateNewAPR = void 0;
+exports.simulateStakingClaimRewards = exports.simulateTransferStakedToken = exports.simulateStakingRedeem = exports.simulateStakeStaking = exports.calculateNewAPR = void 0;
 const UpdateStateAccount_1 = require("../../basic/UpdateStateAccount");
 const config_1 = require("../../../utils/config");
 const bignumber_js_1 = __importDefault(require("bignumber.js"));
@@ -134,7 +134,7 @@ function simulateStakingRedeem(appState1, _stakingPool, to, _amount) {
     });
 }
 exports.simulateStakingRedeem = simulateStakingRedeem;
-function simulateTransfer(appState1, _stakingPool, from, to, _amount) {
+function simulateTransferStakedToken(appState1, _stakingPool, from, to, _amount) {
     return __awaiter(this, void 0, void 0, function* () {
         let appState = Object.assign({}, appState1);
         let stakingPool = _stakingPool.toLowerCase();
@@ -176,7 +176,7 @@ function simulateTransfer(appState1, _stakingPool, from, to, _amount) {
         return appState;
     });
 }
-exports.simulateTransfer = simulateTransfer;
+exports.simulateTransferStakedToken = simulateTransferStakedToken;
 function simulateStakingClaimRewards(appState1, _stakingPool, _to, _amount) {
     return __awaiter(this, void 0, void 0, function* () {
         /// ???

@@ -165,7 +165,7 @@ export async function simulateStakingRedeem(appState1: ApplicationState, _stakin
 
 }
 
-export async function simulateTransfer(appState1: ApplicationState, _stakingPool: EthAddress, from: EthAddress,  to: EthAddress, _amount: uint256 | string) {
+export async function simulateTransferStakedToken(appState1: ApplicationState, _stakingPool: EthAddress, from: EthAddress,  to: EthAddress, _amount: uint256 | string) {
     let appState = {...appState1};
     let stakingPool = _stakingPool.toLowerCase()
     let amount = BigNumber(_amount)

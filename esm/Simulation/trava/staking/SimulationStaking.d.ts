@@ -33,7 +33,7 @@ export declare function simulateStakingRedeem(appState1: ApplicationState, _stak
     chainId: number;
     simulatorUrl: string;
 }>;
-export declare function simulateTransfer(appState1: ApplicationState, _stakingPool: EthAddress, from: EthAddress, to: EthAddress, _amount: uint256 | string): Promise<{
+export declare function simulateTransferStakedToken(appState1: ApplicationState, _stakingPool: EthAddress, from: EthAddress, to: EthAddress, _amount: uint256 | string): Promise<{
     createdTime: number;
     walletState: import("../../..").WalletState;
     smartWalletState: import("../../..").SmartWalletState;
