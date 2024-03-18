@@ -81,7 +81,11 @@ export class WalletState {
   veTravaListState: VeTravaListState;
   knightInExpeditionState: KnightInExpeditionState;
   ticket: NFTTicketState;
+<<<<<<< HEAD
   travaLPStakingStateList: Map<string, BaseAccountVault>;
+=======
+  detailTokenInPool: Map<string, DetailTokenInPool>;
+>>>>>>> origin/feature/simulate_transfer_Ttoken_travaLP
   constructor(address: string) {
     this.address = address;
     this.tokenBalances = new Map<string, string>();
@@ -96,7 +100,11 @@ export class WalletState {
     this.veTravaListState = new VeTravaListState();
     this.knightInExpeditionState = new KnightInExpeditionState();
     this.ticket = new NFTTicketState();
+<<<<<<< HEAD
     this.travaLPStakingStateList = new Map();
+=======
+    this.detailTokenInPool = new Map();
+>>>>>>> origin/feature/simulate_transfer_Ttoken_travaLP
   }
 
   // async getTokenAmount(tokenAddress: string): Promise<string> {

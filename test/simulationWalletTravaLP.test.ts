@@ -12,6 +12,7 @@ import {
   SimulationWithdraw,
   calculateMaxAmountBorrow,
   calculateMaxAmountWithdraw,
+  SimulationTransferTToken
 } from "../src/Simulation/trava/market/SimulationWalletTravaLP";
 
 import {
@@ -55,15 +56,17 @@ const test = async () => {
     appState,
     tokenAddress
     );
+
   const appState12 = await updateSmartWalletTokenBalance(
     appState11,
     tokenAddress
     );
-    
-    const appState1 = await updateTravaLPInfo(
+
+    const appState1 = await updateTravaLPInfo( 
       appState12,
       );
-    // console.log("Started: ", appState1.smartWalletState.travaLPState)
+    
+  //   console.log("Started: ", appState1.smartWalletState.travaLPState)
   // const appState2 = await updateLPtTokenInfo(
   //   appState1,
   //   tokenAddress
@@ -81,16 +84,12 @@ const test = async () => {
 
   // const appState3 = await SimulationRepay(
   //   appState2,
+  //   userAddress,
   //   tokenAddress,
   //   MAX_UINT256
   // );
 
-  // console.log(
-  //   "huhu ",
-  //   appState2.smartWalletState.detailTokenInPool.get(
-  //     tokenAddress
-  //   )
-  // );
+  //console.log(appState2.smartWalletState.detailTokenInPool.get(tokenAddress.toLowerCase()));
 
   // // console.log(
   // //   "banlances before phase1 : ",
@@ -100,7 +99,7 @@ const test = async () => {
   //   "smartWalletState before phase1 : ",
   //   appState.smartWalletState.travaLPState
   // );
-  console.log("Started: ", appState1.smartWalletState.travaLPState, appState1.smartWalletState.tokenBalances.get(tokenAddress.toLowerCase()), calculateMaxAmountWithdraw(appState1, tokenAddress).toFixed())
+  //console.log("Started: ", appState1.smartWalletState.travaLPState, appState1.smartWalletState.tokenBalances.get(tokenAddress.toLowerCase()), calculateMaxAmountWithdraw(appState1, tokenAddress).toFixed())
   // const appState31 = await simulateSendToken(
   //   appState1,
   //   tokenAddress,
@@ -109,7 +108,7 @@ const test = async () => {
   //   amount.multipliedBy(2).toFixed(0)
   // )
   // console.log("ahuhu", appState31.smartWalletState.tokenBalances.get(tokenAddress.toLowerCase()));
-  console.log("================= PHASE 2 Supply ==========================");
+  // console.log("================= PHASE 2 Supply ==========================");
   const appState4 = await SimulationSupply(
     appState1,
     proxyAddress,
@@ -117,7 +116,21 @@ const test = async () => {
     BigNumber(3e18).toFixed()
   );
 
-  console.log("ahuhu1", appState4.smartWalletState.travaLPState, appState4.smartWalletState.tokenBalances.get(tokenAddress.toLowerCase()), calculateMaxAmountBorrow(appState4, tokenAddress).toFixed());
+  const appState5 = await SimulationTransferTToken(
+    appState4,
+    proxyAddress,
+    userAddress,
+    tokenAddress,
+    BigNumber(1e18).toFixed()
+  )
+
+
+  console.log("final");
+  console.log(appState5.smartWalletState.detailTokenInPool.get(tokenAddress.toLowerCase())?.tToken);
+  // console.log(appState5.walletState.detailTokenInPool.get(tokenAddress.toLowerCase())?.tToken);
+  
+
+  // console.log("ahuhu1", appState4.smartWalletState.travaLPState, appState4.smartWalletState.tokenBalances.get(tokenAddress.toLowerCase()), calculateMaxAmountBorrow(appState4, tokenAddress).toFixed());
 
   // // console.log(
   // //   "banlances after phase1 : ",

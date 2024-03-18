@@ -6,9 +6,10 @@ import _ from "lodash";
 import { MAX_UINT256, percentMul, wadDiv } from "../../../utils/config";
 import IncentiveContractABI from "../../../abis/IncentiveContract.json";
 import { BigNumber } from "bignumber.js";
-import { updateLPDebtTokenInfo, updateLPtTokenInfo } from "./UpdateStateAccount";
+import { updateLPDebtTokenInfo, updateLPtTokenInfo, updateTokenInPoolInfo, updateTravaLPInfo } from "./UpdateStateAccount";
 import { updateSmartWalletTokenBalance, updateUserTokenBalance } from "../../basic/UpdateStateAccount";
 import { DetailTokenInPool } from "../../../State/SmartWalletState";
+import { getMode} from "../../../utils/helper";
 
 export async function calculateMaxRewards(appState: ApplicationState): Promise<string> {
   let listTDTokenRewardsAddress = getListTDTokenRewardsAddress(appState);
@@ -114,6 +115,34 @@ export function calculateMaxAmountWithdraw(appState: ApplicationState, _tokenAdd
   ).multipliedBy(BigNumber("10").pow(tokenInfo.tToken.decimals))
 }
 
+export function calculateMaxAmountTransferTToken(appState: ApplicationState, _tokenAddress: string, _from: EthAddress): BigNumber {
+  let modeFrom = getMode(appState, _from);
+  let tokenAddress = _tokenAddress.toLowerCase();
+  let tokenInfo = appState[modeFrom].detailTokenInPool.get(tokenAddress.toLowerCase())!;
+
+  if (typeof tokenInfo == undefined) {
+    throw new Error("Token is not init in lending pool state!")
+  }
+  const depositedRaw = tokenInfo.tToken.balances;
+  const deposited = BigNumber(depositedRaw).dividedBy(BigNumber("10").pow(tokenInfo.tToken.decimals));
+
+  const tTokenReserveBalanceRaw = tokenInfo.tToken.originToken.balances;
+  const tTokenReserveBalance = BigNumber(tTokenReserveBalanceRaw).dividedBy(BigNumber("10").pow(tokenInfo.tToken.decimals));
+
+  let nativeAvailableTransfer = BigNumber(appState[modeFrom].travaLPState.totalCollateralUSD)
+    .minus(BigNumber(appState[modeFrom].travaLPState.totalDebtUSD).div(BigNumber(appState[modeFrom].travaLPState.ltv)))
+    .div(tokenInfo.price);
+  const available = BigNumber(tokenInfo.tToken.totalSupply).minus(tokenInfo.dToken.totalSupply).div(tokenInfo.price);
+
+  if (nativeAvailableTransfer.isNaN()) {
+    nativeAvailableTransfer = BigNumber(0);
+  }
+
+  return BigNumber.max(
+    BigNumber.min(deposited, nativeAvailableTransfer, tTokenReserveBalance, available),
+    0
+  ).multipliedBy(BigNumber("10").pow(tokenInfo.tToken.decimals))
+}
 
 export function calculateNewAvailableBorrow(newTotalCollateral: BigNumber, newLTV: BigNumber, newTotalDebt: BigNumber): BigNumber {
   return percentMul(
@@ -257,7 +286,7 @@ export async function SimulationSupply(
 
     // check tokenAddress is exist on reverseList
     if (!appState.smartWalletState.detailTokenInPool.has(_tokenAddress)) {
-      await updateLPtTokenInfo(appState, _tokenAddress);
+      await updateLPtTokenInfo(appState, _tokenAddress, "smartWalletState");
     }
 
     //Update Smart Wallet Position
@@ -740,4 +769,127 @@ export async function SimulationConvertReward(
     throw err;
   }
   return appState;
+}
+
+export async function SimulationTransferTToken(
+  appState1: ApplicationState,
+  _from: EthAddress,
+  _to: EthAddress,
+  _tokenAddress: EthAddress,
+  _amount: string
+): Promise<ApplicationState> {
+  try {
+    let amount = BigNumber(_amount);
+    let appState = { ...appState1 };
+
+    const tokenAddress = _tokenAddress.toLowerCase();
+
+    let modeFrom =getMode(appState,_from);
+
+    appState = await updateTravaLPInfo(appState);
+
+    appState = await updateTokenInPoolInfo(appState, _from.toLowerCase());
+    let tokenInfoFrom = appState[modeFrom].detailTokenInPool.get(tokenAddress)!;
+
+    if (amount.toFixed(0) == MAX_UINT256 || amount.isEqualTo(MAX_UINT256)) {
+      amount = calculateMaxAmountTransferTToken(appState, _tokenAddress, _from.toLowerCase());
+    }
+    
+    // check tokenAddress is exist on reverseList
+    if (!appState[modeFrom].tokenBalances.has(tokenAddress)) {
+      appState = await updateUserTokenBalance(appState, tokenAddress);
+    }
+    let transferUSD = getBalanceUsdFromAmount(amount, tokenInfoFrom);
+    let oldTotalCollateralUSDOfFrom = appState[modeFrom].travaLPState.totalCollateralUSD;
+    let newTotalCollateralUSDOfFrom = BigNumber(appState[modeFrom].travaLPState.totalCollateralUSD).minus(transferUSD);
+    // update state for smart wallet in travaLP state ( availableBorrowUSD , totalDebtUSD , healthFactor)
+      
+    let oldLTVOfFrom = appState[modeFrom].travaLPState.ltv;
+    let newLTVOfFrom = calculateNewLTV(BigNumber(oldTotalCollateralUSDOfFrom), BigNumber(oldLTVOfFrom), newTotalCollateralUSDOfFrom, BigNumber(tokenInfoFrom.maxLTV))
+
+    //Calculate liquid threshold
+    let oldLiquidTresholdOfFrom = appState[modeFrom].travaLPState.currentLiquidationThreshold;
+    let newLiquidTresholdOfFrom = calculateNewLiquidThreshold(BigNumber(oldTotalCollateralUSDOfFrom), BigNumber(oldLiquidTresholdOfFrom), newTotalCollateralUSDOfFrom, BigNumber(tokenInfoFrom.liqThres));
+
+    // if totalDebtUSD = 0  , not update healthFactor
+    const healthFactorOfFrom = calculateNewHealFactor(newTotalCollateralUSDOfFrom, newLiquidTresholdOfFrom, BigNumber(appState[modeFrom].travaLPState.totalDebtUSD));
+    const availableBorrowsUSDOfFrom = calculateNewAvailableBorrow(newTotalCollateralUSDOfFrom, newLTVOfFrom, BigNumber(appState[modeFrom].travaLPState.totalDebtUSD));
+
+
+    appState[modeFrom].travaLPState.totalCollateralUSD = newTotalCollateralUSDOfFrom.toFixed(0);
+    appState[modeFrom].travaLPState.currentLiquidationThreshold = newLiquidTresholdOfFrom.toFixed(0);
+    appState[modeFrom].travaLPState.ltv = newLTVOfFrom.toFixed(0);
+    appState[modeFrom].travaLPState.healthFactor = healthFactorOfFrom.toFixed(0);
+    appState[modeFrom].travaLPState.availableBorrowsUSD = availableBorrowsUSDOfFrom.toFixed(0)
+
+    tokenInfoFrom.tToken = {
+      address: tokenInfoFrom.tToken.address,
+      decimals: tokenInfoFrom.tToken.decimals,
+      balances: BigNumber(tokenInfoFrom.tToken.balances).minus(amount).toFixed(0),
+      totalSupply: BigNumber(tokenInfoFrom.tToken.totalSupply).minus(amount).toFixed(0),
+      originToken: {
+        balances: BigNumber(tokenInfoFrom.tToken.originToken.balances).toFixed(0)
+      }
+    };
+
+    appState[modeFrom].detailTokenInPool.set(
+      tokenAddress,
+      tokenInfoFrom
+    );
+    
+    if (_to.toLowerCase() == appState.walletState.address.toLowerCase() || _to.toLowerCase() == appState.smartWalletState.address.toLowerCase()) {
+      
+      let modeTo = getMode(appState,_to);
+
+      appState = await updateTokenInPoolInfo(appState, _to.toLowerCase());
+      let tokenInfoTo = appState[modeTo].detailTokenInPool.get(tokenAddress)!;
+
+      // check tokenAddress is exist on reverseList
+      if (!appState[modeTo].tokenBalances.has(tokenAddress)) {
+        appState = await updateUserTokenBalance(appState, tokenAddress);
+      }
+
+      let receiveUSD = getBalanceUsdFromAmount(amount, tokenInfoTo);
+      let oldTotalCollateralUSDOfTo = appState[modeTo].travaLPState.totalCollateralUSD;
+      let newTotalCollateralUSDOfTo = BigNumber(appState[modeTo].travaLPState.totalCollateralUSD).plus(receiveUSD);
+      // update state for smart wallet in travaLP state ( availableBorrowUSD , totalDebtUSD , healthFactor)
+
+      let oldLTVOfTo = appState[modeTo].travaLPState.ltv;
+      let newLTVOfTo = calculateNewLTV(BigNumber(oldTotalCollateralUSDOfTo), BigNumber(oldLTVOfTo), newTotalCollateralUSDOfTo, BigNumber(tokenInfoTo.maxLTV))
+  
+      //Calculate liquid threshold
+      let oldLiquidTresholdOfTo = appState[modeTo].travaLPState.currentLiquidationThreshold;
+      let newLiquidTresholdOfTo = calculateNewLiquidThreshold(BigNumber(oldTotalCollateralUSDOfTo), BigNumber(oldLiquidTresholdOfTo), newTotalCollateralUSDOfTo, BigNumber(tokenInfoTo.liqThres));
+  
+      // if totalDebtUSD = 0  , not update healthFactor
+      const healthFactorOfTo = calculateNewHealFactor(newTotalCollateralUSDOfTo, newLiquidTresholdOfTo, BigNumber(appState[modeTo].travaLPState.totalDebtUSD));
+      const availableBorrowsUSDOfTo = calculateNewAvailableBorrow(newTotalCollateralUSDOfTo, newLTVOfTo, BigNumber(appState[modeTo].travaLPState.totalDebtUSD));
+  
+  
+      appState[modeTo].travaLPState.totalCollateralUSD = newTotalCollateralUSDOfTo.toFixed(0);
+      appState[modeTo].travaLPState.currentLiquidationThreshold = newLiquidTresholdOfTo.toFixed(0);
+      appState[modeTo].travaLPState.ltv = newLTVOfTo.toFixed(0);
+      appState[modeTo].travaLPState.healthFactor = healthFactorOfTo.toFixed(0);
+      appState[modeTo].travaLPState.availableBorrowsUSD = availableBorrowsUSDOfTo.toFixed(0)
+  
+      
+      tokenInfoTo.tToken = {
+        address: tokenInfoTo.tToken.address,
+        decimals: tokenInfoTo.tToken.decimals,
+        balances: BigNumber(tokenInfoTo.tToken.balances).plus(amount).toFixed(0),
+        totalSupply: BigNumber(tokenInfoTo.tToken.totalSupply).plus(amount).toFixed(0),
+        originToken: {
+          balances: BigNumber(tokenInfoTo.tToken.originToken.balances).toFixed(0)
+        }
+      };
+  
+      appState[modeTo].detailTokenInPool.set(
+        tokenAddress,
+        tokenInfoTo
+      );
+    };
+    return appState;
+  } catch (err) {
+    throw err;
+  }
 }
