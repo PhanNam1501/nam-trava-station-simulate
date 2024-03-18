@@ -1237,9 +1237,44 @@ inputCollaterals = Array<inputCollateral>
 
 ```
 appState = await SimulationCollateral(
-    appState, 
-    smart wallet address, 
-    entity_id, 
+    appState,
+    smart wallet address,
+    entity_id,
     inputCollaterals
     );
+```
+
+### Simulate Transfer tToken
+
+```
+appState1 = await SimulationTransferTToken(
+    appState,
+    fromAddress,
+    toAddress,
+    _tokenAddress,
+    _amount
+)
+```
+
+### Simulate Transfer Staked Token
+
+```
+appState1 = await simulateTransferStakedToken(
+    appState,
+    _stakingPool,
+    fromAddress,
+    toAddress,
+    _amount
+);
+```
+
+### Simulate Tranfer veTrava NFT
+
+```
+appState1 = await simulateNFTVeTravaTranfer(
+    appState,
+    idVeTrava,
+    fromAddress,
+    toAddress
+);
 ```
