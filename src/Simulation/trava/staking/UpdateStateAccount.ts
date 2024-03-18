@@ -8,14 +8,17 @@ import { YEAR_TO_SECONDS } from "../../../utils/config";
 import { BaseAccountVault, RewardTokenData, StakedTokenData, UnderlyingTokenData } from "../../../State/trava/lending/TravaDeFiState";
 import BigNumber from "bignumber.js";
 import OracleABI from "../../../abis/AaveOracle.json";
-import { updateSmartWalletTokenBalance } from "../../basic/UpdateStateAccount";
+import {updateTokenBalance} from "../../basic/UpdateStateAccount";
 import BEP20ABI from "../../../abis/BEP20.json";
-import { multiCall } from "../../../utils/helper";
+import {getMode, multiCall} from "../../../utils/helper";
+import {EthAddress} from "../../../utils/types";
 
-export async function updateAllAccountVault(appState1: ApplicationState, force = false) {
+
+export async function updateAllAccountVault(appState1: ApplicationState,_address:EthAddress,  force = false) {
   const vaultConfigList = listStakingVault[appState1.chainId];
   let appState = { ...appState1 };
-  if (appState.smartWalletState.travaLPStakingStateList.size == 0 || force) {
+  let modeFrom = getMode(appState, _address);
+  if (appState[modeFrom].travaLPStakingStateList.size == 0 || force) {
     let underlyingAddress = new Array<string>;
     let priceUnderlyingAddress = new Array<string>
     let lpAddress = new Array<string>;
@@ -39,7 +42,7 @@ export async function updateAllAccountVault(appState1: ApplicationState, force =
         stakedTokenAddress.map((address: string, _: number) => ({
           address: address,
           name: "balanceOf",
-          params: [appState.smartWalletState.address],
+          params: [appState[modeFrom].address],
         })),
         appState.web3,
         appState.chainId
@@ -88,11 +91,11 @@ export async function updateAllAccountVault(appState1: ApplicationState, force =
       let eps = "0"
       if (vaultConfigList[i].id == "orai") {
         const vestingCR = new Contract(getAddr("VESTING_TRAVA_ADDRESS", appState.chainId), VestingTokenAbi, appState.web3);
-        claimableReward = await vestingCR.getClaimableReward(appState.smartWalletState.address, vaultConfigList[i].underlyingAddress)
+        claimableReward = await vestingCR.getClaimableReward(appState[modeFrom].address, vaultConfigList[i].underlyingAddress)
         eps = "0.005549"
       } else {
         const stakedCR = new Contract(vaultConfigList[i].stakedTokenAddress, StakedTokenAbi, appState.web3);
-        claimableReward = await stakedCR.getTotalRewardsBalance(appState.smartWalletState.address)
+        claimableReward = await stakedCR.getTotalRewardsBalance(appState[modeFrom].address)
         eps = BigNumber(await stakedCR.getAssetEmissionPerSecond(vaultConfigList[i].stakedTokenAddress)).div(vaultConfigList[i].reserveDecimals).toFixed()
       }
 
@@ -180,10 +183,10 @@ export async function updateAllAccountVault(appState1: ApplicationState, force =
       }
 
       //store sate
-      appState.smartWalletState.travaLPStakingStateList.set(vaultConfigList[i].stakedTokenAddress.toLowerCase(), accountVaults);
-      if (!appState.smartWalletState.tokenBalances.has(vaultConfigList[i].stakedTokenAddress.toLowerCase())) {
+      appState[modeFrom].travaLPStakingStateList.set(vaultConfigList[i].stakedTokenAddress.toLowerCase(), accountVaults);
+      if (!appState[modeFrom].tokenBalances.has(vaultConfigList[i].stakedTokenAddress.toLowerCase())) {
         // store balance of stakedTokenAddress
-        appState = await updateSmartWalletTokenBalance(appState, vaultConfigList[i].stakedTokenAddress.toLowerCase())
+        appState = await updateTokenBalance(appState, vaultConfigList[i].stakedTokenAddress.toLowerCase())
       }
     }
   }
