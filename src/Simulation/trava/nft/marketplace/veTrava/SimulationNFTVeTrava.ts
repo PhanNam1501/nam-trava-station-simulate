@@ -8,7 +8,7 @@ import { updateSellingVeTrava } from "./UpdateStateAccount";
 import BigNumber from "bignumber.js";
 import { updateTokenBalance } from "../../../../basic";
 import { NFTNotFoundError } from '../../../../../utils/error';
-import { simulateNFTVeTravaTranfer } from "../../utilities/SimulationVeTravaNFTUtilities";
+import { simulateNFTVeTravaTransfer } from "../../utilities/SimulationVeTravaNFTUtilities";
 import _ from "lodash";
 export async function simulateNFTVeTravaCreateSale(
     _appState1: ApplicationState,
@@ -98,7 +98,7 @@ export async function simulateNFTVeTravaCancelSale(
         appState.smartWalletState.veTravaListState.veTravaList.set(_NFTId, data1);
         appState.NFTVeTravaMarketSellingState.sellingVeTrava = appState.NFTVeTravaMarketSellingState.sellingVeTrava.filter(x => x.id != _NFTId);
         
-        appState = await simulateNFTVeTravaTranfer(appState, _NFTId, _from, _to);
+        appState = await simulateNFTVeTravaTransfer(appState, _NFTId, _from, _to);
     } catch (err) {
         throw err;
       }

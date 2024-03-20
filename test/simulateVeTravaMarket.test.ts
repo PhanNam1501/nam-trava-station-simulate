@@ -5,7 +5,7 @@ import { ApplicationState } from "../src/State/ApplicationState";
 import { getAddr } from "../src/utils/address";
 import BigNumber from "bignumber.js";
 import { MONTH_TO_SECONDS, WEEK_TO_SECONDS } from "../src/utils/config";
-import { simulateNFTVeTravaTranfer } from "../src/Simulation/trava/nft/utilities/SimulationVeTravaNFTUtilities";
+import { simulateNFTVeTravaTransfer } from "../src/Simulation/trava/nft/utilities/SimulationVeTravaNFTUtilities";
 import { updateTravaGovernanceState, updateUserLockBalance, updateUserTokenBalance } from "../src/Simulation";
 import { simulateNFTVeTravaCancelSale, simulateNFTVeTravaCreateSale, simulateNFTVeTravaBuy } from "../src/Simulation/trava/nft/marketplace/veTrava/SimulationNFTVeTrava";
   // start 
@@ -31,8 +31,8 @@ import { simulateNFTVeTravaCancelSale, simulateNFTVeTravaCreateSale, simulateNFT
     appState = await updateSellingVeTrava(appState);
     appState = await updateUserLockBalance(appState, userAddress);
     console.log("===============TEST TRANFER==================");
-    // appState = await simulateNFTVeTravaTranfer(appState, "43", userAddress, proxyAddress);
-    // appState = await simulateNFTVeTravaTranfer(appState, "43", proxyAddress, proxyAddress);
+    // appState = await simulateNFTVeTravaTransfer(appState, "43", userAddress, proxyAddress);
+    // appState = await simulateNFTVeTravaTransfer(appState, "43", proxyAddress, proxyAddress);
     console.log(appState.NFTVeTravaMarketSellingState);
     // console.log(appState.walletState.veTravaListState);
     // console.log(appState.smartWalletState.veTravaListState);

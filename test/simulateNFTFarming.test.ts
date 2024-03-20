@@ -5,7 +5,7 @@ import { ApplicationState } from "../src/State/ApplicationState";
 import { getAddr } from "../src/utils/address";
 import BigNumber from "bignumber.js";
 import { MONTH_TO_SECONDS, WEEK_TO_SECONDS } from "../src/utils/config";
-import { simulateNFTVeTravaTranfer } from "../src/Simulation/trava/nft/utilities/SimulationVeTravaNFTUtilities";
+import { simulateNFTVeTravaTransfer } from "../src/Simulation/trava/nft/utilities/SimulationVeTravaNFTUtilities";
 import { updateFarmingState, updateUserLockBalance, updateUserTokenBalance } from "../src/Simulation";
 import { simulateNFTVeTravaCancelSale, simulateNFTVeTravaCreateSale, simulateNFTVeTravaBuy } from "../src/Simulation/trava/nft/marketplace/veTrava/SimulationNFTVeTrava";
   // start 

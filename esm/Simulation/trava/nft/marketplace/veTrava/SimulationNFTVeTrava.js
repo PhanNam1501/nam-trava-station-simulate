@@ -101,7 +101,7 @@ function simulateNFTVeTravaCancelSale(_appState1, _NFTId, _to) {
             };
             appState.smartWalletState.veTravaListState.veTravaList.set(_NFTId, data1);
             appState.NFTVeTravaMarketSellingState.sellingVeTrava = appState.NFTVeTravaMarketSellingState.sellingVeTrava.filter(x => x.id != _NFTId);
-            appState = yield (0, SimulationVeTravaNFTUtilities_1.simulateNFTVeTravaTranfer)(appState, _NFTId, _from, _to);
+            appState = yield (0, SimulationVeTravaNFTUtilities_1.simulateNFTVeTravaTransfer)(appState, _NFTId, _from, _to);
         }
         catch (err) {
             throw err;

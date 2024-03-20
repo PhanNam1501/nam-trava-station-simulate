@@ -1103,7 +1103,7 @@ appState9 = await simulateUnwrapV2(
 )
 ```
 
-## VeTravaTranfer
+## VeTravaTransfer
 
 ```
 appState1 = await simulateNFTVeTravaTransfer(
