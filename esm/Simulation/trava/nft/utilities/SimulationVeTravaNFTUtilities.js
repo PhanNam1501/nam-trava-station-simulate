@@ -9,11 +9,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.simulateNFTVeTravaTranfer = void 0;
+exports.simulateNFTVeTravaTransfer = void 0;
 const error_1 = require("../../../../utils/error");
 const UpdateStateAccount_1 = require("../../governance/UpdateStateAccount");
 const helper_1 = require("../../../../utils/helper");
-function simulateNFTVeTravaTranfer(_appState1, _NFTId, _from, _to) {
+function simulateNFTVeTravaTransfer(_appState1, _NFTId, _from, _to) {
     return __awaiter(this, void 0, void 0, function* () {
         let appState = Object.assign({}, _appState1);
         try {
@@ -43,4 +43,4 @@ function simulateNFTVeTravaTranfer(_appState1, _NFTId, _from, _to) {
         return appState;
     });
 }
-exports.simulateNFTVeTravaTranfer = simulateNFTVeTravaTranfer;
+exports.simulateNFTVeTravaTransfer = simulateNFTVeTravaTransfer;

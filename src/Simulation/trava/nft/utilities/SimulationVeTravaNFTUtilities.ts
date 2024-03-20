@@ -7,7 +7,7 @@ import { updateTravaGovernanceState, updateUserLockBalance } from "../../governa
 import { VeTravaState } from "../../../../State";
 import { getMode } from "../../../../utils/helper";
 
-export async function simulateNFTVeTravaTranfer(
+export async function simulateNFTVeTravaTransfer(
     _appState1: ApplicationState,
     _NFTId: uint256,
     _from: EthAddress,

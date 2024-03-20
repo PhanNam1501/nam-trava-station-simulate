@@ -64346,7 +64346,7 @@ function _simulateNFTVeTravaCancelSale() {
       };
       appState.smartWalletState.veTravaListState.veTravaList.set(_NFTId, data1);
       appState.NFTVeTravaMarketSellingState.sellingVeTrava = appState.NFTVeTravaMarketSellingState.sellingVeTrava.filter(x => x.id != _NFTId);
-      appState = yield (0,_utilities_SimulationVeTravaNFTUtilities__WEBPACK_IMPORTED_MODULE_6__.simulateNFTVeTravaTranfer)(appState, _NFTId, _from, _to);
+      appState = yield (0,_utilities_SimulationVeTravaNFTUtilities__WEBPACK_IMPORTED_MODULE_6__.simulateNFTVeTravaTransfer)(appState, _NFTId, _from, _to);
     } catch (err) {
       throw err;
     }
@@ -65247,7 +65247,7 @@ var tokenSellOptions = {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   simulateNFTVeTravaTranfer: () => (/* binding */ simulateNFTVeTravaTranfer)
+/* harmony export */   simulateNFTVeTravaTransfer: () => (/* binding */ simulateNFTVeTravaTransfer)
 /* harmony export */ });
 /* harmony import */ var _utils_error__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(27);
 /* harmony import */ var _governance_UpdateStateAccount__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(443);
@@ -65262,11 +65262,11 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
 
 
-function simulateNFTVeTravaTranfer(_x, _x2, _x3, _x4) {
-  return _simulateNFTVeTravaTranfer.apply(this, arguments);
+function simulateNFTVeTravaTransfer(_x, _x2, _x3, _x4) {
+  return _simulateNFTVeTravaTransfer.apply(this, arguments);
 }
-function _simulateNFTVeTravaTranfer() {
-  _simulateNFTVeTravaTranfer = _asyncToGenerator(function* (_appState1, _NFTId, _from, _to) {
+function _simulateNFTVeTravaTransfer() {
+  _simulateNFTVeTravaTransfer = _asyncToGenerator(function* (_appState1, _NFTId, _from, _to) {
     var appState = _objectSpread({}, _appState1);
     try {
       _from = _from.toLowerCase();
@@ -65292,7 +65292,7 @@ function _simulateNFTVeTravaTranfer() {
     }
     return appState;
   });
-  return _simulateNFTVeTravaTranfer.apply(this, arguments);
+  return _simulateNFTVeTravaTransfer.apply(this, arguments);
 }
 
 /***/ }),

@@ -403,7 +403,7 @@ Khi claimReward: update Trava balance for "to" address
 Update state cua Smart Wallet trong cac vault
 
 ```
-newAppState = await updateAllAccountVault(oldAppState)
+newAppState = await updateAllAccountVault(oldAppState, address)
 ```
 
 ```
@@ -856,7 +856,7 @@ appState19 = await simulateTravaNFTTransfer(
 ## Simulate Tranfer veTrava NFT
 
 ```
-appState1 = await simulateNFTVeTravaTranfer(
+appState1 = await simulateNFTVeTravaTransfer(
     appState,
     idVeTrava,
     fromAddress,
@@ -1103,10 +1103,10 @@ appState9 = await simulateUnwrapV2(
 )
 ```
 
-## VeTravaTranfer
+## VeTravaTransfer
 
 ```
-appState1 = await simulateNFTVeTravaTranfer(
+appState1 = await simulateNFTVeTravaTransfer(
     appState,
     idVeTrava,
     fromAddress,
@@ -1237,9 +1237,44 @@ inputCollaterals = Array<inputCollateral>
 
 ```
 appState = await SimulationCollateral(
-    appState, 
-    smart wallet address, 
-    entity_id, 
+    appState,
+    smart wallet address,
+    entity_id,
     inputCollaterals
     );
+```
+
+### Simulate Transfer tToken
+
+```
+appState1 = await SimulationTransferTToken(
+    appState,
+    fromAddress,
+    toAddress,
+    _tokenAddress,
+    _amount
+)
+```
+
+### Simulate Transfer Staked Token
+
+```
+appState1 = await simulateTransferStakedToken(
+    appState,
+    _stakingPool,
+    fromAddress,
+    toAddress,
+    _amount
+);
+```
+
+### Simulate Tranfer veTrava NFT
+
+```
+appState1 = await simulateNFTVeTravaTransfer(
+    appState,
+    idVeTrava,
+    fromAddress,
+    toAddress
+);
 ```
