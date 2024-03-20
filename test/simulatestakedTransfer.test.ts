@@ -4,7 +4,7 @@ import { ApplicationState } from "../src/State/ApplicationState";
 import {
     simulateStakeStaking,
     simulateStakingRedeem,
-    simulateTransfer
+    simulateTransferStakedToken
 } from "../src/Simulation/trava/staking/SimulationStaking";
 import { updateSmartWalletTokenBalance, updateUserTokenBalance } from "../src/Simulation/basic/UpdateStateAccount";
 import { listStakingVault } from "../src/utils/stakingVaultConfig";
@@ -43,7 +43,7 @@ async function test(){
     const st=Number(appState.walletState.tokenBalances.get(String(underLyingToken).toLowerCase()));
     console.log("Farming Trava of Smart Wallet",appState.smartWalletState.tokenBalances.get(String(underLyingToken).toLowerCase()))
     console.log("vault", vault)
-    appState = await simulateTransfer(appState,stakingPool,proxyAddress,userAddress,
+    appState = await simulateTransferStakedToken(appState,stakingPool,proxyAddress,userAddress,
         "100000000000000000");
 
     console.log("-----------After stake--------");
