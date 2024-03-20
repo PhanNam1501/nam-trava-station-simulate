@@ -403,7 +403,7 @@ Khi claimReward: update Trava balance for "to" address
 Update state cua Smart Wallet trong cac vault
 
 ```
-newAppState = await updateAllAccountVault(oldAppState)
+newAppState = await updateAllAccountVault(oldAppState, address)
 ```
 
 ```
@@ -856,7 +856,7 @@ appState19 = await simulateTravaNFTTransfer(
 ## Simulate Tranfer veTrava NFT
 
 ```
-appState1 = await simulateNFTVeTravaTranfer(
+appState1 = await simulateNFTVeTravaTransfer(
     appState,
     idVeTrava,
     fromAddress,
@@ -1106,7 +1106,7 @@ appState9 = await simulateUnwrapV2(
 ## VeTravaTranfer
 
 ```
-appState1 = await simulateNFTVeTravaTranfer(
+appState1 = await simulateNFTVeTravaTransfer(
     appState,
     idVeTrava,
     fromAddress,
@@ -1271,7 +1271,7 @@ appState1 = await simulateTransferStakedToken(
 ### Simulate Tranfer veTrava NFT
 
 ```
-appState1 = await simulateNFTVeTravaTranfer(
+appState1 = await simulateNFTVeTravaTransfer(
     appState,
     idVeTrava,
     fromAddress,
