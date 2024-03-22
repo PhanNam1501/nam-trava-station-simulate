@@ -174,3 +174,4 @@ function updateAllAccountVault(appState1, _address, force = false) {
     });
 }
 exports.updateAllAccountVault = updateAllAccountVault;
+
