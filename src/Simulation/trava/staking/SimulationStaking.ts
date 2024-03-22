@@ -178,7 +178,7 @@ export async function simulateTransferStakedToken(appState1: ApplicationState, _
     vaultFrom= appState[modeFrom].travaLPStakingStateList.get(stakingPool)!;
     if (vaultFrom.stakedToken.stakedTokenAddress.toLowerCase() == stakedTokenAddress) {
         if (!appState[modeFrom].tokenBalances.has(stakedTokenAddress)) {
-            appState=await  updateTokenBalance(appState,stakedTokenAddress);
+            appState=await  updateTokenBalance(appState,appState[modeFrom].address,stakedTokenAddress);
         }
 
         if (amount.toFixed(0) == MAX_UINT256 || amount.isEqualTo(MAX_UINT256)) {
@@ -193,7 +193,7 @@ export async function simulateTransferStakedToken(appState1: ApplicationState, _
         if (isWallet(appState,to) ) {
             let modeTo  =getMode(appState, to);
             if (!appState[modeTo].tokenBalances.has(stakedTokenAddress)) {
-                appState=await  updateTokenBalance(appState,stakedTokenAddress);
+                appState=await  updateTokenBalance(appState,appState[modeTo].address,stakedTokenAddress);
             }
 
             const newRewardBalance = BigNumber(appState[modeTo].tokenBalances.get(stakedTokenAddress)!).plus(amount);

@@ -186,7 +186,7 @@ export async function updateAllAccountVault(appState1: ApplicationState,_address
       appState[modeFrom].travaLPStakingStateList.set(vaultConfigList[i].stakedTokenAddress.toLowerCase(), accountVaults);
       if (!appState[modeFrom].tokenBalances.has(vaultConfigList[i].stakedTokenAddress.toLowerCase())) {
         // store balance of stakedTokenAddress
-        appState = await updateTokenBalance(appState, vaultConfigList[i].stakedTokenAddress.toLowerCase())
+        appState = await updateTokenBalance(appState, appState[modeFrom].address ,vaultConfigList[i].stakedTokenAddress.toLowerCase())
       }
     }
   }
