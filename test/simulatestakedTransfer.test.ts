@@ -24,6 +24,7 @@ async function test(){
 
     let stakingPool = listVaults[index].stakedTokenAddress
     let underLyingToken = listVaults[index].underlyingAddress
+    console.log("🚀 ~ test ~ underLyingToken:", underLyingToken)
 
     let appState = new ApplicationState(
         userAddress,
@@ -35,8 +36,11 @@ async function test(){
 
     const farmTravaAddress = ""
     appState = await updateAllAccountVault(appState,proxyAddress);
+    console.log("🚀 ~ test ~ updateAllAccountVault:", updateAllAccountVault)
     const vault = appState.smartWalletState.travaLPStakingStateList.get(stakingPool.toLowerCase())!;
+    console.log("🚀 ~ test ~ vault:", vault)
     appState = await updateUserTokenBalance(appState,underLyingToken);
+    console.log("🚀 ~ test ~ appState:", appState)
     appState = await updateSmartWalletTokenBalance(appState,underLyingToken)
     console.log("-----------Before stake--------");
     console.log("Trava Balance of user",appState.walletState.tokenBalances.get(String(underLyingToken).toLowerCase()))
