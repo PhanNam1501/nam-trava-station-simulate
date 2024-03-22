@@ -166,7 +166,7 @@ function updateAllAccountVault(appState1, _address, force = false) {
                 appState[modeFrom].travaLPStakingStateList.set(vaultConfigList[i].stakedTokenAddress.toLowerCase(), accountVaults);
                 if (!appState[modeFrom].tokenBalances.has(vaultConfigList[i].stakedTokenAddress.toLowerCase())) {
                     // store balance of stakedTokenAddress
-                    appState = yield (0, UpdateStateAccount_1.updateTokenBalance)(appState, vaultConfigList[i].stakedTokenAddress.toLowerCase());
+                    appState = yield (0, UpdateStateAccount_1.updateTokenBalance)(appState, appState[modeFrom].address ,vaultConfigList[i].stakedTokenAddress.toLowerCase());
                 }
             }
         }
