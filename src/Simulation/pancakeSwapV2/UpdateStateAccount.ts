@@ -2,7 +2,6 @@
 import { ApplicationState } from "../../State/ApplicationState";
 import { Contract } from "ethers";
 import _ from "lodash";
-import { multiCall } from "orchai-combinator-bsc-simulation";
 import BigNumber from "bignumber.js";
 import PancakeSwapFactoryABI from "../../abis/PancakeSwapFactory.json";
 import * as fs from 'fs';
@@ -11,19 +10,7 @@ import BEP20ABI from "../../abis/BEP20.json";
 import { centic_api, centic_api_key, getAddr, ZERO_ADDRESS } from "../../utils";
 import { EthAddress } from "../../utils/types";
 import axios from "axios";
-
-export async function updateLiquidityCampainState(
-    appState1: ApplicationState, 
-    force?: boolean
-    ): Promise<ApplicationState> {
-    let appState = { ...appState1 };
-    try {
-        return appState;
-    } catch (error) {
-        console.error(error);
-    }
-    return appState;
-}
+import { multiCall } from "../../utils/helper";
 
 export async function updatePancakeSwapV2(
     appState1: ApplicationState,
