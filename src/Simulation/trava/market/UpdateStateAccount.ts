@@ -13,8 +13,6 @@ import OraclePrice from "../../../utils/oraclePrice";
 import { updateSmartWalletTokenBalance, updateUserTokenBalance } from "../../basic/UpdateStateAccount";
 import { calculateMaxRewards } from "./SimulationWalletTravaLP";
 import { getMode, multiCall } from "../../../utils/helper";
-import { wallet_mode } from "orchai-combinator-bsc-simulation/esm/utils/types";
-
 
 export async function getTokenBalance(appState: ApplicationState, tokenAddress: EthAddress) {
   const tokenContract = new Contract(

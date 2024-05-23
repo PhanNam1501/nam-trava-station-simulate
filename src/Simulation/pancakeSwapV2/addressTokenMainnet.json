@@ -1,0 +1,286 @@
+[
+  {
+    "address": "0x1af3f329e8be154074d8769d1ffa4ee058b1dbc3",
+    "symbol": "DAI",
+    "image": {
+      "src": "/station/_next/static/media/dai.4c7989d5.svg",
+      "height": 50,
+      "width": 50,
+      "blurWidth": 0,
+      "blurHeight": 0
+    },
+    "decimal": 18,
+    "tags": [
+      "trava-finance",
+      "swap",
+      "sourceLcSwap"
+    ]
+  },
+  {
+    "address": "0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d",
+    "symbol": "USDC",
+    "image": {
+      "src": "/station/_next/static/media/usdc.99a13ee4.svg",
+      "height": 32,
+      "width": 32,
+      "blurWidth": 0,
+      "blurHeight": 0
+    },
+    "decimal": 18,
+    "tags": [
+      "trava-finance",
+      "swap",
+      "sourceLcSwap"
+    ]
+  },
+  {
+    "address": "0x55d398326f99059ff775485246999027b3197955",
+    "symbol": "USDT",
+    "image": {
+      "src": "/station/_next/static/media/usdt.7246b6d0.svg",
+      "height": 32,
+      "width": 32,
+      "blurWidth": 0,
+      "blurHeight": 0
+    },
+    "decimal": 18,
+    "tags": [
+      "trava-finance",
+      "swap",
+      "sourceLcSwap"
+    ]
+  },
+  {
+    "address": "0x2170ed0880ac9a755fd29b2688956bd959f933f8",
+    "symbol": "ETH",
+    "image": {
+      "src": "/station/_next/static/media/eth.012b71ad.png",
+      "height": 64,
+      "width": 64,
+      "blurDataURL": "/station/_next/image?url=%2Fstation%2F_next%2Fstatic%2Fmedia%2Feth.012b71ad.png&w=8&q=70",
+      "blurWidth": 8,
+      "blurHeight": 8
+    },
+    "decimal": 18,
+    "tags": [
+      "trava-finance",
+      "swap",
+      "sourceLcSwap"
+    ]
+  },
+  {
+    "address": "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c",
+    "symbol": "WBNB",
+    "image": {
+      "src": "/station/_next/static/media/bnb.75701137.png",
+      "height": 64,
+      "width": 64,
+      "blurDataURL": "/station/_next/image?url=%2Fstation%2F_next%2Fstatic%2Fmedia%2Fbnb.75701137.png&w=8&q=70",
+      "blurWidth": 8,
+      "blurHeight": 8
+    },
+    "decimal": 18,
+    "tags": [
+      "trava-finance",
+      "swap",
+      "sourceLcSwap"
+    ]
+  },
+  {
+    "address": "0x7130d2a12b9bcbfae4f2634d864a1ee1ce3ead9c",
+    "symbol": "BTCB",
+    "image": {
+      "src": "/station/_next/static/media/btcb.6cd18d8b.png",
+      "height": 64,
+      "width": 64,
+      "blurDataURL": "/station/_next/image?url=%2Fstation%2F_next%2Fstatic%2Fmedia%2Fbtcb.6cd18d8b.png&w=8&q=70",
+      "blurWidth": 8,
+      "blurHeight": 8
+    },
+    "decimal": 18,
+    "tags": [
+      "trava-finance",
+      "swap",
+      "sourceLcSwap"
+    ]
+  },
+  {
+    "address": "0xe9e7cea3dedca5984780bafc599bd69add087d56",
+    "symbol": "BUSD",
+    "image": {
+      "src": "/station/_next/static/media/busd.241b04df.png",
+      "height": 334,
+      "width": 334,
+      "blurDataURL": "/station/_next/image?url=%2Fstation%2F_next%2Fstatic%2Fmedia%2Fbusd.241b04df.png&w=8&q=70",
+      "blurWidth": 8,
+      "blurHeight": 8
+    },
+    "decimal": 18,
+    "tags": [
+      "trava-finance",
+      "swap",
+      "veTrava",
+      "sourceLcSwap"
+    ]
+  },
+  {
+    "address": "0xfb6115445bff7b52feb98650c87f44907e58f802",
+    "symbol": "AAVE",
+    "image": {
+      "src": "/station/_next/static/media/aave.4bb694c8.svg",
+      "height": 24,
+      "width": 24,
+      "blurWidth": 0,
+      "blurHeight": 0
+    },
+    "decimal": 18,
+    "tags": [
+      "trava-finance",
+      "swap",
+      "sourceLcSwap"
+    ]
+  },
+  {
+    "address": "0x3ee2200efb3400fabb9aacf31297cbdd1d435d47",
+    "symbol": "ADA",
+    "image": {
+      "src": "/station/_next/static/media/ada.91ed437b.png",
+      "height": 64,
+      "width": 64,
+      "blurDataURL": "/station/_next/image?url=%2Fstation%2F_next%2Fstatic%2Fmedia%2Fada.91ed437b.png&w=8&q=70",
+      "blurWidth": 8,
+      "blurHeight": 8
+    },
+    "decimal": 18,
+    "tags": [
+      "trava-finance",
+      "swap",
+      "sourceLcSwap"
+    ]
+  },
+  {
+    "address": "0x0e09fabb73bd3ade0a17ecc321fd13a19e81ce82",
+    "symbol": "CAKE",
+    "image": {
+      "src": "/station/_next/static/media/cake.8acd9083.svg",
+      "height": 32,
+      "width": 32,
+      "blurWidth": 0,
+      "blurHeight": 0
+    },
+    "decimal": 18,
+    "tags": [
+      "trava-finance",
+      "swap",
+      "sourceLcSwap"
+    ]
+  },
+  {
+    "address": "0x1d2f0da169ceb9fc7b3144628db156f3f6c60dbe",
+    "symbol": "XRP",
+    "image": {
+      "src": "/station/_next/static/media/xrp.56e9f182.png",
+      "height": 64,
+      "width": 64,
+      "blurDataURL": "/station/_next/image?url=%2Fstation%2F_next%2Fstatic%2Fmedia%2Fxrp.56e9f182.png&w=8&q=70",
+      "blurWidth": 8,
+      "blurHeight": 8
+    },
+    "decimal": 18,
+    "tags": [
+      "trava-finance",
+      "swap",
+      "sourceLcSwap"
+    ]
+  },
+  {
+    "address": "0xba2ae424d960c26247dd6c32edc70b295c744c43",
+    "symbol": "DOGE",
+    "image": {
+      "src": "/station/_next/static/media/doge.39c65b9f.png",
+      "height": 2000,
+      "width": 2000,
+      "blurDataURL": "/station/_next/image?url=%2Fstation%2F_next%2Fstatic%2Fmedia%2Fdoge.39c65b9f.png&w=8&q=70",
+      "blurWidth": 8,
+      "blurHeight": 8
+    },
+    "decimal": 8,
+    "tags": [
+      "trava-finance",
+      "swap",
+      "sourceLcSwap"
+    ]
+  },
+  {
+    "address": "0x7083609fce4d1d8dc0c979aab8c869ea2c873402",
+    "symbol": "DOT",
+    "image": {
+      "src": "/station/_next/static/media/dot.7a26c7ca.png",
+      "height": 3200,
+      "width": 3200,
+      "blurDataURL": "/station/_next/image?url=%2Fstation%2F_next%2Fstatic%2Fmedia%2Fdot.7a26c7ca.png&w=8&q=70",
+      "blurWidth": 8,
+      "blurHeight": 8
+    },
+    "decimal": 18,
+    "tags": [
+      "trava-finance",
+      "swap",
+      "sourceLcSwap"
+    ]
+  },
+  {
+    "address": "0xcf6bb5389c92bdda8a3747ddb454cb7a64626c63",
+    "symbol": "XVS",
+    "image": {
+      "src": "/station/_next/static/media/xvs.7afa276b.svg",
+      "height": 24,
+      "width": 24,
+      "blurWidth": 0,
+      "blurHeight": 0
+    },
+    "decimal": 18,
+    "tags": [
+      "trava-finance",
+      "swap",
+      "sourceLcSwap"
+    ]
+  },
+  {
+    "address": "0x0391be54e72f7e001f6bbc331777710b4f2999ef",
+    "symbol": "TRAVA",
+    "image": {
+      "src": "/station/_next/static/media/trava.0f153d3a.png",
+      "height": 176,
+      "width": 176,
+      "blurDataURL": "/station/_next/image?url=%2Fstation%2F_next%2Fstatic%2Fmedia%2Ftrava.0f153d3a.png&w=8&q=70",
+      "blurWidth": 8,
+      "blurHeight": 8
+    },
+    "decimal": 18,
+    "tags": [
+      "swap",
+      "governance",
+      "veTrava",
+      "lcSwap",
+      "sourceLcSwap"
+    ]
+  },
+  {
+    "address": "0xa325ad6d9c92b55a3fc5ad7e412b1518f96441c0",
+    "symbol": "ORAI",
+    "image": {
+      "src": "/station/_next/static/media/orai.7f1e7d70.png",
+      "height": 40,
+      "width": 40,
+      "blurDataURL": "/station/_next/image?url=%2Fstation%2F_next%2Fstatic%2Fmedia%2Forai.7f1e7d70.png&w=8&q=70",
+      "blurWidth": 8,
+      "blurHeight": 8
+    },
+    "decimal": 18,
+    "tags": [
+      "swap",
+      "sourceLcSwap"
+    ]
+  }
+]

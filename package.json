@@ -18,13 +18,13 @@
   "license": "ISC",
   "dependencies": {
     "@zennomi/tokens": "^1.0.1",
-    "axios": "^1.6.2",
-    "bignumber.js": "^9.1.1",
+    "axios": "^1.7.2",
+    "bignumber.js": "^9.1.2",
     "decimal.js": "^10.4.3",
     "eth-graph-query": "^2.0.0",
     "ethereumjs-util": "^7.1.5",
     "lodash": "^4.17.21",
-    "orchai-combinator-bsc-simulation": "1.0.10",
+    "orchai-combinator-bsc-simulation": "^1.0.50",
     "trava-station-sdk": "1.0.30",
     "typescript": "^5.2.2"
   },
