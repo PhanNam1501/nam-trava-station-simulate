@@ -25,6 +25,7 @@
     "ethereumjs-util": "^7.1.5",
     "lodash": "^4.17.21",
     "orchai-combinator-bsc-simulation": "1.0.10",
+    "test-tcv-platform-sdk": "^0.0.22",
     "trava-station-sdk": "1.0.30",
     "typescript": "^5.2.2"
   },
