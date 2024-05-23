@@ -13,6 +13,7 @@ export declare function simulateStakeStaking(appState1: ApplicationState, _staki
     DilutionState: import("../../..").DilutionState;
     forkCompoundLPState: import("../../..").ForkedCompoundLPState;
     forkAaveLPState: import("../../..").ForkedAaveLPState;
+    pancakeSwapV2Pair: import("../../..").PancakeSwapV2Pair;
     web3: import("ethers").JsonRpcProvider;
     chainId: number;
     simulatorUrl: string;
@@ -29,6 +30,7 @@ export declare function simulateStakingRedeem(appState1: ApplicationState, _stak
     DilutionState: import("../../..").DilutionState;
     forkCompoundLPState: import("../../..").ForkedCompoundLPState;
     forkAaveLPState: import("../../..").ForkedAaveLPState;
+    pancakeSwapV2Pair: import("../../..").PancakeSwapV2Pair;
     web3: import("ethers").JsonRpcProvider;
     chainId: number;
     simulatorUrl: string;
@@ -45,6 +47,7 @@ export declare function simulateTransferStakedToken(appState1: ApplicationState,
     DilutionState: import("../../..").DilutionState;
     forkCompoundLPState: import("../../..").ForkedCompoundLPState;
     forkAaveLPState: import("../../..").ForkedAaveLPState;
+    pancakeSwapV2Pair: import("../../..").PancakeSwapV2Pair;
     web3: import("ethers").JsonRpcProvider;
     chainId: number;
     simulatorUrl: string;
@@ -61,6 +64,7 @@ export declare function simulateStakingClaimRewards(appState1: ApplicationState,
     DilutionState: import("../../..").DilutionState;
     forkCompoundLPState: import("../../..").ForkedCompoundLPState;
     forkAaveLPState: import("../../..").ForkedAaveLPState;
+    pancakeSwapV2Pair: import("../../..").PancakeSwapV2Pair;
     web3: import("ethers").JsonRpcProvider;
     chainId: number;
     simulatorUrl: string;

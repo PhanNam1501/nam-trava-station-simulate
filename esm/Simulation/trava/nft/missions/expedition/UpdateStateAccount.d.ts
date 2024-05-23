@@ -12,6 +12,7 @@ export declare function updateOwnerKnightInExpeditionState(appState1: Applicatio
     DilutionState: import("../../../../../State").DilutionState;
     forkCompoundLPState: import("../../../../../State").ForkedCompoundLPState;
     forkAaveLPState: import("../../../../../State").ForkedAaveLPState;
+    pancakeSwapV2Pair: import("../../../../../State").PancakeSwapV2Pair;
     web3: import("ethers").JsonRpcProvider;
     chainId: number;
     simulatorUrl: string;
@@ -28,6 +29,7 @@ export declare function updateExpeditionState(appState1: ApplicationState, force
     DilutionState: import("../../../../../State").DilutionState;
     forkCompoundLPState: import("../../../../../State").ForkedCompoundLPState;
     forkAaveLPState: import("../../../../../State").ForkedAaveLPState;
+    pancakeSwapV2Pair: import("../../../../../State").PancakeSwapV2Pair;
     web3: import("ethers").JsonRpcProvider;
     chainId: number;
     simulatorUrl: string;

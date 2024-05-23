@@ -30,6 +30,9 @@ export const listAddr = {
         BUSD_TOKEN: "0x2CEC38C779d6b962bc877777b6f70937d21c9c38",
         TOD_TOKEN: "0xfca3cf5e82f595d4f20c24d007ae5e2e94fab2f0",
         BUSD_TOD_LC_ADDRESS: "0x8E402D21cb184B84A55d7331f2C700d459ABADaa",
+        // pancake swap
+        RouterAddress: "0x10ED43C718714eb63d5aA57B78B54704E256024E",
+        FactoryAddress: "0xB7926C0430Afb07AA7DEfDE6DA862aE0Bde767bc",
     },
     // MUST BE FILL MAINNET ADDRESS HERE. NOW IS TESTNET
     [NETWORKS.bscMainnet.chainId]: {
@@ -63,6 +66,9 @@ export const listAddr = {
         BUSD_TOKEN: "0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56",
         TOD_TOKEN: "0x21d5Fa5ECf2605c0E835Ae054AF9bbA0468e5951",
         BUSD_TOD_LC_ADDRESS: "0x62848473Ccb5a10d1Aa19B7a31BCEF9385E8165B",
+        // pancake swap
+        RouterAddress: "0x10ED43C718714eb63d5aA57B78B54704E256024E",
+        FactoryAddress: "0xcA143Ce32Fe78f1f7019d7d551a6402fC5350c73",
     },
 };
 export const getAddr = (name, chainId) => {

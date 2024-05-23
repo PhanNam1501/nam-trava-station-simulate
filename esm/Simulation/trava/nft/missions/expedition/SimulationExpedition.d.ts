@@ -14,6 +14,7 @@ export declare function simulateExpeditionAbandon(appState1: ApplicationState, _
     DilutionState: import("../../../../../State").DilutionState;
     forkCompoundLPState: import("../../../../../State").ForkedCompoundLPState;
     forkAaveLPState: import("../../../../../State").ForkedAaveLPState;
+    pancakeSwapV2Pair: import("../../../../../State").PancakeSwapV2Pair;
     web3: import("ethers").JsonRpcProvider;
     chainId: number;
     simulatorUrl: string;

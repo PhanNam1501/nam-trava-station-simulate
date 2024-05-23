@@ -9,13 +9,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 import { Contract } from "ethers";
 import { listLiquidityVault } from "./LiquidityCampainConfig";
-import { multiCall } from "orchai-combinator-bsc-simulation";
 import BEP20ABI from "../../abis/BEP20.json";
 import IVaultABI from "../../abis/IVault.json";
 import StakedTokenAbi from "../../abis/StakedToken.json";
 import BigNumber from "bignumber.js";
 import { YEAR_TO_SECONDS, getAddr } from "../../utils";
 import OracleABI from "../../abis/AaveOracle.json";
+import { multiCall } from "../../utils/helper";
 export function updateLiquidityCampainState(appState1, force) {
     return __awaiter(this, void 0, void 0, function* () {
         const vaultConfigList = listLiquidityVault[appState1.chainId];
