@@ -5,8 +5,8 @@ import _ from "lodash";
 import { multiCall } from "orchai-combinator-bsc-simulation";
 import BigNumber from "bignumber.js";
 import PancakeSwapFactoryABI from "../../abis/PancakeSwapFactory.json";
-import * as fs from 'fs';
-import * as path from 'path';
+import rawData from "./token_combinationsMainnet.json";
+import rawDataTokens from "./addressTokenMainnet.json";
 import BEP20ABI from "../../abis/BEP20.json";
 import { centic_api, centic_api_key, getAddr, ZERO_ADDRESS } from "../../utils";
 import { EthAddress } from "../../utils/types";
@@ -19,9 +19,7 @@ export async function updatePancakeSwapV2(
     let appState = { ...appState1 };
     try {
         let factoryAddress = getAddr("FactoryAddress", appState.chainId);
-        const filePath = path.resolve(__dirname, 'token_combinationsMainnet.json');
-        const rawData = fs.readFileSync(filePath, 'utf-8');
-        const tokenPairs = JSON.parse(rawData) as { address1: string, address2: string }[];
+        const tokenPairs = rawData;
         let tokensAddress: string[][] = [];
         let tokens0Address: string[] = [];
         for (let i = 0; i < tokenPairs.length; i++) {
@@ -46,9 +44,8 @@ export async function updatePancakeSwapV2(
             )
         ]);
         
-        const filePathTokens = path.resolve(__dirname, 'addressTokenMainnet.json');
-        const rawDataTokens = fs.readFileSync(filePathTokens, 'utf-8');
-        const tokens = JSON.parse(rawDataTokens) as { address: string, symbol: string, image: any, decimal: number, tags: string[] }[];
+
+        const tokens = rawDataTokens;
         function getAddressList(tokens: { address: string }[]): string[] {
             return tokens.map(token => token.address);
         }
@@ -178,9 +175,9 @@ export async function updatePancakeSwapV2(
             let totalValue = token0Price.multipliedBy(token0InPair).dividedBy(10 ** Number(token0Decimals)).plus(token1Price.multipliedBy(token1InPair).dividedBy(10 ** Number(token1Decimals)));
             // 1000 USD
             if (totalValue.isGreaterThan(1000)) {
-                appState.pancakeSwapV2Pair.pancakeV2Pairs.set(pairAddress, {
-                    addressToken0: token0,
-                    addressToken1: token1,
+                appState.pancakeSwapV2Pair.pancakeV2Pairs.set(pairAddress.toLowerCase(), {
+                    addressToken0: token0.toLowerCase(),
+                    addressToken1: token1.toLowerCase(),
                     token0Price: String(token0Price),
                     token1Price: String(token1Price),
                     token0Decimals: token0Decimals,
@@ -194,6 +191,7 @@ export async function updatePancakeSwapV2(
                 });
             }
         }
+        appState.pancakeSwapV2Pair.isFetch = true;
         return appState;
     } catch (error) {
         console.error(error);
