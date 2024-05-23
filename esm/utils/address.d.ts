@@ -29,6 +29,8 @@ export declare const listAddr: {
         BUSD_TOKEN: string;
         TOD_TOKEN: string;
         BUSD_TOD_LC_ADDRESS: string;
+        RouterAddress: string;
+        FactoryAddress: string;
         VE_TRAVA_MARKETPLACE_ADDRESS?: undefined;
         BUSD_TOKEN_ADDRESS?: undefined;
     } | {
@@ -62,6 +64,8 @@ export declare const listAddr: {
         BUSD_TOKEN: string;
         TOD_TOKEN: string;
         BUSD_TOD_LC_ADDRESS: string;
+        RouterAddress: string;
+        FactoryAddress: string;
     };
 };
 export declare const getAddr: (name: string, chainId?: number) => EthAddress;

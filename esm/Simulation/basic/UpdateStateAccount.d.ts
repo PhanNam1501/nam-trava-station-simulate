@@ -16,6 +16,7 @@ export declare function updateTokenBalance(appState1: ApplicationState, _from: E
     DilutionState: import("../..").DilutionState;
     forkCompoundLPState: import("../..").ForkedCompoundLPState;
     forkAaveLPState: import("../..").ForkedAaveLPState;
+    pancakeSwapV2Pair: import("../..").PancakeSwapV2Pair;
     web3: import("ethers").JsonRpcProvider;
     chainId: number;
     simulatorUrl: string;

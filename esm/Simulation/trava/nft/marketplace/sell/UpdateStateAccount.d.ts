@@ -14,6 +14,7 @@ export declare function updateOwnedSellingNFTFromContract(appState1: Application
     DilutionState: import("../../../../..").DilutionState;
     forkCompoundLPState: import("../../../../..").ForkedCompoundLPState;
     forkAaveLPState: import("../../../../..").ForkedAaveLPState;
+    pancakeSwapV2Pair: import("../../../../..").PancakeSwapV2Pair;
     web3: import("ethers").JsonRpcProvider;
     chainId: number;
     simulatorUrl: string;
@@ -30,6 +31,7 @@ export declare function updateOwnedSellingNFT(appState1: ApplicationState): Prom
     DilutionState: import("../../../../..").DilutionState;
     forkCompoundLPState: import("../../../../..").ForkedCompoundLPState;
     forkAaveLPState: import("../../../../..").ForkedAaveLPState;
+    pancakeSwapV2Pair: import("../../../../..").PancakeSwapV2Pair;
     web3: import("ethers").JsonRpcProvider;
     chainId: number;
     simulatorUrl: string;

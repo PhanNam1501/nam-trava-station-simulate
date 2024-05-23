@@ -3,7 +3,6 @@ import { ApplicationState } from "../../State/ApplicationState";
 import { Contract } from "ethers";
 import _ from "lodash";
 import { listLiquidityVault } from "./LiquidityCampainConfig";
-import { multiCall } from "orchai-combinator-bsc-simulation";
 import BEP20ABI from "../../abis/BEP20.json";
 import IVaultABI from "../../abis/IVault.json";
 import StakedTokenAbi from "../../abis/StakedToken.json";
@@ -12,6 +11,7 @@ import { BaseAccountVault, LiquidityCampain, RewardTokenData, StakedTokenData, U
 import { YEAR_TO_SECONDS, getAddr } from "../../utils";
 import OracleABI from "../../abis/AaveOracle.json";
 import { EthAddress } from "../../utils/types";
+import { multiCall } from "../../utils/helper";
 
 export async function updateLiquidityCampainState(
     appState1: ApplicationState, 

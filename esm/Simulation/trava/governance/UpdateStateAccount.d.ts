@@ -13,6 +13,7 @@ export declare function updateTravaGovernanceState(appState1: ApplicationState, 
     DilutionState: import("../../..").DilutionState;
     forkCompoundLPState: import("../../..").ForkedCompoundLPState;
     forkAaveLPState: import("../../..").ForkedAaveLPState;
+    pancakeSwapV2Pair: import("../../..").PancakeSwapV2Pair;
     web3: import("ethers").JsonRpcProvider;
     chainId: number;
     simulatorUrl: string;
@@ -29,6 +30,7 @@ export declare function updateUserLockBalance(appState1: ApplicationState, _user
     DilutionState: import("../../..").DilutionState;
     forkCompoundLPState: import("../../..").ForkedCompoundLPState;
     forkAaveLPState: import("../../..").ForkedAaveLPState;
+    pancakeSwapV2Pair: import("../../..").PancakeSwapV2Pair;
     web3: import("ethers").JsonRpcProvider;
     chainId: number;
     simulatorUrl: string;

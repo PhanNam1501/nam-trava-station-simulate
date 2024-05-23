@@ -1,4 +1,3 @@
-"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -8,27 +7,22 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateAllAccountVault = void 0;
-const ethers_1 = require("ethers");
-const StakedToken_json_1 = __importDefault(require("../../../abis/StakedToken.json"));
-const VestingTrava_json_1 = __importDefault(require("../../../abis/VestingTrava.json"));
-const address_1 = require("../../../utils/address");
-const stakingVaultConfig_1 = require("../../../utils/stakingVaultConfig");
-const config_1 = require("../../../utils/config");
-const bignumber_js_1 = __importDefault(require("bignumber.js"));
-const AaveOracle_json_1 = __importDefault(require("../../../abis/AaveOracle.json"));
-const UpdateStateAccount_1 = require("../../basic/UpdateStateAccount");
-const BEP20_json_1 = __importDefault(require("../../../abis/BEP20.json"));
-const helper_1 = require("../../../utils/helper");
-function updateAllAccountVault(appState1, _address, force = false) {
+import { Contract } from "ethers";
+import StakedTokenAbi from "../../../abis/StakedToken.json";
+import VestingTokenAbi from "../../../abis/VestingTrava.json";
+import { getAddr } from "../../../utils/address";
+import { listStakingVault } from "../../../utils/stakingVaultConfig";
+import { YEAR_TO_SECONDS } from "../../../utils/config";
+import BigNumber from "bignumber.js";
+import OracleABI from "../../../abis/AaveOracle.json";
+import { updateTokenBalance } from "../../basic/UpdateStateAccount";
+import BEP20ABI from "../../../abis/BEP20.json";
+import { getMode, multiCall } from "../../../utils/helper";
+export function updateAllAccountVault(appState1, _address, force = false) {
     return __awaiter(this, void 0, void 0, function* () {
-        const vaultConfigList = stakingVaultConfig_1.listStakingVault[appState1.chainId];
+        const vaultConfigList = listStakingVault[appState1.chainId];
         let appState = Object.assign({}, appState1);
-        let modeFrom = (0, helper_1.getMode)(appState, _address);
+        let modeFrom = getMode(appState, _address);
         if (appState[modeFrom].travaLPStakingStateList.size == 0 || force) {
             let underlyingAddress = new Array;
             let priceUnderlyingAddress = new Array;
@@ -46,45 +40,45 @@ function updateAllAccountVault(appState1, _address, force = false) {
             TVLDatas, // data of total supply all staked tokens
             bnbBalanceInVaults // balance of bnb in all vaults
             ] = yield Promise.all([
-                (0, helper_1.multiCall)(StakedToken_json_1.default, stakedTokenAddress.map((address, _) => ({
+                multiCall(StakedTokenAbi, stakedTokenAddress.map((address, _) => ({
                     address: address,
                     name: "balanceOf",
                     params: [appState[modeFrom].address],
                 })), appState.web3, appState.chainId),
-                (0, helper_1.multiCall)(StakedToken_json_1.default, stakedTokenAddress.map((address, _) => ({
+                multiCall(StakedTokenAbi, stakedTokenAddress.map((address, _) => ({
                     address: address,
                     name: "totalSupply",
                     params: [],
                 })), appState.web3, appState.chainId),
-                (0, helper_1.multiCall)(BEP20_json_1.default, lpAddress.map((address, _) => ({
-                    address: (0, address_1.getAddr)("WBNB_ADDRESS", appState.chainId),
+                multiCall(BEP20ABI, lpAddress.map((address, _) => ({
+                    address: getAddr("WBNB_ADDRESS", appState.chainId),
                     name: "balanceOf",
                     params: [address],
                 })), appState.web3, appState.chainId)
             ]);
-            let oracleContract = new ethers_1.Contract((0, address_1.getAddr)("ORACLE_ADDRESS", appState.chainId), AaveOracle_json_1.default, appState.web3);
-            let bnbPrice = yield oracleContract.getAssetPrice((0, address_1.getAddr)("WBNB_ADDRESS", appState.chainId));
-            let wbnbContract = new ethers_1.Contract((0, address_1.getAddr)("WBNB_ADDRESS", appState.chainId), BEP20_json_1.default, appState.web3);
-            let wbnbBalanceTravalp = yield wbnbContract.balanceOf((0, address_1.getAddr)("WBNB_TRAVA_LP_ADDRESS", appState.chainId));
-            let travaContract = new ethers_1.Contract((0, address_1.getAddr)("TRAVA_TOKEN_IN_STAKING", appState.chainId), BEP20_json_1.default, appState.web3);
-            let travaBalanceTravalp = yield travaContract.balanceOf((0, address_1.getAddr)("WBNB_TRAVA_LP_ADDRESS", appState.chainId));
-            let travaPrice = (0, bignumber_js_1.default)(bnbPrice).multipliedBy(wbnbBalanceTravalp).div(travaBalanceTravalp);
+            let oracleContract = new Contract(getAddr("ORACLE_ADDRESS", appState.chainId), OracleABI, appState.web3);
+            let bnbPrice = yield oracleContract.getAssetPrice(getAddr("WBNB_ADDRESS", appState.chainId));
+            let wbnbContract = new Contract(getAddr("WBNB_ADDRESS", appState.chainId), BEP20ABI, appState.web3);
+            let wbnbBalanceTravalp = yield wbnbContract.balanceOf(getAddr("WBNB_TRAVA_LP_ADDRESS", appState.chainId));
+            let travaContract = new Contract(getAddr("TRAVA_TOKEN_IN_STAKING", appState.chainId), BEP20ABI, appState.web3);
+            let travaBalanceTravalp = yield travaContract.balanceOf(getAddr("WBNB_TRAVA_LP_ADDRESS", appState.chainId));
+            let travaPrice = BigNumber(bnbPrice).multipliedBy(wbnbBalanceTravalp).div(travaBalanceTravalp);
             if (travaPrice.isNaN()) {
-                travaPrice = (0, bignumber_js_1.default)(0);
+                travaPrice = BigNumber(0);
             }
             for (let i = 0; i < vaultConfigList.length; i++) {
                 //calculate claimable reward and eps (epoch permit seconds)
-                let claimableReward = (0, bignumber_js_1.default)(0);
+                let claimableReward = BigNumber(0);
                 let eps = "0";
                 if (vaultConfigList[i].id == "orai") {
-                    const vestingCR = new ethers_1.Contract((0, address_1.getAddr)("VESTING_TRAVA_ADDRESS", appState.chainId), VestingTrava_json_1.default, appState.web3);
+                    const vestingCR = new Contract(getAddr("VESTING_TRAVA_ADDRESS", appState.chainId), VestingTokenAbi, appState.web3);
                     claimableReward = yield vestingCR.getClaimableReward(appState[modeFrom].address, vaultConfigList[i].underlyingAddress);
                     eps = "0.005549";
                 }
                 else {
-                    const stakedCR = new ethers_1.Contract(vaultConfigList[i].stakedTokenAddress, StakedToken_json_1.default, appState.web3);
+                    const stakedCR = new Contract(vaultConfigList[i].stakedTokenAddress, StakedTokenAbi, appState.web3);
                     claimableReward = yield stakedCR.getTotalRewardsBalance(appState[modeFrom].address);
-                    eps = (0, bignumber_js_1.default)(yield stakedCR.getAssetEmissionPerSecond(vaultConfigList[i].stakedTokenAddress)).div(vaultConfigList[i].reserveDecimals).toFixed();
+                    eps = BigNumber(yield stakedCR.getAssetEmissionPerSecond(vaultConfigList[i].stakedTokenAddress)).div(vaultConfigList[i].reserveDecimals).toFixed();
                 }
                 /** calculate underlying token price
                  * Consider vault underlying token / BNB, we have:
@@ -96,25 +90,25 @@ function updateAllAccountVault(appState1, _address, force = false) {
                  *  else:
                  *      return lp pair token price = 2 * bnb price * bnb balance in vault / lp pair token total supply
                  */
-                let underlyingTokenPrice = (0, bignumber_js_1.default)(0);
+                let underlyingTokenPrice = BigNumber(0);
                 if (vaultConfigList[i].underlyingAddress.toLowerCase() != vaultConfigList[i].lpAddress.toLowerCase()) {
                     // if underlying is rTrava or Trava, it is calculated above
-                    if (vaultConfigList[i].priceUnderlyingAddress.toLowerCase() == (0, address_1.getAddr)("TRAVA_TOKEN_IN_STAKING", appState.chainId).toLowerCase()) {
+                    if (vaultConfigList[i].priceUnderlyingAddress.toLowerCase() == getAddr("TRAVA_TOKEN_IN_STAKING", appState.chainId).toLowerCase()) {
                         underlyingTokenPrice = travaPrice;
                     }
                     else {
-                        let priceUnderlyingTokenContract = new ethers_1.Contract(vaultConfigList[i].priceUnderlyingAddress, BEP20_json_1.default, appState.web3);
+                        let priceUnderlyingTokenContract = new Contract(vaultConfigList[i].priceUnderlyingAddress, BEP20ABI, appState.web3);
                         let balanceOfUnderlyingTokenInVault = yield priceUnderlyingTokenContract.balanceOf(vaultConfigList[i].lpAddress);
-                        underlyingTokenPrice = (0, bignumber_js_1.default)(bnbPrice).multipliedBy(bnbBalanceInVaults[i]).div(balanceOfUnderlyingTokenInVault);
+                        underlyingTokenPrice = BigNumber(bnbPrice).multipliedBy(bnbBalanceInVaults[i]).div(balanceOfUnderlyingTokenInVault);
                     }
                 }
                 else {
-                    let lpContract = new ethers_1.Contract(vaultConfigList[i].lpAddress, StakedToken_json_1.default, appState.web3);
+                    let lpContract = new Contract(vaultConfigList[i].lpAddress, StakedTokenAbi, appState.web3);
                     let totalSupply = yield lpContract.totalSupply();
-                    underlyingTokenPrice = (0, bignumber_js_1.default)(bnbPrice).multipliedBy(bnbBalanceInVaults[i]).multipliedBy(2).div(totalSupply);
+                    underlyingTokenPrice = BigNumber(bnbPrice).multipliedBy(bnbBalanceInVaults[i]).multipliedBy(2).div(totalSupply);
                 }
                 if (underlyingTokenPrice.isNaN()) {
-                    underlyingTokenPrice = (0, bignumber_js_1.default)(0);
+                    underlyingTokenPrice = BigNumber(0);
                 }
                 // init state stakeToken
                 let stakedToken = {
@@ -134,8 +128,8 @@ function updateAllAccountVault(appState1, _address, force = false) {
                 /**Caculate reward token price
                  * if reward token price is trava, rewardTokenPrice = trava price which is caculated above
                  */
-                let rewardTokenPrice = (0, bignumber_js_1.default)("0");
-                if (vaultConfigList[i].rewardToken.address.toLowerCase() == (0, address_1.getAddr)("TRAVA_TOKEN_IN_STAKING", appState.chainId).toLowerCase()) {
+                let rewardTokenPrice = BigNumber("0");
+                if (vaultConfigList[i].rewardToken.address.toLowerCase() == getAddr("TRAVA_TOKEN_IN_STAKING", appState.chainId).toLowerCase()) {
                     rewardTokenPrice = travaPrice;
                 }
                 // init state rewardToken
@@ -145,11 +139,11 @@ function updateAllAccountVault(appState1, _address, force = false) {
                     price: rewardTokenPrice.toFixed(0), // rewardTokenPriceDatas[i]
                 };
                 // Calculate TVL = TVL amount * price
-                let TVL = (0, bignumber_js_1.default)(TVLDatas[i]).div(underlyingToken.reserveDecimals).multipliedBy(underlyingToken.price);
+                let TVL = BigNumber(TVLDatas[i]).div(underlyingToken.reserveDecimals).multipliedBy(underlyingToken.price);
                 // Calculate APR = eps * Reward token price * 1 year to seconds / TVL / 100 
-                let APR = (0, bignumber_js_1.default)(eps).multipliedBy(rewardToken.price).multipliedBy(config_1.YEAR_TO_SECONDS).div(TVL);
+                let APR = BigNumber(eps).multipliedBy(rewardToken.price).multipliedBy(YEAR_TO_SECONDS).div(TVL);
                 if (APR.isNaN()) {
-                    APR = (0, bignumber_js_1.default)(0);
+                    APR = BigNumber(0);
                 }
                 // Init state smart wallet in vault[i]
                 let accountVaults = {
@@ -166,12 +160,10 @@ function updateAllAccountVault(appState1, _address, force = false) {
                 appState[modeFrom].travaLPStakingStateList.set(vaultConfigList[i].stakedTokenAddress.toLowerCase(), accountVaults);
                 if (!appState[modeFrom].tokenBalances.has(vaultConfigList[i].stakedTokenAddress.toLowerCase())) {
                     // store balance of stakedTokenAddress
-                    appState = yield (0, UpdateStateAccount_1.updateTokenBalance)(appState, appState[modeFrom].address ,vaultConfigList[i].stakedTokenAddress.toLowerCase());
+                    appState = yield updateTokenBalance(appState, appState[modeFrom].address, vaultConfigList[i].stakedTokenAddress.toLowerCase());
                 }
             }
         }
         return appState;
     });
 }
-exports.updateAllAccountVault = updateAllAccountVault;
-
