@@ -12,19 +12,6 @@ import { centic_api, centic_api_key, getAddr, ZERO_ADDRESS } from "../../utils";
 import { EthAddress } from "../../utils/types";
 import axios from "axios";
 
-export async function updateLiquidityCampainState(
-    appState1: ApplicationState, 
-    force?: boolean
-    ): Promise<ApplicationState> {
-    let appState = { ...appState1 };
-    try {
-        return appState;
-    } catch (error) {
-        console.error(error);
-    }
-    return appState;
-}
-
 export async function updatePancakeSwapV2(
     appState1: ApplicationState,
     force?: boolean
