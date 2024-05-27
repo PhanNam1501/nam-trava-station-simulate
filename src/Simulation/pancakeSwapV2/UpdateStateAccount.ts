@@ -178,16 +178,16 @@ export async function updatePancakeSwapV2(
                 appState.pancakeSwapV2Pair.pancakeV2Pairs.set(pairAddress.toLowerCase(), {
                     addressToken0: token0.toLowerCase(),
                     addressToken1: token1.toLowerCase(),
-                    token0Price: String(token0Price),
-                    token1Price: String(token1Price),
-                    token0Decimals: token0Decimals,
-                    token1Decimals: token1Decimals,
-                    token0Hold: token0InPair,
-                    token1Hold: token1InPair,
-                    pairTokenDecimals: pairTokenDecimals,
-                    totalSupplyPairToken: totalSupplyPairToken,
-                    tvl: String(totalValue),
-                    pairTokenOfSmartWallet: pairTokenOfSmartWallet
+                    token0Price: Number(token0Price),
+                    token1Price: Number(token1Price),
+                    token0Decimals: Number(token0Decimals),
+                    token1Decimals: Number(token1Decimals),
+                    token0Hold: Number(token0InPair),
+                    token1Hold: Number(token1InPair),
+                    pairTokenDecimals: Number(pairTokenDecimals),
+                    totalSupplyPairToken: Number(totalSupplyPairToken),
+                    tvl: Number(totalValue),
+                    pairTokenOfSmartWallet: Number(pairTokenOfSmartWallet)
                 });
             }
         }
