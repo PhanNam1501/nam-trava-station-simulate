@@ -13,12 +13,12 @@ export async function simulateWrap(appState1: ApplicationState, _amount: number 
         await updateSmartWalletTokenBalance(appState, wbnb_address)
     }
 
-    console.log("amount.toString() == MAX_UINT256", amount.toString(), MAX_UINT256)
+    // console.log("amount.toString() == MAX_UINT256", amount.toString(), MAX_UINT256)
     if (amount.toString() == MAX_UINT256 || BigInt(amount) == BigInt(MAX_UINT256)) {
-        console.log("????")
+        // console.log("????")
         amount = appState.walletState.ethBalances;
     }
-    console.log("amount", amount)
+    // console.log("amount", amount)
     let newEthBalance = BigInt(appState.walletState.ethBalances) - BigInt(amount);
     let newWBNBBalance = BigInt(appState.smartWalletState.tokenBalances.get(wbnb_address)!) + BigInt(amount)
     appState.walletState.ethBalances = String(newEthBalance);

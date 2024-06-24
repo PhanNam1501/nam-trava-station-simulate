@@ -34,6 +34,7 @@ export async function calculateMaxAmountForkCompoundBorrow(appState1: Applicatio
         if (!dataWallet) {
             throw new Error("data not found");
         }
+        
     let assetsIn = dataWallet.dapps[0].reserves[0].assetsIn;
     let sumSupplyByUSD = BigNumber(0);
     let sumBorrowedByUSD = BigNumber(0);

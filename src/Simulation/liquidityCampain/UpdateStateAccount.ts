@@ -173,7 +173,7 @@ export async function updateLiquidityCampainState(
                     decimals: vaultConfigList[i].rewardToken.decimals,
                     price: travaPrice.toFixed(0),
                 }
-                console.log("tvlData", TVLDatas[i], underlyingToken.reserveDecimals, underlyingToken.price)
+                // console.log("tvlData", TVLDatas[i], underlyingToken.reserveDecimals, underlyingToken.price)
                 let TVL = BigNumber(TVLDatas[i]).div(BigNumber(10).pow(underlyingToken.reserveDecimals)).multipliedBy(underlyingToken.price)
                 let APR = BigNumber(eps).multipliedBy(rewardToken.price).div(BigNumber(10).pow(rewardToken.decimals)).multipliedBy(YEAR_TO_SECONDS).div(TVL);
                 if (APR.isNaN()) {

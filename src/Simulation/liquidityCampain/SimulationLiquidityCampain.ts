@@ -85,7 +85,7 @@ export async function SimulationWithdrawLiquidity(
     }
     
     let oldBalance = BigNumber(appState[modeTo].tokenBalances.get(liquidityCampain.underlyingToken.underlyingAddress.toLowerCase())!);
-    console.log(oldBalance.toFixed());
+    // console.log(oldBalance.toFixed());
     if (amount.toFixed(0) == MAX_UINT256 || amount.isEqualTo(MAX_UINT256) ) {
       amount = BigNumber(liquidityCampain.deposited);
     }

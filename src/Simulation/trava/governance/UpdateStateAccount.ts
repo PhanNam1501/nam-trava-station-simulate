@@ -284,7 +284,7 @@ export async function getTokenRatio(appState: ApplicationState, _tokenAddress: E
       appState.web3
     )
     const ratioRaw = await valuatorContract.ratio(tokenAddress);
-    console.log("ratioRaw", ratioRaw)
+    // console.log("ratioRaw", ratioRaw)
     ratio = BigNumber(String(ratioRaw));
   }
   return ratio

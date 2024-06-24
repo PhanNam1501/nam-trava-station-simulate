@@ -6,7 +6,7 @@ import { convertHexStringToAddress, getAddr } from "../src/utils/address";
 import BigNumber from "bignumber.js";
 import { MAX_UINT256, MONTH_TO_SECONDS, WEEK_TO_SECONDS } from "../src/utils/config";
 import { updateForkCompoundLPState, updateUserInForkCompoundLPState } from "../src/Simulation/forkCompoundLP/UpdateStateAccount";
-import { SimulationBorrowForkCompoundLP, SimulationCollateral, SimulationRepayForkCompoundLP, SimulationSupplyForkCompoundLP, SimulationWithdrawForkCompoundLP, cTokenToDetailTokenAddress, calculateMaxAmountForkCompoundBorrow, simulateAddliquidity, updateLPtTokenInfo, updateSmartWalletTokenBalance, updateTravaLPInfo, updateUserTokenBalance } from "../src/Simulation";
+import { SimulationBorrowForkCompoundLP, SimulationCollateral, SimulationRepayForkCompoundLP, SimulationSupplyForkCompoundLP, SimulationWithdrawForkCompoundLP, cTokenToDetailTokenAddress, calculateMaxAmountForkCompoundBorrow, simulateAddliquidity, simulateRemoveliquidity, updateLPtTokenInfo, updateSmartWalletTokenBalance, updateTravaLPInfo, updateUserTokenBalance } from "../src/Simulation";
 import { SimulationSupplyForkAaveLP, SimulationWithdrawForkAaveLP, updateForkAaveLPState, updateUserInForkAaveLPState } from "../src/Simulation/forkAaveLP";
 import { multiCall } from "../src/utils/helper";
 import cToken from "../src/abis/cToken.json";
@@ -47,7 +47,9 @@ import { updatePancakeSwapV2 } from "../src/Simulation/pancakeSwapV2/UpdateState
     appState = await updatePancakeSwapV2(appState);
     console.log(appState.pancakeSwapV2Pair.pancakeV2Pairs.get("0xadBba1EF326A33FDB754f14e62A96D5278b942Bd".toLowerCase())!)
     // console.log("_______________________TEST COMPOUND_______________________")
-    appState = await simulateAddliquidity(appState, "0x1af3f329e8be154074d8769d1ffa4ee058b1dbc3", "0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d", "0xadBba1EF326A33FDB754f14e62A96D5278b942Bd", "1", "1");
+    appState = await simulateAddliquidity(appState, "0x1af3f329e8be154074d8769d1ffa4ee058b1dbc3", "0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d", "0xadBba1EF326A33FDB754f14e62A96D5278b942Bd", "820797287826710895988", "819479404874912100000");
+    console.log(appState.pancakeSwapV2Pair.pancakeV2Pairs.get("0xadBba1EF326A33FDB754f14e62A96D5278b942Bd".toLowerCase())!)
+    appState = await simulateRemoveliquidity(appState, "0x1af3f329e8be154074d8769d1ffa4ee058b1dbc3", "0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d", "0xadBba1EF326A33FDB754f14e62A96D5278b942Bd", "755691790420170100000");
     console.log(appState.pancakeSwapV2Pair.pancakeV2Pairs.get("0xadBba1EF326A33FDB754f14e62A96D5278b942Bd".toLowerCase())!)
   }
 test()

@@ -45,26 +45,27 @@ export async function simulateAddliquidity(
     if (!appState.smartWalletState.tokenBalances.get(token1)) {
         throw new Error("token1 not found in smart wallet");
     }
+
     let token1Balance = appState.smartWalletState.tokenBalances.get(token1)!;
+    let token0ToUSD = BigNumber(token0Amount).multipliedBy(appState.pancakeSwapV2Pair.pancakeV2Pairs.get(tokenPair)!.token0Price).dividedBy(10 ** Number(appState.pancakeSwapV2Pair.pancakeV2Pairs.get(tokenPair)!.token0Decimals));
+    let token1ToUSD = BigNumber(token1Amount).multipliedBy(appState.pancakeSwapV2Pair.pancakeV2Pairs.get(tokenPair)!.token1Price).dividedBy(10 ** Number(appState.pancakeSwapV2Pair.pancakeV2Pairs.get(tokenPair)!.token1Decimals));
     
-    let token0ToUSD = BigNumber(token0Amount).multipliedBy(appState.pancakeSwapV2Pair.pancakeV2Pairs.get(tokenPair)!.token0Price).toString();
-    let token1ToUSD = BigNumber(token1Amount).multipliedBy(appState.pancakeSwapV2Pair.pancakeV2Pairs.get(tokenPair)!.token1Price).toString();
-    let sumToken0And1 = BigNumber(token0ToUSD).plus(token1ToUSD).toString();
+    let sumToken0And1 = BigNumber(token0ToUSD).plus(token1ToUSD);
     let tvl = appState.pancakeSwapV2Pair.pancakeV2Pairs.get(tokenPair)!.tvl;
-    let pairBalance =  appState.pancakeSwapV2Pair.pancakeV2Pairs.get(tokenPair)!.totalSupplyPairToken;
-    let _tokenPairAmount = BigNumber(tvl).plus(sumToken0And1).multipliedBy(pairBalance).dividedBy(tvl).minus(pairBalance).toString();
+    let pairBalance =  BigNumber(appState.pancakeSwapV2Pair.pancakeV2Pairs.get(tokenPair)!.totalSupplyPairToken);
+
+    let _tokenPairAmount = pairBalance.dividedBy(BigNumber(1).minus((sumToken0And1.dividedBy(sumToken0And1.plus(tvl))))).minus(pairBalance)
 
     appState.smartWalletState.tokenBalances.set(token0, BigNumber(token0Balance).minus(token0Amount).toString());
     appState.smartWalletState.tokenBalances.set(token1, BigNumber(token1Balance).minus(token1Amount).toString());
     appState.smartWalletState.tokenBalances.set(tokenPair, BigNumber(appState.smartWalletState.tokenBalances.get(tokenPair)!).plus(_tokenPairAmount).toString());
-    appState.pancakeSwapV2Pair.pancakeV2Pairs.get(tokenPair)!.pairTokenOfSmartWallet = BigNumber(appState.pancakeSwapV2Pair.pancakeV2Pairs.get(tokenPair)!.pairTokenOfSmartWallet).plus(_tokenPairAmount).toString();
-    appState.pancakeSwapV2Pair.pancakeV2Pairs.get(tokenPair)!.token0Hold = BigNumber(appState.pancakeSwapV2Pair.pancakeV2Pairs.get(tokenPair)!.token0Hold).plus(_token0Amount).toString();
-    appState.pancakeSwapV2Pair.pancakeV2Pairs.get(tokenPair)!.token1Hold = BigNumber(appState.pancakeSwapV2Pair.pancakeV2Pairs.get(tokenPair)!.token1Hold).plus(_token1Amount).toString();
-    appState.pancakeSwapV2Pair.pancakeV2Pairs.get(tokenPair)!.totalSupplyPairToken = BigNumber(appState.pancakeSwapV2Pair.pancakeV2Pairs.get(tokenPair)!.totalSupplyPairToken).plus(_tokenPairAmount).toString();
-    appState.pancakeSwapV2Pair.pancakeV2Pairs.get(tokenPair)!.tvl = BigNumber(appState.pancakeSwapV2Pair.pancakeV2Pairs.get(tokenPair)!.tvl)
-                                                                    .plus(BigNumber(_token0Amount).multipliedBy(BigNumber(appState.pancakeSwapV2Pair.pancakeV2Pairs.get(tokenPair)!.token0Price)))
-                                                                    .plus(BigNumber(_token1Amount).multipliedBy(BigNumber(appState.pancakeSwapV2Pair.pancakeV2Pairs.get(tokenPair)!.token1Price)))
-                                                                    .toString();
+    appState.pancakeSwapV2Pair.pancakeV2Pairs.get(tokenPair)!.pairTokenOfSmartWallet = Number(BigNumber(appState.pancakeSwapV2Pair.pancakeV2Pairs.get(tokenPair)!.pairTokenOfSmartWallet).plus(_tokenPairAmount));
+    appState.pancakeSwapV2Pair.pancakeV2Pairs.get(tokenPair)!.token0Hold = Number(BigNumber(appState.pancakeSwapV2Pair.pancakeV2Pairs.get(tokenPair)!.token0Hold).plus(_token0Amount));
+    appState.pancakeSwapV2Pair.pancakeV2Pairs.get(tokenPair)!.token1Hold = Number(BigNumber(appState.pancakeSwapV2Pair.pancakeV2Pairs.get(tokenPair)!.token1Hold).plus(_token1Amount));
+    appState.pancakeSwapV2Pair.pancakeV2Pairs.get(tokenPair)!.tvl = Number(BigNumber(appState.pancakeSwapV2Pair.pancakeV2Pairs.get(tokenPair)!.tvl)
+    .plus(sumToken0And1));
+    
+    appState.pancakeSwapV2Pair.pancakeV2Pairs.get(tokenPair)!.totalSupplyPairToken = Number(BigNumber(appState.pancakeSwapV2Pair.pancakeV2Pairs.get(tokenPair)!.totalSupplyPairToken).plus(_tokenPairAmount));
     return appState;
 }
 
@@ -103,33 +104,37 @@ export async function simulateRemoveliquidity(
         throw new Error("token1 not found in smart wallet");
     }
     let token1Balance = appState.smartWalletState.tokenBalances.get(token1)!;
-    
-    let token0Amount = BigNumber(_tokenPairAmount)
-                    .multipliedBy(BigNumber(appState.pancakeSwapV2Pair.pancakeV2Pairs.get(tokenPair)!.pairTokenOfSmartWallet))
+    let tokenPairAmount = BigNumber(_tokenPairAmount);
+    let token0Amount = BigNumber(tokenPairAmount)
                     .dividedBy(appState.pancakeSwapV2Pair.pancakeV2Pairs.get(tokenPair)!.totalSupplyPairToken)
                     .multipliedBy(appState.pancakeSwapV2Pair.pancakeV2Pairs.get(tokenPair)!.tvl)
                     .dividedBy(appState.pancakeSwapV2Pair.pancakeV2Pairs.get(tokenPair)!.token0Price)
-                    .dividedBy(2)
-                    .toString();
+                    .multipliedBy(10 ** Number(appState.pancakeSwapV2Pair.pancakeV2Pairs.get(tokenPair)!.token0Decimals))
+                    .dividedBy(2);
+    // console.log(tokenPairAmount.toString());
+    // console.log(appState.pancakeSwapV2Pair.pancakeV2Pairs.get(tokenPair)!.pairTokenOfSmartWallet);
+    // console.log(appState.pancakeSwapV2Pair.pancakeV2Pairs.get(tokenPair)!.totalSupplyPairToken);
+    // console.log(appState.pancakeSwapV2Pair.pancakeV2Pairs.get(tokenPair)!.tvl);
+    // console.log(appState.pancakeSwapV2Pair.pancakeV2Pairs.get(tokenPair)!.token0Price);
 
-    let token1Amount = BigNumber(_tokenPairAmount)
-                    .multipliedBy(BigNumber(appState.pancakeSwapV2Pair.pancakeV2Pairs.get(tokenPair)!.pairTokenOfSmartWallet))
+
+    let token1Amount = BigNumber(tokenPairAmount)
                     .dividedBy(appState.pancakeSwapV2Pair.pancakeV2Pairs.get(tokenPair)!.totalSupplyPairToken)
                     .multipliedBy(appState.pancakeSwapV2Pair.pancakeV2Pairs.get(tokenPair)!.tvl)
                     .dividedBy(appState.pancakeSwapV2Pair.pancakeV2Pairs.get(tokenPair)!.token1Price)
-                    .dividedBy(2)
-                    .toString();
-    
+                    .multipliedBy(10 ** Number(appState.pancakeSwapV2Pair.pancakeV2Pairs.get(tokenPair)!.token1Decimals))
+                    .dividedBy(2);
+
     appState.smartWalletState.tokenBalances.set(token0, BigNumber(token0Balance).plus(token0Amount).toString());
     appState.smartWalletState.tokenBalances.set(token1, BigNumber(token1Balance).plus(token1Amount).toString());
     appState.smartWalletState.tokenBalances.set(tokenPair, BigNumber(appState.smartWalletState.tokenBalances.get(tokenPair)!).minus(_tokenPairAmount).toString());
-    appState.pancakeSwapV2Pair.pancakeV2Pairs.get(tokenPair)!.pairTokenOfSmartWallet = BigNumber(appState.pancakeSwapV2Pair.pancakeV2Pairs.get(tokenPair)!.pairTokenOfSmartWallet).minus(_tokenPairAmount).toString();
-    appState.pancakeSwapV2Pair.pancakeV2Pairs.get(tokenPair)!.token0Hold = BigNumber(appState.pancakeSwapV2Pair.pancakeV2Pairs.get(tokenPair)!.token0Hold).minus(token0Amount).toString();
-    appState.pancakeSwapV2Pair.pancakeV2Pairs.get(tokenPair)!.token1Hold = BigNumber(appState.pancakeSwapV2Pair.pancakeV2Pairs.get(tokenPair)!.token1Hold).minus(token1Amount).toString();
-    appState.pancakeSwapV2Pair.pancakeV2Pairs.get(tokenPair)!.totalSupplyPairToken = BigNumber(appState.pancakeSwapV2Pair.pancakeV2Pairs.get(tokenPair)!.totalSupplyPairToken).minus(_tokenPairAmount).toString();
-    appState.pancakeSwapV2Pair.pancakeV2Pairs.get(tokenPair)!.tvl = BigNumber(appState.pancakeSwapV2Pair.pancakeV2Pairs.get(tokenPair)!.tvl)
-                                                                    .minus(BigNumber(token0Amount).multipliedBy(BigNumber(appState.pancakeSwapV2Pair.pancakeV2Pairs.get(tokenPair)!.token0Price)))
-                                                                    .minus(BigNumber(token1Amount).multipliedBy(BigNumber(appState.pancakeSwapV2Pair.pancakeV2Pairs.get(tokenPair)!.token1Price)))
-                                                                    .toString();
+    appState.pancakeSwapV2Pair.pancakeV2Pairs.get(tokenPair)!.pairTokenOfSmartWallet = Number(BigNumber(appState.pancakeSwapV2Pair.pancakeV2Pairs.get(tokenPair)!.pairTokenOfSmartWallet).minus(_tokenPairAmount));
+    appState.pancakeSwapV2Pair.pancakeV2Pairs.get(tokenPair)!.token0Hold = Number(BigNumber(appState.pancakeSwapV2Pair.pancakeV2Pairs.get(tokenPair)!.token0Hold).minus(token0Amount));
+    appState.pancakeSwapV2Pair.pancakeV2Pairs.get(tokenPair)!.token1Hold = Number(BigNumber(appState.pancakeSwapV2Pair.pancakeV2Pairs.get(tokenPair)!.token1Hold).minus(token1Amount));
+    appState.pancakeSwapV2Pair.pancakeV2Pairs.get(tokenPair)!.totalSupplyPairToken = Number(BigNumber(appState.pancakeSwapV2Pair.pancakeV2Pairs.get(tokenPair)!.totalSupplyPairToken).minus(_tokenPairAmount));
+    appState.pancakeSwapV2Pair.pancakeV2Pairs.get(tokenPair)!.tvl = Number(BigNumber(appState.pancakeSwapV2Pair.pancakeV2Pairs.get(tokenPair)!.tvl)
+    .minus(token0Amount.dividedBy(10 ** Number(appState.pancakeSwapV2Pair.pancakeV2Pairs.get(tokenPair)!.token0Decimals)).multipliedBy(2)));
+
+                                                                   
     return appState;
 }
