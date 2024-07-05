@@ -39,7 +39,7 @@ const test = async () => {
   );
   const userAddress = "0x68a6c841040B05D60434d81000f523Bf6355b31D";
   const proxyAddress = "0x72DE03F7828a473A64b4A415bD76820EBAFf2B2C";
-  const tokenAddress = "0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c";
+  const tokenAddress = getAddr("TRAVA_TOKEN_IN_MARKET", chainId);
   const amount = BigNumber(0)
   // second update TravaLP state for wallet
   const userData = await TravaLendingPool.getUserAccountData(userAddress);
@@ -66,7 +66,7 @@ const test = async () => {
       appState12,
       );
     
-  //   console.log("Started: ", appState1.smartWalletState.travaLPState)
+    // console.log("Started: ", appState1.smartWalletState.detailTokenInPool)
   // const appState2 = await updateLPtTokenInfo(
   //   appState1,
   //   tokenAddress
@@ -88,9 +88,15 @@ const test = async () => {
   //   tokenAddress,
   //   MAX_UINT256
   // );
-
-  //console.log(appState2.smartWalletState.detailTokenInPool.get(tokenAddress.toLowerCase()));
-
+    
+  let detaiTokenInPool =  Array.from(appState1.smartWalletState.detailTokenInPool.values())
+  let addr = new Array();
+  console.log(detaiTokenInPool.length)
+  for(let i = 0;  i < detaiTokenInPool.length; i++) {
+    addr.push(detaiTokenInPool[i].tToken.address)
+    addr.push(detaiTokenInPool[i].dToken.address)
+  }
+  console.log(addr)
   // // console.log(
   // //   "banlances before phase1 : ",
   // //   appState.walletState.tokenBalances
@@ -109,25 +115,25 @@ const test = async () => {
   // )
   // console.log("ahuhu", appState31.smartWalletState.tokenBalances.get(tokenAddress.toLowerCase()));
   // console.log("================= PHASE 2 Supply ==========================");
-  const appState4 = await SimulationSupply(
-    appState1,
-    proxyAddress,
-    tokenAddress,
-    BigNumber(3e18).toFixed()
-  );
+  // const appState4 = await SimulationSupply(
+  //   appState1,
+  //   proxyAddress,
+  //   tokenAddress,
+  //   BigNumber(3e18).toFixed()
+  // );
 
-  const appState5 = await SimulationTransferTToken(
-    appState4,
-    proxyAddress,
-    userAddress,
-    tokenAddress,
-    BigNumber(1e18).toFixed()
-  )
+  // const appState5 = await SimulationTransferTToken(
+  //   appState4,
+  //   proxyAddress,
+  //   userAddress,
+  //   tokenAddress,
+  //   BigNumber(1e18).toFixed()
+  // )
 
 
-  console.log("final");
-  console.log(appState5.smartWalletState.detailTokenInPool.get(tokenAddress.toLowerCase())?.tToken);
-  console.log(appState5.walletState.detailTokenInPool.get(tokenAddress.toLowerCase())?.tToken);
+  // console.log("final");
+  // console.log(appState5.smartWalletState.detailTokenInPool.get(tokenAddress.toLowerCase())?.tToken);
+  // console.log(appState5.walletState.detailTokenInPool.get(tokenAddress.toLowerCase())?.tToken);
   
 
   // console.log("ahuhu1", appState4.smartWalletState.travaLPState, appState4.smartWalletState.tokenBalances.get(tokenAddress.toLowerCase()), calculateMaxAmountBorrow(appState4, tokenAddress).toFixed());
