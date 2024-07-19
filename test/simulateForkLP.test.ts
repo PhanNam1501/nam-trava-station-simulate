@@ -44,13 +44,14 @@ import ForkCompoundController from "../src/abis/ForkCompoundController.json";
     
     // console.log("_______________________TEST COMPOUND_______________________")
 
-    appState = await updateForkCompoundLPState(appState, "cream-lending");
-    appState = await updateUserInForkCompoundLPState(appState, userAddress, "cream-lending");
-    appState = await SimulationSupplyForkCompoundLP(appState, userAddress, "cream-lending", "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE".toLowerCase(), "100000")
-    console.log(appState.walletState.forkedCompoundLPState.get("cream-lending")?.detailTokenInPool.get('0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'.toLowerCase())?.cToken.originToken)
-    appState = await SimulationBorrowForkCompoundLP(appState, userAddress, "cream-lending", "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE".toLowerCase(), MAX_UINT256)
-    appState = await SimulationWithdrawForkCompoundLP(appState, userAddress, "cream-lending", "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE".toLowerCase(), MAX_UINT256)
-    appState = await SimulationRepayForkCompoundLP(appState, userAddress, "cream-lending", "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE".toLowerCase(), MAX_UINT256)
+    appState = await updateForkCompoundLPState(appState, "venus");
+    appState = await updateUserInForkCompoundLPState(appState, userAddress, "venus");
+    console.log(BigNumber(await calculateMaxAmountForkCompoundBorrow(appState, "venus", "0x55d398326f99059ff775485246999027b3197955", appState.walletState.address.toLowerCase())).toFixed());
+    // appState = await SimulationSupplyForkCompoundLP(appState, userAddress, "venus", "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE".toLowerCase(), "100000")
+    // console.log(appState.walletState.forkedCompoundLPState.get("venus")?.detailTokenInPool.get('0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'.toLowerCase())?.cToken.originToken)
+    // appState = await SimulationBorrowForkCompoundLP(appState, userAddress, "venus", "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE".toLowerCase(), MAX_UINT256)
+    // appState = await SimulationWithdrawForkCompoundLP(appState, userAddress, "venus", "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE".toLowerCase(), MAX_UINT256)
+    // appState = await SimulationRepayForkCompoundLP(appState, userAddress, "venus", "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE".toLowerCase(), MAX_UINT256)
       
     // console.log("_______________________TEST AAVE_______________________")
 

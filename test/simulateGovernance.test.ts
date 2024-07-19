@@ -1,6 +1,6 @@
 import { JsonRpcProvider, ethers } from "ethers";
 import { updateTravaGovernanceState, updateUserLockBalance } from "../src/Simulation/trava/governance/UpdateStateAccount";
-import { simulateTravaGovernanceCreateLock } from "../src/Simulation/trava/governance/SimulationGovernance";
+import { getPredictVotingPower, simulateTravaGovernanceCreateLock } from "../src/Simulation/trava/governance/SimulationGovernance";
 import { ApplicationState } from "../src/State/ApplicationState";
 import { getAddr } from "../src/utils/address";
 import BigNumber from "bignumber.js";
@@ -32,6 +32,7 @@ import { MONTH_TO_SECONDS, WEEK_TO_SECONDS } from "../src/utils/config";
     console.log(appState.walletState.veTravaListState)
     appState = await simulateTravaGovernanceCreateLock(appState,"0xce9f0487f07988003f511d6651153a6dacc32f50", "20", MONTH_TO_SECONDS.toString(), userAddress, proxyAddress);
     console.log(appState.smartWalletState.veTravaListState)
+    console.log(getPredictVotingPower('1000000000000000000','0','1','0','1722351600').toFixed());
     // appState = await simulateTravaGovernanceCreateLock(appState,"0xce9f0487f07988003f511d6651153a6dacc32f50", "20", MONTH_TO_SECONDS.toString(), userAddress, proxyAddress);
     // console.log(appState.smartWalletState.veTravaListState)
 }
