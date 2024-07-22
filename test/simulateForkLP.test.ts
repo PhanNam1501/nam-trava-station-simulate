@@ -46,17 +46,19 @@ import ForkCompoundController from "../src/abis/ForkCompoundController.json";
 
     appState = await updateForkCompoundLPState(appState, "venus");
     appState = await updateUserInForkCompoundLPState(appState, userAddress, "venus");
-    appState = await SimulationSupplyForkCompoundLP(appState, userAddress, "venus", "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE", "1000")
-    appState = await SimulationBorrowForkCompoundLP(appState, userAddress, "venus", "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE", MAX_UINT256)
-    appState = await SimulationWithdrawForkCompoundLP(appState, userAddress, "venus", "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE", MAX_UINT256)
-    appState = await SimulationRepayForkCompoundLP(appState, userAddress, "venus", "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE", MAX_UINT256)
+    console.log(BigNumber(await calculateMaxAmountForkCompoundBorrow(appState, "venus", "0x55d398326f99059ff775485246999027b3197955", appState.walletState.address.toLowerCase())).toFixed());
+    // appState = await SimulationSupplyForkCompoundLP(appState, userAddress, "venus", "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE".toLowerCase(), "100000")
+    // console.log(appState.walletState.forkedCompoundLPState.get("venus")?.detailTokenInPool.get('0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'.toLowerCase())?.cToken.originToken)
+    // appState = await SimulationBorrowForkCompoundLP(appState, userAddress, "venus", "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE".toLowerCase(), MAX_UINT256)
+    // appState = await SimulationWithdrawForkCompoundLP(appState, userAddress, "venus", "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE".toLowerCase(), MAX_UINT256)
+    // appState = await SimulationRepayForkCompoundLP(appState, userAddress, "venus", "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE".toLowerCase(), MAX_UINT256)
       
     // console.log("_______________________TEST AAVE_______________________")
 
-    // appState = await updateUserInForkAaveLPState(appState, userAddress, "valas-finance");
-    // appState = await updateForkAaveLPState(appState, "valas-finance");
-    // appState = await SimulationSupplyForkAaveLP(appState, userAddress, "valas-finance", "0xe9e7cea3dedca5984780bafc599bd69add087d56", "1000")
-    // appState = await SimulationWithdrawForkAaveLP(appState, userAddress, "valas-finance", "0xe9e7cea3dedca5984780bafc599bd69add087d56", MAX_UINT256)
+    // appState = await updateUserInForkAaveLPState(appState, userAddress, "radiant-v2");
+    // appState = await updateForkAaveLPState(appState, "radiant-v2");
+    // appState = await SimulationSupplyForkAaveLP(appState, userAddress, "radiant-v2", "0xe9e7cea3dedca5984780bafc599bd69add087d56", "1000")
+    // appState = await SimulationWithdrawForkAaveLP(appState, userAddress, "radiant-v2", "0xe9e7cea3dedca5984780bafc599bd69add087d56", MAX_UINT256)
 
 
     // console.log("_______________________TEST Collateral_______________________")

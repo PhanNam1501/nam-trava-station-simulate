@@ -10,7 +10,9 @@ import { roundDown, updateTravaGovernanceState, updateUserLockBalance } from "./
 import { getMode } from "../../../utils/helper";
 
 export function getTimeLeft(time: uint256) {
-  return Math.max(new Date(time).getTime() - new Date().getTime(), 0) / 1000;
+  let timeEnd = new Date(Number(time)*1000).getTime();
+  let timeNow = new Date().getTime();
+  return Math.max(timeEnd - timeNow, 0) / 1000;
 }
 export function calcVotingPower(amount: uint256, timeRemaining: uint256, maxTime = MAX_LOCK_TIMES) {
   return BigNumber(amount).times(timeRemaining).div(maxTime);
