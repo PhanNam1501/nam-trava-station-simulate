@@ -1,7 +1,7 @@
 import BigNumberJS from 'bignumber.js';
 
 type Config = {
-  chainId: number;
+  chainId: number | string;
   testingMode: boolean;
   [key: string]: any;
 };
@@ -26,7 +26,7 @@ type Contract = {
 };
 
 type Network = {
-  chainId: number;
+  chainId: number | string;
   chainName: string;
   blockExplorerUrls: Array<string>;
   iconUrls: Array<string>;

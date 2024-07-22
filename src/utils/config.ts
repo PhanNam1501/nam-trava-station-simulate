@@ -10,28 +10,36 @@ import { DivisionByZeroError, MultiplicationOverflowError } from "./error";
  */
 export const NETWORKS: Networks = {
   bscTestnet: {
-    chainId: 97,
     chainName: "Binance Smart Chain Testnet",
+    chainId: 97,
+    rpcUrls: ["https://bsc.publicnode.com"],
     blockExplorerUrls: ["https://testnet.bscscan.com/"],
-    iconUrls: [],
-    rpcUrls: [],
-    nativeCurrency: { name: "BNB", decimals: 18, symbol: "BNB" },
+    nativeCurrency: {
+      name: "Binance Smart Chain",
+      decimals: 18,
+      symbol: "BNB"
+    },
+    iconUrls: []
   },
   bscMainnet: {
+    chainName: "Binance Smart Chain",
     chainId: 56,
-    chainName: "Binance Smart Chain Mainnet",
+    rpcUrls: ["https://bsc-dataseed.binance.org/"],
     blockExplorerUrls: ["https://bscscan.com/"],
-    iconUrls: [],
-    rpcUrls: [],
-    nativeCurrency: { name: "BNB", decimals: 18, symbol: "BNB" },
-  },
+    nativeCurrency: {
+      name: "Binance Smart Chain",
+      decimals: 18,
+      symbol: "BNB"
+    },
+    iconUrls: []
+  }
 };
 
 /**
  *
  */
 export const CONFIG: Config = {
-  chainId: NETWORKS.bscTestnet.chainId,
+  chainId: NETWORKS.bscMainnet.chainId,
   testingMode: false,
 };
 
@@ -90,3 +98,4 @@ export const MINIMUM_BID_STEP_PERCENT = 5 / 100;
 export const tramline_api = "https://tramlines-backend.trava.finance/api"
 export const centic_api = "https://develop.centic.io/dev"
 export const centic_api_key = "3ATJtOInT7QfaV2pvAdhlRVMHbztLjyyAL16UrKe5Q6vMtlR"
+export const bnb = "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE";

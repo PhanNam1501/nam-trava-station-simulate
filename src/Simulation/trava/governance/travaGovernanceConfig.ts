@@ -9,7 +9,7 @@ export interface TokenLockOption {
 }
 
 export interface TokenLockOptions {
-    [chainId: number]: Array<TokenLockOption>;
+    [chainId: number | string]: Array<TokenLockOption>;
 }
 
 export const tokenLockOptions: TokenLockOptions = {

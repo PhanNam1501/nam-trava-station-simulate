@@ -1,4 +1,4 @@
-import { EthAddress } from "../utils/types";
+import { EthAddress, uint256 } from "../utils/types";
 import { NFTAuctioningState, NFTFarmingsState, NFTSellingState, NFTTicketState } from "./trava/nft/TravaNFTState";
 import {
   BaseAccountVault,
@@ -17,6 +17,7 @@ export interface TokenInPoolData {
   decimals: string;
   totalSupply: string;
   originToken: OriginTokenData;
+  exchangeRate: uint256;
 }
 
 export interface DetailTokenInPool {

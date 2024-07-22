@@ -5,7 +5,9 @@ import ERC20Mock from "../../abis/ERC20Mock.json";
 import { Contract } from "ethers";
 import _ from "lodash";
 import { convertHexStringToAddress, getAddr } from "../../utils/address";
-import { getMode } from "../../utils/helper";
+import { getMode, isNonUpdateTokenBalance, isUserAddress, multiCall } from "../../utils/helper";
+import { bnb } from "../../utils";
+import BEP20Abi from "../../abis/BEP20.json";
 
 
 export async function updateUserEthBalance(appState1: ApplicationState, force?: boolean): Promise<ApplicationState> {
@@ -89,4 +91,51 @@ export async function updateTokenBalance(appState1: ApplicationState, _from: Eth
     return appState;
 }
 
+export async function updateAllTokensBalance(appState1: ApplicationState, userAddress: EthAddress, _tokenAddresses: Array<EthAddress>, force = false) {
+    let appState = {...appState1}
+    try {
+        if (isUserAddress(appState, userAddress)) {
+            const mode = getMode(appState, userAddress);
+            const tokenAddresses = _tokenAddresses.map(e => e.toLowerCase());
+            const bnbIndex = tokenAddresses.indexOf(bnb.toLowerCase());
+            let nonUpdateToken = tokenAddresses.filter(e => e.toLowerCase() != bnb.toLowerCase());
+            // console.log(bnbIndex, nonUpdateToken)
 
+            // if (!force) {
+            //     nonUpdateToken = tokenAddresses.filter(e => !appState[mode].tokenBalances.has(e) || appState[mode].tokenBalances.get(e)! == "nan");
+            // }
+
+            if (nonUpdateToken.length > 0) {
+                let [balances] = await Promise.all(
+                    [
+                        multiCall(
+                            BEP20Abi,
+                            nonUpdateToken.map((_tokenAddress: any, _: number) => ({
+                                address: _tokenAddress,
+                                name: "balanceOf",
+                                params: [appState[mode].address]
+                            })),
+                            appState.web3,
+                            appState.chainId
+                        )
+                    ]
+                )
+
+                for (let i = 0; i < nonUpdateToken.length; i++) {
+                    if (isNonUpdateTokenBalance(appState, userAddress, nonUpdateToken[i]) || force) {
+                        appState[mode].tokenBalances.set(nonUpdateToken[i], String(balances[i]))
+                    }
+                }
+            }
+
+            if (bnbIndex != -1) {
+                if (isNonUpdateTokenBalance(appState, userAddress, bnb) || force) {
+                    appState = await updateTokenBalance(appState, userAddress, bnb);
+                }
+            }
+        }
+    } catch (err) {
+        console.log(err);
+    }
+    return appState;
+}

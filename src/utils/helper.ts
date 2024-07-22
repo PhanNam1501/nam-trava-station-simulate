@@ -57,3 +57,41 @@ export function isWallet(appState: ApplicationState, address: EthAddress): boole
 export function isNullAddress(address: EthAddress) {
     return ZERO_ADDRESS === address;
 }
+
+export function isNonUpdateTokenBalance(appState: ApplicationState, _userAddress: EthAddress, _tokenAddress: EthAddress) {
+    if (isUserAddress(appState, _userAddress)) {
+        const mode = getMode(appState, _userAddress);
+        const tokenAddress = _tokenAddress.toLowerCase();
+        if (String(appState[mode].tokenBalances.get(tokenAddress)!).toLowerCase() == "nan" || !appState[mode].tokenBalances.has(tokenAddress)) {
+            return true;
+        }
+        return false;
+    }
+}
+
+export function isUserAddress(appState: ApplicationState, userAddress: EthAddress) {
+    if (appState.walletState.address.toLowerCase() == userAddress.toLowerCase() || appState.smartWalletState.address.toLowerCase() == userAddress.toLowerCase()) {
+        return true;
+    }
+    return false;
+}
+
+export const convertApyToApr = (apy: number): number => {
+    const n = 365
+    // Calculate (1 + x)
+    const onePlusX = 1 + apy;
+
+    // Calculate (1/n)
+    const oneOverN = 1 / n;
+
+    // Calculate (1 + x)^(1/n)
+    const power = Math.pow(onePlusX, oneOverN);
+
+    // Subtract 1
+    const powerMinusOne = power - 1;
+
+    // Multiply by n
+    const result = n * powerMinusOne;
+
+    return result;
+}

@@ -74,8 +74,8 @@ export const listAddr = {
   },
 };
 
-export const getAddr = (name: string, chainId?: number): EthAddress => {
-  const _chainId: number =
+export const getAddr = (name: string, chainId?: number | string): EthAddress => {
+  const _chainId: number | string =
     typeof chainId === "undefined" ? CONFIG.chainId : chainId;
 
   const addr = listAddr[_chainId];

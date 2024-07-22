@@ -21,13 +21,13 @@ export class ApplicationState {
   forkAaveLPState: ForkedAaveLPState;
   pancakeSwapV2Pair: PancakeSwapV2Pair;
   web3: JsonRpcProvider;
-  chainId: number;
+  chainId: number | string;
   simulatorUrl: string;
   constructor(
     userAddress: EthAddress,
     smartWalletAddress: EthAddress,
     web3: JsonRpcProvider,
-    chainId: number,
+    chainId: number | string,
     simulatorUrl?: string,
   ) {
     this.createdTime = Math.floor(new Date().getTime() / 1000);

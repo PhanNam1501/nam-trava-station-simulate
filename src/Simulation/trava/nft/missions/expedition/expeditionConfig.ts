@@ -10,7 +10,7 @@ export interface ExpeditionOption {
 }
 
 export interface ExpeditionOptions {
-    [chainId: number]: Array<ExpeditionOption>;
+    [chainId: number | string]: Array<ExpeditionOption>;
 }
 
 export const expeditionOptions: ExpeditionOptions = {

@@ -1,5 +1,9 @@
 import { EthAddress } from "../../../utils/types";
 
+export type TokenAPY = {
+  supplyAPY: number,
+  borrowAPY: number
+}
 
 export interface Asset {
     id: string;
@@ -8,6 +12,7 @@ export interface Asset {
     symbol: string;
     price: number;
     totalSupplyInUSD: number;
+    supplyAPY: number;
     numberOfLenders: number;
     totalBorrowInUSD: number;
     borrowAPY: number;
@@ -31,6 +36,7 @@ export interface UserAsset {
     amount: number;
     valueInUSD: number;
     totalValue: number;
+    isCollateral: boolean;
   }
   
   export interface Reserve {

@@ -185,6 +185,7 @@ export async function SimulationSupplyForkAaveLP(
                 amount: amount.toNumber(),
                 valueInUSD: amount.multipliedBy(price).toNumber(),
                 totalValue: amount.multipliedBy(price).toNumber(),
+                isCollateral: true
             };
             dataWallet.dapps[0].reserves[0].deposit.push(newData);
         }
@@ -197,6 +198,7 @@ export async function SimulationSupplyForkAaveLP(
                 amount: amount.toNumber() + dataInWallet.amount,
                 valueInUSD: amount.plus(dataInWallet.amount).multipliedBy(price).toNumber(),
                 totalValue: amount.plus(dataInWallet.amount).multipliedBy(price).toNumber(),
+                isCollateral: true
             };
             dataWallet.dapps[0].value = BigNumber(dataWallet.dapps[0].value || 0).plus(amount).toNumber();
             dataWallet.dapps[0].depositInUSD = BigNumber(dataWallet.dapps[0].depositInUSD || 0).plus(amount.multipliedBy(price)).toNumber();
@@ -302,6 +304,7 @@ export async function SimulationWithdrawForkAaveLP(
                 amount: -amount.toNumber(),
                 valueInUSD: -amount.multipliedBy(price).toNumber(),
                 totalValue: -amount.multipliedBy(price).toNumber(),
+                isCollateral: true
             };
             dataWallet.dapps[0].reserves[0].deposit.push(newData);
         }
@@ -314,6 +317,7 @@ export async function SimulationWithdrawForkAaveLP(
                 amount: -amount.toNumber() + dataInWallet.amount,
                 valueInUSD: BigNumber(dataInWallet.amount).minus(amount).multipliedBy(price).toNumber(),
                 totalValue: BigNumber(dataInWallet.amount).minus(amount).multipliedBy(price).toNumber(),
+                isCollateral: true
             };
 
             dataWallet.dapps[0].value = BigNumber(dataWallet.dapps[0].value || 0).minus(amount).toNumber();
@@ -418,6 +422,7 @@ export async function SimulationBorrowForkAaveLP(
                 amount: amount.toNumber(),
                 valueInUSD: amount.multipliedBy(price).toNumber(),
                 totalValue: amount.multipliedBy(price).toNumber(),
+                isCollateral: true
             };
             dataWallet.dapps[0].reserves[0].borrow.push(newData);
         }
@@ -430,6 +435,7 @@ export async function SimulationBorrowForkAaveLP(
                 amount: amount.toNumber() + dataInWallet.amount,
                 valueInUSD: amount.plus(dataInWallet.amount).multipliedBy(price).toNumber(),
                 totalValue: amount.plus(dataInWallet.amount).multipliedBy(price).toNumber(),
+                isCollateral: true
             };
             dataWallet.dapps[0].value = BigNumber(dataWallet.dapps[0].value || 0).plus(amount).toNumber();
             dataWallet.dapps[0].borrowInUSD = BigNumber(dataWallet.dapps[0].borrowInUSD || 0).plus(amount.multipliedBy(price)).toNumber();
@@ -531,6 +537,7 @@ export async function SimulationRepayForkAaveLP(
                 amount: -amount.toNumber(),
                 valueInUSD: -amount.multipliedBy(price).toNumber(),
                 totalValue: -amount.multipliedBy(price).toNumber(),
+                isCollateral: true
             };
             dataWallet.dapps[0].reserves[0].borrow.push(newData);
         }
@@ -543,6 +550,7 @@ export async function SimulationRepayForkAaveLP(
                 amount: -amount.toNumber() + dataInWallet.amount,
                 valueInUSD: BigNumber(dataInWallet.amount).minus(amount).multipliedBy(price).toNumber(),
                 totalValue: BigNumber(dataInWallet.amount).minus(amount).multipliedBy(price).toNumber(),
+                isCollateral: true
             };
             dataWallet.dapps[0].value = BigNumber(dataWallet.dapps[0].value || 0).minus(amount).toNumber();
             dataWallet.dapps[0].borrowInUSD = BigNumber(dataWallet.dapps[0].borrowInUSD || 0).minus(amount.multipliedBy(price)).toNumber();

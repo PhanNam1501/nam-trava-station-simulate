@@ -3,7 +3,7 @@ import { ApplicationState } from "../../State/ApplicationState";
 import { EthAddress } from "../../utils/types";
 import { getMode, multiCall } from "../../utils/helper";
 import axios from "axios";
-import { DetailTokenInPool, ForkedAave, WalletForkedAaveLPState } from "../../State";
+import { DetailTokenInPool, ForkedAave, TokenInPoolData, WalletForkedAaveLPState } from "../../State";
 import { entity_ids_aave } from "./forkAaveLPConfig";
 import { centic_api, centic_api_key, tramline_api } from "../../utils";
 
@@ -147,21 +147,23 @@ export async function updateTokenDetailInOthersPools(appState1: ApplicationState
         }
 
         for (let i = 0; i < listTokenAddress.length; i++){
-            let tTokenData = {
+            let tTokenData: TokenInPoolData = {
                 address: tTokenList[i].toString().toLowerCase(),
                 balances: tTokenBalance[i].toString(),
                 decimals: tTokenDecimal[i].toString(),
                 totalSupply: tTokenTotalSupply[i].toString(),
+                exchangeRate: "1",
                 originToken: {
                   balances: originInTTokenBalance[i].toString(),
                 }
               }
         
-            let dTokenData = {
+            let dTokenData: TokenInPoolData = {
                 address: dTokenList[i].toString().toLowerCase(),
                 balances: dTokenBalance[i].toString(),
                 decimals: dTokenDecimal[i].toString(),
                 totalSupply: dTokenTotalSupply[i].toString(),
+                exchangeRate: "1",
                 originToken: {
                     balances: originInDTokenBalance[i].toString(),
                 }

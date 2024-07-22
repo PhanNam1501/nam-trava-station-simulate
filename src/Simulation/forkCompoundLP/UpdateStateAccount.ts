@@ -10,6 +10,9 @@ import { Contract } from "ethers";
 import ForkCompoundController from "../../abis/ForkCompoundController.json";
 import { compoundConfig } from "./forkCompoundLPConfig";
 import BEP20ABI from "../../abis/BEP20.json";
+import BigNumber from "bignumber.js";
+import CTokenABI from "../../abis/ICToken.json";
+
 export async function updateForkCompoundLPState(appState1: ApplicationState, entity_id: string, force?: boolean): Promise<ApplicationState> {
     let appState = { ...appState1 };
     try {
@@ -42,7 +45,7 @@ export async function updateForkCompoundLPState(appState1: ApplicationState, ent
 
 export async function updateTokenDetailInOthersPoolsCompound(appState1: ApplicationState, _from: EthAddress, entity_id: string): Promise<ApplicationState> {
     let appState = { ...appState1 };
-    try{
+    try {
         let from = _from.toLowerCase();
         let mode = getMode(appState, from);
         let dataLendingByAxiosTramline = await getDataLendingByAxiosTramline(entity_id, "0x" + appState.chainId.toString(16), from);
@@ -50,9 +53,9 @@ export async function updateTokenDetailInOthersPoolsCompound(appState1: Applicat
         let listToken = dataLendingByAxiosTramlineOverview["listToken"];
         let listTokenAddress: EthAddress[] = [];
         let haveBNB = false;
-        for (let i = 0; i < listToken.length; i++){
-            if (listToken[i]["address"]){
-                if (listToken[i]["address"] == ZERO_ADDRESS){
+        for (let i = 0; i < listToken.length; i++) {
+            if (listToken[i]["address"]) {
+                if (listToken[i]["address"] == ZERO_ADDRESS) {
                     haveBNB = true;
                     continue;
                 }
@@ -62,61 +65,72 @@ export async function updateTokenDetailInOthersPoolsCompound(appState1: Applicat
         let token = dataLendingByAxiosTramline["poolDataSlice"]["pools"][dataLendingByAxiosTramlineOverview["address"]]["token"];
         let cTokenAddress: EthAddress;
         let cTokenList = [] as Array<EthAddress>;
-        for (let i = 0; i < listTokenAddress.length; i++){
+        for (let i = 0; i < listTokenAddress.length; i++) {
             cTokenAddress = token[listTokenAddress[i]]["cToken"].toString()
             cTokenList.push(cTokenAddress)
         }
         if (haveBNB) {
             cTokenList.push(token[ZERO_ADDRESS]["cToken"].toString())
         }
-        
+
         let [cTokenBalance,
             cTokenDecimal,
-            cTokenTotalSupply, 
-            originIncTokenBalance
+            cTokenTotalSupply,
+            originIncTokenBalance,
+            exchangeRates
         ] = await Promise.all([
             multiCall(
-              BEP20ABI,
-              cTokenList.map((address: EthAddress, _: number) => ({
-                address: address,
-                name: "balanceOf",
-                params: [from],
-              })),
-              appState.web3,
-              appState.chainId
+                BEP20ABI,
+                cTokenList.map((address: EthAddress, _: number) => ({
+                    address: address,
+                    name: "balanceOf",
+                    params: [from],
+                })),
+                appState.web3,
+                appState.chainId
             ),
             multiCall(
-              BEP20ABI,
-              cTokenList.map((address: EthAddress, _: number) => ({
-                address: address,
-                name: "decimals",
-                params: [],
-              })),
-              appState.web3,
-              appState.chainId
+                BEP20ABI,
+                cTokenList.map((address: EthAddress, _: number) => ({
+                    address: address,
+                    name: "decimals",
+                    params: [],
+                })),
+                appState.web3,
+                appState.chainId
             ),
             multiCall(
-              BEP20ABI,
-              cTokenList.map((address: EthAddress, _: number) => ({
-                address: address,
-                name: "totalSupply",
-                params: [],
-              })),
-              appState.web3,
-              appState.chainId
+                BEP20ABI,
+                cTokenList.map((address: EthAddress, _: number) => ({
+                    address: address,
+                    name: "totalSupply",
+                    params: [],
+                })),
+                appState.web3,
+                appState.chainId
             ),
             multiCall(
-              BEP20ABI,
-              listTokenAddress.map((address: EthAddress, index: number) => ({
-                address: address,
-                name: "balanceOf",
-                params: [cTokenList[index]],
-              })),
-              appState.web3,
-              appState.chainId
+                BEP20ABI,
+                listTokenAddress.map((address: EthAddress, index: number) => ({
+                    address: address,
+                    name: "balanceOf",
+                    params: [cTokenList[index]],
+                })),
+                appState.web3,
+                appState.chainId
             ),
-          ]);
-    
+            multiCall(
+                CTokenABI,
+                cTokenList.map((address: EthAddress, _: number) => ({
+                    address: address,
+                    name: "exchangeRateStored",
+                    params: [],
+                })),
+                appState.web3,
+                appState.chainId
+            ),
+        ]);
+
         if (haveBNB) {
             const balance = String(await appState.web3?.getBalance(token[ZERO_ADDRESS]["cToken"].toString()));
             originIncTokenBalance.push(balance);
@@ -128,7 +142,8 @@ export async function updateTokenDetailInOthersPoolsCompound(appState1: Applicat
             throw new Error("WalletForkedCompoundLPState is not initialized");
         }
 
-        for (let i = 0; i < listTokenAddress.length; i++){
+        for (let i = 0; i < listTokenAddress.length; i++) {
+            const exchangeRate = BigNumber(exchangeRates[i].toString()).div(BigNumber(10).pow(10 + Number(token[listTokenAddress[i]]["decimal"].toString()))).toFixed()
             let cTokenData = {
                 address: cTokenList[i].toString().toLowerCase(),
                 balances: cTokenBalance[i].toString(),
@@ -136,24 +151,25 @@ export async function updateTokenDetailInOthersPoolsCompound(appState1: Applicat
                 totalSupply: cTokenTotalSupply[i].toString(),
                 originToken: {
                     balances: originIncTokenBalance[i].toString(),
-                }
+                },
+                exchangeRate: exchangeRate
             }
-            let data = {
+            let data: DetailTokenInPoolCompound = {
                 decimals: token[listTokenAddress[i]]["decimal"].toString(),
                 cToken: cTokenData,
                 maxLTV: token[listTokenAddress[i]]["risk"]["maxLTV"].toString(),
                 liqThres: token[listTokenAddress[i]]["risk"]["liqThres"].toString(),
-                price: token[listTokenAddress[i]]["price"].toString(),
+                price: token[listTokenAddress[i]]["price"].toString()
             }
-            if (listTokenAddress[i] == ZERO_ADDRESS){
+            if (listTokenAddress[i] == ZERO_ADDRESS) {
                 walletForkedCompoundLPState.detailTokenInPool.set(getAddr("BNB_ADDRESS").toLowerCase(), data);
             }
-            else{
+            else {
                 walletForkedCompoundLPState.detailTokenInPool.set(listTokenAddress[i], data);
             }
         }
         appState[mode].forkedCompoundLPState.set(entity_id, walletForkedCompoundLPState);
-    return appState;
+        return appState;
     } catch (err) {
         console.log(err);
         throw err;
@@ -180,25 +196,25 @@ export async function updateUserInForkCompoundLPState(appState1: ApplicationStat
                 ltv: dataLendingByAxiosTramline["accountPoolDataSlice"]["params"]["ltv"],
                 currentLiquidationThreshold: dataLendingByAxiosTramline["accountPoolDataSlice"]["params"]["currentLiquidationThreshold"],
             }
-            if (dataLendingPool["dapps"].length == 0){
+            if (dataLendingPool["dapps"].length == 0) {
                 data.dapps = [
-                  {
-                    id: dataLendingPool["id"],
-                    type: "project",
-                    value: 0,
-                    depositInUSD: 0,
-                    borrowInUSD: 0,
-                    claimable: 0,
-                    reserves: [
-                      {
-                        category: "Lending",
-                        healthFactor: 0,
-                        deposit: [],
-                        borrow: [],
-                        assetsIn: [],
-                  }
-                  ]
-              }]
+                    {
+                        id: dataLendingPool["id"],
+                        type: "project",
+                        value: 0,
+                        depositInUSD: 0,
+                        borrowInUSD: 0,
+                        claimable: 0,
+                        reserves: [
+                            {
+                                category: "Lending",
+                                healthFactor: 0,
+                                deposit: [],
+                                borrow: [],
+                                assetsIn: [],
+                            }
+                        ]
+                    }]
             }
             else {
                 if (dataLendingPool["dapps"][0].reserves[0].deposit.find((x: any) => x.name == "BNB")) {
@@ -215,7 +231,7 @@ export async function updateUserInForkCompoundLPState(appState1: ApplicationStat
             let unitrollerContract = new Contract(unitrollerAddress, ForkCompoundController, appState.web3)
             let assetsIn = await unitrollerContract.getAssetsIn(from);
             let assetsInList = [] as Array<EthAddress>;
-            for (let i = 0; i < assetsIn.length; i++){
+            for (let i = 0; i < assetsIn.length; i++) {
                 assetsInList.push(assetsIn[i].toLowerCase());
             }
 
@@ -233,11 +249,11 @@ async function getDataLendingByAxios(entity_id: string, chain: string) {
     let url = `${centic_api}/v3/projects/lending/${entity_id}/overview?chain=${chain}`
     try {
         const response = await axios.request({
-          method: "get",
-          url: url,
-          headers: {
-            "x-apikey": centic_api_key
-          }
+            method: "get",
+            url: url,
+            headers: {
+                "x-apikey": centic_api_key
+            }
         })
         const data = response.data;
         return data;
@@ -251,11 +267,11 @@ async function getDataUserByAxios(address: EthAddress, entity_id: string, chain:
     let url = `${centic_api}/v3/wallets/${address}/lendings/${entity_id}?chain=${chain}`
     try {
         const response = await axios.request({
-          method: "get",
-          url: url,
-          headers: {
-            "x-apikey": centic_api_key
-          }
+            method: "get",
+            url: url,
+            headers: {
+                "x-apikey": centic_api_key
+            }
         })
         const data = response.data;
         return data;
@@ -269,8 +285,8 @@ async function getDataLendingByAxiosTramline(entity_id: string, chain: string, u
     let url = `${tramline_api}/trava-station/lending-pool/detail?entity=${entity_id}&chainId=${chain}&userAddress=${userAddress}`
     try {
         const response = await axios.request({
-          method: "get",
-          url: url
+            method: "get",
+            url: url
         })
         const data = response.data;
         return data;
@@ -284,8 +300,8 @@ async function getDataLendingByAxiosTramlineOverview(entity_id: string, chain: s
     let url = `${tramline_api}/trava-station/lending-pool/overview?entity=${entity_id}&chainId=${chain}`
     try {
         const response = await axios.request({
-          method: "get",
-          url: url,
+            method: "get",
+            url: url,
 
         })
         const data = response.data;

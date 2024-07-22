@@ -325,6 +325,7 @@ export async function SimulationSupply(
       decimals: tokenInfo.tToken.decimals,
       balances: BigNumber(tokenInfo.tToken.balances).plus(amount).toFixed(0),
       totalSupply: BigNumber(tokenInfo.tToken.totalSupply).plus(supplyUSD).toFixed(0),
+      exchangeRate: "1",
       originToken: {
         balances: BigNumber(tokenInfo.tToken.originToken.balances).plus(amount).toFixed(0)
       }
@@ -435,6 +436,7 @@ export async function SimulationBorrow(
       decimals: tokenInfo.dToken.decimals,
       balances: BigNumber(tokenInfo.dToken.balances).plus(amount).toFixed(0),
       totalSupply: BigNumber(tokenInfo.dToken.totalSupply).plus(borrowUSD).toFixed(0),
+      exchangeRate: "1",
       originToken: {
         balances: BigNumber(tokenInfo.dToken.originToken.balances).minus(amount).toFixed(0)
       }
@@ -533,6 +535,7 @@ export async function SimulationRepay(
       decimals: tokenInfo.dToken.decimals,
       balances: BigNumber(tokenInfo.dToken.balances).minus(amount).toFixed(0),
       totalSupply: BigNumber(tokenInfo.dToken.totalSupply).minus(repayUSD).toFixed(0),
+      exchangeRate: "1",
       originToken: {
         balances: BigNumber(tokenInfo.dToken.originToken.balances).plus(amount).toFixed(0)
       }
@@ -629,6 +632,7 @@ export async function SimulationWithdraw(
       decimals: tokenInfo.tToken.decimals,
       balances: BigNumber(tokenInfo.tToken.balances).minus(amount).toFixed(0),
       totalSupply: BigNumber(tokenInfo.tToken.totalSupply).minus(withdrawUSD).toFixed(0),
+      exchangeRate: "1",
       originToken: {
         balances: BigNumber(tokenInfo.tToken.originToken.balances).minus(amount).toFixed(0)
       }
@@ -827,6 +831,7 @@ export async function SimulationTransferTToken(
       decimals: tokenInfoFrom.tToken.decimals,
       balances: BigNumber(tokenInfoFrom.tToken.balances).minus(amount).toFixed(0),
       totalSupply: BigNumber(tokenInfoFrom.tToken.totalSupply).minus(amount).toFixed(0),
+      exchangeRate: "1",
       originToken: {
         balances: BigNumber(tokenInfoFrom.tToken.originToken.balances).toFixed(0)
       }
@@ -878,6 +883,7 @@ export async function SimulationTransferTToken(
         decimals: tokenInfoTo.tToken.decimals,
         balances: BigNumber(tokenInfoTo.tToken.balances).plus(amount).toFixed(0),
         totalSupply: BigNumber(tokenInfoTo.tToken.totalSupply).plus(amount).toFixed(0),
+        exchangeRate: "1",
         originToken: {
           balances: BigNumber(tokenInfoTo.tToken.originToken.balances).toFixed(0)
         }

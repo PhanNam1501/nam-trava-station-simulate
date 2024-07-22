@@ -10,7 +10,7 @@ export interface TokenSellOption {
 }
 
 export interface TokenSellOptions {
-    [chainId: number]: Array<TokenSellOption>;
+    [chainId: number | string]: Array<TokenSellOption>;
 }
 
 export const tokenSellOptions: TokenSellOptions = {

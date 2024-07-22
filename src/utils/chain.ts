@@ -1,55 +1,87 @@
-export const listChain = {
-  // ethereum
-  1: {
-    name: "Ethereum",
-    chainId: 1,
-    rpcUrl: "https://ethereum.publicnode.com",
-    explorerUrl: "https://etherscan.io/",
-    explorerApi: "https://api.etherscan.io/api",
-  },
+import { Network } from "./types";
 
-  // goerli
-  5: {
-    name: "Goerli",
-    chainId: 5,
-    rpcUrl: "https://ethereum-goerli.publicnode.com",
-    explorerUrl: "https://goerli.etherscan.io/",
-    explorerApi: "https://api-goerli.etherscan.io/api",
-  },
-
-  // sepolia
-  69: {
-    name: "Sepolia",
-    chainId: 69,
-    rpcUrl: "https://eth-sepolia-public.unifra.io",
-    explorerUrl: "https://sepolia.etherscan.io/",
-    explorerApi: "https://api-sepolia.etherscan.io/api",
-  },
-
-  // binance smart chain
-  56: {
-    name: "Binance Smart Chain",
-    chainId: 56,
-    rpcUrl: "https://bsc-dataseed.binance.org/",
-    explorerUrl: "https://bscscan.com/",
-    explorerApi: "https://api.bscscan.com/api",
-  },
-
-  // binance smart chain testnet
-  97: {
-    name: "Binance Smart Chain Testnet",
-    chainId: 97,
-    rpcUrl: "https://bsc.publicnode.com",
-    explorerUrl: "https://testnet.bscscan.com/",
-    explorerApi: "https://api-testnet.bscscan.com/api",
-  },
-
-  // polygon
-  137: {
-    name: "Polygon",
-    chainId: 137,
-    rpcUrl: "https://polygon.meowrpc.com",
-    explorerUrl: "https://polygonscan.com/",
-    explorerApi: "https://api.polygonscan.com/api",
-  },
-};
+export const listChain: { [key: number | string]: Network} = {
+    // ethereum
+    1: {
+      chainName: "Ethereum",
+      chainId: 1,
+      rpcUrls: ["https://ethereum.publicnode.com"],
+      blockExplorerUrls: ["https://etherscan.io/"],
+      nativeCurrency: {
+        name: "Ethereum",
+        decimals: 18,
+        symbol: "ETH"
+      },
+      iconUrls: []
+    },
+  
+    // goerli
+    5: {
+      chainName: "Goerli",
+      chainId: 5,
+      rpcUrls: ["https://ethereum-goerli.publicnode.com"],
+      blockExplorerUrls: ["https://goerli.etherscan.io/"],
+      nativeCurrency: {
+        name: "Ethereum",
+        decimals: 18,
+        symbol: "ETH"
+      },
+      iconUrls: []
+    },
+  
+    // sepolia
+    69: {
+      chainName: "Sepolia",
+      chainId: 69,
+      rpcUrls: ["https://eth-sepolia-public.unifra.io"],
+      blockExplorerUrls: ["https://sepolia.etherscan.io/"],
+      nativeCurrency: {
+        name: "Ethereum",
+        decimals: 18,
+        symbol: "ETH"
+      },
+      iconUrls: []
+    },
+  
+    // binance smart chain
+    56: {
+      chainName: "Binance Smart Chain",
+      chainId: 56,
+      rpcUrls: ["https://bsc-dataseed.binance.org/"],
+      blockExplorerUrls: ["https://bscscan.com/"],
+      nativeCurrency: {
+        name: "Binance Smart Chain",
+        decimals: 18,
+        symbol: "BNB"
+      },
+      iconUrls: []
+    },
+  
+    // binance smart chain testnet
+    97: {
+      chainName: "Binance Smart Chain Testnet",
+      chainId: 97,
+      rpcUrls: ["https://bsc-testnet.publicnode.com"],
+      blockExplorerUrls: ["https://testnet.bscscan.com/"],
+      nativeCurrency: {
+        name: "Binance Smart Chain",
+        decimals: 18,
+        symbol: "BNB"
+      },
+      iconUrls: []
+    },
+  
+    // polygon
+    137: {
+      chainName: "Polygon",
+      chainId: 137,
+      rpcUrls: ["https://polygon.meowrpc.com"],
+      blockExplorerUrls: ["https://polygonscan.com/"],
+      nativeCurrency: {
+        name: "Matic",
+        decimals: 18,
+        symbol: "MATIC"
+      },
+      iconUrls: []
+    }
+  };

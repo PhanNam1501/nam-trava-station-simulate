@@ -114,6 +114,7 @@ export async function updateLPtTokenInfo(
               balances: tTokenBalance.toString(),
               decimals: tokenDecimal.toString(),
               totalSupply: tTokenTotalSupply.toString(),
+              exchangeRate: "1",
               originToken: {
                 balances: originBalanceInTToken.toString()
               }
@@ -123,6 +124,7 @@ export async function updateLPtTokenInfo(
               balances: "",
               decimals: "",
               totalSupply: "",
+              exchangeRate: "1",
               originToken: {
                 balances: "",
               }
@@ -219,6 +221,7 @@ export async function updateLPDebtTokenInfo(
               balances: debtTokenBalance.toString(),
               decimals: tokenDecimal.toString(),
               totalSupply: dTokenTotalSupply.toString(),
+              exchangeRate: "1",
               originToken: {
                 balances: originBalanceInDToken.toString(),
               }
@@ -228,6 +231,7 @@ export async function updateLPDebtTokenInfo(
               balances: "",
               decimals: "",
               totalSupply: "",
+              exchangeRate: "1",
               originToken: {
                 balances: ""
               }
@@ -411,6 +415,7 @@ export async function updateTokenInPoolInfo(
         balances: tTokenBalance[i].toString(),
         decimals: tTokenDecimal[i].toString(),
         totalSupply: tTokenTotalSupply[i].toString(),
+        exchangeRate: "1",
         originToken: {
           balances: originInTTokenBalance[i].toString(),
         }
@@ -421,6 +426,7 @@ export async function updateTokenInPoolInfo(
         balances: dTokenBalance[i].toString(),
         decimals: dTokenDecimal[i].toString(),
         totalSupply: dTokenTotalSupply[i].toString(),
+        exchangeRate: "1",
         originToken: {
           balances: originInDTokenBalance[i].toString(),
         }

@@ -10,7 +10,7 @@ export interface Vault {
 }
 
 export interface HeuristicFamingConfigs {
-    [networkId: number]: Record<string, Vault>;
+    [networkId: number | string]: Record<string, Vault>;
 }
 
 export const heuristicFamingConfig: HeuristicFamingConfigs = {
