@@ -6,7 +6,7 @@ import { getMode } from "../../utils/helper";
 import { updateForkAaveLPState, updateUserInForkAaveLPState } from "./UpdateStateAccount";
 import { MAX_UINT256 } from "../../utils";
 
-export async function getUserAvailableBorrow(appState1: ApplicationState, _entity_id: string, _from: EthAddress) {
+export async function getUserAvailableAaveBorrow(appState1: ApplicationState, _entity_id: string, _from: EthAddress) {
     if (appState1.forkAaveLPState.forkAaveLP.get(_entity_id) == undefined) {
         appState1 = await updateForkAaveLPState(appState1, _entity_id);
     }
@@ -77,7 +77,7 @@ export async function calculateMaxAmountForkAaveBorrow(appState: ApplicationStat
 
     const tTokenReserveBalanceRaw = BigNumber(tokenInfo.tToken.originToken.balances);
     const tTokenReserveBalance = BigNumber(tTokenReserveBalanceRaw).div(BigNumber("10").pow(tokenInfo.tToken.decimals));
-    const availableBorrowsUSD = await getUserAvailableBorrow(appState, _entity_id, appState.smartWalletState.address);
+    const availableBorrowsUSD = await getUserAvailableAaveBorrow(appState, _entity_id, appState.smartWalletState.address);
     const nativeAvailableBorrow = availableBorrowsUSD.div(tokenInfo.price);
 
     return BigNumber.max(BigNumber.min(nativeAvailableBorrow, tTokenReserveBalance), 0).multipliedBy(BigNumber("10").pow(tokenInfo.tToken.decimals));
@@ -108,6 +108,7 @@ export async function calculateMaxAmountForkAaveRepay(appState: ApplicationState
     return BigNumber.max(BigNumber.min(walletBalance, borrowed), 0);
 }
 
+
 export async function calculateMaxAmountForkAaveWithdraw(appState: ApplicationState, _entity_id: string, _tokenAddress: string): Promise<BigNumber> {
     const tokenAddress = _tokenAddress.toLowerCase();
 
@@ -117,23 +118,49 @@ export async function calculateMaxAmountForkAaveWithdraw(appState: ApplicationSt
 
     const lpState = appState.smartWalletState.forkedAaveLPState.get(_entity_id)!
     let tokenInfo = lpState.detailTokenInPool.get(tokenAddress)!;
-    const depositedRaw = tokenInfo.tToken.balances;
-    const deposited = BigNumber(depositedRaw).dividedBy(BigNumber("10").pow(tokenInfo.tToken.decimals));
-
+    // const depositedRaw = tokenInfo.tToken.balances;
+    // const deposited = BigNumber(depositedRaw).dividedBy(BigNumber("10").pow(tokenInfo.tToken.decimals));
+    
     const tTokenReserveBalanceRaw = tokenInfo.tToken.originToken.balances;
-    const tTokenReserveBalance = BigNumber(tTokenReserveBalanceRaw).dividedBy(BigNumber("10").pow(tokenInfo.tToken.decimals));
+    const tTokenReserveBalance = BigNumber(tTokenReserveBalanceRaw);
 
-    let nativeAvailableWithdraw = BigNumber(appState.smartWalletState.travaLPState.totalCollateralUSD)
-        .minus(BigNumber(appState.smartWalletState.travaLPState.totalDebtUSD).div(BigNumber(appState.smartWalletState.travaLPState.ltv)))
-        .div(tokenInfo.price);
+    let dataWallet = appState.smartWalletState.forkedAaveLPState.get(_entity_id);
+    if (!dataWallet) {
+        return BigNumber(0);
+    }
+    let reservesData = dataWallet.dapps[0].reserves[0];
+
+    let nativeAvailableWithdraw = BigNumber(0);
+
+    let dataDeposit = reservesData.deposit;
+    for (let i = 0; i < dataDeposit.length; i++) {
+        if (dataDeposit[i].address == tokenAddress) {
+            nativeAvailableWithdraw = nativeAvailableWithdraw.plus(dataDeposit[i].valueInUSD);
+            break
+        }
+    }
+    let dataBorrow = reservesData.borrow;
+    for (let i = 0; i < dataBorrow.length; i++) {
+        if (dataBorrow[i].address == tokenAddress) {
+            nativeAvailableWithdraw = nativeAvailableWithdraw.minus(dataBorrow[i].valueInUSD);
+        }
+    }
+
+    nativeAvailableWithdraw = nativeAvailableWithdraw.div(tokenInfo.price);
+
     const available = BigNumber(tokenInfo.tToken.totalSupply).minus(tokenInfo.dToken.totalSupply).div(tokenInfo.price);
 
     if (nativeAvailableWithdraw.isNaN()) {
         nativeAvailableWithdraw = BigNumber(0);
     }
 
+    // return BigNumber.max(
+    //     BigNumber.min(deposited, nativeAvailableWithdraw, tTokenReserveBalance, available),
+    //     0
+    // ).multipliedBy(BigNumber("10").pow(tokenInfo.tToken.decimals))
+
     return BigNumber.max(
-        BigNumber.min(deposited, nativeAvailableWithdraw, tTokenReserveBalance, available),
+        BigNumber.min(nativeAvailableWithdraw, tTokenReserveBalance, available),
         0
     ).multipliedBy(BigNumber("10").pow(tokenInfo.tToken.decimals))
 }

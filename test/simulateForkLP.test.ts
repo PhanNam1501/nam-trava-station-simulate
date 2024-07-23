@@ -7,7 +7,7 @@ import BigNumber from "bignumber.js";
 import { MAX_UINT256, MONTH_TO_SECONDS, WEEK_TO_SECONDS } from "../src/utils/config";
 import { updateForkCompoundLPState, updateUserInForkCompoundLPState } from "../src/Simulation/forkCompoundLP/UpdateStateAccount";
 import { SimulationBorrowForkCompoundLP, SimulationCollateral, SimulationRepayForkCompoundLP, SimulationSupplyForkCompoundLP, SimulationWithdrawForkCompoundLP, cTokenToDetailTokenAddress, calculateMaxAmountForkCompoundBorrow, updateLPtTokenInfo, updateSmartWalletTokenBalance, updateTravaLPInfo, updateUserTokenBalance } from "../src/Simulation";
-import { calculateMaxAmountForkAaveBorrow, SimulationSupplyForkAaveLP, SimulationWithdrawForkAaveLP, updateForkAaveLPState, updateUserInForkAaveLPState } from "../src/Simulation/forkAaveLP";
+import { calculateMaxAmountForkAaveBorrow, calculateMaxAmountForkAaveWithdraw, SimulationSupplyForkAaveLP, SimulationWithdrawForkAaveLP, updateForkAaveLPState, updateUserInForkAaveLPState } from "../src/Simulation/forkAaveLP";
 import { multiCall } from "../src/utils/helper";
 import cToken from "../src/abis/cToken.json";
 import ForkCompoundController from "../src/abis/ForkCompoundController.json";
@@ -56,8 +56,14 @@ import ForkCompoundController from "../src/abis/ForkCompoundController.json";
     // console.log("_______________________TEST AAVE_______________________")
 
     appState = await updateUserInForkAaveLPState(appState, userAddress, "radiant-v2");
+    appState = await updateUserInForkAaveLPState(appState, proxyAddress, "radiant-v2");
     appState = await updateForkAaveLPState(appState, "radiant-v2");
-    console.log(BigNumber(await calculateMaxAmountForkAaveBorrow(appState, "radiant-v2", "0xe9e7cea3dedca5984780bafc599bd69add087d56")).toFixed());
+    appState = await SimulationSupplyForkAaveLP(appState, userAddress, "radiant-v2", "0x55d398326f99059ff775485246999027b3197955", "1000000000000000")
+    appState = await SimulationWithdrawForkAaveLP(appState, userAddress, "radiant-v2", "0x55d398326f99059ff775485246999027b3197955", "100000000000000")
+
+    console.log(BigNumber(await calculateMaxAmountForkAaveBorrow(appState, "radiant-v2", "0x55d398326f99059ff775485246999027b3197955")).toFixed());
+    console.log(BigNumber(await calculateMaxAmountForkAaveWithdraw(appState, "radiant-v2", "0x55d398326f99059ff775485246999027b3197955")).toFixed());
+
     // appState = await SimulationSupplyForkAaveLP(appState, userAddress, "radiant-v2", "0xe9e7cea3dedca5984780bafc599bd69add087d56", "1000")
     // appState = await SimulationWithdrawForkAaveLP(appState, userAddress, "radiant-v2", "0xe9e7cea3dedca5984780bafc599bd69add087d56", MAX_UINT256)
 
