@@ -6,6 +6,41 @@ import { getMode } from "../../utils/helper";
 import { updateForkAaveLPState, updateUserInForkAaveLPState } from "./UpdateStateAccount";
 import { MAX_UINT256 } from "../../utils";
 
+export async function getUserAvailableBorrow(appState1: ApplicationState, _entity_id: string, _from: EthAddress) {
+    if (appState1.forkAaveLPState.forkAaveLP.get(_entity_id) == undefined) {
+        appState1 = await updateForkAaveLPState(appState1, _entity_id);
+    }
+
+    let appState = {...appState1};
+    const mode = getMode(appState, _from);
+    
+    let dataWallet = appState[mode].forkedAaveLPState.get(_entity_id);
+
+    if (!dataWallet) {
+        return BigNumber(0)
+    }
+
+    let sumSupplyByUSD = BigNumber(0);
+    let sumBorrowedByUSD = BigNumber(0);
+
+    for(let dataAssetDeposit of dataWallet.dapps[0].reserves[0].deposit)
+    {
+        // let dataAssetBorrow = dataWallet.dapps[0].reserves[0].borrow.find((reserve) => reserve.address == assetTokenDetail);
+        let maxLTV = dataWallet.detailTokenInPool.get(dataAssetDeposit.address.toLowerCase())?.maxLTV;
+        if (dataAssetDeposit && maxLTV){
+            sumSupplyByUSD = sumSupplyByUSD.plus(BigNumber(dataAssetDeposit.valueInUSD).multipliedBy(maxLTV));
+        }
+    }
+
+    for(let dataAssetBorrow of dataWallet.dapps[0].reserves[0].borrow)
+        {
+
+                sumBorrowedByUSD = sumBorrowedByUSD.plus(BigNumber(dataAssetBorrow.valueInUSD))
+        }
+
+    return sumSupplyByUSD.minus(sumBorrowedByUSD)
+}
+
 export async function calculateMaxAmountForkAaveSupply(appState: ApplicationState, _entity_id: string, _tokenAddress: string, _from: EthAddress): Promise<BigNumber> {
     const tokenAddress = _tokenAddress.toLowerCase();
     const mode = getMode(appState, _from);
@@ -42,7 +77,7 @@ export async function calculateMaxAmountForkAaveBorrow(appState: ApplicationStat
 
     const tTokenReserveBalanceRaw = BigNumber(tokenInfo.tToken.originToken.balances);
     const tTokenReserveBalance = BigNumber(tTokenReserveBalanceRaw).div(BigNumber("10").pow(tokenInfo.tToken.decimals));
-    const availableBorrowsUSD = BigNumber(appState.smartWalletState.travaLPState.availableBorrowsUSD);
+    const availableBorrowsUSD = await getUserAvailableBorrow(appState, _entity_id, appState.smartWalletState.address);
     const nativeAvailableBorrow = availableBorrowsUSD.div(tokenInfo.price);
 
     return BigNumber.max(BigNumber.min(nativeAvailableBorrow, tTokenReserveBalance), 0).multipliedBy(BigNumber("10").pow(tokenInfo.tToken.decimals));

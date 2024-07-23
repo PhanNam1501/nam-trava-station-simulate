@@ -7,7 +7,7 @@ import BigNumber from "bignumber.js";
 import { MAX_UINT256, MONTH_TO_SECONDS, WEEK_TO_SECONDS } from "../src/utils/config";
 import { updateForkCompoundLPState, updateUserInForkCompoundLPState } from "../src/Simulation/forkCompoundLP/UpdateStateAccount";
 import { SimulationBorrowForkCompoundLP, SimulationCollateral, SimulationRepayForkCompoundLP, SimulationSupplyForkCompoundLP, SimulationWithdrawForkCompoundLP, cTokenToDetailTokenAddress, calculateMaxAmountForkCompoundBorrow, updateLPtTokenInfo, updateSmartWalletTokenBalance, updateTravaLPInfo, updateUserTokenBalance } from "../src/Simulation";
-import { SimulationSupplyForkAaveLP, SimulationWithdrawForkAaveLP, updateForkAaveLPState, updateUserInForkAaveLPState } from "../src/Simulation/forkAaveLP";
+import { calculateMaxAmountForkAaveBorrow, SimulationSupplyForkAaveLP, SimulationWithdrawForkAaveLP, updateForkAaveLPState, updateUserInForkAaveLPState } from "../src/Simulation/forkAaveLP";
 import { multiCall } from "../src/utils/helper";
 import cToken from "../src/abis/cToken.json";
 import ForkCompoundController from "../src/abis/ForkCompoundController.json";
@@ -44,9 +44,9 @@ import ForkCompoundController from "../src/abis/ForkCompoundController.json";
     
     // console.log("_______________________TEST COMPOUND_______________________")
 
-    appState = await updateForkCompoundLPState(appState, "venus");
-    appState = await updateUserInForkCompoundLPState(appState, userAddress, "venus");
-    console.log(BigNumber(await calculateMaxAmountForkCompoundBorrow(appState, "venus", "0x55d398326f99059ff775485246999027b3197955", appState.walletState.address.toLowerCase())).toFixed());
+    // appState = await updateForkCompoundLPState(appState, "venus");
+    // appState = await updateUserInForkCompoundLPState(appState, userAddress, "venus");
+    // console.log(BigNumber(await calculateMaxAmountForkCompoundBorrow(appState, "venus", "0x55d398326f99059ff775485246999027b3197955", appState.walletState.address.toLowerCase())).toFixed());
     // appState = await SimulationSupplyForkCompoundLP(appState, userAddress, "venus", "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE".toLowerCase(), "100000")
     // console.log(appState.walletState.forkedCompoundLPState.get("venus")?.detailTokenInPool.get('0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'.toLowerCase())?.cToken.originToken)
     // appState = await SimulationBorrowForkCompoundLP(appState, userAddress, "venus", "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE".toLowerCase(), MAX_UINT256)
@@ -55,8 +55,9 @@ import ForkCompoundController from "../src/abis/ForkCompoundController.json";
       
     // console.log("_______________________TEST AAVE_______________________")
 
-    // appState = await updateUserInForkAaveLPState(appState, userAddress, "radiant-v2");
-    // appState = await updateForkAaveLPState(appState, "radiant-v2");
+    appState = await updateUserInForkAaveLPState(appState, userAddress, "radiant-v2");
+    appState = await updateForkAaveLPState(appState, "radiant-v2");
+    console.log(BigNumber(await calculateMaxAmountForkAaveBorrow(appState, "radiant-v2", "0xe9e7cea3dedca5984780bafc599bd69add087d56")).toFixed());
     // appState = await SimulationSupplyForkAaveLP(appState, userAddress, "radiant-v2", "0xe9e7cea3dedca5984780bafc599bd69add087d56", "1000")
     // appState = await SimulationWithdrawForkAaveLP(appState, userAddress, "radiant-v2", "0xe9e7cea3dedca5984780bafc599bd69add087d56", MAX_UINT256)
 
