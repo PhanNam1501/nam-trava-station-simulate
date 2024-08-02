@@ -146,7 +146,7 @@ export async function calculateMaxAmountForkAaveWithdraw(appState: ApplicationSt
         }
     }
 
-    nativeAvailableWithdraw = nativeAvailableWithdraw.div(tokenInfo.price);
+    nativeAvailableWithdraw = nativeAvailableWithdraw.div(tokenInfo.price).multipliedBy(BigNumber("10").pow(tokenInfo.tToken.decimals));
 
     const available = BigNumber(tokenInfo.tToken.totalSupply).minus(tokenInfo.dToken.totalSupply).div(tokenInfo.price);
 
@@ -158,7 +158,6 @@ export async function calculateMaxAmountForkAaveWithdraw(appState: ApplicationSt
     //     BigNumber.min(deposited, nativeAvailableWithdraw, tTokenReserveBalance, available),
     //     0
     // ).multipliedBy(BigNumber("10").pow(tokenInfo.tToken.decimals))
-
     return BigNumber.max(
         BigNumber.min(nativeAvailableWithdraw, tTokenReserveBalance, available),
         0
