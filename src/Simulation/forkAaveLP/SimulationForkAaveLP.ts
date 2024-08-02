@@ -161,7 +161,7 @@ export async function calculateMaxAmountForkAaveWithdraw(appState: ApplicationSt
     return BigNumber.max(
         BigNumber.min(nativeAvailableWithdraw, tTokenReserveBalance, available),
         0
-    ).multipliedBy(BigNumber("10").pow(tokenInfo.tToken.decimals))
+    )
 }
 
 export async function SimulationSupplyForkAaveLP(
