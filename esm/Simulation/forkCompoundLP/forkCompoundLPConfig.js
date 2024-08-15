@@ -1,15 +1,16 @@
-export const entity_ids_compound: Array<string> = 
-[
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.compoundConfig = exports.entity_ids_compound = void 0;
+exports.entity_ids_compound = [
     "venus",
     "liqee",
     "cream-lending",
     "apeswap_lending",
     "wepiggy"
 ];
-
-export const compoundConfig = [
+exports.compoundConfig = [
     {
-        entity_id: "venus", 
+        entity_id: "venus",
         controller: "0xfD36E2c2a6789Db23113685031d7F16329158384"
     },
     {
