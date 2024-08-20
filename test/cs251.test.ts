@@ -1,7 +1,7 @@
 import { JsonRpcProvider } from "ethers";
 import { ApplicationState } from "../src/State";
 import { updateCS251State } from "../src/Simulation/cs251/update";
-import { addLiquidity, removeLiquidity, swapETHforTokens, swapTokenforETH } from "../src/Simulation/cs251/dapp";
+import { addLiquidity, removeLiquidity, swapAssets, swapETHforTokens, swapTokenforETH } from "../src/Simulation/cs251/dapp";
 
 
 const test = async () => {
@@ -30,10 +30,12 @@ const test = async () => {
   console.log("cs251 state after addliquidity", appState.cs251state.cs251state.get(exchangeAddress))
   appState = await removeLiquidity (appState, exchangeAddress, tokenAddr,amountETH,to)
   console.log("cs251 state remove liquidity", appState.cs251state.cs251state.get(exchangeAddress))
-  appState = await swapETHforTokens (appState, exchangeAddress,amountETH,from,to,tokenAddr)
-  console.log("cs251 state swap eth for tokens", appState.cs251state.cs251state.get(exchangeAddress))
-  appState = await swapTokenforETH (appState, exchangeAddress,amountETH,from,to,tokenAddr)
-  console.log("cs251 state swap token for eth", appState.cs251state.cs251state.get(exchangeAddress))
+  // appState = await swapETHforTokens (appState, exchangeAddress,amountETH,from,to,tokenAddr)
+  // console.log("cs251 state swap eth for tokens", appState.cs251state.cs251state.get(exchangeAddress))
+  // appState = await swapTokenforETH (appState, exchangeAddress,amountETH,from,to,tokenAddr)
+  // console.log("cs251 state swap token for eth", appState.cs251state.cs251state.get(exchangeAddress))
+  appState = await swapAssets (appState, exchangeAddress,amountETH,from,to,tokenAddr, true )
+  console.log("cs251 state swap", appState.cs251state.cs251state.get(exchangeAddress))
 
 
 
