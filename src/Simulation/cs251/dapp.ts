@@ -37,45 +37,45 @@ import { cs251state, cs251statechange } from "../../State/cs251";
 
   
 
-  export function calculateMaxAmountTransferTToken(appState: ApplicationState, _tokenAddress: string, _from: EthAddress): BigNumber {
-    let modeFrom = getMode(appState, _from);
-    let tokenAddress = _tokenAddress.toLowerCase();
-    let tokenInfo = appState[modeFrom].detailTokenInPool.get(tokenAddress.toLowerCase())!;
+  // export function calculateMaxAmountTransferTToken(appState: ApplicationState, _tokenAddress: string, _from: EthAddress): BigNumber {
+  //   let modeFrom = getMode(appState, _from);
+  //   let tokenAddress = _tokenAddress.toLowerCase();
+  //   let tokenInfo = appState[modeFrom].detailTokenInPool.get(tokenAddress.toLowerCase())!;
   
-    if (typeof tokenInfo == undefined) {    
-      throw new Error("Token is not init in lending pool state!")
-    }
-    const depositedRaw = tokenInfo.tToken.balances;
-    const deposited = BigNumber(depositedRaw).dividedBy(BigNumber("10").pow(tokenInfo.tToken.decimals));
+  //   if (typeof tokenInfo == undefined) {    
+  //     throw new Error("Token is not init in lending pool state!")
+  //   }
+  //   const depositedRaw = tokenInfo.tToken.balances;
+  //   const deposited = BigNumber(depositedRaw).dividedBy(BigNumber("10").pow(tokenInfo.tToken.decimals));
   
-    const tTokenReserveBalanceRaw = tokenInfo.tToken.originToken.balances;
-    const tTokenReserveBalance = BigNumber(tTokenReserveBalanceRaw).dividedBy(BigNumber("10").pow(tokenInfo.tToken.decimals));
+  //   const tTokenReserveBalanceRaw = tokenInfo.tToken.originToken.balances;
+  //   const tTokenReserveBalance = BigNumber(tTokenReserveBalanceRaw).dividedBy(BigNumber("10").pow(tokenInfo.tToken.decimals));
   
-    let nativeAvailableTransfer = BigNumber(appState[modeFrom].travaLPState.totalCollateralUSD)
-      .minus(BigNumber(appState[modeFrom].travaLPState.totalDebtUSD).div(BigNumber(appState[modeFrom].travaLPState.ltv)))
-      .div(tokenInfo.price);
-    const available = BigNumber(tokenInfo.tToken.totalSupply).minus(tokenInfo.dToken.totalSupply).div(tokenInfo.price);
+  //   let nativeAvailableTransfer = BigNumber(appState[modeFrom].travaLPState.totalCollateralUSD)
+  //     .minus(BigNumber(appState[modeFrom].travaLPState.totalDebtUSD).div(BigNumber(appState[modeFrom].travaLPState.ltv)))
+  //     .div(tokenInfo.price);
+  //   const available = BigNumber(tokenInfo.tToken.totalSupply).minus(tokenInfo.dToken.totalSupply).div(tokenInfo.price);
   
-    if (nativeAvailableTransfer.isNaN()) {
-      nativeAvailableTransfer = BigNumber(0);
-    }
+  //   if (nativeAvailableTransfer.isNaN()) {
+  //     nativeAvailableTransfer = BigNumber(0);
+  //   }
   
-    return BigNumber.max(
-      BigNumber.min(deposited, nativeAvailableTransfer, tTokenReserveBalance, available),
-      0
-    ).multipliedBy(BigNumber("10").pow(tokenInfo.tToken.decimals))
-  }
-  export function calculateNewLiquidThreshold(oldTotalColleteral: BigNumber, oldLiqThres: BigNumber, newTotalCollateral: BigNumber, tokenLiqThres: BigNumber): BigNumber {
-    if (newTotalCollateral.toFixed(0) == "0") {
-      return BigNumber(0);
-    }
-    let usd_changed = newTotalCollateral.minus(oldTotalColleteral);
-    let newLiqThres = oldTotalColleteral
-      .multipliedBy(oldLiqThres)
-      .plus(usd_changed.multipliedBy(tokenLiqThres))
-      .div(newTotalCollateral)
-    return newLiqThres
-  }
+  //   return BigNumber.max(
+  //     BigNumber.min(deposited, nativeAvailableTransfer, tTokenReserveBalance, available),
+  //     0
+  //   ).multipliedBy(BigNumber("10").pow(tokenInfo.tToken.decimals))
+  // }
+  // export function calculateNewLiquidThreshold(oldTotalColleteral: BigNumber, oldLiqThres: BigNumber, newTotalCollateral: BigNumber, tokenLiqThres: BigNumber): BigNumber {
+  //   if (newTotalCollateral.toFixed(0) == "0") {
+  //     return BigNumber(0);
+  //   }
+  //   let usd_changed = newTotalCollateral.minus(oldTotalColleteral);
+  //   let newLiqThres = oldTotalColleteral
+  //     .multipliedBy(oldLiqThres)
+  //     .plus(usd_changed.multipliedBy(tokenLiqThres))
+  //     .div(newTotalCollateral)
+  //   return newLiqThres
+  // }
   
 
 
