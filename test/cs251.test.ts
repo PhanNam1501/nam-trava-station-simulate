@@ -1,7 +1,7 @@
 import { JsonRpcProvider } from "ethers";
 import { ApplicationState } from "../src/State";
 import { updateCS251State } from "../src/Simulation/cs251/update";
-import { addLiquidity, removeLiquidity, swapAssets, swapETHforTokens, swapTokenforETH } from "../src/Simulation/cs251/dapp";
+import { addLiquidity, removeLiquidity, swapAssets } from "../src/Simulation/cs251/dapp";
 
 
 const test = async () => {
