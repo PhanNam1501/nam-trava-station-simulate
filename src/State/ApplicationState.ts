@@ -6,6 +6,8 @@ import { JsonRpcProvider } from "ethers";
 import { TravaGovernanceState } from "./trava/lending/TravaGovenanceState";
 import { DilutionState, ExpeditionState, ForkedAaveLPState, ForkedCompoundLPState } from "./trava";
 import { PancakeSwapV2Pair } from "./pancakeSwap";
+import { cs251state } from "./cs251";
+import {PancakeFarmState} from "./pancake-farm"
 
 export class ApplicationState {
   createdTime: number;
@@ -20,6 +22,10 @@ export class ApplicationState {
   forkCompoundLPState: ForkedCompoundLPState;
   forkAaveLPState: ForkedAaveLPState;
   pancakeSwapV2Pair: PancakeSwapV2Pair;
+  cs251state:cs251state;
+  PancakeFarmState:PancakeFarmState;
+
+  
   web3: JsonRpcProvider;
   chainId: number | string;
   simulatorUrl: string;
@@ -45,6 +51,9 @@ export class ApplicationState {
     this.forkCompoundLPState = new ForkedCompoundLPState();
     this.forkAaveLPState = new ForkedAaveLPState();
     this.pancakeSwapV2Pair = new PancakeSwapV2Pair();
+    this.cs251state = new cs251state();
+    this.PancakeFarmState = new PancakeFarmState();
+
   }
 }
 

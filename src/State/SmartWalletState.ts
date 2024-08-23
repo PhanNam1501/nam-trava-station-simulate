@@ -24,7 +24,6 @@ export interface DetailTokenInPool {
   decimals: string;
   dToken: TokenInPoolData;
   tToken: TokenInPoolData;
-  
   maxLTV: string;
   liqThres: string;
   price: string;

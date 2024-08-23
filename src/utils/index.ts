@@ -7,3 +7,4 @@ export * from "./address";
 export * from "./api"
 export * from "./constance"
 export * from "./chain"
+export * from "./pancakefarmconfig"

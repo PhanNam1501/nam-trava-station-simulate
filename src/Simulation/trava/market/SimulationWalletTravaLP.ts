@@ -19,6 +19,7 @@ export async function calculateMaxRewards(appState: ApplicationState): Promise<s
     appState.web3!
   );
   let maxRewardCanGet = await travaIncentiveContract.getRewardsBalance(
+    
     listTDTokenRewardsAddress,
     appState.smartWalletState.address
   );

@@ -7,7 +7,7 @@ import BigNumber from "bignumber.js";
 import { MAX_UINT256, MONTH_TO_SECONDS, WEEK_TO_SECONDS } from "../src/utils/config";
 import { updateForkCompoundLPState, updateUserInForkCompoundLPState } from "../src/Simulation/forkCompoundLP/UpdateStateAccount";
 import { SimulationBorrowForkCompoundLP, SimulationCollateral, SimulationRepayForkCompoundLP, SimulationSupplyForkCompoundLP, SimulationWithdrawForkCompoundLP, cTokenToDetailTokenAddress, calculateMaxAmountForkCompoundBorrow, updateLPtTokenInfo, updateSmartWalletTokenBalance, updateTravaLPInfo, updateUserTokenBalance } from "../src/Simulation";
-import { calculateMaxAmountForkAaveBorrow, calculateMaxAmountForkAaveRepay, calculateMaxAmountForkAaveWithdraw, SimulationBorrowForkAaveLP, SimulationSupplyForkAaveLP, SimulationWithdrawForkAaveLP, updateForkAaveLPState, updateTokenDetailInOthersPools, updateUserInForkAaveLPState } from "../src/Simulation/forkAaveLP";
+import { calculateMaxAmountForkAaveBorrow, calculateMaxAmountForkAaveWithdraw, SimulationSupplyForkAaveLP, SimulationWithdrawForkAaveLP, updateForkAaveLPState, updateUserInForkAaveLPState } from "../src/Simulation/forkAaveLP";
 import { multiCall } from "../src/utils/helper";
 import cToken from "../src/abis/cToken.json";
 import ForkCompoundController from "../src/abis/ForkCompoundController.json";
@@ -23,8 +23,8 @@ import ForkCompoundController from "../src/abis/ForkCompoundController.json";
     //test net
     //https://bsc-testnet.publicnode.com
     //0x595622cBd0Fc4727DF476a1172AdA30A9dDf8F43
-    const userAddress = "0x9ed7704efdba07c304246c9e9c2f469adaafd758";
-    const proxyAddress = "0x83ecE53FB9720A2e4Df965C201035A7aAC0A1Db0";
+    const userAddress = "0x00328B8a90652b37672F2f8c6c1d39CE718D7F89";
+    const proxyAddress = "0x1Ef0246F251211676810778415370C135526F5D1";
 
     //test AAVE
     // 0x5BAF597914E62182e5CCafbcc69C966919d5cBa8
@@ -44,28 +44,25 @@ import ForkCompoundController from "../src/abis/ForkCompoundController.json";
     
     // console.log("_______________________TEST COMPOUND_______________________")
 
-    appState = await updateForkCompoundLPState(appState, "apeswap-lending");
-    appState = await updateUserInForkCompoundLPState(appState, userAddress, "apeswap-lending");
-    console.log(appState.walletState.forkedCompoundLPState.get("apeswap-lending")?.detailTokenInPool)
-    console.log(BigNumber(await calculateMaxAmountForkCompoundBorrow(appState, "apeswap-lending", "0x55d398326f99059ff775485246999027b3197955", appState.walletState.address.toLowerCase())).toFixed());
-    appState = await SimulationSupplyForkCompoundLP(appState, userAddress, "apeswap-lending", "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE".toLowerCase(), "100000")
-    console.log(appState.walletState.forkedCompoundLPState.get("apeswap-lending")?.detailTokenInPool.get('0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'.toLowerCase())?.cToken.originToken)
+    // appState = await updateForkCompoundLPState(appState, "venus");
+    // appState = await updateUserInForkCompoundLPState(appState, userAddress, "venus");
+    // console.log(BigNumber(await calculateMaxAmountForkCompoundBorrow(appState, "venus", "0x55d398326f99059ff775485246999027b3197955", appState.walletState.address.toLowerCase())).toFixed());
+    // appState = await SimulationSupplyForkCompoundLP(appState, userAddress, "venus", "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE".toLowerCase(), "100000")
+    // console.log(appState.walletState.forkedCompoundLPState.get("venus")?.detailTokenInPool.get('0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'.toLowerCase())?.cToken.originToken)
     // appState = await SimulationBorrowForkCompoundLP(appState, userAddress, "venus", "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE".toLowerCase(), MAX_UINT256)
     // appState = await SimulationWithdrawForkCompoundLP(appState, userAddress, "venus", "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE".toLowerCase(), MAX_UINT256)
     // appState = await SimulationRepayForkCompoundLP(appState, userAddress, "venus", "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE".toLowerCase(), MAX_UINT256)
       
     // console.log("_______________________TEST AAVE_______________________")
 
-    // appState = await updateUserInForkAaveLPState(appState, userAddress, "valas-finance");
-    // appState = await updateUserInForkAaveLPState(appState, proxyAddress, "valas-finance");
-    // appState = await updateForkAaveLPState(appState, "valas-finance");
-    // appState = await updateTokenDetailInOthersPools(appState, proxyAddress, "valas-finance");
-    // appState = await SimulationSupplyForkAaveLP(appState, userAddress, "valas-finance", "0x55d398326f99059ff775485246999027b3197955", "1000000000000000")
-    // appState = await SimulationBorrowForkAaveLP(appState, userAddress, "valas-finance", "0x55d398326f99059ff775485246999027b3197955", "100000000000000")
-    
-    // console.log(BigNumber(await calculateMaxAmountForkAaveBorrow(appState, "valas-finance", "0x55d398326f99059ff775485246999027b3197955")).toFixed());
-    // console.log(BigNumber(await calculateMaxAmountForkAaveWithdraw(appState, "valas-finance", "0x55d398326f99059ff775485246999027b3197955")).toFixed());
-    // console.log(BigNumber(await calculateMaxAmountForkAaveRepay(appState, "valas-finance", "0x55d398326f99059ff775485246999027b3197955", proxyAddress)).toFixed());
+    appState = await updateUserInForkAaveLPState(appState, userAddress, "radiant-v2");
+    appState = await updateUserInForkAaveLPState(appState, proxyAddress, "radiant-v2");
+    appState = await updateForkAaveLPState(appState, "radiant-v2");
+    appState = await SimulationSupplyForkAaveLP(appState, userAddress, "radiant-v2", "0x55d398326f99059ff775485246999027b3197955", "1000000000000000")
+    appState = await SimulationWithdrawForkAaveLP(appState, userAddress, "radiant-v2", "0x55d398326f99059ff775485246999027b3197955", "100000000000000")
+
+    console.log(BigNumber(await calculateMaxAmountForkAaveBorrow(appState, "radiant-v2", "0x55d398326f99059ff775485246999027b3197955")).toFixed());
+    console.log(BigNumber(await calculateMaxAmountForkAaveWithdraw(appState, "radiant-v2", "0x55d398326f99059ff775485246999027b3197955")).toFixed());
 
     // appState = await SimulationSupplyForkAaveLP(appState, userAddress, "radiant-v2", "0xe9e7cea3dedca5984780bafc599bd69add087d56", "1000")
     // appState = await SimulationWithdrawForkAaveLP(appState, userAddress, "radiant-v2", "0xe9e7cea3dedca5984780bafc599bd69add087d56", MAX_UINT256)

@@ -1,3 +1,4 @@
+
 import { ApplicationState } from "../../../State/ApplicationState";
 import BigNumber from "bignumber.js";
 import { MAX_LOCK_TIMES, WEEK_TO_SECONDS, YEAR_TO_SECONDS } from "../../../utils/config";

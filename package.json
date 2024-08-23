@@ -1,6 +1,6 @@
 {
   "name": "trava-simulation-route",
-  "version": "2.0.71",
+  "version": "2.0.64",
   "description": "",
   "main": "./umd/index.js",
   "module": "./esm/index.js",
@@ -25,8 +25,7 @@
     "ethereumjs-util": "^7.1.5",
     "lodash": "^4.17.21",
     "test-tcv-platform-sdk": "^0.0.22",
-    "trava-station-sdk": "1.0.30",
-    "typescript": "^5.2.2"
+    "trava-station-sdk": "1.0.30"
   },
   "devDependencies": {
     "@babel/core": "^7.12.10",
@@ -43,6 +42,7 @@
     "ethers": "6.7.0",
     "mocha": "^10.2.0",
     "ts-node": "^10.9.1",
+    "typescript": "^5.5.4",
     "webpack": "^5.0.4",
     "webpack-cli": "^5.1.4"
   }

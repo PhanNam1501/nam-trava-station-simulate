@@ -1,7 +1,11 @@
 import { JsonRpcProvider } from "ethers";
 import { ApplicationState } from "../src/State";
 import { updateCS251State } from "../src/Simulation/cs251/update";
+<<<<<<< Updated upstream
 import { addLiquidity, removeLiquidity, swapAssets } from "../src/Simulation/cs251/dapp";
+=======
+import { addLiquidity, removeLiquidity, swapAssets } from "../src/Simulation/cs251/dapp"; 
+>>>>>>> Stashed changes
 
 
 const test = async () => {
@@ -34,7 +38,11 @@ const test = async () => {
   // console.log("cs251 state swap eth for tokens", appState.cs251state.cs251state.get(exchangeAddress))
   // appState = await swapTokenforETH (appState, exchangeAddress,amountETH,from,to,tokenAddr)
   // console.log("cs251 state swap token for eth", appState.cs251state.cs251state.get(exchangeAddress))
+<<<<<<< Updated upstream
   appState = await swapAssets (appState, exchangeAddress,amountETH,from,to,tokenAddr, true )
+=======
+  appState = await swapAssets (appState, exchangeAddress,amountETH,from,to,tokenAddr, false )
+>>>>>>> Stashed changes
   console.log("cs251 state swap", appState.cs251state.cs251state.get(exchangeAddress))
 
 
