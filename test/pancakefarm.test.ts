@@ -31,10 +31,10 @@ const test = async () => {
   console.log("pancake farm state after stake", appState.PancakeFarmState.PancakeFarmState.get(v2WrapperAddress));
   console.log("token token balance in smart wallet", appState.smartWalletState.tokenBalances)
   console.log("token balance in wallet", appState.walletState.tokenBalances)
-  // appState = await PancakeFarmUnStakeLP(appState, v2WrapperAddress, _amount, userAddress, false)
-  // console.log("pancake farm state after unstake", appState.PancakeFarmState.PancakeFarmState.get(v2WrapperAddress));
-  // console.log("token balance in smart wallet", appState.smartWalletState.tokenBalances)
-  // console.log("token balance in wallet", appState.walletState.tokenBalances)
+  appState = await PancakeFarmUnStakeLP(appState, v2WrapperAddress, _amount, userAddress, false)
+  console.log("pancake farm state after unstake", appState.PancakeFarmState.PancakeFarmState.get(v2WrapperAddress));
+  console.log("token balance in smart wallet", appState.smartWalletState.tokenBalances)
+  console.log("token balance in wallet", appState.walletState.tokenBalances)
   appState = await PancakeFarmHarvestLP(appState, v2WrapperAddress,userAddress, false)
   console.log("pancake farm state after harvest", appState.PancakeFarmState.PancakeFarmState.get(v2WrapperAddress));
   console.log("token balance in smart wallet", appState.smartWalletState.tokenBalances)

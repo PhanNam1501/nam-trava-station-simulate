@@ -151,34 +151,41 @@ export async function PancakeFarmHarvestLP(
     let farmconfig = listFarmingV2List[appState.chainId].find((item) => item.v2WrapperAddress.toLowerCase() == v2Wrapper.toLowerCase())!
     const rewardTokenAddr = farmconfig.rewardToken.address.toLowerCase()
 
-    appState = await updateTokenBalance(appState, to, rewardTokenAddr);
-    let newState = { ...appState };
+    appState = await updateSmartWalletTokenBalance(appState, rewardTokenAddr)
+
     let mode = getMode(appState, to);
 
+
+    // Create a copy of the appState to avoid mutating the original state
+    let newState = { ...appState };
+
+
+
+    let amount = BigNumber(0)
+    
+
+
     const stakedAmountBefore = PancakeFarmState.stakedAmount
+    const stakedAmountAfter = BigNumber(stakedAmountBefore).plus(amount)
+
+    const rewardBefore = PancakeFarmState.pendingReward
+    const rewardAfter = noHarvest ? rewardBefore : "0"
+
     const RPS = PancakeFarmState.rewardPerSecond
-    const rewardBefore = BigNumber(RPS).multipliedBy(10)
-    
-    const rewardAfter = BigNumber(noHarvest ? rewardBefore : "0")
-    
+
     const newPancakeFarmStateChange: PancakeFarmStateChange = {
-      stakedAmount: stakedAmountBefore,
+      stakedAmount: stakedAmountAfter.toFixed(),
       rewardPerSecond: RPS,
-      pendingReward: rewardAfter.toFixed(),
+      pendingReward: rewardAfter,
     }
     
-    let oldRewardsTokenBalances = newState[mode].tokenBalances.get(rewardTokenAddr)!
+    
+    let oldRewardsTokenBalances = newState.smartWalletState.tokenBalances.get(rewardTokenAddr)!
     let newRewardTokenBalance = noHarvest ? BigNumber(oldRewardsTokenBalances) :  BigNumber(oldRewardsTokenBalances).plus(rewardBefore)
     
     
     newState.PancakeFarmState.PancakeFarmState.set(v2Wrapper, newPancakeFarmStateChange)
     newState[mode].tokenBalances.set(rewardTokenAddr, newRewardTokenBalance.toFixed());
-
-
-    
-
- 
-
     return newState;
   } catch (err) {
     throw err;

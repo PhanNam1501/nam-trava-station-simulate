@@ -23,8 +23,5 @@ export interface cs251statechange {
     token_reserve:string;
     total_shares:string;
     lps:string;
-<<<<<<< Updated upstream
 }
-=======
-}
->>>>>>> Stashed changes
+
