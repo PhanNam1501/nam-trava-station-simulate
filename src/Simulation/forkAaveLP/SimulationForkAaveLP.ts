@@ -1,10 +1,46 @@
 import BigNumber from "bignumber.js";
-import { ApplicationState, Dapp, Reserve, UserAsset } from "../../State";
+import { ApplicationState, Dapp, Reserve, TokenInPoolData, UserAsset } from "../../State";
 import { EthAddress } from "../../utils/types";
-import { updateUserTokenBalance } from "../basic";
+import { updateSmartWalletTokenBalance, updateUserTokenBalance } from "../basic";
 import { getMode } from "../../utils/helper";
 import { updateForkAaveLPState, updateUserInForkAaveLPState } from "./UpdateStateAccount";
 import { MAX_UINT256 } from "../../utils";
+
+
+export async function getUserAvailableAaveBorrow(appState1: ApplicationState, _entity_id: string, _from: EthAddress) {
+    if (appState1.forkAaveLPState.forkAaveLP.get(_entity_id) == undefined) {
+        appState1 = await updateForkAaveLPState(appState1, _entity_id);
+    }
+
+    let appState = {...appState1};
+    const mode = getMode(appState, _from);
+    
+    let dataWallet = appState[mode].forkedAaveLPState.get(_entity_id);
+
+    if (!dataWallet) {
+        return BigNumber(0)
+    }
+
+    let sumSupplyByUSD = BigNumber(0);
+    let sumBorrowedByUSD = BigNumber(0);
+
+    for(let dataAssetDeposit of dataWallet.dapps[0].reserves[0].deposit)
+    {
+        // let dataAssetBorrow = dataWallet.dapps[0].reserves[0].borrow.find((reserve) => reserve.address == assetTokenDetail);
+        let maxLTV = dataWallet.detailTokenInPool.get(dataAssetDeposit.address.toLowerCase())?.maxLTV;
+        if (dataAssetDeposit && maxLTV){
+            sumSupplyByUSD = sumSupplyByUSD.plus(BigNumber(dataAssetDeposit.valueInUSD).multipliedBy(maxLTV));
+        }
+    }
+
+    for(let dataAssetBorrow of dataWallet.dapps[0].reserves[0].borrow)
+        {
+
+                sumBorrowedByUSD = sumBorrowedByUSD.plus(BigNumber(dataAssetBorrow.valueInUSD))
+        }
+
+    return sumSupplyByUSD.minus(sumBorrowedByUSD)
+}
 
 export async function calculateMaxAmountForkAaveSupply(appState: ApplicationState, _entity_id: string, _tokenAddress: string, _from: EthAddress): Promise<BigNumber> {
     const tokenAddress = _tokenAddress.toLowerCase();
@@ -40,12 +76,12 @@ export async function calculateMaxAmountForkAaveBorrow(appState: ApplicationStat
     const lpState = appState.smartWalletState.forkedAaveLPState.get(_entity_id)!
     let tokenInfo = lpState.detailTokenInPool.get(tokenAddress)!;
 
-    const tTokenReserveBalanceRaw = BigNumber(tokenInfo.tToken.originToken.balances);
-    const tTokenReserveBalance = BigNumber(tTokenReserveBalanceRaw).div(BigNumber("10").pow(tokenInfo.tToken.decimals));
-    const availableBorrowsUSD = BigNumber(appState.smartWalletState.travaLPState.availableBorrowsUSD);
-    const nativeAvailableBorrow = availableBorrowsUSD.div(tokenInfo.price);
-
-    return BigNumber.max(BigNumber.min(nativeAvailableBorrow, tTokenReserveBalance), 0).multipliedBy(BigNumber("10").pow(tokenInfo.tToken.decimals));
+    const tTokenReserveBalanceRaw = BigNumber(tokenInfo.tToken.balances);
+    const tTokenReserveBalance = BigNumber(tTokenReserveBalanceRaw).multipliedBy(tokenInfo.maxLTV);
+    const availableBorrowsUSD = await getUserAvailableAaveBorrow(appState, _entity_id, appState.smartWalletState.address);
+    const nativeAvailableBorrow = availableBorrowsUSD.div(tokenInfo.price).multipliedBy(BigNumber("10").pow(tokenInfo.tToken.decimals));
+    
+    return BigNumber.max(BigNumber.min(nativeAvailableBorrow, tTokenReserveBalance), 0);
 }
 
 export async function calculateMaxAmountForkAaveRepay(appState: ApplicationState, _entity_id: string, _tokenAddress: string, _from: EthAddress): Promise<BigNumber> {
@@ -58,20 +94,26 @@ export async function calculateMaxAmountForkAaveRepay(appState: ApplicationState
 
     if (!appState[mode].tokenBalances.has(tokenAddress)) {
         appState = await updateUserTokenBalance(appState, tokenAddress);
+        appState = await updateSmartWalletTokenBalance(appState, tokenAddress);
     }
     const walletBalance = appState[mode].tokenBalances.get(tokenAddress)!;
     if (typeof walletBalance == undefined) {
         throw new Error("Token is not init in " + mode + " state!")
     }
-
+    
     const lpState = appState.smartWalletState.forkedAaveLPState.get(_entity_id)!
     let tokenInfo = lpState.detailTokenInPool.get(tokenAddress)!;
+    console.log("🚀 ~ calculateMaxAmountForkAaveRepay ~ tokenInfo:", tokenInfo)
 
     let dTokenBalance = tokenInfo.dToken.balances;
     const borrowed = new BigNumber(dTokenBalance);
+    console.log("🚀 ~ calculateMaxAmountForkAaveRepay ~ walletBalance:", walletBalance)
+    console.log("🚀 ~ calculateMaxAmountForkAaveRepay ~ borrowed:", borrowed)
 
+    console.log("🚀 ~ calculateMaxAmountForkAaveRepay ~ BigNumber.max(BigNumber.min(walletBalance, borrowed), 0):", BigNumber.max(BigNumber.min(walletBalance, borrowed), 0))
     return BigNumber.max(BigNumber.min(walletBalance, borrowed), 0);
 }
+
 
 export async function calculateMaxAmountForkAaveWithdraw(appState: ApplicationState, _entity_id: string, _tokenAddress: string): Promise<BigNumber> {
     const tokenAddress = _tokenAddress.toLowerCase();
@@ -82,25 +124,50 @@ export async function calculateMaxAmountForkAaveWithdraw(appState: ApplicationSt
 
     const lpState = appState.smartWalletState.forkedAaveLPState.get(_entity_id)!
     let tokenInfo = lpState.detailTokenInPool.get(tokenAddress)!;
-    const depositedRaw = tokenInfo.tToken.balances;
-    const deposited = BigNumber(depositedRaw).dividedBy(BigNumber("10").pow(tokenInfo.tToken.decimals));
-
+    // const depositedRaw = tokenInfo.tToken.balances;
+    // const deposited = BigNumber(depositedRaw).dividedBy(BigNumber("10").pow(tokenInfo.tToken.decimals));
+    
     const tTokenReserveBalanceRaw = tokenInfo.tToken.originToken.balances;
-    const tTokenReserveBalance = BigNumber(tTokenReserveBalanceRaw).dividedBy(BigNumber("10").pow(tokenInfo.tToken.decimals));
+    const tTokenReserveBalance = BigNumber(tTokenReserveBalanceRaw);
 
-    let nativeAvailableWithdraw = BigNumber(appState.smartWalletState.travaLPState.totalCollateralUSD)
-        .minus(BigNumber(appState.smartWalletState.travaLPState.totalDebtUSD).div(BigNumber(appState.smartWalletState.travaLPState.ltv)))
-        .div(tokenInfo.price);
+    let dataWallet = appState.smartWalletState.forkedAaveLPState.get(_entity_id);
+    if (!dataWallet) {
+        return BigNumber(0);
+    }
+    let reservesData = dataWallet.dapps[0].reserves[0];
+
+    let nativeAvailableWithdraw = BigNumber(0);
+
+    let dataDeposit = reservesData.deposit;
+    for (let i = 0; i < dataDeposit.length; i++) {
+        if (dataDeposit[i].address == tokenAddress) {
+            nativeAvailableWithdraw = nativeAvailableWithdraw.plus(dataDeposit[i].valueInUSD);
+            break
+        }
+    }
+    let dataBorrow = reservesData.borrow;
+    for (let i = 0; i < dataBorrow.length; i++) {
+        if (dataBorrow[i].address == tokenAddress) {
+            nativeAvailableWithdraw = nativeAvailableWithdraw.minus(dataBorrow[i].valueInUSD);
+        }
+    }
+
+    nativeAvailableWithdraw = nativeAvailableWithdraw.div(tokenInfo.price).multipliedBy(BigNumber("10").pow(tokenInfo.tToken.decimals));
+
     const available = BigNumber(tokenInfo.tToken.totalSupply).minus(tokenInfo.dToken.totalSupply).div(tokenInfo.price);
 
     if (nativeAvailableWithdraw.isNaN()) {
         nativeAvailableWithdraw = BigNumber(0);
     }
 
+    // return BigNumber.max(
+    //     BigNumber.min(deposited, nativeAvailableWithdraw, tTokenReserveBalance, available),
+    //     0
+    // ).multipliedBy(BigNumber("10").pow(tokenInfo.tToken.decimals))
     return BigNumber.max(
-        BigNumber.min(deposited, nativeAvailableWithdraw, tTokenReserveBalance, available),
+        BigNumber.min(nativeAvailableWithdraw, tTokenReserveBalance, available),
         0
-    ).multipliedBy(BigNumber("10").pow(tokenInfo.tToken.decimals))
+    )
 }
 
 export async function SimulationSupplyForkAaveLP(
@@ -209,8 +276,13 @@ export async function SimulationSupplyForkAaveLP(
                 return reserve;
             });
         }
-
-
+        if (dataWallet.detailTokenInPool.get(tokenAddress)!) {
+            dataWallet.detailTokenInPool.get(tokenAddress)!.tToken.totalSupply = BigNumber(dataWallet.detailTokenInPool.get(tokenAddress)!.tToken.totalSupply).plus(amount).toFixed();
+            dataWallet.detailTokenInPool.get(tokenAddress)!.tToken.balances = BigNumber(dataWallet.detailTokenInPool.get(tokenAddress)!.tToken.balances).plus(amount).toFixed();
+        }
+        else {
+            throw new Error("Token is not init in smart wallet lending pool state!")
+        }
 
         const newAmount = tokenAmount.minus(amount).toFixed(0);
         appState[modeFrom].tokenBalances.set(tokenAddress, newAmount);
@@ -319,7 +391,7 @@ export async function SimulationWithdrawForkAaveLP(
                 totalValue: BigNumber(dataInWallet.amount).minus(amount).multipliedBy(price).toNumber(),
                 isCollateral: true
             };
-
+            
             dataWallet.dapps[0].value = BigNumber(dataWallet.dapps[0].value || 0).minus(amount).toNumber();
             dataWallet.dapps[0].depositInUSD = BigNumber(dataWallet.dapps[0].depositInUSD || 0).minus(amount.multipliedBy(price)).toNumber();
             dataWallet.dapps[0].reserves[0].deposit = dataWallet.dapps[0].reserves[0].deposit.map((reserve) => {
@@ -329,6 +401,14 @@ export async function SimulationWithdrawForkAaveLP(
                 return reserve;
             });
         }
+        if (dataWallet.detailTokenInPool.get(tokenAddress)!) {
+            dataWallet.detailTokenInPool.get(tokenAddress)!.tToken.totalSupply = BigNumber(dataWallet.detailTokenInPool.get(tokenAddress)!.tToken.totalSupply).minus(amount).toFixed();
+            dataWallet.detailTokenInPool.get(tokenAddress)!.tToken.balances = BigNumber(dataWallet.detailTokenInPool.get(tokenAddress)!.tToken.balances).minus(amount).toFixed();
+        }
+        else {
+            throw new Error("Token is not init in smart wallet lending pool state!")
+        }
+
         const newAmount = tokenAmount.plus(amount).toFixed(0);
         appState[modeFrom].tokenBalances.set(tokenAddress, newAmount);
         appState.smartWalletState.forkedAaveLPState.set(_entity_id, dataWallet);
@@ -446,6 +526,14 @@ export async function SimulationBorrowForkAaveLP(
                 return reserve;
             });
         }
+        if (dataWallet.detailTokenInPool.get(tokenAddress)!) {
+            dataWallet.detailTokenInPool.get(tokenAddress)!.dToken.totalSupply = BigNumber(dataWallet.detailTokenInPool.get(tokenAddress)!.dToken.totalSupply).plus(amount).toFixed();
+            dataWallet.detailTokenInPool.get(tokenAddress)!.dToken.balances = BigNumber(dataWallet.detailTokenInPool.get(tokenAddress)!.dToken.balances).plus(amount).toFixed();
+        }
+        else {
+            throw new Error("Token is not init in smart wallet lending pool state!")
+        }
+        
         const newAmount = tokenAmount.plus(amount).toFixed(0);
         appState[modeFrom].tokenBalances.set(tokenAddress, newAmount);
         appState.smartWalletState.forkedAaveLPState.set(_entity_id, dataWallet);
@@ -561,6 +649,14 @@ export async function SimulationRepayForkAaveLP(
                 return reserve;
             });
         }
+        if (dataWallet.detailTokenInPool.get(tokenAddress)!) {
+            dataWallet.detailTokenInPool.get(tokenAddress)!.dToken.totalSupply = BigNumber(dataWallet.detailTokenInPool.get(tokenAddress)!.dToken.totalSupply).minus(amount).toFixed();
+            dataWallet.detailTokenInPool.get(tokenAddress)!.dToken.balances = BigNumber(dataWallet.detailTokenInPool.get(tokenAddress)!.dToken.balances).minus(amount).toFixed();
+        }
+        else {
+            throw new Error("Token is not init in smart wallet lending pool state!")
+        }
+        
         const newAmount = tokenAmount.minus(amount).toFixed(0);
         appState[modeFrom].tokenBalances.set(tokenAddress, newAmount);
         appState.smartWalletState.forkedAaveLPState.set(_entity_id, dataWallet);
