@@ -1,7 +1,7 @@
 import { NETWORKS, CONFIG, BASE18 } from "./config";
 import { EthAddress } from "./types";
 
- interface Token {
+export interface TokenInFarm {
     symbol: string;
     address: EthAddress;
     decimals: string;
@@ -12,8 +12,8 @@ export interface FarmingItem {
     name: string;
     code: string;
     v2WrapperAddress: EthAddress;
-    stakedToken: Token;
-    rewardToken: Token;
+    stakedToken: TokenInFarm;
+    rewardToken: TokenInFarm;
 }
 
 export interface FarmingList {
@@ -32,12 +32,12 @@ export const listFarmingV2List = {
             stakedToken: {
                 symbol: "Cake-LP",
                 address: "0x0eD7e52944161450477ee417DE9Cd3a859b14fD0",
-                decimals: BASE18.toFixed()
+                decimals: "18"
             },
             rewardToken: {
                 symbol: "Cake",
                 address: "0x0E09FaBB73Bd3Ade0a17ECC321fD13a19e81cE82",
-                decimals: BASE18.toFixed()
+                decimals: "18"
             }
         },
         {
@@ -47,13 +47,13 @@ export const listFarmingV2List = {
             v2WrapperAddress: "0xf320e4E90D3914EE224777dE842f4995467CBeF6",
             stakedToken: {
                 symbol: "Cake-LP",
-                address: "0x0eD7e52944161450477ee417DE9Cd3a859b14fD0",
-                decimals: BASE18.toFixed()
+                address: "0xA39Af17CE4a8eb807E076805Da1e2B8EA7D0755b",
+                decimals: "18"
             },
             rewardToken: {
                 symbol: "Cake",
                 address: "0x0E09FaBB73Bd3Ade0a17ECC321fD13a19e81cE82",
-                decimals: BASE18.toFixed()
+                decimals: "18"
             }
         },
         {
@@ -64,12 +64,12 @@ export const listFarmingV2List = {
             stakedToken: {
                 symbol: "Cake-LP",
                 address: "0x2b3DBbA2D1F5158c7BA4b645B7ea187F7F1763af",
-                decimals: BASE18.toFixed()
+                decimals: "18"
             },
             rewardToken: {
                 symbol: "Cake",
                 address: "0x0E09FaBB73Bd3Ade0a17ECC321fD13a19e81cE82",
-                decimals: BASE18.toFixed()
+                decimals: "18"
             }
         },
         {
@@ -80,12 +80,12 @@ export const listFarmingV2List = {
             stakedToken: {
                 symbol: "Cake-LP",
                 address: "0x1C5bD1B4A4Fc05cC0Fb1a0f61136512744Ca4F34",
-                decimals: BASE18.toFixed()
+                decimals: "18"
             },
             rewardToken: {
                 symbol: "Cake",
                 address: "0x0E09FaBB73Bd3Ade0a17ECC321fD13a19e81cE82",
-                decimals: BASE18.toFixed()
+                decimals: "18"
             }
         },
         {
@@ -96,12 +96,12 @@ export const listFarmingV2List = {
             stakedToken: {
                 symbol: "Cake-LP",
                 address: "0xdb92AD18eD18752a194b9D831413B09976B34AE1",
-                decimals: BASE18.toFixed()
+                decimals: "18"
             },
             rewardToken: {
                 symbol: "Cake",
                 address: "0x0E09FaBB73Bd3Ade0a17ECC321fD13a19e81cE82",
-                decimals: BASE18.toFixed()
+                decimals: "18"
             }
         },
         {
@@ -112,12 +112,12 @@ export const listFarmingV2List = {
             stakedToken: {
                 symbol: "Cake-LP",
                 address: "0xc9B415b8331e1Fb0d2f3442Ac8413E279304090f",
-                decimals: BASE18.toFixed()
+                decimals: "18"
             },
             rewardToken: {
                 symbol: "Cake",
                 address: "0x0E09FaBB73Bd3Ade0a17ECC321fD13a19e81cE82",
-                decimals: BASE18.toFixed()
+                decimals: "18"
             }
         },
         {
@@ -128,12 +128,12 @@ export const listFarmingV2List = {
             stakedToken: {
                 symbol: "Cake-LP",
                 address: "0xDc9a574b9B341D4a98cE29005b614e1E27430E74",
-                decimals: BASE18.toFixed()
+                decimals: "18"
             },
             rewardToken: {
                 symbol: "Cake",
                 address: "0x0E09FaBB73Bd3Ade0a17ECC321fD13a19e81cE82",
-                decimals: BASE18.toFixed()
+                decimals: "18"
             }
         }
     ]

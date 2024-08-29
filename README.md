@@ -548,6 +548,12 @@ Khi chọn bất cứ action nào của Others Lending pools fork Aave
 appState = await updateForkAaveLPState(appState, entity_id);
 ```
 
+## Pancake Farm
+Khi update state pancake Farm
+```
+appState = await updatePancakeFarmState(appState, smartWalletAddr)
+```
+
 # Simulate state
 
 Sau khi init state xong. Với mỗi state, các simulate khác nhau
@@ -1277,4 +1283,35 @@ appState1 = await simulateNFTVeTravaTransfer(
     fromAddress,
     toAddress
 );
+```
+
+# Simulate Pancake Farm
+### Simulate Pancake Farm Stake
+```
+appState1 = await simulatePancakeFarmStakeLP(
+    appState,
+    wrapperAddr, // in file pancakefarmconfig
+    from addr,
+    amount,
+    noHarvest = true
+)
+```
+### Simulate Pancake Farm Unstake
+```
+appState1 = await simulatePancakeFarmStakeLP(
+    appState,
+    wrapperAddr, // in file pancakefarmconfig
+    amount,
+    to addr,
+    noHarvest = true
+)
+```
+### Simulate Pancake Farm Harvest
+```
+appState1 = await simulatePancakeFarmHarvestLP(
+    appState,
+    wrapperAddr, // in file pancakefarmconfig
+    toAddr,
+    noHarvest = true
+)
 ```

@@ -1,21 +1,38 @@
 import BigNumber from "bignumber.js";
-import { EthAddress } from "../../utils/types";
-
+import { EthAddress, uint256 } from "../../utils/types";
+import { TokenInFarm } from "../../utils";
 
 export class PancakeFarmState {
-    PancakeFarmState: Map<string, PancakeFarmStateChange>;
+  PancakeFarmState: Map<string, PancakeFarmStateChange>;
+  isFetch: boolean;
+  
+
+  constructor() {
+    this.PancakeFarmState = new Map<string, PancakeFarmStateChange>();
+    this.isFetch = false;
+
+  }
+}
+export class UserPancakeFarmState {
+    userPancakeFarmState: Map<string, UserPancakeFarmStateChange>;
     isFetch: boolean;
     
   
     constructor() {
-      this.PancakeFarmState = new Map<string, PancakeFarmStateChange>();
+      this.userPancakeFarmState = new Map<string, UserPancakeFarmStateChange>();
       this.isFetch = false;
 
     }
 }
 
-export interface PancakeFarmStateChange {
+export interface UserPancakeFarmStateChange {
     stakedAmount: string;
-    rewardPerSecond:string;
     pendingReward:string;
+}
+
+export interface PancakeFarmStateChange {
+  rewardPerSecond:string;
+  totalStakeAmount: uint256;
+  rewardToken: TokenInFarm;
+  stakedToken: TokenInFarm;
 }

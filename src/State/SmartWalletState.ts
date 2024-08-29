@@ -7,6 +7,7 @@ import {
 import { CollectionOwned, KnightInExpeditionState, NFTOwned } from "./WalletState";
 import { VeTravaListState } from "./trava/lending/TravaGovenanceState"
 import { LiquidityCampainState, WalletForkedAaveLPState, WalletForkedCompoundLPState } from "./trava";
+import { UserPancakeFarmState } from "./pancake-farm";
 export interface OriginTokenData {
   balances: string;
 }
@@ -47,6 +48,8 @@ export class SmartWalletState {
   knightInExpeditionState: KnightInExpeditionState;
   ticket: NFTTicketState;
   liquidityCampainState: LiquidityCampainState;
+  pancakeFarmState: UserPancakeFarmState;
+
   constructor(address: EthAddress) {
     this.address = address;
     this.tokenBalances = new Map<string, string>();
@@ -65,6 +68,7 @@ export class SmartWalletState {
     this.knightInExpeditionState = new KnightInExpeditionState();
     this.ticket = new NFTTicketState();
     this.liquidityCampainState = new LiquidityCampainState();
+    this.pancakeFarmState = new UserPancakeFarmState();
   }
 
   // async getTokenAmount(tokenAddress: string): Promise<string> {

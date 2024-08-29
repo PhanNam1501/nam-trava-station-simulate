@@ -1,4 +1,4 @@
-import { Contract, Interface } from "ethers";
+import { Contract, Interface, JsonRpcProvider } from "ethers";
 import { getAddr } from "./address";
 import MultiCallABI from "../abis/Multicall.json";
 import { ApplicationState } from "../State";
@@ -6,6 +6,7 @@ import { EthAddress, uint256, wallet_mode } from "./types";
 import { FromAddressError } from "./error";
 import BigNumber from "bignumber.js";
 import { ZERO_ADDRESS } from "./config";
+import { listChain } from "./chain";
 
 export async function multiCall(abi: any, calls: any, provider: any, chainId: any): Promise<any> {
 
@@ -16,7 +17,6 @@ export async function multiCall(abi: any, calls: any, provider: any, chainId: an
         _provider
     );
     const itf = new Interface(abi);
-
     const callData = calls.map((call: any) => [
         call.address.toLowerCase(),
         itf.encodeFunctionData(call.name as string, call.params),
@@ -94,4 +94,9 @@ export const convertApyToApr = (apy: number): number => {
     const result = n * powerMinusOne;
 
     return result;
+}
+
+export function getJsonProvider(_chainId: number | string, _rpcUrl?: string) {
+    let rpcUrl = _rpcUrl ? _rpcUrl : listChain[_chainId].rpcUrls[0]
+    return new JsonRpcProvider(rpcUrl)
 }

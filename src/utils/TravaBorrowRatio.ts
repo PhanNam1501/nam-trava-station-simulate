@@ -85,9 +85,9 @@ export const TOKEN_NAME_TO_ADDRESS = {
  */
 export const getTravaTVL = (
   name: string,
-  chainId: number = CONFIG.chainId
+  chainId: number | string = CONFIG.chainId
 ): string => {
-  const _chainId: number =
+  const _chainId: number | string =
     typeof chainId === "undefined" ? CONFIG.chainId : chainId;
 
   const travaTVL = TRAVA_TVL_BSC[_chainId];
@@ -107,9 +107,9 @@ export const getTravaTVL = (
 
 export async function getTokensAddress(
   name: string,
-  chainId: number = CONFIG.chainId
+  chainId: number | string = CONFIG.chainId
 ): Promise<string> {
-  const _chainId: number =
+  const _chainId: number | string =
     typeof chainId === "undefined" ? CONFIG.chainId : chainId;
 
   const tokensAddress = TOKEN_NAME_TO_ADDRESS[_chainId];
@@ -129,9 +129,9 @@ export async function getTokensAddress(
 
 export async function getAddressToName(
   address: string,
-  chainId: number = CONFIG.chainId
+  chainId: number | string = CONFIG.chainId
 ): Promise<string> {
-  const _chainId: number =
+  const _chainId: number | string =
     typeof chainId === "undefined" ? CONFIG.chainId : chainId;
 
   const TokenNameToAddressObj = TOKEN_NAME_TO_ADDRESS[_chainId];

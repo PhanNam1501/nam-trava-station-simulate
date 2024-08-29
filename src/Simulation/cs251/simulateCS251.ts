@@ -9,7 +9,7 @@ import IncentiveContractABI from "../../abis/IncentiveContract.json";
 import { updateSmartWalletEthBalance, updateSmartWalletTokenBalance, updateUserEthBalance, updateUserTokenBalance } from "../basic/UpdateStateAccount";
 import { DetailTokenInPool } from "../../State/SmartWalletState";
 import { getMode} from "../../utils/helper";
-import { updateCS251State } from "./update";
+import { updateCS251State } from "./updateAccountState";
 import { cs251state, cs251statechange } from "../../State/cs251";
 
 

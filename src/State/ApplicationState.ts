@@ -1,5 +1,5 @@
 import { KnightInExpeditionState, WalletState } from "./WalletState";
-import { EthAddress } from "../utils/types";
+import { EthAddress, uint256 } from "../utils/types";
 import { SmartWalletState } from "./SmartWalletState";
 import { NFTAuctioningState, NFTFarmingsState, NFTSellingState, NFTVeTravaSellingState } from "./trava/nft/TravaNFTState";
 import { JsonRpcProvider } from "ethers";
@@ -13,6 +13,7 @@ export class ApplicationState {
   createdTime: number;
   walletState: WalletState;
   smartWalletState: SmartWalletState;
+  tokenPrice: Map<EthAddress, uint256>;
   NFTSellingState: NFTSellingState;
   NFTAuctioningState: NFTAuctioningState;
   NFTVeTravaMarketSellingState: NFTVeTravaSellingState;
@@ -39,6 +40,7 @@ export class ApplicationState {
     this.createdTime = Math.floor(new Date().getTime() / 1000);
     this.walletState = new WalletState(userAddress);
     this.smartWalletState = new SmartWalletState(smartWalletAddress);
+    this.tokenPrice = new Map();
     this.NFTSellingState = new NFTSellingState();
     this.NFTAuctioningState = new NFTAuctioningState();
     this.NFTVeTravaMarketSellingState = new NFTVeTravaSellingState();

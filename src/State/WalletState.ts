@@ -5,6 +5,7 @@ import {BaseAccountVault, WalletTravaLPState} from "./trava/lending/TravaDeFiSta
 import { VeTravaListState, VeTravaState } from "./trava/lending/TravaGovenanceState";
 import { WalletForkedAaveLPState, WalletForkedCompoundLPState } from "./trava";
 import { DetailTokenInPool } from "./SmartWalletState";
+import { UserPancakeFarmState } from "./pancake-farm";
 
 // export class NFTData {
 //   id: string | number;
@@ -83,6 +84,7 @@ export class WalletState {
   ticket: NFTTicketState;
   travaLPStakingStateList: Map<string, BaseAccountVault>;
   detailTokenInPool: Map<string, DetailTokenInPool>;
+  pancakeFarmState: UserPancakeFarmState;
   constructor(address: string) {
     this.address = address;
     this.tokenBalances = new Map<string, string>();
@@ -99,6 +101,7 @@ export class WalletState {
     this.ticket = new NFTTicketState();
     this.travaLPStakingStateList = new Map();
     this.detailTokenInPool = new Map();
+    this.pancakeFarmState = new UserPancakeFarmState();
   }
 
   // async getTokenAmount(tokenAddress: string): Promise<string> {

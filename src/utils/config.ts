@@ -99,3 +99,5 @@ export const tramline_api = "https://tramlines-backend.trava.finance/api"
 export const centic_api = "https://develop.centic.io/dev"
 export const centic_api_key = "3ATJtOInT7QfaV2pvAdhlRVMHbztLjyyAL16UrKe5Q6vMtlR"
 export const bnb = "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE";
+export const BASE_E18 = BigNumber(1e18).toFixed()
+export const BASE_E8 = BigNumber(1e8).toFixed()
