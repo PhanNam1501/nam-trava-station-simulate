@@ -1,2 +1,2 @@
 export * from "./simulateCS251"
-export * from "./updateAccountState"
+export * from "./update"

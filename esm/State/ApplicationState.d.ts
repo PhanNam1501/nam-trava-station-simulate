@@ -1,0 +1,31 @@
+import { WalletState } from "./WalletState";
+import { EthAddress, uint256 } from "../utils/types";
+import { SmartWalletState } from "./SmartWalletState";
+import { NFTAuctioningState, NFTSellingState, NFTVeTravaSellingState } from "./trava/nft/TravaNFTState";
+import { JsonRpcProvider } from "ethers";
+import { TravaGovernanceState } from "./trava/lending/TravaGovenanceState";
+import { DilutionState, ExpeditionState, ForkedAaveLPState, ForkedCompoundLPState } from "./trava";
+import { PancakeSwapV2Pair } from "./pancakeSwap";
+import { cs251state } from "./cs251";
+import { PancakeFarmState } from "./pancake-farm";
+export declare class ApplicationState {
+    createdTime: number;
+    walletState: WalletState;
+    smartWalletState: SmartWalletState;
+    tokenPrice: Map<EthAddress, uint256>;
+    NFTSellingState: NFTSellingState;
+    NFTAuctioningState: NFTAuctioningState;
+    NFTVeTravaMarketSellingState: NFTVeTravaSellingState;
+    TravaGovernanceState: TravaGovernanceState;
+    ExpeditionState: ExpeditionState;
+    DilutionState: DilutionState;
+    forkCompoundLPState: ForkedCompoundLPState;
+    forkAaveLPState: ForkedAaveLPState;
+    pancakeSwapV2Pair: PancakeSwapV2Pair;
+    cs251state: cs251state;
+    PancakeFarmState: PancakeFarmState;
+    web3: JsonRpcProvider;
+    chainId: number | string;
+    simulatorUrl: string;
+    constructor(userAddress: EthAddress, smartWalletAddress: EthAddress, web3: JsonRpcProvider, chainId: number | string, simulatorUrl?: string);
+}

@@ -1,0 +1,22 @@
+import { ApplicationState } from "../../../State/ApplicationState";
+import { EthAddress } from "../../../utils/types";
+export declare function updateAllAccountVault(appState1: ApplicationState, _address: EthAddress, force?: boolean): Promise<{
+    createdTime: number;
+    walletState: import("../../..").WalletState;
+    smartWalletState: import("../../..").SmartWalletState;
+    tokenPrice: Map<EthAddress, import("../../../utils/types").uint256>;
+    NFTSellingState: import("../../..").NFTSellingState;
+    NFTAuctioningState: import("../../..").NFTAuctioningState;
+    NFTVeTravaMarketSellingState: import("../../..").NFTVeTravaSellingState;
+    TravaGovernanceState: import("../../..").TravaGovernanceState;
+    ExpeditionState: import("../../..").ExpeditionState;
+    DilutionState: import("../../..").DilutionState;
+    forkCompoundLPState: import("../../..").ForkedCompoundLPState;
+    forkAaveLPState: import("../../..").ForkedAaveLPState;
+    pancakeSwapV2Pair: import("../../..").PancakeSwapV2Pair;
+    cs251state: import("../../..").cs251state;
+    PancakeFarmState: import("../../..").PancakeFarmState;
+    web3: import("ethers").JsonRpcProvider;
+    chainId: number | string;
+    simulatorUrl: string;
+}>;

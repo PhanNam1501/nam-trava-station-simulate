@@ -21,12 +21,13 @@
     "axios": "^1.7.2",
     "bignumber.js": "^9.1.2",
     "decimal.js": "^10.4.3",
+    "esm": "^3.2.25",
     "eth-graph-query": "^2.0.0",
     "ethereumjs-util": "^7.1.5",
     "lodash": "^4.17.21",
     "test-tcv-platform-sdk": "^0.0.22",
-    "trava-station-sdk": "1.0.30",
-    "typescript": "^5.2.2"
+    "trava-simulation-route": "file:",
+    "trava-station-sdk": "1.0.30"
   },
   "devDependencies": {
     "@babel/core": "^7.12.10",
@@ -42,7 +43,8 @@
     "chai": "^4.3.7",
     "ethers": "6.7.0",
     "mocha": "^10.2.0",
-    "ts-node": "^10.9.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.5.4",
     "webpack": "^5.0.4",
     "webpack-cli": "^5.1.4"
   }
