@@ -71,7 +71,7 @@ export async function updateTokenBalance(appState1: ApplicationState, _from: Eth
     let mode = getMode(appState, _from);
     if (_tokenAddress) {
 
-        if (!appState[mode].tokenBalances.has(_tokenAddress.toLowerCase()) || force) {
+        if (!appState[mode].tokenBalances.has(_tokenAddress.toLowerCase())) {
             if (_tokenAddress.toLowerCase() == getAddr("BNB_ADDRESS", appState.chainId).toLowerCase()) {
                 const balance = String(await appState.web3?.getBalance(appState[mode].address))
                 appState[mode].tokenBalances.set(_tokenAddress.toLowerCase(), balance);

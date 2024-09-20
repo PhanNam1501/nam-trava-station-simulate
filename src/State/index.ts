@@ -5,3 +5,4 @@ export * from "./trava";
 export * from "./pancakeSwap";
 export * from "./cs251";
 export * from "./pancake-farm";
+export * from "./camelot";

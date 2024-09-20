@@ -1,4 +1,6 @@
 import { BigNumber } from "bignumber.js";
+import BigInt from "bignumber.js";
+
 import { EthAddress, uint256 } from "../../utils/types";
 import { ApplicationState } from "../../State/ApplicationState";
 import { convertHexStringToAddress, getAddr } from "../../utils/address";
@@ -15,6 +17,7 @@ import { cs251state, cs251statechange } from "../../State/cs251";
 
 
 export async function getExchangeRate(appState: ApplicationState, exchange:EthAddress){
+  let tokenAddr;
   appState = await updateCS251State(appState, exchange, false);
   let newState = { ...appState };
 
@@ -28,69 +31,87 @@ export async function getExchangeRate(appState: ApplicationState, exchange:EthAd
 // Add Liquidity
 export async function addLiquidity(
   appState: ApplicationState,
-  exchange:EthAddress,
-  tokenAddr: EthAddress, // Declare and provide a value for tokenAddr
+  exchange:EthAddress, // Declare and provide a value for tokenAddr
   from: EthAddress,
-  amountETH: uint256,
+  amountETH: string,
+  force: boolean
 
 ): Promise<ApplicationState> {
   try {
-    appState = await updateCS251State(appState, exchange, false);
-    // Create a copy of the appState to avoid mutating the original state
+    
+    appState  = await updateCS251State(appState, exchange, false);
     let newState = { ...appState };
-
+    
     let exchangeState = newState.cs251state.cs251state.get(exchange)!
 
-    const oldETHReserve = exchangeState.eth_reserve
-    const newETHReserve = BigNumber(oldETHReserve).plus(amountETH)
+    let tokenAddr;
+    tokenAddr = exchangeState.tokenAddr;
     
-    const oldtotalshare = exchangeState.total_shares
-    const newtotalshare = BigNumber(oldtotalshare).plus(BigNumber(amountETH).multipliedBy(oldtotalshare).dividedBy(newETHReserve))
+    if (!appState.walletState.tokenBalances.has(tokenAddr)) {
+      await updateUserTokenBalance(appState, tokenAddr)
+  }
+    if (!appState.smartWalletState.tokenBalances.has(tokenAddr)) {
+      await updateSmartWalletTokenBalance(appState, tokenAddr)
+  }
+
     
 
-    const oldLps = exchangeState.lps
-    const newLps = BigNumber(oldLps).plus(BigNumber(amountETH).multipliedBy(oldtotalshare).dividedBy(newETHReserve))
+    const oldETHReserve = new BigNumber(exchangeState.eth_reserve)
+    console.log("oldeth", oldETHReserve.toString());
+    const newETHReserve = oldETHReserve.plus(new BigNumber(amountETH));
+    
+    const oldtotalshare = new BigNumber(exchangeState.total_shares)
+    const newtotalshare = oldtotalshare.plus(new BigNumber(amountETH).multipliedBy(oldtotalshare).dividedBy(newETHReserve));
+    
+
+    const oldLps = new BigNumber(exchangeState.lps)
+    const newLps = oldLps.plus(new BigNumber(amountETH).multipliedBy(oldtotalshare).dividedBy(newETHReserve));
     
    // Calculate the amount of tokens to add to the liquidity pool based on the reserves
-    const tokenAmount = BigNumber(amountETH).multipliedBy(exchangeState?.token_reserve).dividedBy(exchangeState.eth_reserve);
-    const oldTokenReserves = exchangeState.token_reserve
-    const newTokenReserve = BigNumber(oldTokenReserves).plus(tokenAmount);
+    const tokenAmount = new BigNumber(amountETH).multipliedBy(new BigNumber(exchangeState.token_reserve)).dividedBy(new BigNumber(exchangeState.eth_reserve));
+    console.log("amount", tokenAmount.toString());
+    const oldTokenReserves = new BigNumber(exchangeState.token_reserve)
+    const newTokenReserve = oldTokenReserves.plus(tokenAmount);
+    console.log("new", newTokenReserve.toString());
 
     const newExchangeState: cs251statechange = {
-      eth_reserve: newETHReserve.toFixed(),
-      token_reserve: newTokenReserve.toFixed(),
-      total_shares: newtotalshare.toFixed(),
-      lps: newLps.toFixed(),
+      eth_reserve: Number(newETHReserve),
+      token_reserve: Number(newTokenReserve),
+      total_shares: Number(newtotalshare),
+      lps: Number(newLps),
+      tokenAddr: tokenAddr,
     }
     newState.cs251state.cs251state.set(exchange, newExchangeState)
 
-
-    if (from.toLowerCase() == appState.walletState.address.toLowerCase()) {
-      
-      newState = await updateUserTokenBalance(newState, tokenAddr)
-      newState = await updateUserEthBalance(newState)
-
-      let oldTokenBalances = appState.walletState.tokenBalances.get(tokenAddr.toLowerCase())!
+    let mode = getMode(appState, from);
+    if (appState[mode].tokenBalances.has(tokenAddr.toLowerCase())) {
+      console.log("IN");
+      // newState = await updateUserTokenBalance(newState, tokenAddr)
+      // newState = await updateUserEthBalance(newState)
+      let oldTokenBalances = appState[mode].tokenBalances.get(tokenAddr.toLowerCase())!
       let newTokenBalance = BigNumber(oldTokenBalances).minus(tokenAmount)
-      appState.walletState.tokenBalances.set(tokenAddr.toLowerCase() , newTokenBalance.toFixed());
+      appState[mode].tokenBalances.set(tokenAddr.toLowerCase() , newTokenBalance.toFixed());
 
-      let oldETHBalances = appState.walletState.ethBalances
+      let oldETHBalances = appState[mode].ethBalances
       let newETHBalance = BigNumber(oldETHBalances).minus(amountETH)
-      appState.walletState.ethBalances = newETHBalance.toFixed()
+      appState[mode].ethBalances = newETHBalance.toFixed()
 
-  } else if (from.toLowerCase() == appState.smartWalletState.address.toLowerCase()) {
+  // } else if (from.toLowerCase() == appState.smartWalletState.address.toLowerCase()) {
     
-    newState = await updateSmartWalletTokenBalance(newState, tokenAddr)
-    newState = await updateSmartWalletEthBalance(newState)
+  //   // newState = await updateSmartWalletTokenBalance(newState, tokenAddr)
+  //   // newState = await updateSmartWalletEthBalance(newState)
 
-    let oldTokenBalances = appState.smartWalletState.tokenBalances.get(tokenAddr.toLowerCase())!
-    let newTokenBalance = BigNumber(oldTokenBalances).minus(tokenAmount)
-    appState.smartWalletState.tokenBalances.set(tokenAddr.toLowerCase() , newTokenBalance.toFixed());
+  //   let oldTokenBalances = appState.smartWalletState.tokenBalances.get(tokenAddr.toLowerCase())!
+  //   let newTokenBalance = BigNumber(oldTokenBalances).minus(tokenAmount)
+  //   appState.smartWalletState.tokenBalances.set(tokenAddr.toLowerCase() , newTokenBalance.toFixed());
 
-    let oldETHBalances = appState.smartWalletState.ethBalances
-    let newETHBalance = BigNumber(oldETHBalances).minus(amountETH)
-    appState.smartWalletState.ethBalances = newETHBalance.toFixed()
+  //   let oldETHBalances = appState.smartWalletState.ethBalances
+  //   let newETHBalance = BigNumber(oldETHBalances).minus(amountETH)
+  //   appState.smartWalletState.ethBalances = newETHBalance.toFixed()
+
     
+    
+  // 
   } else {
       new Error(`from addresses are wallet address or smart wallet address: ${appState.walletState.address} || ${appState.smartWalletState.address}.`);
   }
@@ -105,10 +126,7 @@ export async function addLiquidity(
 export async function removeLiquidity(   
   appState: ApplicationState,
   exchange: EthAddress,
-  tokenAddr: EthAddress, // Declare and provide a value for tokenAddr
-  // maxSlippage: uint256,
-  // minSlippage: uint256,
-  amountETH: uint256,
+  amountETH: string,
   to:EthAddress,
 
 ): Promise<ApplicationState> {
@@ -116,8 +134,17 @@ export async function removeLiquidity(
     appState = await updateCS251State(appState, exchange, false);
     // Create a copy of the appState to avoid mutating the original state
     let newState = { ...appState };
-
     let exchangeState = newState.cs251state.cs251state.get(exchange)!
+    let tokenAddr;
+    tokenAddr = exchangeState.tokenAddr;
+    if (!appState.walletState.tokenBalances.has(tokenAddr)) {
+      await updateUserTokenBalance(appState, tokenAddr)
+  }
+    if (!appState.smartWalletState.tokenBalances.has(tokenAddr)) {
+      await updateSmartWalletTokenBalance(appState, tokenAddr)
+  }
+
+    
     //check max amount to remove
     const share_withdraw = BigNumber(amountETH).multipliedBy(exchangeState.total_shares).dividedBy(exchangeState.eth_reserve)
     const tokenwithdraw = BigNumber(exchangeState.token_reserve).multipliedBy(share_withdraw).dividedBy(exchangeState.total_shares)
@@ -134,12 +161,13 @@ export async function removeLiquidity(
     
     const oldLps = exchangeState.lps
     const newLps = BigNumber(oldLps).minus(share_withdraw)
-
+    console.log("new", newLps);
     const newExchangeState: cs251statechange = {
-      eth_reserve: newETHReserve.toFixed(),
-      token_reserve: newTokenReserve.toFixed(),
-      total_shares: newtotalshare.toFixed(),
-      lps: newLps.toFixed(),
+      eth_reserve: Number(newETHReserve),
+      token_reserve: Number(newTokenReserve),
+      total_shares: Number(newtotalshare),
+      lps: Number(newLps),
+      tokenAddr: tokenAddr,
     }
     newState.cs251state.cs251state.set(exchange, newExchangeState)
     if (ethwithdraw.toFixed(0) == MAX_UINT256 || ethwithdraw.isEqualTo(MAX_UINT256)) {
@@ -149,8 +177,6 @@ export async function removeLiquidity(
 
     if (to.toLowerCase() == appState.walletState.address.toLowerCase()) {
       
-      newState = await updateUserTokenBalance(newState, tokenAddr)
-      newState = await updateUserEthBalance(newState)
 
       let oldTokenBalances = appState.walletState.tokenBalances.get(tokenAddr.toLowerCase())!
       let newTokenBalance = BigNumber(oldTokenBalances).plus(tokenwithdraw)
@@ -162,9 +188,6 @@ export async function removeLiquidity(
 
   } else if (to.toLowerCase() == appState.smartWalletState.address.toLowerCase()) {
     
-    newState = await updateSmartWalletTokenBalance(newState, tokenAddr)
-    newState = await updateSmartWalletEthBalance(newState)
-
     let oldTokenBalances = appState.smartWalletState.tokenBalances.get(tokenAddr.toLowerCase())!
     let newTokenBalance = BigNumber(oldTokenBalances).plus(tokenwithdraw)
     appState.smartWalletState.tokenBalances.set(tokenAddr.toLowerCase() , newTokenBalance.toFixed());
@@ -185,16 +208,24 @@ export async function removeLiquidity(
 export async function swapAssets(
   appState: ApplicationState,
   exchange: EthAddress,
-  amountIn: uint256,
+  amountIn: string,
   from: EthAddress,
-  tokenAddr: EthAddress,
   isSwapForETH: boolean // true for Token for ETH, false for ETH for Token
 ): Promise<ApplicationState> {
   try {
     // Update the state with the current exchange details
     appState = await updateCS251State(appState, exchange, false);
     let newState = { ...appState };
-    let exchangeState = newState.cs251state.cs251state.get(exchange)!;
+    let exchangeState = newState.cs251state.cs251state.get(exchange)!
+    let tokenAddr;
+    tokenAddr = exchangeState.tokenAddr;
+    if (!appState.walletState.tokenBalances.has(tokenAddr)) {
+      await updateUserTokenBalance(appState, tokenAddr)
+  }
+    if (!appState.smartWalletState.tokenBalances.has(tokenAddr)) {
+      await updateSmartWalletTokenBalance(appState, tokenAddr)
+  }
+    
 
     let newTokenBalance, newETHBalance, amountToken, amountETH;
 
@@ -206,8 +237,8 @@ export async function swapAssets(
       newETHBalance = BigNumber(exchangeState.eth_reserve).plus(amountETH);
        if (from.toLowerCase() == appState.walletState.address.toLowerCase()) {
         
-        newState = await updateUserTokenBalance(newState, tokenAddr)
-        newState = await updateUserEthBalance(newState)
+        // newState = await updateUserTokenBalance(newState, tokenAddr)
+        // newState = await updateUserEthBalance(newState)
   
         let oldTokenBalances = appState.walletState.tokenBalances.get(tokenAddr.toLowerCase())!
         let newTokenBalance = BigNumber(oldTokenBalances).minus(amountIn)
@@ -219,8 +250,8 @@ export async function swapAssets(
   
        } else if (from.toLowerCase() == appState.smartWalletState.address.toLowerCase()) {
     
-        newState = await updateSmartWalletTokenBalance(newState, tokenAddr)
-        newState = await updateSmartWalletEthBalance(newState)
+        // newState = await updateSmartWalletTokenBalance(newState, tokenAddr)
+        // newState = await updateSmartWalletEthBalance(newState)
   
         let oldTokenBalances = appState.smartWalletState.tokenBalances.get(tokenAddr.toLowerCase())!
         let newTokenBalance = BigNumber(oldTokenBalances).minus(amountIn)
@@ -272,12 +303,13 @@ export async function swapAssets(
     }
 
     const newExchangeState = {
-      eth_reserve: newETHBalance.toFixed(),
-      token_reserve: newTokenBalance.toFixed(),
-      total_shares: BigNumber(exchangeState.total_shares).toFixed(),
-      lps: BigNumber(exchangeState.lps).toFixed(),
+      eth_reserve: Number(newETHBalance),
+      token_reserve: Number(newTokenBalance),
+      total_shares: Number(exchangeState.total_shares),
+      lps: Number(exchangeState.lps),
+      tokenAddr: tokenAddr,
     };
-    newState.cs251state.cs251state.set(exchange, newExchangeState);
+    newState.cs251state.cs251state.set(exchange.toLowerCase(), newExchangeState);
     
    
       

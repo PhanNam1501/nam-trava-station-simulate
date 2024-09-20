@@ -7,7 +7,8 @@ import { TravaGovernanceState } from "./trava/lending/TravaGovenanceState";
 import { DilutionState, ExpeditionState, ForkedAaveLPState, ForkedCompoundLPState } from "./trava";
 import { PancakeSwapV2Pair } from "./pancakeSwap";
 import { cs251state } from "./cs251";
-import {PancakeFarmState} from "./pancake-farm"
+import {PancakeFarmState} from "./pancake-farm";
+import {camelotstate} from "./camelot";
 
 export class ApplicationState {
   createdTime: number;
@@ -25,6 +26,7 @@ export class ApplicationState {
   pancakeSwapV2Pair: PancakeSwapV2Pair;
   cs251state:cs251state;
   PancakeFarmState:PancakeFarmState;
+  camelotstate:camelotstate;
 
   
   web3: JsonRpcProvider;
@@ -55,6 +57,7 @@ export class ApplicationState {
     this.pancakeSwapV2Pair = new PancakeSwapV2Pair();
     this.cs251state = new cs251state();
     this.PancakeFarmState = new PancakeFarmState();
+    this.camelotstate = new camelotstate();
 
   }
 }

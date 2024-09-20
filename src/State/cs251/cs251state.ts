@@ -1,5 +1,5 @@
-import BigNumber from "bignumber.js";
-import { EthAddress } from "../../utils/types";
+import  BigInt from "bignumber.js";
+import { EthAddress, uint256 } from "../../utils/types";
 
 
 export class cs251state {
@@ -19,9 +19,10 @@ export class cs251state {
 }
 
 export interface cs251statechange {
-    eth_reserve: string;
-    token_reserve:string;
-    total_shares:string;
-    lps:string;
+    eth_reserve: number;
+    token_reserve: number;
+    total_shares: number; 
+    lps: number;
+    tokenAddr: EthAddress;
 }
 
