@@ -9,6 +9,7 @@ import { PancakeSwapV2Pair } from "./pancakeSwap";
 import { cs251state } from "./cs251";
 import {PancakeFarmState} from "./pancake-farm";
 import {camelotstate} from "./camelot";
+import { camelotv3state } from "./camelot_v3";
 
 export class ApplicationState {
   createdTime: number;
@@ -27,6 +28,7 @@ export class ApplicationState {
   cs251state:cs251state;
   PancakeFarmState:PancakeFarmState;
   camelotstate:camelotstate;
+  camelotv3state: camelotv3state;
 
   
   web3: JsonRpcProvider;
@@ -58,6 +60,7 @@ export class ApplicationState {
     this.cs251state = new cs251state();
     this.PancakeFarmState = new PancakeFarmState();
     this.camelotstate = new camelotstate();
+    this.camelotv3state = new camelotv3state();
 
   }
 }

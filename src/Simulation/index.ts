@@ -10,3 +10,5 @@ export * from "./pancakeSwapV2"
 export * from "./pancake-farm"
 export * from "./cs251"
 export * from "./camelot"
+export * from "./camelot_v3"
+

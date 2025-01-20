@@ -1,0 +1,12 @@
+[
+    {
+        "tokenId": "3",
+        "nftmanager": "0xB2dADcb54FfaE9Bf71b1d554a7E7Ef8F57E517d0",
+        "algebra_pool": "0xB5cB56f595ecfb653FA92e2024D9d56DfBB60CE4",
+        "owner": "0xB2dADcb54FfaE9Bf71b1d554a7E7Ef8F57E517d0",
+        "tickLower": -60000,
+        "tickUpper": 60000,
+        "dataStorageOperator": "0xDe4F83467EB86b2e293B2a5369249bC808b3eAdF"
+    }
+    
+]

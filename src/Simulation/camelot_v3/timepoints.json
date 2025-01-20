@@ -1,0 +1,173 @@
+[
+  {
+    "initialized": true,
+    "blockTimestamp": "1727925700",
+    "tickCumulative": "0",
+    "secondsPerLiquidityCumulative": "0",
+    "volatilityCumulative": "0",
+    "averageTick": "0",
+    "volumePerLiquidityCumulative": "0"
+  },
+  {
+    "initialized": true,
+    "blockTimestamp": "1728031657",
+    "tickCumulative": "0",
+    "secondsPerLiquidityCumulative": "3.6055298751841877e+43",
+    "volatilityCumulative": "0",
+    "averageTick": "0",
+    "volumePerLiquidityCumulative": "0"
+  },
+  {
+    "initialized": true,
+    "blockTimestamp": "1728281910",
+    "tickCumulative": "0",
+    "secondsPerLiquidityCumulative": "7.863364033637468e+43",
+    "volatilityCumulative": "0",
+    "averageTick": "0",
+    "volumePerLiquidityCumulative": "0"
+  },
+  {
+    "initialized": true,
+    "blockTimestamp": "1728316638",
+    "tickCumulative": "0",
+    "secondsPerLiquidityCumulative": "8.032182977043617e+43",
+    "volatilityCumulative": "0",
+    "averageTick": "0",
+    "volumePerLiquidityCumulative": "0"
+  },
+  {
+    "initialized": true,
+    "blockTimestamp": "1728370265",
+    "tickCumulative": "0",
+    "secondsPerLiquidityCumulative": "8.336321685224769e+43",
+    "volatilityCumulative": "0",
+    "averageTick": "0",
+    "volumePerLiquidityCumulative": "0"
+  },
+  {
+    "initialized": true,
+    "blockTimestamp": "1728370322",
+    "tickCumulative": "0",
+    "secondsPerLiquidityCumulative": "8.336339159184151e+43",
+    "volatilityCumulative": "0",
+    "averageTick": "0",
+    "volumePerLiquidityCumulative": "0"
+  },
+  {
+    "initialized": true,
+    "blockTimestamp": "1728403307",
+    "tickCumulative": "0",
+    "secondsPerLiquidityCumulative": "8.348673460143368e+43",
+    "volatilityCumulative": "0",
+    "averageTick": "0",
+    "volumePerLiquidityCumulative": "0"
+  },
+  {
+    "initialized": true,
+    "blockTimestamp": "1728987318",
+    "tickCumulative": "-449104459",
+    "secondsPerLiquidityCumulative": "8.567056586943219e+43",
+    "volatilityCumulative": "115120738671",
+    "averageTick": "0",
+    "volumePerLiquidityCumulative": "608134420012402800"
+  },
+  {
+    "initialized": true,
+    "blockTimestamp": "1729049151",
+    "tickCumulative": "-496654036",
+    "secondsPerLiquidityCumulative": "8.578015274231668e+43",
+    "volatilityCumulative": "127308984563",
+    "averageTick": "-769",
+    "volumePerLiquidityCumulative": "608134420012402800"
+  },
+  {
+    "initialized": true,
+    "blockTimestamp": "1729049262",
+    "tickCumulative": "-496739395",
+    "secondsPerLiquidityCumulative": "8.57802816547492e+43",
+    "volatilityCumulative": "127308984563",
+    "averageTick": "-769",
+    "volumePerLiquidityCumulative": "608134420012402800"
+  },
+  {
+    "initialized": true,
+    "blockTimestamp": "1729075791",
+    "tickCumulative": "-530723044",
+    "secondsPerLiquidityCumulative": "8.581109172612137e+43",
+    "volatilityCumulative": "129627255028",
+    "averageTick": "-769",
+    "volumePerLiquidityCumulative": "985883445412598400"
+  },
+  {
+    "initialized": true,
+    "blockTimestamp": "1729076943",
+    "tickCumulative": "-532710244",
+    "secondsPerLiquidityCumulative": "8.581242962812373e+43",
+    "volatilityCumulative": "130128721700",
+    "averageTick": "-928",
+    "volumePerLiquidityCumulative": "1363632470812794000"
+  },
+  {
+    "initialized": true,
+    "blockTimestamp": "1729079370",
+    "tickCumulative": "-536896819",
+    "secondsPerLiquidityCumulative": "8.581455267517905e+43",
+    "volatilityCumulative": "131641529340",
+    "averageTick": "-943",
+    "volumePerLiquidityCumulative": "1363632470812794000"
+  },
+  {
+    "initialized": true,
+    "blockTimestamp": "1729151790",
+    "tickCumulative": "-661821319",
+    "secondsPerLiquidityCumulative": "8.586536349788505e+43",
+    "volatilityCumulative": "155296716138",
+    "averageTick": "-1394",
+    "volumePerLiquidityCumulative": "1363632470812794000"
+  },
+  {
+    "initialized": true,
+    "blockTimestamp": "1729271037",
+    "tickCumulative": "-902342518",
+    "secondsPerLiquidityCumulative": "8.594902875852057e+43",
+    "volatilityCumulative": "166882623262",
+    "averageTick": "-1725",
+    "volumePerLiquidityCumulative": "1591839613992706000"
+  },
+  {
+    "initialized": true,
+    "blockTimestamp": "1729271121",
+    "tickCumulative": "-902511946",
+    "secondsPerLiquidityCumulative": "8.594907812591059e+43",
+    "volatilityCumulative": "166884968191",
+    "averageTick": "-2017",
+    "volumePerLiquidityCumulative": "1591839613992706000"
+  },
+  {
+    "initialized": true,
+    "blockTimestamp": "1729357887",
+    "tickCumulative": "-1099123702",
+    "secondsPerLiquidityCumulative": "8.600007111355871e+43",
+    "volatilityCumulative": "168678192113",
+    "averageTick": "-2017",
+    "volumePerLiquidityCumulative": "1782997583668452600"
+  },
+  {
+    "initialized": true,
+    "blockTimestamp": "1729446105",
+    "tickCumulative": "-1299025690",
+    "secondsPerLiquidityCumulative": "8.604474228892333e+43",
+    "volatilityCumulative": "170501362518",
+    "averageTick": "-2266",
+    "volumePerLiquidityCumulative": "1782997583668452600"
+  },
+  {
+    "initialized": true,
+    "blockTimestamp": "1732177099",
+    "tickCumulative": "-7487458094",
+    "secondsPerLiquidityCumulative": "8.76694085518025e+43",
+    "volatilityCumulative": "170501362518",
+    "averageTick": "-2266",
+    "volumePerLiquidityCumulative": "1782997583668452600"
+  }
+]
